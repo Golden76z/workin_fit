@@ -8,6 +8,7 @@ import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/services/auth/firebase_auth_provider.dart';
+import 'package:sport_app/views/authentication_view.dart';
 import 'package:sport_app/views/login_view.dart';
 import 'package:sport_app/views/notes/create_update_note_view.dart';
 import 'package:sport_app/views/notes/notes_view.dart';
@@ -56,8 +57,8 @@ class HomePage extends StatelessWidget {
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
-          return const LoginView();
-        } else if (state is AuthStateRegistering) {
+          return const AuthenticationView();
+        } else if (state is AuthEventShouldRegister) {
           return const RegisterView();
         } else {
           return const Scaffold(
