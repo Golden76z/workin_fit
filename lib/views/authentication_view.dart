@@ -1,8 +1,4 @@
-// authentication_view.dart
 import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
-// import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/views/login_view.dart';
 import 'package:sport_app/views/register_view.dart';
 
@@ -33,12 +29,17 @@ class _AuthenticationViewState extends State<AuthenticationView>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Workin Fit',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 16.0), // Add top padding to title
+          child: const Center(
+            child: Text(
+            'Workin Fit',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           ),
         ),
         backgroundColor: Colors.redAccent[200],
@@ -47,12 +48,12 @@ class _AuthenticationViewState extends State<AuthenticationView>
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           indicatorColor: Colors.white,
-          labelStyle: TextStyle(  // Add this for selected tab style
-            fontSize: 16,        // Custom font size
-            fontWeight: FontWeight.bold,  // Custom weight
+          labelStyle: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-          unselectedLabelStyle: TextStyle(  // Add this for unselected tabs
-            fontSize: 14,
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 18,
             fontWeight: FontWeight.normal,
           ),
           tabs: const [
