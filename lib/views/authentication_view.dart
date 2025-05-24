@@ -27,39 +27,43 @@ class _AuthenticationViewState extends State<AuthenticationView>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Scaffold(
       appBar: AppBar(
         title: Padding(
-          padding: const EdgeInsets.only(top: 16.0), // Add top padding to title
-          child: const Center(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Center(
             child: Text(
-            'Workin Fit',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+              'Workin Fit',
+              style: theme.textTheme.displayLarge?.copyWith(
+                color: colors.onPrimary,
+              ),
             ),
           ),
-          ),
         ),
-        backgroundColor: Colors.redAccent[200],
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          indicatorColor: Colors.white,
-          labelStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        backgroundColor: colors.primary,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Container(
+            color: colors.primary,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: colors.onPrimary,
+              unselectedLabelColor: colors.onPrimary.withOpacity(0.7),
+              indicatorColor: colors.onPrimary,
+              indicatorWeight: 3,
+              labelStyle: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              unselectedLabelStyle: theme.textTheme.titleLarge,
+              tabs: const [
+                Tab(text: 'Register'),
+                Tab(text: 'Login'),
+              ],
+            ),
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.normal,
-          ),
-          tabs: const [
-            Tab(text: 'Register'),
-            Tab(text: 'Login'),
-          ],
         ),
       ),
       body: TabBarView(

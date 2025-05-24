@@ -6,6 +6,7 @@ import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/utilities/dialogs/error_dialog.dart';
 import 'package:sport_app/utilities/dialogs/loading_dialog.dart';
+import 'package:sport_app/views/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -51,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: colorScheme.surface,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
           if (state is AuthStateLoggedOut) {
@@ -93,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: colorScheme.primary.withOpacity(0.3),
+                                color: colorScheme.primary.withValues(),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),
@@ -140,6 +141,7 @@ class _LoginViewState extends State<LoginView> {
                             textInputAction: TextInputAction.next,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Email',
                               hintText: 'Enter your email address',
                               prefixIcon: Icon(
@@ -168,6 +170,7 @@ class _LoginViewState extends State<LoginView> {
                             textInputAction: TextInputAction.done,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Password',
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
@@ -193,7 +196,10 @@ class _LoginViewState extends State<LoginView> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
-                                // TODO: Implement forgot password
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ForgotPasswordView()),
+                                );
                               },
                               child: Text(
                                 'Forgot Password?',
