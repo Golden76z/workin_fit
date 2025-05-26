@@ -53,10 +53,10 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: colors.surface,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
           if (state is AuthStateRegistering) {
@@ -83,32 +83,11 @@ class _RegisterViewState extends State<RegisterView> {
                     margin: const EdgeInsets.only(bottom: 48),
                     child: Column(
                       children: [
-                        // App Logo
-                        // Container(
-                        //   width: 80,
-                        //   height: 80,
-                        //   decoration: BoxDecoration(
-                        //     color: colorScheme.primary,
-                        //     borderRadius: BorderRadius.circular(20),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: colorScheme.primary.withValues(),
-                        //         blurRadius: 20,
-                        //         offset: const Offset(0, 8),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: Icon(
-                        //     Icons.sports_tennis,
-                        //     size: 40,
-                        //     color: colorScheme.onPrimary,
-                        //   ),
-                        // ),
-                        const SizedBox(height: 24),
+                        // const SizedBox(height: 24),
                         Text(
                           'Create Account',
                           style: theme.textTheme.displaySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
+                            color: colors.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -116,7 +95,7 @@ class _RegisterViewState extends State<RegisterView> {
                         Text(
                           'Start your fitness journey with us',
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
+                            color: colors.onSurfaceVariant,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -144,16 +123,16 @@ class _RegisterViewState extends State<RegisterView> {
                               hintText: 'Enter your username',
                               prefixIcon: Icon(
                                 Icons.account_circle,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
-                                return 'Enter a valid email';
+                                return 'Please enter your username';
                               }
                               return null;
                             },
@@ -172,7 +151,11 @@ class _RegisterViewState extends State<RegisterView> {
                               hintText: 'Enter your email address',
                               prefixIcon: Icon(
                                 Icons.email_outlined,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
@@ -201,7 +184,11 @@ class _RegisterViewState extends State<RegisterView> {
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
                                 Icons.lock_outlined,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
@@ -229,7 +216,11 @@ class _RegisterViewState extends State<RegisterView> {
                               hintText: 'Confirm your password',
                               prefixIcon: Icon(
                                 Icons.lock_outlined,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
@@ -254,7 +245,7 @@ class _RegisterViewState extends State<RegisterView> {
                               child: Text(
                                 'CREATE ACCOUNT',
                                 style: theme.textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.onPrimary,
+                                  color: colors.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.2,
                                 ),
@@ -268,7 +259,7 @@ class _RegisterViewState extends State<RegisterView> {
                             children: [
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant,
+                                  color: colors.outlineVariant,
                                   thickness: 1,
                                 ),
                               ),
@@ -277,14 +268,14 @@ class _RegisterViewState extends State<RegisterView> {
                                 child: Text(
                                   'OR',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
+                                    color: colors.onSurfaceVariant,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant,
+                                  color: colors.outlineVariant,
                                   thickness: 1,
                                 ),
                               ),

@@ -49,10 +49,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: colors.surface,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
           if (state is AuthStateLoggedOut) {
@@ -90,11 +90,11 @@ class _LoginViewState extends State<LoginView> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: colorScheme.primary,
+                            color: colors.primary,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: colorScheme.primary.withValues(),
+                                color: colors.primary.withValues(),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),
@@ -103,14 +103,14 @@ class _LoginViewState extends State<LoginView> {
                           child: Icon(
                             Icons.sports_tennis,
                             size: 40,
-                            color: colorScheme.onPrimary,
+                            color: colors.onPrimary,
                           ),
                         ),
                         const SizedBox(height: 24),
                         Text(
                           'Welcome Back',
                           style: theme.textTheme.displaySmall?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
+                            color: colors.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -118,7 +118,7 @@ class _LoginViewState extends State<LoginView> {
                         Text(
                           'Sign in to continue your fitness journey',
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
+                            color: colors.onSurfaceVariant,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -146,7 +146,11 @@ class _LoginViewState extends State<LoginView> {
                               hintText: 'Enter your email address',
                               prefixIcon: Icon(
                                 Icons.email_outlined,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
@@ -175,7 +179,11 @@ class _LoginViewState extends State<LoginView> {
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
                                 Icons.lock_outlined,
-                                color: colorScheme.primary,
+                                color: colors.primary,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: colors.primary),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             validator: (value) {
@@ -204,7 +212,7 @@ class _LoginViewState extends State<LoginView> {
                               child: Text(
                                 'Forgot Password?',
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.primary,
+                                  color: colors.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -221,7 +229,7 @@ class _LoginViewState extends State<LoginView> {
                               child: Text(
                                 'LOGIN',
                                 style: theme.textTheme.titleMedium?.copyWith(
-                                  color: colorScheme.onPrimary,
+                                  color: colors.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.2,
                                 ),
@@ -235,7 +243,7 @@ class _LoginViewState extends State<LoginView> {
                             children: [
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant,
+                                  color: colors.outlineVariant,
                                   thickness: 1,
                                 ),
                               ),
@@ -244,14 +252,14 @@ class _LoginViewState extends State<LoginView> {
                                 child: Text(
                                   'OR',
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
+                                    color: colors.onSurfaceVariant,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
                               Expanded(
                                 child: Divider(
-                                  color: colorScheme.outlineVariant,
+                                  color: colors.outlineVariant,
                                   thickness: 1,
                                 ),
                               ),
