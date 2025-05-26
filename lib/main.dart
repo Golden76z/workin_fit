@@ -2,13 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sport_app/app_theme.dart';
 import 'package:sport_app/constants/routes.dart';
 // import 'package:sport_app/services/auth/auth_service.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/services/auth/firebase_auth_provider.dart';
-import 'package:sport_app/views/login_view.dart';
+import 'package:sport_app/views/authentication_view.dart';
 import 'package:sport_app/views/notes/create_update_note_view.dart';
 import 'package:sport_app/views/notes/notes_view.dart';
 import 'package:sport_app/views/register_view.dart';
@@ -18,10 +19,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(
     title: 'Flutter Demo',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent),
-      useMaterial3: true,
-    ),
+    theme: AthleticEnergyTheme.lightTheme,
+      darkTheme: AthleticEnergyTheme.darkTheme,
+      themeMode: ThemeMode.system,
     home: BlocProvider<AuthBloc>(
       create: (context) => AuthBloc(FirebaseAuthProvider()),
       child: const HomePage(),
@@ -56,8 +56,8 @@ class HomePage extends StatelessWidget {
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
-          return const LoginView();
-        } else if (state is AuthStateRegistering) {
+          return const AuthenticationView();
+        } else if (state is AuthEventShouldRegister) {
           return const RegisterView();
         } else {
           return const Scaffold(
