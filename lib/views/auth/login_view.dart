@@ -6,7 +6,7 @@ import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/utilities/dialogs/error_dialog.dart';
 import 'package:sport_app/utilities/dialogs/loading_dialog.dart';
-import 'package:sport_app/views/forgot_password.dart';
+import 'package:sport_app/views/auth/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
