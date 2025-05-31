@@ -10,10 +10,11 @@ import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/services/auth/firebase_auth_provider.dart';
 import 'package:sport_app/views/auth/authentication_view.dart';
+import 'package:sport_app/views/home_page.dart';
 import 'package:sport_app/views/notes/create_update_note_view.dart';
-import 'package:sport_app/views/notes/notes_view.dart';
 import 'package:sport_app/views/auth/register_view.dart';
 import 'package:sport_app/views/auth/verify_email_view.dart';
+import 'package:sport_app/views/notes/notes_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +53,7 @@ class HomePage extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         if (state is AuthStateLoggedIn) {
-          return const NotesView();
+          return const HomePageAuth();
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
