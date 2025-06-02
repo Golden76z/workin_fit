@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 
 class AthleticEnergyTheme {
   // Athletic Energy Color Palette
-  static const Color primaryRed = Color(0xFFE53E3E);
+  static const Color primaryRed = Color.fromARGB(255, 224, 95, 86);
   static const Color deepOrange = Color(0xFFFF6B35);
   static const Color brightYellow = Color(0xFFFFD23F);
   static const Color darkCharcoal = Color(0xFF2D3748);
   static const Color lightGray = Color(0xFFF7FAFC);
-  
+
   // Additional shades for better UI hierarchy
   static const Color primaryRedLight = Color(0xFFED6363);
   static const Color primaryRedDark = Color(0xFFCC2D2D);
@@ -25,7 +25,7 @@ class AthleticEnergyTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    
+
     // Color Scheme
     colorScheme: const ColorScheme.light(
       primary: primaryRed,
@@ -337,7 +337,7 @@ class AthleticEnergyTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    
+
     colorScheme: const ColorScheme.dark(
       primary: primaryRed,
       onPrimary: Colors.white,
