@@ -56,6 +56,7 @@ class BeginnerProgramsSection extends StatelessWidget {
                         style:
                             Theme.of(context).textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
+                                  color: AthleticEnergyTheme.textGray,
                                 ),
                       ),
                       if (isRecommended) ...[
@@ -70,7 +71,7 @@ class BeginnerProgramsSection extends StatelessWidget {
                           child: Text(
                             "RECOMMENDED",
                             style: TextStyle(
-                              color: AthleticEnergyTheme.darkCharcoal,
+                              color: AthleticEnergyTheme.darkCharcoalLight,
                               fontSize: 10,
                               fontWeight: FontWeight.w600,
                             ),
@@ -114,7 +115,7 @@ class BeginnerProgramsSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Perfect for You",
+              " Workout Programs",
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: AthleticEnergyTheme.textGray,
@@ -128,7 +129,7 @@ class BeginnerProgramsSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 4),
         buildProgramCard(
           "First Week Journey",
           "7 days • 5-10 min daily",
@@ -149,6 +150,13 @@ class BeginnerProgramsSection extends StatelessWidget {
           "Small space • Quiet movements",
           "Perfect for home workouts",
           Icons.home,
+        ),
+        const SizedBox(height: 12),
+        buildProgramCard(
+          "Create your own !",
+          "Fully customisable",
+          "",
+          Icons.dashboard_customize,
         ),
       ],
     );
