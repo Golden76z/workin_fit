@@ -6,11 +6,11 @@ Future<void> showErrorDialog(
   String text,
 ) {
   return showGenericDialog<void>(
-    context: context, 
-    title: 'an error occured', 
-    content: text, 
-    optionsBuilder: () => {
-      'Ok': null,
-    }
-  );
+      context: context,
+      title: 'an error occured',
+      content: text,
+      buttonStyle: ButtonStyle(), // Add the required buttonStyle parameter
+      optionsBuilder: () => {
+            'Ok': null,
+          });
 }
