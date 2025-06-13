@@ -3,14 +3,14 @@ import 'package:sport_app/utilities/dialogs/generic_dialog.dart';
 
 Future<bool> showDeleteDialog(BuildContext context) {
   return showGenericDialog(
-    context: context, 
-    title: 'Delete', 
-    content: 'Are you sure you want to delete this note?', 
-    optionsBuilder: () => {
-      'Yes': true,
-      'No': false,
-    }
-  ).then(
+      context: context,
+      title: 'Delete',
+      content: 'Are you sure you want to delete this note?',
+      buttonStyle: ButtonStyle(), // Add the required buttonStyle parameter
+      optionsBuilder: () => {
+            'Yes': true,
+            'No': false,
+          }).then(
     (value) => value ?? false,
   );
 }
