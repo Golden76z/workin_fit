@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
-import 'package:sport_app/constants/routes.dart';
+import 'package:sport_app/core/constants/routes.dart';
 import 'package:sport_app/enums/menu_action.dart';
 import 'package:sport_app/services/auth/auth_service.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';

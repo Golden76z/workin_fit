@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sport_app/core/theme/app_theme.dart';
-import 'package:sport_app/constants/routes.dart';
+import 'package:sport_app/core/constants/routes.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
