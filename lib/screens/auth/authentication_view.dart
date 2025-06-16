@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sport_app/views/auth/login_view.dart';
-import 'package:sport_app/views/auth/register_view.dart';
+import 'package:sport_app/screens/auth/login_view.dart';
+import 'package:sport_app/screens/auth/register_view.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({super.key});
@@ -9,7 +9,7 @@ class AuthenticationView extends StatefulWidget {
   State<AuthenticationView> createState() => _AuthenticationViewState();
 }
 
-class _AuthenticationViewState extends State<AuthenticationView> 
+class _AuthenticationViewState extends State<AuthenticationView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 

@@ -2,17 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sport_app/app_theme.dart';
+import 'package:sport_app/core/theme/app_theme.dart';
 import 'package:sport_app/constants/routes.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/services/auth/firebase_auth_provider.dart';
-import 'package:sport_app/views/auth/authentication_view.dart';
-import 'package:sport_app/views/home_page.dart';
-import 'package:sport_app/views/notes/create_update_note_view.dart';
-import 'package:sport_app/views/auth/register_view.dart';
-import 'package:sport_app/views/auth/verify_email_view.dart';
+import 'package:sport_app/screens/auth/authentication_view.dart';
+import 'package:sport_app/screens/home/home_page.dart';
+import 'package:sport_app/screens/notes/create_update_note_view.dart';
+import 'package:sport_app/screens/auth/register_view.dart';
+import 'package:sport_app/screens/auth/verify_email_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
