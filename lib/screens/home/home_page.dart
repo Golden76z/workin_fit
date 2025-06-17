@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sport_app/app_theme.dart';
-import '../widgets/index.dart';
+import 'package:sport_app/core/theme/app_theme.dart';
+import '../../widgets/index.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/utilities/dialogs/logout_dialog.dart';

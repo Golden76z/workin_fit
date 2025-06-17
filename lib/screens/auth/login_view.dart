@@ -6,7 +6,7 @@ import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/utilities/dialogs/error_dialog.dart';
 import 'package:sport_app/utilities/dialogs/loading_dialog.dart';
-import 'package:sport_app/views/auth/forgot_password.dart';
+import 'package:sport_app/screens/auth/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -87,8 +87,8 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         // You can replace this with your app logo
                         Container(
-                          width: 80,
-                          height: 80,
+                          width: 90,
+                          height: 90,
                           decoration: BoxDecoration(
                             color: colors.primary,
                             borderRadius: BorderRadius.circular(20),
@@ -100,10 +100,11 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ],
                           ),
-                          child: Icon(
-                            Icons.sports_tennis,
-                            size: 40,
-                            color: colors.onPrimary,
+                          child: Image.asset(
+                            "lib/images/workin_fit_white.png",
+                            width: 40,
+                            height: 40,
+                            // color: colors.onPrimary,
                           ),
                         ),
                         const SizedBox(height: 24),
@@ -141,7 +142,8 @@ class _LoginViewState extends State<LoginView> {
                             textInputAction: TextInputAction.next,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Email',
                               hintText: 'Enter your email address',
                               prefixIcon: Icon(
@@ -174,7 +176,8 @@ class _LoginViewState extends State<LoginView> {
                             textInputAction: TextInputAction.done,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Password',
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
@@ -206,7 +209,9 @@ class _LoginViewState extends State<LoginView> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const ForgotPasswordView()),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgotPasswordView()),
                                 );
                               },
                               child: Text(
@@ -248,7 +253,8 @@ class _LoginViewState extends State<LoginView> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 child: Text(
                                   'OR',
                                   style: theme.textTheme.bodySmall?.copyWith(
@@ -275,10 +281,12 @@ class _LoginViewState extends State<LoginView> {
                                   onPressed: () {
                                     // TODO: Implement Google login
                                   },
-                                  icon: const Icon(Icons.g_mobiledata, size: 24),
+                                  icon:
+                                      const Icon(Icons.g_mobiledata, size: 24),
                                   label: const Text('Google'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
@@ -291,7 +299,8 @@ class _LoginViewState extends State<LoginView> {
                                   icon: const Icon(Icons.apple, size: 20),
                                   label: const Text('Apple'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
