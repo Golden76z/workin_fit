@@ -51,7 +51,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
             child: TabBar(
               controller: _tabController,
               labelColor: colors.onPrimary,
-              unselectedLabelColor: colors.onPrimary.withOpacity(0.7),
+              unselectedLabelColor: colors.onPrimary.withValues(),
               indicatorColor: colors.onPrimary,
               indicatorWeight: 3,
               labelStyle: theme.textTheme.titleLarge?.copyWith(
