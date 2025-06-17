@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sport_app/app_theme.dart';
+import 'package:sport_app/core/theme/app_theme.dart';
 
 class WelcomeHeader extends StatelessWidget {
   const WelcomeHeader({super.key});

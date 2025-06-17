@@ -3,7 +3,8 @@ import 'package:sport_app/firebase_options.dart';
 import 'package:sport_app/services/auth/auth_user.dart';
 import 'package:sport_app/services/auth/auth_provider.dart';
 import 'package:sport_app/services/auth/auth_exceptions.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException;
+import 'package:firebase_auth/firebase_auth.dart'
+    show FirebaseAuth, FirebaseAuthException;
 import 'package:sport_app/utilities/middlewares/rate_limiter.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
@@ -41,10 +42,8 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  Future<AuthUser> createUser({
-    required String email, 
-    required String password
-  }) async {
+  Future<AuthUser> createUser(
+      {required String email, required String password}) async {
     if (_rateLimiter.isRateLimited(_kSignUp)) {
       throw TooManyRequestsAuthException(
         _rateLimiter.timeRemaining(_kSignUp),
@@ -53,17 +52,15 @@ class FirebaseAuthProvider implements AuthProvider {
     }
 
     try {
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
-      
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
       _rateLimiter.recordAttempt(_kSignUp);
-      
+
       final user = userCredential.user;
       if (user == null) throw UserNotLoggedInAuthException();
       return AuthUser.fromFirebase(user);
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
           throw EmailAlreadyUsedAuthException();
@@ -76,22 +73,21 @@ class FirebaseAuthProvider implements AuthProvider {
         case 'too-many-requests':
           _rateLimiter.recordAttempt(_kSignUp);
           throw TooManyRequestsAuthException(
-            _rateLimiter.timeRemaining(_kSignUp), // Fixed: Use rateLimiter instead of _operationLimits
+            _rateLimiter.timeRemaining(
+                _kSignUp), // Fixed: Use rateLimiter instead of _operationLimits
             'registration',
           );
         default:
           throw GenericAuthException();
       }
-    } catch(e) {
+    } catch (e) {
       throw GenericAuthException();
     }
   }
 
   @override
-  Future<AuthUser> logIn({
-    required String email, 
-    required String password
-  }) async {
+  Future<AuthUser> logIn(
+      {required String email, required String password}) async {
     if (_rateLimiter.isRateLimited(_kSignIn)) {
       throw TooManyRequestsAuthException(
         _rateLimiter.timeRemaining(_kSignIn),
@@ -100,17 +96,15 @@ class FirebaseAuthProvider implements AuthProvider {
     }
 
     try {
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
-      
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
       _rateLimiter.recordAttempt(_kSignIn);
-      
+
       final user = userCredential.user;
       if (user == null) throw UserNotLoggedInAuthException();
       return AuthUser.fromFirebase(user);
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-credential':
         case 'wrong-password':
@@ -126,8 +120,8 @@ class FirebaseAuthProvider implements AuthProvider {
           );
         default:
           throw GenericAuthException();
-      }      
-    } catch(_) {
+      }
+    } catch (_) {
       throw GenericAuthException();
     }
   }
@@ -136,7 +130,7 @@ class FirebaseAuthProvider implements AuthProvider {
   Future<void> logOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-    } catch(e) {
+    } catch (e) {
       throw LogOutAuthException();
     }
   }
@@ -154,10 +148,10 @@ class FirebaseAuthProvider implements AuthProvider {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw UserNotLoggedInAuthException();
       if (user.emailVerified) throw EmailAlreadyVerifiedAuthException();
-      
+
       await user.sendEmailVerification();
       _rateLimiter.recordAttempt(_kEmailVerification);
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'too-many-requests':
           _rateLimiter.recordAttempt(_kEmailVerification);
@@ -168,7 +162,7 @@ class FirebaseAuthProvider implements AuthProvider {
         default:
           throw GenericAuthException();
       }
-    } catch(_) {
+    } catch (_) {
       throw GenericAuthException();
     }
   }
@@ -185,7 +179,7 @@ class FirebaseAuthProvider implements AuthProvider {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       _rateLimiter.recordAttempt(_kPasswordReset);
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
           throw EmailFormatAuthException();
@@ -200,7 +194,7 @@ class FirebaseAuthProvider implements AuthProvider {
         default:
           throw GenericAuthException();
       }
-    } catch(_) {
+    } catch (_) {
       throw GenericAuthException();
     }
   }

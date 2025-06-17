@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
-import 'package:sport_app/constants/routes.dart';
+import 'package:sport_app/core/constants/routes.dart';
 import 'package:sport_app/enums/menu_action.dart';
 import 'package:sport_app/services/auth/auth_service.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
@@ -8,7 +8,7 @@ import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/cloud/cloud_note.dart';
 import 'package:sport_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:sport_app/utilities/dialogs/logout_dialog.dart';
-import 'package:sport_app/views/notes/notes_list_view.dart';
+import 'package:sport_app/screens/notes/notes_list_view.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -31,10 +31,10 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Notes', 
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          )),
+        title: const Text('Your Notes',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            )),
         backgroundColor: Colors.redAccent[200],
         foregroundColor: Colors.white,
         actions: [
