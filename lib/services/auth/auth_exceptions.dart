@@ -30,12 +30,17 @@ class UserNotLoggedInAuthException implements Exception {}
 
 class UserNotFoundAuthException implements Exception {}
 
+class UserCancelledAuthException implements Exception {
+  @override
+  String toString() => 'User cancelled Google sign-in';
+}
+
 class TooManyRequestsAuthException implements Exception {
   final Duration cooldownRemaining;
   final String operationType; // e.g., 'password_reset', 'login'
-  
+
   TooManyRequestsAuthException(this.cooldownRemaining, this.operationType);
-  
+
   @override
   String toString() {
     final seconds = cooldownRemaining.inSeconds;

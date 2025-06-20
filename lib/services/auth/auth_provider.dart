@@ -21,4 +21,6 @@ abstract class AuthProvider {
   Future<void> sendPasswordResetEmail({
     required String email,
   });
+
+  Future<AuthUser> signInWithGoogle();
 }

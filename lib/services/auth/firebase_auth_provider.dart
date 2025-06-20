@@ -1,10 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sport_app/firebase_options.dart';
 import 'package:sport_app/services/auth/auth_user.dart';
 import 'package:sport_app/services/auth/auth_provider.dart';
 import 'package:sport_app/services/auth/auth_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException;
+    show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
 import 'package:sport_app/utilities/middlewares/rate_limiter.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
@@ -197,6 +198,28 @@ class FirebaseAuthProvider implements AuthProvider {
     } catch (_) {
       throw GenericAuthException();
     }
+  }
+
+  @override
+  Future<AuthUser> signInWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      throw Exception('Google sign-in cancelled');
+    }
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    if (userCredential.user == null) {
+      throw Exception('Google sign-in failed');
+    }
+
+    return AuthUser.fromFirebase(userCredential.user!);
   }
 
   // Helper method to check rate limiting

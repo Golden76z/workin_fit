@@ -5,9 +5,10 @@ import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
 import 'package:sport_app/utilities/dialogs/error_dialog.dart';
+import 'package:sport_app/utilities/dialogs/loading_dialog.dart';
 
 class RegisterView extends StatefulWidget {
-  const RegisterView({Key? key}) : super(key: key);
+  const RegisterView({super.key});
 
   @override
   State<RegisterView> createState() => _RegisterViewState();
@@ -19,6 +20,7 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _password;
   late final TextEditingController _confirmPassword;
   final _formKey = GlobalKey<FormState>();
+  CloseDialog? _closeDialogHandle;
 
   @override
   void initState() {
@@ -35,6 +37,12 @@ class _RegisterViewState extends State<RegisterView> {
     _email.dispose();
     _password.dispose();
     _confirmPassword.dispose();
+    // Close any open dialogs when disposing
+    final closeDialog = _closeDialogHandle;
+    if (closeDialog != null) {
+      closeDialog();
+      _closeDialogHandle = null;
+    }
     super.dispose();
   }
 
@@ -50,6 +58,21 @@ class _RegisterViewState extends State<RegisterView> {
     }
   }
 
+  void _closeLoadingDialog() {
+    final closeDialog = _closeDialogHandle;
+    if (closeDialog != null) {
+      closeDialog();
+      _closeDialogHandle = null;
+    }
+  }
+
+  void _showLoadingDialog() {
+    _closeDialogHandle ??= showLoadingDialog(
+      context: context,
+      text: 'Creating account...',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -59,7 +82,15 @@ class _RegisterViewState extends State<RegisterView> {
       backgroundColor: colors.surface,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
+          // Handle different auth states
           if (state is AuthStateRegistering) {
+            if (!state.isLoading) {
+              _closeLoadingDialog();
+            } else if (state.isLoading) {
+              _showLoadingDialog();
+            }
+
+            // Handle registration errors
             if (state.exception is WeakPasswordAuthException) {
               await showErrorDialog(context, 'Weak password');
             } else if (state.exception is EmailAlreadyUsedAuthException) {
@@ -69,6 +100,18 @@ class _RegisterViewState extends State<RegisterView> {
             } else if (state.exception is GenericAuthException) {
               await showErrorDialog(context, 'Failed to register');
             }
+          }
+          // Handle successful registration - close loading dialog
+          else if (state is AuthStateLoggedIn) {
+            _closeLoadingDialog();
+          }
+          // Handle any other loading states
+          // else if (state is AuthStateLoading) {
+          //   _showLoadingDialog();
+          // }
+          // Close dialog for any other non-loading states
+          else {
+            _closeLoadingDialog();
           }
         },
         child: SafeArea(
@@ -118,7 +161,8 @@ class _RegisterViewState extends State<RegisterView> {
                             textInputAction: TextInputAction.next,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Username',
                               hintText: 'Enter your username',
                               prefixIcon: Icon(
@@ -146,7 +190,8 @@ class _RegisterViewState extends State<RegisterView> {
                             textInputAction: TextInputAction.next,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Email',
                               hintText: 'Enter your email address',
                               prefixIcon: Icon(
@@ -179,7 +224,8 @@ class _RegisterViewState extends State<RegisterView> {
                             textInputAction: TextInputAction.next,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Password',
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
@@ -211,7 +257,8 @@ class _RegisterViewState extends State<RegisterView> {
                             textInputAction: TextInputAction.done,
                             style: theme.textTheme.bodyLarge,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
                               labelText: 'Confirm Password',
                               hintText: 'Confirm your password',
                               prefixIcon: Icon(
@@ -264,7 +311,8 @@ class _RegisterViewState extends State<RegisterView> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 child: Text(
                                   'OR',
                                   style: theme.textTheme.bodySmall?.copyWith(
@@ -289,12 +337,16 @@ class _RegisterViewState extends State<RegisterView> {
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: () {
-                                    // TODO: Implement Google registration
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(const AuthEventSignInWithGoogle());
                                   },
-                                  icon: const Icon(Icons.g_mobiledata, size: 24),
+                                  icon:
+                                      const Icon(Icons.g_mobiledata, size: 24),
                                   label: const Text('Google'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
@@ -307,7 +359,8 @@ class _RegisterViewState extends State<RegisterView> {
                                   icon: const Icon(Icons.apple, size: 20),
                                   label: const Text('Apple'),
                                   style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
                                   ),
                                 ),
                               ),
