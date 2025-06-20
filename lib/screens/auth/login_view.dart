@@ -1,5 +1,7 @@
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sport_app/services/auth/auth_exceptions.dart';
 import 'package:sport_app/services/auth/bloc/auth_bloc.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
@@ -32,6 +34,12 @@ class _LoginViewState extends State<LoginView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
+    // Close any open dialogs when disposing
+    final closeDialog = _closeDialogHandle;
+    if (closeDialog != null) {
+      closeDialog();
+      _closeDialogHandle = null;
+    }
     super.dispose();
   }
 
@@ -46,6 +54,21 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
+  void _closeLoadingDialog() {
+    final closeDialog = _closeDialogHandle;
+    if (closeDialog != null) {
+      closeDialog();
+      _closeDialogHandle = null;
+    }
+  }
+
+  void _showLoadingDialog() {
+    _closeDialogHandle ??= showLoadingDialog(
+      context: context,
+      text: 'Loading...',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -55,22 +78,32 @@ class _LoginViewState extends State<LoginView> {
       backgroundColor: colors.surface,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
+          // Handle different auth states
           if (state is AuthStateLoggedOut) {
-            final closeDialog = _closeDialogHandle;
-            if (!state.isLoading && closeDialog != null) {
-              closeDialog();
-              _closeDialogHandle = null;
-            } else if (state.isLoading && closeDialog == null) {
-              _closeDialogHandle = showLoadingDialog(
-                context: context,
-                text: 'Loading...',
-              );
+            if (!state.isLoading) {
+              _closeLoadingDialog();
+            } else if (state.isLoading) {
+              _showLoadingDialog();
             }
+
+            // Handle errors
             if (state.exception is WrongCredentialsAuthException) {
               await showErrorDialog(context, 'Wrong credentials');
             } else if (state.exception is GenericAuthException) {
               await showErrorDialog(context, 'Authentication error');
             }
+          }
+          // Handle successful login - close loading dialog
+          else if (state is AuthStateLoggedIn) {
+            _closeLoadingDialog();
+          }
+          // Handle any other loading states
+          // else if (state is AuthStateLoading) {
+          //   _showLoadingDialog();
+          // }
+          // Close dialog for any other non-loading states
+          else {
+            _closeLoadingDialog();
           }
         },
         child: SafeArea(
@@ -279,7 +312,9 @@ class _LoginViewState extends State<LoginView> {
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: () {
-                                    // TODO: Implement Google login
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(const AuthEventSignInWithGoogle());
                                   },
                                   icon:
                                       const Icon(Icons.g_mobiledata, size: 24),

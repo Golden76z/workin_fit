@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sport_app/core/theme/app_theme.dart';
 import 'package:sport_app/utilities/dialogs/generic_dialog.dart';
-import 'package:sport_app/app_theme.dart';
 
 Future<bool> showLogOutDialog(BuildContext context) {
   final theme = Theme.of(context);

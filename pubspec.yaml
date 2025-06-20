@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore: ^5.5.1
   firebase_analytics: ^11.3.6
   firebase_auth: ^5.3.4
+  google_sign_in: ^6.1.6
   sqflite: ^2.4.1
   path_provider: ^2.1.5
   path: ^1.9.0
@@ -46,6 +47,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   equatable: ^2.0.7
   iconsax: ^0.0.8
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
@@ -65,8 +67,8 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - lib/images/workin_fit.png
-    - lib/images/workin_fit_white.png
+    - lib/assets/images/logo/workin_fit.png
+    - lib/assets/images/logo/workin_fit_white.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
