@@ -1,7 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sport_app/services/auth/auth_exceptions.dart';
 import 'package:sport_app/services/auth/auth_provider.dart';
 import 'package:sport_app/services/auth/bloc/auth_event.dart';
 import 'package:sport_app/services/auth/bloc/auth_state.dart';
+import 'package:sport_app/services/auth/auth_user.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthProvider provider)
@@ -12,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         isLoading: false,
       ));
     });
+
     //forgot password
     on<AuthEventForgotPassword>((event, emit) async {
       emit(const AuthStateForgotPassword(
@@ -21,7 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
       final email = event.email;
       if (email == null) {
-        return; // user just wants to go to forgot-password screen
+        return;
       }
 
       // user wants to actually send a forgot-password email
@@ -48,11 +53,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         isLoading: false,
       ));
     });
+
     // send email verification
     on<AuthEventSendEmailVerification>((event, emit) async {
       await provider.sendEmailVerification();
       emit(state);
     });
+
     on<AuthEventRegister>((event, emit) async {
       final email = event.email;
       final password = event.password;
@@ -70,6 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
     // initialize
     on<AuthEventInitialize>((event, emit) async {
       await provider.initialize();
@@ -90,6 +98,80 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ));
       }
     });
+
+    // Google Sign-In Handler
+    on<AuthEventSignInWithGoogle>((event, emit) async {
+      emit(const AuthStateLoggedOut(
+        exception: null,
+        isLoading: true,
+      ));
+
+      try {
+        // Step 1: Trigger Google Sign-In flow
+        final googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) {
+          // User canceled the sign-in
+          emit(AuthStateLoggedOut(
+            exception: UserCancelledAuthException(),
+            isLoading: false,
+          ));
+          return;
+        }
+
+        // Step 2: Get authentication tokens
+        final googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Step 3: Sign in to Firebase with Google credentials
+        final userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+        final firebaseUser = userCredential.user;
+
+        if (firebaseUser != null) {
+          // Convert Firebase User to your AuthUser
+          final authUser = AuthUser.fromFirebase(firebaseUser);
+
+          emit(AuthStateLoggedIn(
+            user: authUser,
+            isLoading: false,
+          ));
+        } else {
+          emit(AuthStateLoggedOut(
+            exception: GenericAuthException(),
+            isLoading: false,
+          ));
+        }
+      } on FirebaseAuthException catch (e) {
+        Exception authException;
+        switch (e.code) {
+          case 'account-exists-with-different-credential':
+            authException = EmailAlreadyUsedAuthException();
+            break;
+          case 'operation-not-allowed':
+            authException = OperationNotAllowedAuthException();
+            break;
+          case 'user-disabled':
+            authException = UserDisabledAuthException();
+            break;
+          default:
+            authException = GenericAuthException();
+        }
+
+        emit(AuthStateLoggedOut(
+          exception: authException,
+          isLoading: false,
+        ));
+      } catch (e) {
+        emit(AuthStateLoggedOut(
+          exception: GenericAuthException(),
+          isLoading: false,
+        ));
+      }
+    });
+
     // log in
     on<AuthEventLogIn>((event, emit) async {
       emit(
@@ -136,10 +218,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       }
     });
+
     // log out
     on<AuthEventLogOut>((event, emit) async {
       try {
         await provider.logOut();
+        // Also sign out from Google
+        await GoogleSignIn().signOut();
         emit(
           const AuthStateLoggedOut(
             exception: null,

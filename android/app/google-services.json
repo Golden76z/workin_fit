@@ -12,7 +12,20 @@
           "package_name": "com.damienp.sport_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "358773329890-o89bhe32jfbb2bp8o2cbd0iui36e57rj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.damienp.sport_app",
+            "certificate_hash": "62125dea013d558aca1481e1fd21132d330718be"
+          }
+        },
+        {
+          "client_id": "358773329890-b1h6rqgb0gl84t37cv63e533dmf462ai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAuBjFOX_uLSaPLYxhSnqBY_IBvzRG3vqE"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358773329890-b1h6rqgb0gl84t37cv63e533dmf462ai.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "358773329890-4ekqvhf9lnadm7o42rcj986ru15sh2m3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.damienp.sportApp"
+              }
+            }
+          ]
         }
       }
     }
