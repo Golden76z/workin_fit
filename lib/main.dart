@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              '💪 Workin Fit',
+              'Workin Fit',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
