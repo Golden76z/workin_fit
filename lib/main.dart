@@ -18,7 +18,7 @@ class WorkinFitApp extends StatelessWidget {
       title: 'Workin Fit',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
       home: const HomePage(),
@@ -34,6 +34,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Workin Fit'),
+        backgroundColor: Colors.deepPurpleAccent,
         centerTitle: true,
       ),
       body: Center(
@@ -41,7 +42,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              '💪 Workin Fit',
+              'Workin Fit',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -58,6 +59,12 @@ class HomePage extends StatelessWidget {
                 // TODO: Navigate to login
               },
               child: const Text('Get Started'),
+            ),
+            ElevatedButton(
+            onPressed: () {
+              // print('button pressed!');
+            },
+            child: const Text('Next'),
             ),
           ],
         ),
