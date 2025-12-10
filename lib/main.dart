@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/widgets/text_input.dart';
 
 void main() {
   runApp(
@@ -35,24 +37,44 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Workin Fit'),
+        foregroundColor: AppColors.textPrimary,
         backgroundColor: AppColors.primary,
         centerTitle: true,
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Test',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
               ),
             ),
-            SizedBox(height: 16),
+
+            const SizedBox(height: 12),
+            const AppTextInput(
+              hint: 'Name',
+              hasBorder: true,
+              margin: EdgeInsets.symmetric(horizontal: 32),
+            ),
+
+            const SizedBox(height: 12),
+            AppButton(label: 'this is a test button', onPressed: () => add(1, 2)),
+
+            const SizedBox(height: 12),
+            AppButton(label: 'test', onPressed: () => add(1, 2)),
+
           ],
         ),
       ),
+      backgroundColor: AppColors.background,
     );
   }
+}
+
+int add(int a, int b) {
+  return a + b;
 }
