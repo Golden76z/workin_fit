@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/colors.dart';
 
 void main() {
   runApp(
@@ -18,7 +19,7 @@ class WorkinFitApp extends StatelessWidget {
       title: 'Workin Fit',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
       home: const HomePage(),
@@ -34,38 +35,21 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Workin Fit'),
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: AppColors.primary,
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Workin Fit',
+            Text(
+              'Test',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Your fitness journey starts here',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Navigate to login
-              },
-              child: const Text('Get Started'),
-            ),
-            ElevatedButton(
-            onPressed: () {
-              // print('button pressed!');
-            },
-            child: const Text('Next'),
-            ),
+            SizedBox(height: 16),
           ],
         ),
       ),
