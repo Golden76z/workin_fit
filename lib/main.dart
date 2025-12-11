@@ -36,7 +36,15 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workin Fit'),
+        title: const Text(
+          'Workin Fit',
+          style: TextStyle(
+            fontFamily:
+                'AppFont',
+            fontSize: 42,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         foregroundColor: AppColors.textPrimary,
         backgroundColor: AppColors.primary,
         centerTitle: true,
@@ -49,7 +57,8 @@ class HomePage extends StatelessWidget {
               'Test',
               style: TextStyle(
                 fontSize: 32,
-                fontWeight: FontWeight.bold,
+                fontFamily: 'AppFont',
+                fontWeight: FontWeight.w100,
                 color: AppColors.textPrimary,
               ),
             ),
