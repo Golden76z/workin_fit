@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/widgets/text_input.dart';
 
 void main() {
   runApp(
@@ -18,7 +21,7 @@ class WorkinFitApp extends StatelessWidget {
       title: 'Workin Fit',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
       home: const HomePage(),
@@ -33,8 +36,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workin Fit'),
-        backgroundColor: Colors.deepPurpleAccent,
+        title: const Text(
+          'Workin Fit',
+          style: TextStyle(
+            fontFamily:
+                'AppFont',
+            fontSize: 42,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        foregroundColor: AppColors.textPrimary,
+        backgroundColor: AppColors.primary,
         centerTitle: true,
       ),
       body: Center(
@@ -42,33 +54,36 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Workin Fit',
+              'Test',
               style: TextStyle(
                 fontSize: 32,
-                fontWeight: FontWeight.bold,
+                fontFamily: 'AppFont',
+                fontWeight: FontWeight.w100,
+                color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Your fitness journey starts here',
-              style: TextStyle(fontSize: 16),
+
+            const SizedBox(height: 12),
+            const AppTextInput(
+              hint: 'Name',
+              hasBorder: true,
+              margin: EdgeInsets.symmetric(horizontal: 32),
             ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Navigate to login
-              },
-              child: const Text('Get Started'),
-            ),
-            ElevatedButton(
-            onPressed: () {
-              // print('button pressed!');
-            },
-            child: const Text('Next'),
-            ),
+
+            const SizedBox(height: 12),
+            AppButton(label: 'this is a test button', onPressed: () => add(1, 2)),
+
+            const SizedBox(height: 12),
+            AppButton(label: 'test', onPressed: () => add(1, 2)),
+
           ],
         ),
       ),
+      backgroundColor: AppColors.background,
     );
   }
+}
+
+int add(int a, int b) {
+  return a + b;
 }
