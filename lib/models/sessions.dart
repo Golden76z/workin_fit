@@ -1,6 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:workin_fit/models/exercices.dart';
 
+part 'sessions.g.dart';
+
 @HiveType(typeId: 1)
 class Session {
   @HiveField(0)

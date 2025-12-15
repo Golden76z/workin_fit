@@ -1,7 +1,8 @@
 import 'package:hive/hive.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/muscle_database.dart';
-// part 'exercices.g.dart';
+
+part 'exercices.g.dart';
 
 @HiveType(typeId: 0)
 class Exercise {

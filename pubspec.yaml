@@ -84,6 +84,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/l10n/
   fonts:
     - family: AppFont
       fonts:

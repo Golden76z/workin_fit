@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
 
+part 'enums.g.dart'; // For Hive type adapter generation
+
 // The way you want to practice a specific exercice
 @HiveType(typeId: 10)
 enum WorkOutType {
