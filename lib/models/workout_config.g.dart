@@ -177,3 +177,70 @@ class TimedConfigAdapter extends TypeAdapter<TimedConfig> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+WorkoutConfig _$WorkoutConfigFromJson(Map<String, dynamic> json) =>
+    WorkoutConfig(
+      type: $enumDecode(_$WorkoutTypeEnumMap, json['type']),
+      exerciseId: json['exerciseId'] as String,
+    );
+
+Map<String, dynamic> _$WorkoutConfigToJson(WorkoutConfig instance) =>
+    <String, dynamic>{
+      'type': _$WorkoutTypeEnumMap[instance.type]!,
+      'exerciseId': instance.exerciseId,
+    };
+
+const _$WorkoutTypeEnumMap = {
+  WorkoutType.sets: 'sets',
+  WorkoutType.tabata: 'tabata',
+  WorkoutType.timed: 'timed',
+};
+
+SetsConfig _$SetsConfigFromJson(Map<String, dynamic> json) => SetsConfig(
+      exerciseId: json['exerciseId'] as String,
+      sets: (json['sets'] as num).toInt(),
+      reps: (json['reps'] as num).toInt(),
+      restBetweenSets: (json['restBetweenSets'] as num?)?.toInt() ?? 60,
+      weight: (json['weight'] as num?)?.toDouble(),
+      weightUnit: json['weightUnit'] as String?,
+    );
+
+Map<String, dynamic> _$SetsConfigToJson(SetsConfig instance) =>
+    <String, dynamic>{
+      'exerciseId': instance.exerciseId,
+      'sets': instance.sets,
+      'reps': instance.reps,
+      'restBetweenSets': instance.restBetweenSets,
+      'weight': instance.weight,
+      'weightUnit': instance.weightUnit,
+    };
+
+TabataConfig _$TabataConfigFromJson(Map<String, dynamic> json) => TabataConfig(
+      exerciseId: json['exerciseId'] as String,
+      workTime: (json['workTime'] as num).toInt(),
+      restTime: (json['restTime'] as num).toInt(),
+      rounds: (json['rounds'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$TabataConfigToJson(TabataConfig instance) =>
+    <String, dynamic>{
+      'exerciseId': instance.exerciseId,
+      'workTime': instance.workTime,
+      'restTime': instance.restTime,
+      'rounds': instance.rounds,
+    };
+
+TimedConfig _$TimedConfigFromJson(Map<String, dynamic> json) => TimedConfig(
+      exerciseId: json['exerciseId'] as String,
+      duration: (json['duration'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$TimedConfigToJson(TimedConfig instance) =>
+    <String, dynamic>{
+      'exerciseId': instance.exerciseId,
+      'duration': instance.duration,
+    };

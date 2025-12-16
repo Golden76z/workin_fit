@@ -2,9 +2,11 @@
 import 'package:hive/hive.dart';
 import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/models/enums.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'session.g.dart';
 
+@JsonSerializable(explicitToJson: true)
 @HiveType(typeId: 1)
 class Session extends HiveObject {
   @HiveField(0)
@@ -48,8 +50,8 @@ class Session extends HiveObject {
     required this.id,
     required this.name,
     required this.workouts, required this.difficulty, this.description,
-    this.restBetweenExercises = 120, // From your requirements
-    this.transitionTime = 5, // From your requirements
+    this.restBetweenExercises = 120,
+    this.transitionTime = 5,
     this.isCustom = false,
     this.userId,
     DateTime? createdAt,
@@ -93,5 +95,22 @@ class Session extends HiveObject {
   /// Get all unique exercise IDs
   List<String> get exerciseIds {
     return workouts.map((w) => w.exerciseId).toSet().toList();
+  }
+
+  factory Session.fromJson(Map<String, dynamic> json) => 
+      _$SessionFromJson(json);
+  
+  Map<String, dynamic> toJson() => _$SessionToJson(this);
+  
+  // Firestore-specific serialization
+  Map<String, dynamic> toFirestore() {
+    final json = toJson();
+    json['createdAt'] = createdAt.toIso8601String();
+    return json;
+  }
+  
+  factory Session.fromFirestore(Map<String, dynamic> data) {
+    data['createdAt'] = DateTime.parse(data['createdAt']);
+    return Session.fromJson(data);
   }
 }

@@ -55,9 +55,6 @@ class AuthPage extends StatelessWidget {
 
             const SizedBox(height: 12),
             AppButton(label: 'this is a test button', onPressed: () => add(1, 2)),
-
-            const SizedBox(height: 12),
-            AppButton(label: 'this is a test button', onPressed: () => add(1, 2)),
           ],
         ),
       ),

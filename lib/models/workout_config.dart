@@ -1,9 +1,10 @@
 import 'package:hive/hive.dart';
 import 'package:workin_fit/models/enums.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'workout_config.g.dart';
 
-/// Base class for workout configuration
+@JsonSerializable()
 @HiveType(typeId: 2)
 class WorkoutConfig extends HiveObject {
   @HiveField(0)
@@ -16,28 +17,39 @@ class WorkoutConfig extends HiveObject {
     required this.type,
     required this.exerciseId,
   });
+
+  // JSON serialization
+  factory WorkoutConfig.fromJson(Map<String, dynamic> json) {
+    // Dispatch to correct subclass based on type
+    final type = WorkoutType.values.byName(json['type']);
+    switch (type) {
+      case WorkoutType.sets:
+        return SetsConfig.fromJson(json);
+      case WorkoutType.tabata:
+        return TabataConfig.fromJson(json);
+      case WorkoutType.timed:
+        return TimedConfig.fromJson(json);
+    }
+  }
+
+  Map<String, dynamic> toJson() => _$WorkoutConfigToJson(this);
 }
 
-/// Configuration for set-based workouts (e.g., 4 sets of 10 push-ups)
+@JsonSerializable()
 @HiveType(typeId: 3)
 class SetsConfig extends WorkoutConfig {
-  /// Number of sets (e.g., 4)
   @HiveField(2)
   final int sets;
   
-  /// Number of reps per set (e.g., 10)
   @HiveField(3)
   final int reps;
   
-  /// Rest time between sets in seconds (default 60s)
   @HiveField(4)
   final int restBetweenSets;
   
-  /// Optional: target weight (for weighted exercises)
   @HiveField(5)
   final double? weight;
   
-  /// Optional: weight unit (kg, lbs)
   @HiveField(6)
   final String? weightUnit;
 
@@ -45,12 +57,10 @@ class SetsConfig extends WorkoutConfig {
     required super.exerciseId,
     required this.sets,
     required this.reps,
-    this.restBetweenSets = 60, // Default from your requirements
+    this.restBetweenSets = 60,
     this.weight,
     this.weightUnit,
-  }) : super(
-          type: WorkoutType.sets,
-        );
+  }) : super(type: WorkoutType.sets);
 
   /// Total volume calculation
   int get totalReps => sets * reps;
@@ -64,20 +74,23 @@ class SetsConfig extends WorkoutConfig {
   
   /// Total estimated time for this exercise
   int get estimatedTotalTime => estimatedWorkDuration + totalRestTime;
+
+  factory SetsConfig.fromJson(Map<String, dynamic> json) => 
+      _$SetsConfigFromJson(json);
+  
+  @override
+  Map<String, dynamic> toJson() => _$SetsConfigToJson(this);
 }
 
-/// Configuration for Tabata/HIIT workouts (e.g., 20s work, 10s rest, 8 rounds)
+@JsonSerializable()
 @HiveType(typeId: 4)
 class TabataConfig extends WorkoutConfig {
-  /// Work interval in seconds (e.g., 20)
   @HiveField(2)
   final int workTime;
   
-  /// Rest interval in seconds (e.g., 10)
   @HiveField(3)
   final int restTime;
   
-  /// Number of rounds (e.g., 8)
   @HiveField(4)
   final int rounds;
 
@@ -86,9 +99,7 @@ class TabataConfig extends WorkoutConfig {
     required this.workTime,
     required this.restTime,
     required this.rounds,
-  }) : super(
-          type: WorkoutType.tabata,
-        );
+  }) : super(type: WorkoutType.tabata);
 
   /// Total work time in seconds
   int get totalWorkTime => workTime * rounds;
@@ -98,21 +109,30 @@ class TabataConfig extends WorkoutConfig {
   
   /// Total duration in seconds
   int get totalDuration => totalWorkTime + totalRestTime;
+
+  factory TabataConfig.fromJson(Map<String, dynamic> json) => 
+      _$TabataConfigFromJson(json);
+  
+  @override
+  Map<String, dynamic> toJson() => _$TabataConfigToJson(this);
 }
 
-/// Configuration for timed exercises (e.g., 60s plank)
+@JsonSerializable()
 @HiveType(typeId: 5)
 class TimedConfig extends WorkoutConfig {
-  /// Duration in seconds
   @HiveField(2)
   final int duration;
 
   TimedConfig({
     required super.exerciseId,
     required this.duration,
-  }) : super(
-          type: WorkoutType.timed,
-        );
+  }) : super(type: WorkoutType.timed);
 
   int get totalDuration => duration;
+
+  factory TimedConfig.fromJson(Map<String, dynamic> json) => 
+      _$TimedConfigFromJson(json);
+  
+  @override
+  Map<String, dynamic> toJson() => _$TimedConfigToJson(this);
 }

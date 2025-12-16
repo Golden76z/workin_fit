@@ -66,3 +66,44 @@ class SessionAdapter extends TypeAdapter<Session> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Session _$SessionFromJson(Map<String, dynamic> json) => Session(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      workouts: (json['workouts'] as List<dynamic>)
+          .map((e) => WorkoutConfig.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      difficulty: $enumDecode(_$DifficultyLevelEnumMap, json['difficulty']),
+      description: json['description'] as String?,
+      restBetweenExercises:
+          (json['restBetweenExercises'] as num?)?.toInt() ?? 120,
+      transitionTime: (json['transitionTime'] as num?)?.toInt() ?? 5,
+      isCustom: json['isCustom'] as bool? ?? false,
+      userId: json['userId'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+    );
+
+Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'workouts': instance.workouts.map((e) => e.toJson()).toList(),
+      'restBetweenExercises': instance.restBetweenExercises,
+      'transitionTime': instance.transitionTime,
+      'difficulty': _$DifficultyLevelEnumMap[instance.difficulty]!,
+      'isCustom': instance.isCustom,
+      'userId': instance.userId,
+      'createdAt': instance.createdAt.toIso8601String(),
+    };
+
+const _$DifficultyLevelEnumMap = {
+  DifficultyLevel.beginner: 'beginner',
+  DifficultyLevel.intermediate: 'intermediate',
+  DifficultyLevel.advanced: 'advanced',
+};
