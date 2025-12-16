@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'exercices.dart';
+part of 'exercise.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -22,15 +22,17 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       description: fields[2] as String,
       imageMuscleUrl: fields[3] as String,
       imageTutorialUrl: fields[4] as String,
-      primaryMuscleIds: (fields[5] as List).cast<String>(),
-      secondaryMuscleIds: (fields[6] as List).cast<String>(),
+      muscleGroups: (fields[5] as List).cast<MuscleGroup>(),
+      difficulty: fields[6] as DifficultyLevel,
+      beginnerTips: fields[7] as String?,
+      equipment: (fields[8] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Exercise obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -42,9 +44,13 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..writeByte(4)
       ..write(obj.imageTutorialUrl)
       ..writeByte(5)
-      ..write(obj.primaryMuscleIds)
+      ..write(obj.muscleGroups)
       ..writeByte(6)
-      ..write(obj.secondaryMuscleIds);
+      ..write(obj.difficulty)
+      ..writeByte(7)
+      ..write(obj.beginnerTips)
+      ..writeByte(8)
+      ..write(obj.equipment);
   }
 
   @override

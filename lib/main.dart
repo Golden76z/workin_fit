@@ -3,24 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
-import 'package:workin_fit/models/exercices.dart';
-import 'package:workin_fit/models/sessions.dart';
+import 'package:workin_fit/models/exercise.dart';
+import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/session.dart';
+import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/views/auth/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
-  Hive.registerAdapter(WorkOutTypeAdapter());
+  Hive.registerAdapter(WorkoutTypeAdapter());
   Hive.registerAdapter(DifficultyLevelAdapter());
-  // Hive.registerAdapter(MuscleGroupAdapter());
+  Hive.registerAdapter(MuscleGroupAdapter());
   Hive.registerAdapter(ExerciseAdapter());
-  // Hive.registerAdapter(WorkoutConfigAdapter());
-  // Hive.registerAdapter(SetsConfigAdapter());
-  // Hive.registerAdapter(TabataConfigAdapter());
-  // Hive.registerAdapter(TimedConfigAdapter());
+  Hive.registerAdapter(WorkoutConfigAdapter());
+  Hive.registerAdapter(SetsConfigAdapter());
+  Hive.registerAdapter(TabataConfigAdapter());
+  Hive.registerAdapter(TimedConfigAdapter());
   Hive.registerAdapter(SessionAdapter());
-  // Hive.registerAdapter(ProgramAdapter());
+  Hive.registerAdapter(ProgramAdapter());
 
   runApp(
     const ProviderScope(

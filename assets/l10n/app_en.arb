@@ -1,8 +1,15 @@
 {
+  "@@locale": "en",
   "appTitle": "Workin Fit",
+  "@appTitle": {},
   "authTest": "Test",
+  "@authTest": {},
   "authWelcome": "Welcome message",
+  "@authWelcome": {},
   "authNameHint": "Name",
+  "@authNameHint": {},
   "authTestButton": "This is a test button",
-  "authSecondaryTest": "Test"
+  "@authTestButton": {},
+  "authSecondaryTest": "Test",
+  "@authSecondaryTest": {}
 }

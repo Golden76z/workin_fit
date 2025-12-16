@@ -6,80 +6,34 @@ part of 'enums.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class MuscleAdapter extends TypeAdapter<Muscle> {
-  @override
-  final int typeId = 13;
-
-  @override
-  Muscle read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Muscle(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      commonName: fields[2] as String,
-      category: fields[3] as MuscleCategory,
-      isPrimary: fields[4] as bool,
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, Muscle obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.commonName)
-      ..writeByte(3)
-      ..write(obj.category)
-      ..writeByte(4)
-      ..write(obj.isPrimary);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MuscleAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class WorkOutTypeAdapter extends TypeAdapter<WorkOutType> {
+class WorkoutTypeAdapter extends TypeAdapter<WorkoutType> {
   @override
   final int typeId = 10;
 
   @override
-  WorkOutType read(BinaryReader reader) {
+  WorkoutType read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return WorkOutType.sets;
+        return WorkoutType.sets;
       case 1:
-        return WorkOutType.tabata;
+        return WorkoutType.tabata;
       case 2:
-        return WorkOutType.timed;
+        return WorkoutType.timed;
       default:
-        return WorkOutType.sets;
+        return WorkoutType.sets;
     }
   }
 
   @override
-  void write(BinaryWriter writer, WorkOutType obj) {
+  void write(BinaryWriter writer, WorkoutType obj) {
     switch (obj) {
-      case WorkOutType.sets:
+      case WorkoutType.sets:
         writer.writeByte(0);
         break;
-      case WorkOutType.tabata:
+      case WorkoutType.tabata:
         writer.writeByte(1);
         break;
-      case WorkOutType.timed:
+      case WorkoutType.timed:
         writer.writeByte(2);
         break;
     }
@@ -91,7 +45,7 @@ class WorkOutTypeAdapter extends TypeAdapter<WorkOutType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WorkOutTypeAdapter &&
+      other is WorkoutTypeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -140,89 +94,89 @@ class DifficultyLevelAdapter extends TypeAdapter<DifficultyLevel> {
           typeId == other.typeId;
 }
 
-class MuscleCategoryAdapter extends TypeAdapter<MuscleCategory> {
+class MuscleGroupAdapter extends TypeAdapter<MuscleGroup> {
   @override
   final int typeId = 12;
 
   @override
-  MuscleCategory read(BinaryReader reader) {
+  MuscleGroup read(BinaryReader reader) {
     switch (reader.readByte()) {
       case 0:
-        return MuscleCategory.neck;
+        return MuscleGroup.chest;
       case 1:
-        return MuscleCategory.chest;
+        return MuscleGroup.shoulders;
       case 2:
-        return MuscleCategory.shoulders;
+        return MuscleGroup.triceps;
       case 3:
-        return MuscleCategory.back;
+        return MuscleGroup.biceps;
       case 4:
-        return MuscleCategory.biceps;
+        return MuscleGroup.back;
       case 5:
-        return MuscleCategory.triceps;
+        return MuscleGroup.forearms;
       case 6:
-        return MuscleCategory.forearms;
+        return MuscleGroup.quads;
       case 7:
-        return MuscleCategory.abs;
+        return MuscleGroup.hamstrings;
       case 8:
-        return MuscleCategory.glutes;
+        return MuscleGroup.calves;
       case 9:
-        return MuscleCategory.quads;
+        return MuscleGroup.glutes;
       case 10:
-        return MuscleCategory.hamstrings;
+        return MuscleGroup.abs;
       case 11:
-        return MuscleCategory.calves;
+        return MuscleGroup.obliques;
       case 12:
-        return MuscleCategory.core;
+        return MuscleGroup.lowerBack;
       case 13:
-        return MuscleCategory.cardio;
+        return MuscleGroup.cardio;
       default:
-        return MuscleCategory.neck;
+        return MuscleGroup.chest;
     }
   }
 
   @override
-  void write(BinaryWriter writer, MuscleCategory obj) {
+  void write(BinaryWriter writer, MuscleGroup obj) {
     switch (obj) {
-      case MuscleCategory.neck:
+      case MuscleGroup.chest:
         writer.writeByte(0);
         break;
-      case MuscleCategory.chest:
+      case MuscleGroup.shoulders:
         writer.writeByte(1);
         break;
-      case MuscleCategory.shoulders:
+      case MuscleGroup.triceps:
         writer.writeByte(2);
         break;
-      case MuscleCategory.back:
+      case MuscleGroup.biceps:
         writer.writeByte(3);
         break;
-      case MuscleCategory.biceps:
+      case MuscleGroup.back:
         writer.writeByte(4);
         break;
-      case MuscleCategory.triceps:
+      case MuscleGroup.forearms:
         writer.writeByte(5);
         break;
-      case MuscleCategory.forearms:
+      case MuscleGroup.quads:
         writer.writeByte(6);
         break;
-      case MuscleCategory.abs:
+      case MuscleGroup.hamstrings:
         writer.writeByte(7);
         break;
-      case MuscleCategory.glutes:
+      case MuscleGroup.calves:
         writer.writeByte(8);
         break;
-      case MuscleCategory.quads:
+      case MuscleGroup.glutes:
         writer.writeByte(9);
         break;
-      case MuscleCategory.hamstrings:
+      case MuscleGroup.abs:
         writer.writeByte(10);
         break;
-      case MuscleCategory.calves:
+      case MuscleGroup.obliques:
         writer.writeByte(11);
         break;
-      case MuscleCategory.core:
+      case MuscleGroup.lowerBack:
         writer.writeByte(12);
         break;
-      case MuscleCategory.cardio:
+      case MuscleGroup.cardio:
         writer.writeByte(13);
         break;
     }
@@ -234,7 +188,7 @@ class MuscleCategoryAdapter extends TypeAdapter<MuscleCategory> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MuscleCategoryAdapter &&
+      other is MuscleGroupAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

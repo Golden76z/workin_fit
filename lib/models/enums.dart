@@ -1,97 +1,75 @@
 import 'package:hive/hive.dart';
 
-part 'enums.g.dart'; // For Hive type adapter generation
+part 'enums.g.dart';
 
-// The way you want to practice a specific exercice
+/// Type of workout for an exercise
 @HiveType(typeId: 10)
-enum WorkOutType {
+enum WorkoutType {
   @HiveField(0)
-  sets,
-
+  sets, // Traditional sets and reps (e.g., 4 sets of 10 reps)
+  
   @HiveField(1)
-  tabata,
-
+  tabata, // Interval training (e.g., 20s work, 10s rest, 8 rounds)
+  
   @HiveField(2)
-  timed,
+  timed, // Single timed exercise (e.g., 60s plank)
 }
 
-// Rank of difficulty of exercices (easier recommandations)
+/// Difficulty level for exercises and programs
 @HiveType(typeId: 11)
 enum DifficultyLevel {
   @HiveField(0)
   beginner,
-
+  
   @HiveField(1)
   intermediate,
-
+  
   @HiveField(2)
   advanced,
 }
 
-// Global area for filters and informations
+/// Muscle groups targeted by exercises
 @HiveType(typeId: 12)
-enum MuscleCategory {
-  // Upper body
+enum MuscleGroup {
   @HiveField(0)
-  neck,
-  @HiveField(1)
   chest,
-  @HiveField(2)
+  
+  @HiveField(1)
   shoulders,
-  @HiveField(3)
-  back,
-
-  // Arms
-  @HiveField(4)
-  biceps,
-  @HiveField(5)
+  
+  @HiveField(2)
   triceps,
-  @HiveField(6)
+  
+  @HiveField(3)
+  biceps,
+  
+  @HiveField(4)
+  back,
+  
+  @HiveField(5)
   forearms,
-
-  // Lower trunc
-  @HiveField(7)
-  abs,
-  @HiveField(8)
-  glutes,
-
-  // Legs fields
-  @HiveField(9)
+  
+  @HiveField(6)
   quads,
-  @HiveField(10)
+  
+  @HiveField(7)
   hamstrings,
-  @HiveField(11)
+  
+  @HiveField(8)
   calves,
-
-  // Global
+  
+  @HiveField(9)
+  glutes,
+  
+  @HiveField(10)
+  abs,
+  
+  @HiveField(11)
+  obliques,
+  
   @HiveField(12)
-  core,
+  lowerBack,
+  
   @HiveField(13)
   cardio,
-}
-
-@HiveType(typeId: 13)
-class Muscle {
-  @HiveField(0)
-  final String id;
-  
-  @HiveField(1)
-  final String name;
-  
-  @HiveField(2)
-  final String commonName;  // For user display
-  
-  @HiveField(3)
-  final MuscleCategory category;
-  
-  @HiveField(4)
-  final bool isPrimary;  // Primary vs secondary muscle
-  
-  Muscle({
-    required this.id,
-    required this.name,
-    required this.commonName,
-    required this.category,
-    this.isPrimary = false,
-  });
 }

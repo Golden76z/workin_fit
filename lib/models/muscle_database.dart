@@ -1,4 +1,4 @@
-import 'package:workin_fit/models/enums.dart';
+/* import 'package:workin_fit/models/enums.dart';
 
 class MuscleDatabase {
   static final Map<String, Muscle> muscles = {
@@ -312,4 +312,4 @@ class MuscleDatabase {
       // MuscleCategory.abs: [MuscleCategory.core, MuscleCategory.obliques],
     };
   }
-}
+} */

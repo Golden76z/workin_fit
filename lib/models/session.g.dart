@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sessions.dart';
+part of 'session.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -17,25 +17,43 @@ class SessionAdapter extends TypeAdapter<Session> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Session(
-      id: fields[0] as int,
-      restTime: fields[1] as int,
-      changingPositionTime: fields[2] as int,
-      exercices: (fields[3] as List).cast<Exercise>(),
+      id: fields[0] as String,
+      name: fields[1] as String,
+      workouts: (fields[3] as List).cast<WorkoutConfig>(),
+      difficulty: fields[6] as DifficultyLevel,
+      description: fields[2] as String?,
+      restBetweenExercises: fields[4] as int,
+      transitionTime: fields[5] as int,
+      isCustom: fields[7] as bool,
+      userId: fields[8] as String?,
+      createdAt: fields[9] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Session obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.restTime)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.changingPositionTime)
+      ..write(obj.description)
       ..writeByte(3)
-      ..write(obj.exercices);
+      ..write(obj.workouts)
+      ..writeByte(4)
+      ..write(obj.restBetweenExercises)
+      ..writeByte(5)
+      ..write(obj.transitionTime)
+      ..writeByte(6)
+      ..write(obj.difficulty)
+      ..writeByte(7)
+      ..write(obj.isCustom)
+      ..writeByte(8)
+      ..write(obj.userId)
+      ..writeByte(9)
+      ..write(obj.createdAt);
   }
 
   @override
