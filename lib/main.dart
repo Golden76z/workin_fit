@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:workin_fit/core/theme/colors.dart';
-import 'package:workin_fit/widgets/button.dart';
-import 'package:workin_fit/widgets/text_input.dart';
+import 'package:workin_fit/models/enums.dart';
+import 'package:workin_fit/models/exercise.dart';
+import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/session.dart';
+import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/views/auth/auth.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(WorkoutTypeAdapter());
+  Hive.registerAdapter(DifficultyLevelAdapter());
+  Hive.registerAdapter(MuscleGroupAdapter());
+  Hive.registerAdapter(ExerciseAdapter());
+  Hive.registerAdapter(WorkoutConfigAdapter());
+  Hive.registerAdapter(SetsConfigAdapter());
+  Hive.registerAdapter(TabataConfigAdapter());
+  Hive.registerAdapter(TimedConfigAdapter());
+  Hive.registerAdapter(SessionAdapter());
+  Hive.registerAdapter(ProgramAdapter());
+
   runApp(
     const ProviderScope(
       child: WorkinFitApp(),
@@ -12,11 +31,11 @@ void main() {
   );
 }
 
-class WorkinFitApp extends StatelessWidget {
+class WorkinFitApp extends ConsumerWidget {
   const WorkinFitApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'Workin Fit',
       debugShowCheckedModeBanner: false,
@@ -34,56 +53,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Workin Fit',
-          style: TextStyle(
-            fontFamily:
-                'AppFont',
-            fontSize: 42,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        foregroundColor: AppColors.textPrimary,
-        backgroundColor: AppColors.primary,
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Test',
-              style: TextStyle(
-                fontSize: 32,
-                fontFamily: 'AppFont',
-                fontWeight: FontWeight.w100,
-                color: AppColors.textPrimary,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-            const AppTextInput(
-              hint: 'Name',
-              hasBorder: true,
-              margin: EdgeInsets.symmetric(horizontal: 32),
-            ),
-
-            const SizedBox(height: 12),
-            AppButton(label: 'this is a test button', onPressed: () => add(1, 2)),
-
-            const SizedBox(height: 12),
-            AppButton(label: 'test', onPressed: () => add(1, 2)),
-
-          ],
-        ),
-      ),
-      backgroundColor: AppColors.background,
-    );
-  }
-}
-
-int add(int a, int b) {
-  return a + b;
+    return const AuthPage();   
+    }
 }
