@@ -7,7 +7,8 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
-import 'package:workin_fit/views/auth/auth.dart';
+import 'package:workin_fit/views/auth/authentication_view.dart';
+// import 'package:workin_fit/views/test/test_page_001.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +54,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AuthPage();   
+    return const AuthenticationView();   
     }
 }

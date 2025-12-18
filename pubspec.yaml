@@ -89,6 +89,9 @@ flutter:
     - family: AppFont
       fonts:
         - asset: assets/font/Skaters.ttf
+    - family: AppFontNormal
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Medium_PERSONAL_USE.otf
 
 flutter_launcher_icons:
   android: true
