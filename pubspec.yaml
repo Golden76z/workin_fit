@@ -17,7 +17,7 @@ dependencies:
   firebase_storage: ^13.0.4
   
   # Social Auth
-  google_sign_in: ^7.2.0
+  google_sign_in: ^6.2.0
   sign_in_with_apple: ^7.0.1
   
   # State Management (Riverpod)
@@ -89,9 +89,15 @@ flutter:
     - family: AppFont
       fonts:
         - asset: assets/font/Skaters.ttf
-    - family: AppFontNormal
+    - family: AppFontBold
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Bold_PERSONAL_USE.otf
+    - family: AppFontMedium
       fonts:
         - asset: assets/font/MADE_TOMMY_Medium_PERSONAL_USE.otf
+    - family: AppFontNormal
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Regular_PERSONAL_USE.otf
 
 flutter_launcher_icons:
   android: true

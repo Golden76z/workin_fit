@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/auth/login_view.dart';
 import 'package:workin_fit/views/auth/register_view.dart';
+// import 'package:workin_fit/views/auth/old_register_view.dart';
+// import 'package:workin_fit/views/auth/register_view.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({super.key});
@@ -35,7 +37,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
     return Scaffold(
       appBar: AppBar(
         title: const Padding(
-          padding: EdgeInsets.only(top: 8.0),
+          padding: EdgeInsets.only(top: 15.0),
           child: Center(
             child: Text(
           'Workin Fit',
@@ -43,7 +45,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
             color: AppColors.textPrimary,
             fontFamily:
                 'AppFont',
-            fontSize: 42,
+            fontSize: 44,
             fontWeight: FontWeight.normal,
           ),
         ),
@@ -78,7 +80,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
       body: TabBarView(
         controller: _tabController,
         children: const [
-          RegisterView(),
+          RegisterScreen(),
           LoginView(),
         ],
       ),
