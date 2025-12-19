@@ -36,6 +36,8 @@ class _AuthenticationViewState extends State<AuthenticationView>
 
     return Scaffold(
       appBar: AppBar(
+        // To hide the arrow back button on the screen (only keep the phone one)
+        automaticallyImplyLeading: false,
         title: const Padding(
           padding: EdgeInsets.only(top: 15.0),
           child: Center(

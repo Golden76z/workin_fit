@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 // import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
@@ -9,7 +10,9 @@ import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/providers/locale_provider.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/views/welcome/welcome_page.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
 
@@ -46,9 +49,13 @@ class WorkinFitApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch auth state to determine initial route
     final authState = ref.watch(authStateProvider);
+    final locale = ref.watch(localeProvider);
 
     return MaterialApp(
       title: 'Workin Fit',
+      locale: locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -59,7 +66,7 @@ class WorkinFitApp extends ConsumerWidget {
       ),
       // Redirect based on auth state
       home: authState.when(
-        data: (user) => user != null ? const AuthenticationView() : const AuthenticationView(),
+        data: (user) => user != null ? const WelcomePage() : const WelcomePage(),
         loading: () => const CircularProgressIndicator(),
         error: (_, __) => const AuthenticationView(),
       ),

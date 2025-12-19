@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/auth/auth_page_layout.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
@@ -72,7 +73,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      title: 'Create Account',
+      title: '',
       child: Form(
         key: _formKey,
         child: Column(
@@ -81,14 +82,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             AuthTextField(
               controller: _emailController,
-              label: 'Email',
-              icon: Icons.email,
+              label: AppLocalizations.of(context)!.auth_page_register_username_input,
+              icon: Icons.person,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
                 }
-                if (!value.contains('@')) {
+                if (value.length < 4) {
                   return 'Please enter a valid email';
                 }
                 return null;
@@ -99,7 +100,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             AuthTextField(
               controller: _emailController,
-              label: 'Email',
+              label: AppLocalizations.of(context)!.auth_page_register_email_input,
               icon: Icons.email,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
@@ -116,7 +117,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             AuthTextField(
               controller: _passwordController,
-              label: 'Password',
+              label: AppLocalizations.of(context)!.auth_page_register_password_input,
               icon: Icons.lock,
               obscureText: true,
               validator: (value) {
@@ -139,7 +140,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             AuthTextField(
               controller: _confirmPasswordController,
-              label: 'Confirm Password',
+              label: AppLocalizations.of(context)!.auth_page_register_confirm_password_input,
               icon: Icons.lock_outline,
               obscureText: true,
               validator: (value) {
@@ -154,7 +155,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : AppButton(
-                    label: 'Create Account',
+                    label: AppLocalizations.of(context)!.auth_page_register_button,
                     onPressed: _register,
                   ),
           ],
