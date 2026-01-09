@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/auth/login_view.dart';
@@ -66,10 +65,10 @@ class _AuthenticationViewState extends State<AuthenticationView>
               indicatorWeight: 3,
               labelStyle: theme.textTheme.titleLarge?.copyWith(
                 // fontWeight: FontWeight.bold,
-                fontFamily: 'AppFontNormal',
+                fontFamily: 'AppFontMedium',
               ),
               unselectedLabelStyle: theme.textTheme.titleLarge?.copyWith(
-                fontFamily: 'AppFontNormal',
+                fontFamily: 'AppFontMedium',
               ),
               tabs: const [
                 Tab(text: 'Register'),

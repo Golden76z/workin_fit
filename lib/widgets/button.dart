@@ -11,6 +11,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
+        minimumSize: const Size(250, 0),
         foregroundColor: AppColors.textPrimary,
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
         textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, fontFamily: 'AppFontMedium'),

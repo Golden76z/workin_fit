@@ -4,6 +4,9 @@ class AppColors {
   // Primary Colors
   static const Color primary = Color(0xFF7B68EE);
   static const Color primaryDark = Color(0xFF6A5ACD);
+  static const Color primaryDarker = Color(0xFF4A418F);
+  static const Color primaryDarkest = Color(0xFF35306B);
+  static const Color primaryAbyss = Color(0xFF26224D);
   static const Color primaryLight = Color(0xFF9B88FF);
   
   // Accent Colors

@@ -27,10 +27,12 @@ class WelcomePage extends StatelessWidget {
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 120),
-              child: Divider(
-                thickness: 4,
-                height: 20,
-                color: AppColors.textPrimary.withValues(alpha: 0.8),
+              child: Container(
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.textPrimary.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(999), // fully rounded
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -66,3 +68,4 @@ class WelcomePage extends StatelessWidget {
     );
   }
 }
+

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
-import 'package:workin_fit/views/auth/auth_page_layout.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
 
@@ -15,6 +15,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -22,6 +23,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -45,9 +47,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          title: const Text('Verify Your Email'),
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.email_outlined, color: AppColors.accent, size: 28),
+              SizedBox(width: 12),
+              Text(
+                'Verify Your Email',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
           content: const Text(
-            'A verification email has been sent. Please verify before logging in.',
+            'A verification email has been sent to your inbox. Please verify your email address before logging in.',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 15,
+            ),
           ),
           actions: [
             TextButton(
@@ -55,15 +78,34 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              style: TextButton.styleFrom(
+                backgroundColor: AppColors.accent,
+                foregroundColor: AppColors.textPrimary,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Got it',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -72,93 +114,138 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthScaffold(
-      title: '',
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-
-            AuthTextField(
-              controller: _emailController,
-              label: AppLocalizations.of(context)!.auth_page_register_username_input,
-              icon: Icons.person,
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
-                }
-                if (value.length < 4) {
-                  return 'Please enter a valid email';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-
-            AuthTextField(
-              controller: _emailController,
-              label: AppLocalizations.of(context)!.auth_page_register_email_input,
-              icon: Icons.email,
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your email';
-                }
-                if (!value.contains('@')) {
-                  return 'Please enter a valid email';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            AuthTextField(
-              controller: _passwordController,
-              label: AppLocalizations.of(context)!.auth_page_register_password_input,
-              icon: Icons.lock,
-              obscureText: true,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a password';
-                }
-                if (value.length < 8) {
-                  return 'Password must be at least 8 characters';
-                }
-                if (!value.contains(RegExp(r'[A-Z]'))) {
-                  return 'Must contain an uppercase letter';
-                }
-                if (!value.contains(RegExp(r'[0-9]'))) {
-                  return 'Must contain a number';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-
-            AuthTextField(
-              controller: _confirmPasswordController,
-              label: AppLocalizations.of(context)!.auth_page_register_confirm_password_input,
-              icon: Icons.lock_outline,
-              obscureText: true,
-              validator: (value) {
-                if (value != _passwordController.text) {
-                  return 'Passwords do not match';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : AppButton(
-                    label: AppLocalizations.of(context)!.auth_page_register_button,
-                    onPressed: _register,
+    return Scaffold(
+      backgroundColor: AppColors.surfaceVariant,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.auth_page_register_description,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontFamily: 'AppFontMedium',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-          ],
+                  const SizedBox(height: 24),
+                  
+                  // Username field
+                  AuthTextField(
+                    controller: _usernameController,
+                    label: AppLocalizations.of(context)!.auth_page_register_username_input,
+                    hint: 'Choose a username',
+                    icon: Icons.person_outline,
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a username';
+                      }
+                      if (value.length < 4) {
+                        return 'Username must be at least 4 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Email field
+                  AuthTextField(
+                    controller: _emailController,
+                    label: AppLocalizations.of(context)!.auth_page_register_email_input,
+                    hint: 'Enter your email',
+                    icon: Icons.email_outlined,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!value.contains('@') || !value.contains('.')) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Password field
+                  AuthTextField(
+                    controller: _passwordController,
+                    label: AppLocalizations.of(context)!.auth_page_register_password_input,
+                    hint: 'Create a strong password',
+                    icon: Icons.lock_outline,
+                    obscureText: true,
+                    showVisibilityToggle: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      if (value.length < 8) {
+                        return 'Password must be at least 8 characters';
+                      }
+                      if (!value.contains(RegExp(r'[A-Z]'))) {
+                        return 'Must contain an uppercase letter';
+                      }
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return 'Must contain a number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Confirm password field
+                  AuthTextField(
+                    controller: _confirmPasswordController,
+                    label: AppLocalizations.of(context)!.auth_page_register_confirm_password_input,
+                    hint: 'Confirm your password',
+                    icon: Icons.lock_outline,
+                    obscureText: true,
+                    showVisibilityToggle: true,
+                    validator: (value) {
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Register button
+                  _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.accent,
+                          ),
+                        )
+                      : AppButton(
+                          label: AppLocalizations.of(context)!.auth_page_register_button,
+                          onPressed: _register,
+                        ),
+                  const SizedBox(height: 24),
+
+                  // Terms and privacy
+                  Text(
+                    'By creating an account, you agree to our\nTerms of Service and Privacy Policy',
+                    style: TextStyle(
+                      color: AppColors.textPrimary.withValues(alpha: 0.6),
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
