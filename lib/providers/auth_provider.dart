@@ -1,6 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workin_fit/repository/auth_repository.dart';
+import 'package:workin_fit/services/firestore_service.dart';
+
+// Firestore Service Provider
+final firestoreServiceProvider = Provider<FirestoreService>((ref) {
+  return FirestoreService();
+});
 
 // Auth Repository Provider
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -35,16 +41,35 @@ class AuthActions {
   AuthActions(this.ref);
 
   AuthRepository get _authRepo => ref.read(authRepositoryProvider);
+  FirestoreService get _firestoreService => ref.read(firestoreServiceProvider);
 
   // Register
   Future<void> registerWithEmailPassword({
     required String email,
     required String password,
+    required String username,
   }) async {
-    await _authRepo.registerWithEmailPassword(
+    final userCredential = await _authRepo.registerWithEmailPassword(
       email: email,
       password: password,
     );
+
+    // Save user profile to Firestore
+    if (userCredential.user != null) {
+      try {
+        await _firestoreService.createOrUpdateUserProfile(
+          userId: userCredential.user!.uid,
+          username: username,
+          email: email,
+        );
+      } catch (e) {
+        // If Firestore save fails, still allow registration but log the error
+        // The user can update their profile later
+        print('Error saving user profile to Firestore: $e');
+        // Optionally, you could throw here to prevent registration if profile save is critical
+        // throw AuthException('Failed to create user profile. Please try again.');
+      }
+    }
   }
 
   // Sign in

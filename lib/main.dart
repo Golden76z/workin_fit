@@ -12,6 +12,7 @@ import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/locale_provider.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/views/auth/email_verification_view.dart';
 import 'package:workin_fit/views/welcome/welcome_page.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
@@ -64,10 +65,21 @@ class WorkinFitApp extends ConsumerWidget {
         ),
         useMaterial3: true,
       ),
-      // Redirect based on auth state
+      // Redirect based on auth state and email verification
       home: authState.when(
-        data: (user) => user != null ? const WelcomePage() : const WelcomePage(),
-        loading: () => const CircularProgressIndicator(),
+        data: (user) {
+          if (user == null) {
+            return const AuthenticationView();
+          }
+          // Check if email is verified
+          if (!user.emailVerified) {
+            return const EmailVerificationView();
+          }
+          return const WelcomePage();
+        },
+        loading: () => const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
         error: (_, __) => const AuthenticationView(),
       ),
     );

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -39,71 +42,40 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       await ref.read(authActionsProvider).registerWithEmailPassword(
             email: _emailController.text.trim(),
             password: _passwordController.text,
+            username: _usernameController.text.trim(),
           );
 
       if (!mounted) return;
 
-      showDialog(
+      AppDialog.show(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Row(
-            children: [
-              Icon(Icons.email_outlined, color: AppColors.accent, size: 28),
-              SizedBox(width: 12),
-              Text(
-                'Verify Your Email',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: const Text(
+        title: 'Verify Your Email',
+        content:
             'A verification email has been sent to your inbox. Please verify your email address before logging in.',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 15,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.accent,
-                foregroundColor: AppColors.textPrimary,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'Got it',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
+        icon: Icons.email_outlined,
+        primaryButtonLabel: 'Got it',
+        onPrimaryButtonPressed: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
       );
     } catch (e) {
       if (mounted) {
+        // Extract user-friendly error message
+        final errorMessage = e is AuthException
+            ? e.message
+            : e.toString().replaceAll('Exception: ', '');
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text(errorMessage),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -150,8 +122,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a username';
                       }
-                      if (value.length < 4) {
-                        return 'Username must be at least 4 characters';
+                      if (value.length < AppConstants.minUsernameLength) {
+                        return 'Username must be at least ${AppConstants.minUsernameLength} characters';
+                      }
+                      if (value.length > AppConstants.maxUsernameLength) {
+                        return 'Username must be at most ${AppConstants.maxUsernameLength} characters';
                       }
                       return null;
                     },
@@ -189,8 +164,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a password';
                       }
-                      if (value.length < 8) {
-                        return 'Password must be at least 8 characters';
+                      if (value.length < AppConstants.minPasswordLength) {
+                        return 'Password must be at least ${AppConstants.minPasswordLength} characters';
                       }
                       if (!value.contains(RegExp(r'[A-Z]'))) {
                         return 'Must contain an uppercase letter';
