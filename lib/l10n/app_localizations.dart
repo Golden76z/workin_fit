@@ -181,6 +181,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register'**
   String get welcome_page_register_button;
+
+  /// No description provided for @auth_register_username_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a username'**
+  String get auth_register_username_hint;
+
+  /// No description provided for @auth_register_email_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get auth_register_email_hint;
+
+  /// No description provided for @auth_register_password_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a strong password'**
+  String get auth_register_password_hint;
+
+  /// No description provided for @auth_register_confirm_password_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your password'**
+  String get auth_register_confirm_password_hint;
+
+  /// No description provided for @auth_register_validation_username_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a username'**
+  String get auth_register_validation_username_required;
+
+  /// No description provided for @auth_register_validation_username_min.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least {minLength} characters'**
+  String auth_register_validation_username_min(int minLength);
+
+  /// No description provided for @auth_register_validation_username_max.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at most {maxLength} characters'**
+  String auth_register_validation_username_max(int maxLength);
+
+  /// No description provided for @auth_register_validation_email_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get auth_register_validation_email_required;
+
+  /// No description provided for @auth_register_validation_email_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get auth_register_validation_email_invalid;
+
+  /// No description provided for @auth_register_validation_password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a password'**
+  String get auth_register_validation_password_required;
+
+  /// No description provided for @auth_register_validation_password_min.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least {minLength} characters'**
+  String auth_register_validation_password_min(int minLength);
+
+  /// No description provided for @auth_register_validation_password_uppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Must contain an uppercase letter'**
+  String get auth_register_validation_password_uppercase;
+
+  /// No description provided for @auth_register_validation_password_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Must contain a number'**
+  String get auth_register_validation_password_number;
+
+  /// No description provided for @auth_register_validation_password_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get auth_register_validation_password_match;
+
+  /// No description provided for @auth_register_dialog_verify_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Your Email'**
+  String get auth_register_dialog_verify_title;
+
+  /// No description provided for @auth_register_dialog_verify_content.
+  ///
+  /// In en, this message translates to:
+  /// **'A verification email has been sent to your inbox. Please verify your email address before logging in.'**
+  String get auth_register_dialog_verify_content;
+
+  /// No description provided for @auth_register_dialog_verify_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get auth_register_dialog_verify_button;
+
+  /// No description provided for @auth_register_terms_text.
+  ///
+  /// In en, this message translates to:
+  /// **'By creating an account, you agree to our\nTerms of Service and Privacy Policy'**
+  String get auth_register_terms_text;
+
+  /// No description provided for @auth_login_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get auth_login_label;
+
+  /// No description provided for @auth_login_email_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get auth_login_email_label;
+
+  /// No description provided for @auth_login_email_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get auth_login_email_hint;
+
+  /// No description provided for @auth_login_password_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get auth_login_password_label;
+
+  /// No description provided for @auth_login_password_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get auth_login_password_hint;
+
+  /// No description provided for @auth_login_forgot_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get auth_login_forgot_password;
+
+  /// No description provided for @auth_login_validation_email_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get auth_login_validation_email_required;
+
+  /// No description provided for @auth_login_validation_email_invalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get auth_login_validation_email_invalid;
+
+  /// No description provided for @auth_login_validation_password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get auth_login_validation_password_required;
+
+  /// No description provided for @auth_login_or_text.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get auth_login_or_text;
+
+  /// No description provided for @auth_login_social_google.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get auth_login_social_google;
+
+  /// No description provided for @auth_login_social_apple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get auth_login_social_apple;
+
+  /// No description provided for @auth_login_forgot_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get auth_login_forgot_dialog_title;
+
+  /// No description provided for @auth_login_forgot_dialog_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a password reset email to {email}?'**
+  String auth_login_forgot_dialog_content(String email);
+
+  /// No description provided for @auth_login_forgot_dialog_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get auth_login_forgot_dialog_cancel;
+
+  /// No description provided for @auth_login_forgot_dialog_send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get auth_login_forgot_dialog_send;
+
+  /// No description provided for @auth_login_forgot_dialog_email_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email address first'**
+  String get auth_login_forgot_dialog_email_required;
+
+  /// No description provided for @auth_login_forgot_dialog_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset email sent!'**
+  String get auth_login_forgot_dialog_success;
+
+  /// No description provided for @auth_tab_register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get auth_tab_register;
+
+  /// No description provided for @auth_tab_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get auth_tab_login;
+
+  /// No description provided for @email_verification_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Your Email'**
+  String get email_verification_title;
+
+  /// No description provided for @email_verification_sent_to.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a verification email to:'**
+  String get email_verification_sent_to;
+
+  /// No description provided for @email_verification_instructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your inbox and click the verification link to activate your account.'**
+  String get email_verification_instructions;
+
+  /// No description provided for @email_verification_button_checking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking...'**
+  String get email_verification_button_checking;
+
+  /// No description provided for @email_verification_button_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve Verified My Email'**
+  String get email_verification_button_verified;
+
+  /// No description provided for @email_verification_resend.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Verification Email'**
+  String get email_verification_resend;
+
+  /// No description provided for @email_verification_sign_out.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get email_verification_sign_out;
+
+  /// No description provided for @email_verification_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verified successfully!'**
+  String get email_verification_success;
+
+  /// No description provided for @email_verification_not_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email not verified yet. Please check your inbox.'**
+  String get email_verification_not_verified;
+
+  /// No description provided for @email_verification_resend_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Email Sent'**
+  String get email_verification_resend_title;
+
+  /// No description provided for @email_verification_resend_content.
+  ///
+  /// In en, this message translates to:
+  /// **'A new verification email has been sent to {email}. Please check your inbox.'**
+  String email_verification_resend_content(String email);
+
+  /// No description provided for @email_verification_resend_button.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get email_verification_resend_button;
+
+  /// No description provided for @email_verification_error_signout.
+  ///
+  /// In en, this message translates to:
+  /// **'Error signing out: {error}'**
+  String email_verification_error_signout(String error);
+
+  /// No description provided for @error_auth_user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No user found with this email.'**
+  String get error_auth_user_not_found;
+
+  /// No description provided for @error_auth_wrong_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password. Please try again.'**
+  String get error_auth_wrong_password;
+
+  /// No description provided for @error_auth_email_already_in_use.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists with this email.'**
+  String get error_auth_email_already_in_use;
+
+  /// No description provided for @error_auth_invalid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address.'**
+  String get error_auth_invalid_email;
+
+  /// No description provided for @error_auth_weak_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak. Use at least 8 characters.'**
+  String get error_auth_weak_password;
+
+  /// No description provided for @error_auth_user_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been disabled.'**
+  String get error_auth_user_disabled;
+
+  /// No description provided for @error_auth_too_many_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get error_auth_too_many_requests;
+
+  /// No description provided for @error_auth_operation_not_allowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This sign-in method is not enabled.'**
+  String get error_auth_operation_not_allowed;
+
+  /// No description provided for @error_auth_invalid_credential.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid credentials. Please try again.'**
+  String get error_auth_invalid_credential;
+
+  /// No description provided for @error_auth_account_exists_different.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists with this email using a different sign-in method.'**
+  String get error_auth_account_exists_different;
+
+  /// No description provided for @error_auth_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in was cancelled.'**
+  String get error_auth_cancelled;
+
+  /// No description provided for @error_auth_network_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please check your connection.'**
+  String get error_auth_network_error;
+
+  /// No description provided for @error_auth_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication error occurred.'**
+  String get error_auth_generic;
+
+  /// No description provided for @error_auth_google_signin_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Sign-In failed. Please try again.'**
+  String get error_auth_google_signin_failed;
+
+  /// No description provided for @error_auth_google_network.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please check your connection.'**
+  String get error_auth_google_network;
+
+  /// No description provided for @error_auth_google_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in was cancelled.'**
+  String get error_auth_google_cancelled;
+
+  /// No description provided for @error_auth_google_in_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in is already in progress.'**
+  String get error_auth_google_in_progress;
+
+  /// No description provided for @error_auth_google_developer.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer error. Please configure Google Sign-In properly.'**
+  String get error_auth_google_developer;
+
+  /// No description provided for @error_auth_email_not_verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Email not verified. Please check your inbox.'**
+  String get error_auth_email_not_verified;
 }
 
 class _AppLocalizationsDelegate

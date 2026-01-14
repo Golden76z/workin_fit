@@ -204,11 +204,11 @@ class _EmailVerificationViewState
                 const SizedBox(height: 32),
                 AppButton(
                   label: _isChecking ? 'Checking...' : 'I\'ve Verified My Email',
-                  onPressed: _isChecking ? null : _checkVerification,
+                  onPressed: _isChecking ? null : () => _checkVerification(),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: _isResending ? null : _resendVerificationEmail,
+                  onPressed: _isResending ? null : () => _resendVerificationEmail(),
                   child: _isResending
                       ? const SizedBox(
                           height: 20,

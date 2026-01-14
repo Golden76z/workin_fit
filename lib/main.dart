@@ -11,7 +11,6 @@ import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/locale_provider.dart';
-import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/auth/email_verification_view.dart';
 import 'package:workin_fit/views/welcome/welcome_page.dart';
 // import 'firebase_options.dart';
@@ -69,7 +68,7 @@ class WorkinFitApp extends ConsumerWidget {
       home: authState.when(
         data: (user) {
           if (user == null) {
-            return const AuthenticationView();
+            return const WelcomePage();
           }
           // Check if email is verified
           if (!user.emailVerified) {
@@ -80,7 +79,7 @@ class WorkinFitApp extends ConsumerWidget {
         loading: () => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
-        error: (_, __) => const AuthenticationView(),
+        error: (_, __) => const WelcomePage(),
       ),
     );
   }

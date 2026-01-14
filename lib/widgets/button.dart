@@ -3,9 +3,9 @@ import 'package:workin_fit/core/theme/colors.dart';
 
 class AppButton extends StatelessWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const AppButton({required this.label, required this.onPressed, super.key});
+  const AppButton({required this.label, this.onPressed, super.key});
   
   @override
   Widget build(BuildContext context) {

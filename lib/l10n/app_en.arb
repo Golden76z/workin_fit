@@ -55,5 +55,117 @@
   "welcome_page_register_button": "Register",
   "@welcome_page_register_button": {
     "description": "The register button on the welcome page"
-  }
+  },
+  "auth_register_username_hint": "Choose a username",
+  "auth_register_email_hint": "Enter your email",
+  "auth_register_password_hint": "Create a strong password",
+  "auth_register_confirm_password_hint": "Confirm your password",
+  "auth_register_validation_username_required": "Please enter a username",
+  "auth_register_validation_username_min": "Username must be at least {minLength} characters",
+  "@auth_register_validation_username_min": {
+    "placeholders": {
+      "minLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_username_max": "Username must be at most {maxLength} characters",
+  "@auth_register_validation_username_max": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_email_required": "Please enter your email",
+  "auth_register_validation_email_invalid": "Please enter a valid email",
+  "auth_register_validation_password_required": "Please enter a password",
+  "auth_register_validation_password_min": "Password must be at least {minLength} characters",
+  "@auth_register_validation_password_min": {
+    "placeholders": {
+      "minLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_password_uppercase": "Must contain an uppercase letter",
+  "auth_register_validation_password_number": "Must contain a number",
+  "auth_register_validation_password_match": "Passwords do not match",
+  "auth_register_dialog_verify_title": "Verify Your Email",
+  "auth_register_dialog_verify_content": "A verification email has been sent to your inbox. Please verify your email address before logging in.",
+  "auth_register_dialog_verify_button": "Got it",
+  "auth_register_terms_text": "By creating an account, you agree to our\nTerms of Service and Privacy Policy",
+  "auth_login_label": "Login",
+  "auth_login_email_label": "Email",
+  "auth_login_email_hint": "Enter your email",
+  "auth_login_password_label": "Password",
+  "auth_login_password_hint": "Enter your password",
+  "auth_login_forgot_password": "Forgot Password?",
+  "auth_login_validation_email_required": "Please enter your email",
+  "auth_login_validation_email_invalid": "Please enter a valid email",
+  "auth_login_validation_password_required": "Please enter your password",
+  "auth_login_or_text": "OR",
+  "auth_login_social_google": "Continue with Google",
+  "auth_login_social_apple": "Continue with Apple",
+  "auth_login_forgot_dialog_title": "Reset Password",
+  "auth_login_forgot_dialog_content": "Send a password reset email to {email}?",
+  "@auth_login_forgot_dialog_content": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "auth_login_forgot_dialog_cancel": "Cancel",
+  "auth_login_forgot_dialog_send": "Send",
+  "auth_login_forgot_dialog_email_required": "Please enter your email address first",
+  "auth_login_forgot_dialog_success": "Password reset email sent!",
+  "auth_tab_register": "Register",
+  "auth_tab_login": "Login",
+  "email_verification_title": "Verify Your Email",
+  "email_verification_sent_to": "We've sent a verification email to:",
+  "email_verification_instructions": "Please check your inbox and click the verification link to activate your account.",
+  "email_verification_button_checking": "Checking...",
+  "email_verification_button_verified": "I've Verified My Email",
+  "email_verification_resend": "Resend Verification Email",
+  "email_verification_sign_out": "Sign Out",
+  "email_verification_success": "Email verified successfully!",
+  "email_verification_not_verified": "Email not verified yet. Please check your inbox.",
+  "email_verification_resend_title": "Verification Email Sent",
+  "email_verification_resend_content": "A new verification email has been sent to {email}. Please check your inbox.",
+  "@email_verification_resend_content": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "email_verification_resend_button": "OK",
+  "email_verification_error_signout": "Error signing out: {error}",
+  "@email_verification_error_signout": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "error_auth_user_not_found": "No user found with this email.",
+  "error_auth_wrong_password": "Wrong password. Please try again.",
+  "error_auth_email_already_in_use": "An account already exists with this email.",
+  "error_auth_invalid_email": "Invalid email address.",
+  "error_auth_weak_password": "Password is too weak. Use at least 8 characters.",
+  "error_auth_user_disabled": "This account has been disabled.",
+  "error_auth_too_many_requests": "Too many attempts. Please try again later.",
+  "error_auth_operation_not_allowed": "This sign-in method is not enabled.",
+  "error_auth_invalid_credential": "Invalid credentials. Please try again.",
+  "error_auth_account_exists_different": "An account already exists with this email using a different sign-in method.",
+  "error_auth_cancelled": "Sign-in was cancelled.",
+  "error_auth_network_error": "Network error. Please check your connection.",
+  "error_auth_generic": "Authentication error occurred.",
+  "error_auth_google_signin_failed": "Google Sign-In failed. Please try again.",
+  "error_auth_google_network": "Network error. Please check your connection.",
+  "error_auth_google_cancelled": "Sign-in was cancelled.",
+  "error_auth_google_in_progress": "Sign-in is already in progress.",
+  "error_auth_google_developer": "Developer error. Please configure Google Sign-In properly.",
+  "error_auth_email_not_verified": "Email not verified. Please check your inbox."
 }
