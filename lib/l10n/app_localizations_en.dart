@@ -253,6 +253,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you have any questions about this Privacy Policy, please contact us.';
 
   @override
+  String get auth_page_login_description =>
+      'Welcome back! Sign in to continue your fitness journey.';
+
+  @override
+  String get auth_page_login_button => 'Login';
+
+  @override
   String get auth_login_label => 'Login';
 
   @override

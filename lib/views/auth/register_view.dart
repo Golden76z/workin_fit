@@ -282,7 +282,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           const TextSpan(text: 'By creating an account, you agree to our\n'),
           TextSpan(
             text: localizations.terms_of_service_title,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.accent,
               fontSize: 12,
               decoration: TextDecoration.underline,
@@ -300,7 +300,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           const TextSpan(text: ' and '),
           TextSpan(
             text: localizations.privacy_policy_title,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.accent,
               fontSize: 12,
               decoration: TextDecoration.underline,

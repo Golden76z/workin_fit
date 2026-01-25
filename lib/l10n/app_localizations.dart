@@ -506,6 +506,18 @@ abstract class AppLocalizations {
   /// **'If you have any questions about this Privacy Policy, please contact us.'**
   String get privacy_policy_contact;
 
+  /// Little message under the title on login page
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back! Sign in to continue your fitness journey.'**
+  String get auth_page_login_description;
+
+  /// The text of the button to send the login form
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get auth_page_login_button;
+
   /// No description provided for @auth_login_label.
   ///
   /// In en, this message translates to:
