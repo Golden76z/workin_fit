@@ -85,6 +85,7 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
       home: authState.when(
         data: (user) {
           if (user == null) {
+            // Show WelcomePage, but navigation from logout will override this
             return const WelcomePage();
           }
           // Check if email is verified

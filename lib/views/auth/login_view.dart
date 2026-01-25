@@ -4,6 +4,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
 
@@ -40,7 +41,18 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
       if (!mounted) return;
 
-      // Navigation will be handled by auth state listener in main.dart
+      // Check if email is verified, if not, navigation will be handled by auth state listener
+      final user = ref.read(currentUserProvider);
+      if (user?.emailVerified ?? false) {
+        // Navigate to home page
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+          (route) => false,
+        );
+      }
+      // If not verified, the auth state listener will redirect to email verification
     } catch (e) {
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
