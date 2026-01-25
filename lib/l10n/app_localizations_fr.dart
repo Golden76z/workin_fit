@@ -123,6 +123,138 @@ class AppLocalizationsFr extends AppLocalizations {
       'En créant un compte, vous acceptez nos\nConditions d\'utilisation et Politique de confidentialité';
 
   @override
+  String get terms_of_service_title => 'Terms of Service';
+
+  @override
+  String terms_of_service_last_updated(String date) {
+    return 'Last Updated: $date';
+  }
+
+  @override
+  String get terms_of_service_intro =>
+      'Welcome to Workin Fit. By accessing or using our app, you agree to be bound by these Terms of Service.';
+
+  @override
+  String get terms_of_service_section_1_title => '1. Acceptance of Terms';
+
+  @override
+  String get terms_of_service_section_1_content =>
+      'By creating an account and using Workin Fit, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy.';
+
+  @override
+  String get terms_of_service_section_2_title => '2. Use of Service';
+
+  @override
+  String get terms_of_service_section_2_content =>
+      'You agree to use Workin Fit only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the confidentiality of your account credentials.';
+
+  @override
+  String get terms_of_service_section_3_title => '3. User Accounts';
+
+  @override
+  String get terms_of_service_section_3_content =>
+      'You are responsible for all activities that occur under your account. You must provide accurate and complete information when creating an account and keep your account information updated.';
+
+  @override
+  String get terms_of_service_section_4_title => '4. Health and Safety';
+
+  @override
+  String get terms_of_service_section_4_content =>
+      'Workin Fit provides fitness information and workout programs for informational purposes only. Consult with a healthcare professional before beginning any exercise program. You assume all risks associated with your use of the app.';
+
+  @override
+  String get terms_of_service_section_5_title => '5. Intellectual Property';
+
+  @override
+  String get terms_of_service_section_5_content =>
+      'All content, features, and functionality of Workin Fit are owned by us and are protected by copyright, trademark, and other intellectual property laws.';
+
+  @override
+  String get terms_of_service_section_6_title => '6. Limitation of Liability';
+
+  @override
+  String get terms_of_service_section_6_content =>
+      'Workin Fit shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the app.';
+
+  @override
+  String get terms_of_service_section_7_title => '7. Changes to Terms';
+
+  @override
+  String get terms_of_service_section_7_content =>
+      'We reserve the right to modify these Terms of Service at any time. Your continued use of the app after any changes constitutes acceptance of the new terms.';
+
+  @override
+  String get terms_of_service_contact =>
+      'If you have any questions about these Terms, please contact us.';
+
+  @override
+  String get privacy_policy_title => 'Privacy Policy';
+
+  @override
+  String privacy_policy_last_updated(String date) {
+    return 'Last Updated: $date';
+  }
+
+  @override
+  String get privacy_policy_intro =>
+      'At Workin Fit, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.';
+
+  @override
+  String get privacy_policy_section_1_title => '1. Information We Collect';
+
+  @override
+  String get privacy_policy_section_1_content =>
+      'We collect information that you provide directly to us, including your name, email address, username, and profile information. We also collect workout data, exercise history, and fitness goals that you input into the app.';
+
+  @override
+  String get privacy_policy_section_2_title => '2. How We Use Your Information';
+
+  @override
+  String get privacy_policy_section_2_content =>
+      'We use the information we collect to provide, maintain, and improve our services, personalize your experience, track your fitness progress, and communicate with you about your account and our services.';
+
+  @override
+  String get privacy_policy_section_3_title =>
+      '3. Information Sharing and Disclosure';
+
+  @override
+  String get privacy_policy_section_3_content =>
+      'We do not sell your personal information. We may share your information only with your consent, to comply with legal obligations, or to protect our rights and the safety of our users.';
+
+  @override
+  String get privacy_policy_section_4_title => '4. Data Security';
+
+  @override
+  String get privacy_policy_section_4_content =>
+      'We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.';
+
+  @override
+  String get privacy_policy_section_5_title => '5. Your Rights and Choices';
+
+  @override
+  String get privacy_policy_section_5_content =>
+      'You have the right to access, update, or delete your personal information at any time through your account settings. You can also opt out of certain data collection practices.';
+
+  @override
+  String get privacy_policy_section_6_title => '6. Children\'s Privacy';
+
+  @override
+  String get privacy_policy_section_6_content =>
+      'Our service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child, please contact us immediately.';
+
+  @override
+  String get privacy_policy_section_7_title =>
+      '7. Changes to This Privacy Policy';
+
+  @override
+  String get privacy_policy_section_7_content =>
+      'We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.';
+
+  @override
+  String get privacy_policy_contact =>
+      'If you have any questions about this Privacy Policy, please contact us.';
+
+  @override
   String get auth_login_label => 'Connexion';
 
   @override

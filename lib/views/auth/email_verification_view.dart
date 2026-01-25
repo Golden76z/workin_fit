@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
 import 'package:workin_fit/widgets/button.dart';
 
@@ -32,7 +33,7 @@ class _EmailVerificationViewState
 
       final user = ref.read(currentUserProvider);
       if (user?.emailVerified ?? false) {
-        // Email is verified, navigation will be handled by auth state listener
+        // Email is verified, navigate to home
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -44,6 +45,17 @@ class _EmailVerificationViewState
               ),
             ),
           );
+          // Navigate to home page after a short delay to show success message
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => const HomePage(),
+                ),
+                (route) => false,
+              );
+            }
+          });
         }
       } else {
         if (mounted) {
@@ -121,34 +133,51 @@ class _EmailVerificationViewState
     }
   }
 
-  Future<void> _signOut() async {
-    try {
-      await ref.read(authActionsProvider).signOut();
-    } catch (e) {
-      if (mounted) {
-        final errorMessage = e is AuthException
-            ? e.message
-            : e.toString().replaceAll('Exception: ', '');
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error signing out: $errorMessage'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            duration: const Duration(seconds: 4),
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColors.textPrimary,
+          ),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              // If no route to pop, sign out and go to welcome page
+              ref.read(authActionsProvider).signOut();
+            }
+          },
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: _isChecking
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.accent,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.refresh,
+                      color: AppColors.accent,
+                    ),
+              onPressed: _isChecking ? null : () => _checkVerification(),
+              tooltip: 'Check verification status',
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -162,7 +191,7 @@ class _EmailVerificationViewState
                   size: 80,
                   color: AppColors.accent,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 const Text(
                   'Verify Your Email',
                   textAlign: TextAlign.center,
@@ -170,6 +199,7 @@ class _EmailVerificationViewState
                     color: AppColors.textPrimary,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'AppFontMedium',
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -192,7 +222,7 @@ class _EmailVerificationViewState
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Text(
                   'Please check your inbox and click the verification link to activate your account.',
                   textAlign: TextAlign.center,
@@ -201,7 +231,7 @@ class _EmailVerificationViewState
                     fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 48),
                 AppButton(
                   label: _isChecking ? 'Checking...' : 'I\'ve Verified My Email',
                   onPressed: _isChecking ? null : () => _checkVerification(),
@@ -226,17 +256,6 @@ class _EmailVerificationViewState
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                ),
-                const SizedBox(height: 32),
-                TextButton(
-                  onPressed: _signOut,
-                  child: const Text(
-                    'Sign Out',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 14,
-                    ),
-                  ),
                 ),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
@@ -5,9 +6,11 @@ import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/views/auth/email_verification_view.dart';
+import 'package:workin_fit/views/legal/privacy_policy_page.dart';
+import 'package:workin_fit/views/legal/terms_of_service_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
-import 'package:workin_fit/widgets/app_dialog.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -47,18 +50,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
       if (!mounted) return;
 
-      AppDialog.show(
-        context: context,
-        barrierDismissible: false,
-        title: 'Verify Your Email',
-        content:
-            'A verification email has been sent to your inbox. Please verify your email address before logging in.',
-        icon: Icons.email_outlined,
-        primaryButtonLabel: 'Got it',
-        onPrimaryButtonPressed: () {
-          Navigator.pop(context);
-          Navigator.pop(context);
-        },
+      // Navigate to email verification screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const EmailVerificationView(),
+        ),
       );
     } catch (e) {
       if (mounted) {
@@ -69,8 +65,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: AppColors.error,
+            content: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            backgroundColor: AppColors.error.withValues(alpha: 0.9),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -104,12 +106,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontFamily: 'AppFontMedium',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   
                   // Username field
                   AuthTextField(
@@ -131,7 +133,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Email field
                   AuthTextField(
@@ -150,7 +152,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Password field
                   AuthTextField(
@@ -176,7 +178,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Confirm password field
                   AuthTextField(
@@ -193,7 +195,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // Register button
                   _isLoading
@@ -206,22 +208,149 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           label: AppLocalizations.of(context)!.auth_page_register_button,
                           onPressed: _register,
                         ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
                   // Terms and privacy
-                  Text(
-                    'By creating an account, you agree to our\nTerms of Service and Privacy Policy',
-                    style: TextStyle(
-                      color: AppColors.textPrimary.withValues(alpha: 0.6),
-                      fontSize: 12,
-                    ),
-                    textAlign: TextAlign.center,
+                  _buildTermsText(context),
+                  const SizedBox(height: 16),
+
+                  // Social login divider
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          thickness: 1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          AppLocalizations.of(context)!.auth_page_register_or_text.toUpperCase(),
+                          style: TextStyle(
+                            color: AppColors.textPrimary.withValues(alpha: 0.5),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Social login buttons
+                  _buildSocialButton(
+                    label: 'Continue with Google',
+                    icon: Icons.g_mobiledata,
+                    onPressed: () {
+                      // Add Google sign-in logic
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSocialButton(
+                    label: 'Continue with Apple',
+                    icon: Icons.apple,
+                    onPressed: () {
+                      // Add Apple sign-in logic
+                    },
                   ),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTermsText(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        style: TextStyle(
+          color: AppColors.textPrimary.withValues(alpha: 0.6),
+          fontSize: 12,
+        ),
+        children: [
+          const TextSpan(text: 'By creating an account, you agree to our\n'),
+          TextSpan(
+            text: localizations.terms_of_service_title,
+            style: TextStyle(
+              color: AppColors.accent,
+              fontSize: 12,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TermsOfServicePage(),
+                  ),
+                );
+              },
+          ),
+          const TextSpan(text: ' and '),
+          TextSpan(
+            text: localizations.privacy_policy_title,
+            style: TextStyle(
+              color: AppColors.accent,
+              fontSize: 12,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyPage(),
+                  ),
+                );
+              },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.textPrimary,
+        side: BorderSide(
+          color: AppColors.textPrimary.withValues(alpha: 0.2),
+          width: 1.5,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 24, color: AppColors.textPrimary),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

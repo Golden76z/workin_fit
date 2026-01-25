@@ -95,6 +95,64 @@
   "auth_register_dialog_verify_content": "A verification email has been sent to your inbox. Please verify your email address before logging in.",
   "auth_register_dialog_verify_button": "Got it",
   "auth_register_terms_text": "By creating an account, you agree to our\nTerms of Service and Privacy Policy",
+  "terms_of_service_title": "Terms of Service",
+  "@terms_of_service_title": {
+    "description": "Title of the Terms of Service page"
+  },
+  "terms_of_service_last_updated": "Last Updated: {date}",
+  "@terms_of_service_last_updated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Last updated date for terms of service"
+  },
+  "terms_of_service_intro": "Welcome to Workin Fit. By accessing or using our app, you agree to be bound by these Terms of Service.",
+  "terms_of_service_section_1_title": "1. Acceptance of Terms",
+  "terms_of_service_section_1_content": "By creating an account and using Workin Fit, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy.",
+  "terms_of_service_section_2_title": "2. Use of Service",
+  "terms_of_service_section_2_content": "You agree to use Workin Fit only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the confidentiality of your account credentials.",
+  "terms_of_service_section_3_title": "3. User Accounts",
+  "terms_of_service_section_3_content": "You are responsible for all activities that occur under your account. You must provide accurate and complete information when creating an account and keep your account information updated.",
+  "terms_of_service_section_4_title": "4. Health and Safety",
+  "terms_of_service_section_4_content": "Workin Fit provides fitness information and workout programs for informational purposes only. Consult with a healthcare professional before beginning any exercise program. You assume all risks associated with your use of the app.",
+  "terms_of_service_section_5_title": "5. Intellectual Property",
+  "terms_of_service_section_5_content": "All content, features, and functionality of Workin Fit are owned by us and are protected by copyright, trademark, and other intellectual property laws.",
+  "terms_of_service_section_6_title": "6. Limitation of Liability",
+  "terms_of_service_section_6_content": "Workin Fit shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the app.",
+  "terms_of_service_section_7_title": "7. Changes to Terms",
+  "terms_of_service_section_7_content": "We reserve the right to modify these Terms of Service at any time. Your continued use of the app after any changes constitutes acceptance of the new terms.",
+  "terms_of_service_contact": "If you have any questions about these Terms, please contact us.",
+  "privacy_policy_title": "Privacy Policy",
+  "@privacy_policy_title": {
+    "description": "Title of the Privacy Policy page"
+  },
+  "privacy_policy_last_updated": "Last Updated: {date}",
+  "@privacy_policy_last_updated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Last updated date for privacy policy"
+  },
+  "privacy_policy_intro": "At Workin Fit, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.",
+  "privacy_policy_section_1_title": "1. Information We Collect",
+  "privacy_policy_section_1_content": "We collect information that you provide directly to us, including your name, email address, username, and profile information. We also collect workout data, exercise history, and fitness goals that you input into the app.",
+  "privacy_policy_section_2_title": "2. How We Use Your Information",
+  "privacy_policy_section_2_content": "We use the information we collect to provide, maintain, and improve our services, personalize your experience, track your fitness progress, and communicate with you about your account and our services.",
+  "privacy_policy_section_3_title": "3. Information Sharing and Disclosure",
+  "privacy_policy_section_3_content": "We do not sell your personal information. We may share your information only with your consent, to comply with legal obligations, or to protect our rights and the safety of our users.",
+  "privacy_policy_section_4_title": "4. Data Security",
+  "privacy_policy_section_4_content": "We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.",
+  "privacy_policy_section_5_title": "5. Your Rights and Choices",
+  "privacy_policy_section_5_content": "You have the right to access, update, or delete your personal information at any time through your account settings. You can also opt out of certain data collection practices.",
+  "privacy_policy_section_6_title": "6. Children's Privacy",
+  "privacy_policy_section_6_content": "Our service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child, please contact us immediately.",
+  "privacy_policy_section_7_title": "7. Changes to This Privacy Policy",
+  "privacy_policy_section_7_content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.",
+  "privacy_policy_contact": "If you have any questions about this Privacy Policy, please contact us.",
   "auth_login_label": "Login",
   "auth_login_email_label": "Email",
   "auth_login_email_hint": "Enter your email",

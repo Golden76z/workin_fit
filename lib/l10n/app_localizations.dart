@@ -290,6 +290,222 @@ abstract class AppLocalizations {
   /// **'By creating an account, you agree to our\nTerms of Service and Privacy Policy'**
   String get auth_register_terms_text;
 
+  /// Title of the Terms of Service page
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get terms_of_service_title;
+
+  /// Last updated date for terms of service
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated: {date}'**
+  String terms_of_service_last_updated(String date);
+
+  /// No description provided for @terms_of_service_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Workin Fit. By accessing or using our app, you agree to be bound by these Terms of Service.'**
+  String get terms_of_service_intro;
+
+  /// No description provided for @terms_of_service_section_1_title.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Acceptance of Terms'**
+  String get terms_of_service_section_1_title;
+
+  /// No description provided for @terms_of_service_section_1_content.
+  ///
+  /// In en, this message translates to:
+  /// **'By creating an account and using Workin Fit, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy.'**
+  String get terms_of_service_section_1_content;
+
+  /// No description provided for @terms_of_service_section_2_title.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Use of Service'**
+  String get terms_of_service_section_2_title;
+
+  /// No description provided for @terms_of_service_section_2_content.
+  ///
+  /// In en, this message translates to:
+  /// **'You agree to use Workin Fit only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the confidentiality of your account credentials.'**
+  String get terms_of_service_section_2_content;
+
+  /// No description provided for @terms_of_service_section_3_title.
+  ///
+  /// In en, this message translates to:
+  /// **'3. User Accounts'**
+  String get terms_of_service_section_3_title;
+
+  /// No description provided for @terms_of_service_section_3_content.
+  ///
+  /// In en, this message translates to:
+  /// **'You are responsible for all activities that occur under your account. You must provide accurate and complete information when creating an account and keep your account information updated.'**
+  String get terms_of_service_section_3_content;
+
+  /// No description provided for @terms_of_service_section_4_title.
+  ///
+  /// In en, this message translates to:
+  /// **'4. Health and Safety'**
+  String get terms_of_service_section_4_title;
+
+  /// No description provided for @terms_of_service_section_4_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Workin Fit provides fitness information and workout programs for informational purposes only. Consult with a healthcare professional before beginning any exercise program. You assume all risks associated with your use of the app.'**
+  String get terms_of_service_section_4_content;
+
+  /// No description provided for @terms_of_service_section_5_title.
+  ///
+  /// In en, this message translates to:
+  /// **'5. Intellectual Property'**
+  String get terms_of_service_section_5_title;
+
+  /// No description provided for @terms_of_service_section_5_content.
+  ///
+  /// In en, this message translates to:
+  /// **'All content, features, and functionality of Workin Fit are owned by us and are protected by copyright, trademark, and other intellectual property laws.'**
+  String get terms_of_service_section_5_content;
+
+  /// No description provided for @terms_of_service_section_6_title.
+  ///
+  /// In en, this message translates to:
+  /// **'6. Limitation of Liability'**
+  String get terms_of_service_section_6_title;
+
+  /// No description provided for @terms_of_service_section_6_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Workin Fit shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the app.'**
+  String get terms_of_service_section_6_content;
+
+  /// No description provided for @terms_of_service_section_7_title.
+  ///
+  /// In en, this message translates to:
+  /// **'7. Changes to Terms'**
+  String get terms_of_service_section_7_title;
+
+  /// No description provided for @terms_of_service_section_7_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We reserve the right to modify these Terms of Service at any time. Your continued use of the app after any changes constitutes acceptance of the new terms.'**
+  String get terms_of_service_section_7_content;
+
+  /// No description provided for @terms_of_service_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have any questions about these Terms, please contact us.'**
+  String get terms_of_service_contact;
+
+  /// Title of the Privacy Policy page
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacy_policy_title;
+
+  /// Last updated date for privacy policy
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated: {date}'**
+  String privacy_policy_last_updated(String date);
+
+  /// No description provided for @privacy_policy_intro.
+  ///
+  /// In en, this message translates to:
+  /// **'At Workin Fit, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.'**
+  String get privacy_policy_intro;
+
+  /// No description provided for @privacy_policy_section_1_title.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Information We Collect'**
+  String get privacy_policy_section_1_title;
+
+  /// No description provided for @privacy_policy_section_1_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We collect information that you provide directly to us, including your name, email address, username, and profile information. We also collect workout data, exercise history, and fitness goals that you input into the app.'**
+  String get privacy_policy_section_1_content;
+
+  /// No description provided for @privacy_policy_section_2_title.
+  ///
+  /// In en, this message translates to:
+  /// **'2. How We Use Your Information'**
+  String get privacy_policy_section_2_title;
+
+  /// No description provided for @privacy_policy_section_2_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We use the information we collect to provide, maintain, and improve our services, personalize your experience, track your fitness progress, and communicate with you about your account and our services.'**
+  String get privacy_policy_section_2_content;
+
+  /// No description provided for @privacy_policy_section_3_title.
+  ///
+  /// In en, this message translates to:
+  /// **'3. Information Sharing and Disclosure'**
+  String get privacy_policy_section_3_title;
+
+  /// No description provided for @privacy_policy_section_3_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We do not sell your personal information. We may share your information only with your consent, to comply with legal obligations, or to protect our rights and the safety of our users.'**
+  String get privacy_policy_section_3_content;
+
+  /// No description provided for @privacy_policy_section_4_title.
+  ///
+  /// In en, this message translates to:
+  /// **'4. Data Security'**
+  String get privacy_policy_section_4_title;
+
+  /// No description provided for @privacy_policy_section_4_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.'**
+  String get privacy_policy_section_4_content;
+
+  /// No description provided for @privacy_policy_section_5_title.
+  ///
+  /// In en, this message translates to:
+  /// **'5. Your Rights and Choices'**
+  String get privacy_policy_section_5_title;
+
+  /// No description provided for @privacy_policy_section_5_content.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the right to access, update, or delete your personal information at any time through your account settings. You can also opt out of certain data collection practices.'**
+  String get privacy_policy_section_5_content;
+
+  /// No description provided for @privacy_policy_section_6_title.
+  ///
+  /// In en, this message translates to:
+  /// **'6. Children\'s Privacy'**
+  String get privacy_policy_section_6_title;
+
+  /// No description provided for @privacy_policy_section_6_content.
+  ///
+  /// In en, this message translates to:
+  /// **'Our service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child, please contact us immediately.'**
+  String get privacy_policy_section_6_content;
+
+  /// No description provided for @privacy_policy_section_7_title.
+  ///
+  /// In en, this message translates to:
+  /// **'7. Changes to This Privacy Policy'**
+  String get privacy_policy_section_7_title;
+
+  /// No description provided for @privacy_policy_section_7_content.
+  ///
+  /// In en, this message translates to:
+  /// **'We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.'**
+  String get privacy_policy_section_7_content;
+
+  /// No description provided for @privacy_policy_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have any questions about this Privacy Policy, please contact us.'**
+  String get privacy_policy_contact;
+
   /// No description provided for @auth_login_label.
   ///
   /// In en, this message translates to:

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/auth/login_view.dart';
 import 'package:workin_fit/views/auth/register_view.dart';
-// import 'package:workin_fit/views/auth/old_register_view.dart';
-// import 'package:workin_fit/views/auth/register_view.dart';
 
 class AuthenticationView extends StatefulWidget {
   const AuthenticationView({super.key});
@@ -31,7 +29,6 @@ class _AuthenticationViewState extends State<AuthenticationView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // final colors = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(

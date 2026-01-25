@@ -11,7 +11,9 @@ import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/locale_provider.dart';
+import 'package:workin_fit/services/deep_link_service.dart';
 import 'package:workin_fit/views/auth/email_verification_view.dart';
+import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/views/welcome/welcome_page.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
@@ -42,11 +44,26 @@ void main() async {
   );
 }
 
-class WorkinFitApp extends ConsumerWidget {
+class WorkinFitApp extends ConsumerStatefulWidget {
   const WorkinFitApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WorkinFitApp> createState() => _WorkinFitAppState();
+}
+
+class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize deep link service after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final deepLinkService = ref.read(deepLinkServiceProvider);
+      deepLinkService.initialize(ref);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Watch auth state to determine initial route
     final authState = ref.watch(authStateProvider);
     final locale = ref.watch(localeProvider);
@@ -74,7 +91,7 @@ class WorkinFitApp extends ConsumerWidget {
           if (!user.emailVerified) {
             return const EmailVerificationView();
           }
-          return const WelcomePage();
+          return const HomePage();
         },
         loading: () => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
