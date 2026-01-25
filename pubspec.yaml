@@ -17,7 +17,7 @@ dependencies:
   firebase_storage: ^13.0.4
   
   # Social Auth
-  google_sign_in: ^7.2.0
+  google_sign_in: ^6.2.0
   sign_in_with_apple: ^7.0.1
   
   # State Management (Riverpod)
@@ -56,6 +56,10 @@ dependencies:
   image_picker: ^1.0.5
   permission_handler: ^12.0.1
   wakelock_plus: ^1.4.0
+  app_links: ^6.3.1
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:
@@ -78,17 +82,28 @@ dev_dependencies:
   flutter_native_splash: ^2.3.7
 
 flutter:
+  generate: true
+  
   uses-material-design: true
   
   assets:
-    - assets/images/
-    - assets/icons/
-    - assets/animations/
-    - assets/l10n/
+    # - assets/images/
+    # - assets/icons/
+    # - assets/animations/
+    - lib/l10n/
   fonts:
     - family: AppFont
       fonts:
         - asset: assets/font/Skaters.ttf
+    - family: AppFontBold
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Bold_PERSONAL_USE.otf
+    - family: AppFontMedium
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Medium_PERSONAL_USE.otf
+    - family: AppFontNormal
+      fonts:
+        - asset: assets/font/MADE_TOMMY_Regular_PERSONAL_USE.otf
 
 flutter_launcher_icons:
   android: true

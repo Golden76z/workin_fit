@@ -1,0 +1,128 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/widgets/button.dart';
+
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider);
+    final userEmail = user?.email ?? 'User';
+
+    return Scaffold(
+      backgroundColor: AppColors.surfaceVariant,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        title: const Text(
+          'Workin Fit',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontFamily: 'AppFont',
+            fontSize: 28,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 32),
+              // Welcome message
+              Text(
+                'Welcome!',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                userEmail,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 48),
+              
+              // Placeholder content
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.fitness_center,
+                        size: 80,
+                        color: AppColors.accent.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Home Page',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Your fitness journey starts here',
+                        style: TextStyle(
+                          color: AppColors.textTertiary,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Logout button
+              AppButton(
+                label: 'Log Out',
+                onPressed: () async {
+                  try {
+                    await ref.read(authActionsProvider).signOut();
+                    // Navigate to login view
+                    if (context.mounted) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const AuthenticationView(),
+                        ),
+                        (route) => false,
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error signing out: ${e.toString()}'),
+                          backgroundColor: AppColors.error,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      );
+                    }
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

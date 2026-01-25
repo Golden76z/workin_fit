@@ -1,10 +1,51 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // ===== USER PROFILE =====
+  
+  /// Create or update user profile
+  Future<void> createOrUpdateUserProfile({
+    required String userId,
+    required String username,
+    required String email,
+  }) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .set({
+        'username': username,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print('Error creating/updating user profile: $e');
+      rethrow;
+    }
+  }
+
+  /// Get user profile
+  Future<Map<String, dynamic>?> getUserProfile(String userId) async {
+    try {
+      final doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .get();
+      
+      if (!doc.exists) return null;
+      return doc.data();
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      return null;
+    }
+  }
 
   // ===== EXERCISES (READ-ONLY FOR USERS) =====
   

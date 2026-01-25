@@ -69,4 +69,48 @@ class Program extends HiveObject {
   
   /// Total duration in days
   int get totalDays => durationWeeks * 7;
+
+  // Firestore-specific serialization
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'sessionIds': sessionIds,
+      'durationWeeks': durationWeeks,
+      'difficulty': difficulty.name,
+      'goals': goals,
+      'daysPerWeek': daysPerWeek,
+      'imageUrl': imageUrl,
+      'isCustom': isCustom,
+      'userId': userId,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  factory Program.fromFirestore(Map<String, dynamic> data) {
+    return Program(
+      id: data['id'] as String,
+      name: data['name'] as String,
+      description: data['description'] as String,
+      sessionIds: (data['sessionIds'] as List<dynamic>)
+          .map((e) => e.toString())
+          .toList(),
+      durationWeeks: data['durationWeeks'] as int,
+      difficulty: DifficultyLevel.values.firstWhere(
+        (d) => d.name == (data['difficulty'] as String),
+        orElse: () => DifficultyLevel.beginner,
+      ),
+      goals: (data['goals'] as List<dynamic>)
+          .map((e) => e.toString())
+          .toList(),
+      daysPerWeek: data['daysPerWeek'] as int,
+      imageUrl: data['imageUrl'] as String?,
+      isCustom: data['isCustom'] as bool? ?? false,
+      userId: data['userId'] as String?,
+      createdAt: data['createdAt'] != null
+          ? DateTime.parse(data['createdAt'] as String)
+          : null,
+    );
+  }
 }

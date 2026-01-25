@@ -1,0 +1,229 @@
+{
+  "@@locale": "en",
+  "auth_page_register_button": "Register",
+  "@auth_page_register_button": {
+    "description": "The text of the button to send the form"
+  },
+  "auth_page_register_confirm_password_input": "Confirm password",
+  "@auth_page_register_confirm_password_input": {
+    "description": "Input hint for the confirmation of the password text input in the register page"
+  },
+  "auth_page_register_description": "Start your fitness journey with us!",
+  "@auth_page_register_description": {
+    "description": "Little message under the title"
+  },
+  "auth_page_register_email_input": "Email",
+  "@auth_page_register_email_input": {
+    "description": "Input hint for the email text input in the register page"
+  },
+  "auth_page_register_or_text": "or",
+  "@auth_page_register_or_text": {
+    "description": "The \"or\" text under the register button splitting the traditional register from the google/apple authentication"
+  },
+  "auth_page_register_password_input": "Password",
+  "@auth_page_register_password_input": {
+    "description": "Input input for the password text input in the register page"
+  },
+  "auth_page_register_title": "Create Account",
+  "@auth_page_register_title": {
+    "description": "Create account"
+  },
+  "auth_page_register_username_input": "Username",
+  "@auth_page_register_username_input": {
+    "description": "Input hint for the username text input in the register page"
+  },
+  "welcome_page_app_title": "Workin Fit",
+  "@welcome_page_app_title": {
+    "description": "The title app on the welcome page"
+  },
+  "welcome_page_choose_language": "Choose language",
+  "@welcome_page_choose_language": {
+    "description": "The choose language button on welcome page"
+  },
+  "welcome_page_language_confirmation_button": "Confirm",
+  "@welcome_page_language_confirmation_button": {
+    "description": "The confirmation button on the language selection page"
+  },
+  "welcome_page_language_english": "English",
+  "@welcome_page_language_english": {
+    "description": "The english on the language selection page"
+  },
+  "welcome_page_language_french": "French",
+  "@welcome_page_language_french": {
+    "description": "The french on the language selection page"
+  },
+  "welcome_page_register_button": "Register",
+  "@welcome_page_register_button": {
+    "description": "The register button on the welcome page"
+  },
+  "auth_register_username_hint": "Choose a username",
+  "auth_register_email_hint": "Enter your email",
+  "auth_register_password_hint": "Create a strong password",
+  "auth_register_confirm_password_hint": "Confirm your password",
+  "auth_register_validation_username_required": "Please enter a username",
+  "auth_register_validation_username_min": "Username must be at least {minLength} characters",
+  "@auth_register_validation_username_min": {
+    "placeholders": {
+      "minLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_username_max": "Username must be at most {maxLength} characters",
+  "@auth_register_validation_username_max": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_email_required": "Please enter your email",
+  "auth_register_validation_email_invalid": "Please enter a valid email",
+  "auth_register_validation_password_required": "Please enter a password",
+  "auth_register_validation_password_min": "Password must be at least {minLength} characters",
+  "@auth_register_validation_password_min": {
+    "placeholders": {
+      "minLength": {
+        "type": "int"
+      }
+    }
+  },
+  "auth_register_validation_password_uppercase": "Must contain an uppercase letter",
+  "auth_register_validation_password_number": "Must contain a number",
+  "auth_register_validation_password_match": "Passwords do not match",
+  "auth_register_dialog_verify_title": "Verify Your Email",
+  "auth_register_dialog_verify_content": "A verification email has been sent to your inbox. Please verify your email address before logging in.",
+  "auth_register_dialog_verify_button": "Got it",
+  "auth_register_terms_text": "By creating an account, you agree to our\nTerms of Service and Privacy Policy",
+  "terms_of_service_title": "Terms of Service",
+  "@terms_of_service_title": {
+    "description": "Title of the Terms of Service page"
+  },
+  "terms_of_service_last_updated": "Last Updated: {date}",
+  "@terms_of_service_last_updated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Last updated date for terms of service"
+  },
+  "terms_of_service_intro": "Welcome to Workin Fit. By accessing or using our app, you agree to be bound by these Terms of Service.",
+  "terms_of_service_section_1_title": "1. Acceptance of Terms",
+  "terms_of_service_section_1_content": "By creating an account and using Workin Fit, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy.",
+  "terms_of_service_section_2_title": "2. Use of Service",
+  "terms_of_service_section_2_content": "You agree to use Workin Fit only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the confidentiality of your account credentials.",
+  "terms_of_service_section_3_title": "3. User Accounts",
+  "terms_of_service_section_3_content": "You are responsible for all activities that occur under your account. You must provide accurate and complete information when creating an account and keep your account information updated.",
+  "terms_of_service_section_4_title": "4. Health and Safety",
+  "terms_of_service_section_4_content": "Workin Fit provides fitness information and workout programs for informational purposes only. Consult with a healthcare professional before beginning any exercise program. You assume all risks associated with your use of the app.",
+  "terms_of_service_section_5_title": "5. Intellectual Property",
+  "terms_of_service_section_5_content": "All content, features, and functionality of Workin Fit are owned by us and are protected by copyright, trademark, and other intellectual property laws.",
+  "terms_of_service_section_6_title": "6. Limitation of Liability",
+  "terms_of_service_section_6_content": "Workin Fit shall not be liable for any indirect, incidental, special, or consequential damages arising out of or in connection with your use of the app.",
+  "terms_of_service_section_7_title": "7. Changes to Terms",
+  "terms_of_service_section_7_content": "We reserve the right to modify these Terms of Service at any time. Your continued use of the app after any changes constitutes acceptance of the new terms.",
+  "terms_of_service_contact": "If you have any questions about these Terms, please contact us.",
+  "privacy_policy_title": "Privacy Policy",
+  "@privacy_policy_title": {
+    "description": "Title of the Privacy Policy page"
+  },
+  "privacy_policy_last_updated": "Last Updated: {date}",
+  "@privacy_policy_last_updated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    },
+    "description": "Last updated date for privacy policy"
+  },
+  "privacy_policy_intro": "At Workin Fit, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application.",
+  "privacy_policy_section_1_title": "1. Information We Collect",
+  "privacy_policy_section_1_content": "We collect information that you provide directly to us, including your name, email address, username, and profile information. We also collect workout data, exercise history, and fitness goals that you input into the app.",
+  "privacy_policy_section_2_title": "2. How We Use Your Information",
+  "privacy_policy_section_2_content": "We use the information we collect to provide, maintain, and improve our services, personalize your experience, track your fitness progress, and communicate with you about your account and our services.",
+  "privacy_policy_section_3_title": "3. Information Sharing and Disclosure",
+  "privacy_policy_section_3_content": "We do not sell your personal information. We may share your information only with your consent, to comply with legal obligations, or to protect our rights and the safety of our users.",
+  "privacy_policy_section_4_title": "4. Data Security",
+  "privacy_policy_section_4_content": "We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the internet is 100% secure.",
+  "privacy_policy_section_5_title": "5. Your Rights and Choices",
+  "privacy_policy_section_5_content": "You have the right to access, update, or delete your personal information at any time through your account settings. You can also opt out of certain data collection practices.",
+  "privacy_policy_section_6_title": "6. Children's Privacy",
+  "privacy_policy_section_6_content": "Our service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child, please contact us immediately.",
+  "privacy_policy_section_7_title": "7. Changes to This Privacy Policy",
+  "privacy_policy_section_7_content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.",
+  "privacy_policy_contact": "If you have any questions about this Privacy Policy, please contact us.",
+  "auth_login_label": "Login",
+  "auth_login_email_label": "Email",
+  "auth_login_email_hint": "Enter your email",
+  "auth_login_password_label": "Password",
+  "auth_login_password_hint": "Enter your password",
+  "auth_login_forgot_password": "Forgot Password?",
+  "auth_login_validation_email_required": "Please enter your email",
+  "auth_login_validation_email_invalid": "Please enter a valid email",
+  "auth_login_validation_password_required": "Please enter your password",
+  "auth_login_or_text": "OR",
+  "auth_login_social_google": "Continue with Google",
+  "auth_login_social_apple": "Continue with Apple",
+  "auth_login_forgot_dialog_title": "Reset Password",
+  "auth_login_forgot_dialog_content": "Send a password reset email to {email}?",
+  "@auth_login_forgot_dialog_content": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "auth_login_forgot_dialog_cancel": "Cancel",
+  "auth_login_forgot_dialog_send": "Send",
+  "auth_login_forgot_dialog_email_required": "Please enter your email address first",
+  "auth_login_forgot_dialog_success": "Password reset email sent!",
+  "auth_tab_register": "Register",
+  "auth_tab_login": "Login",
+  "email_verification_title": "Verify Your Email",
+  "email_verification_sent_to": "We've sent a verification email to:",
+  "email_verification_instructions": "Please check your inbox and click the verification link to activate your account.",
+  "email_verification_button_checking": "Checking...",
+  "email_verification_button_verified": "I've Verified My Email",
+  "email_verification_resend": "Resend Verification Email",
+  "email_verification_sign_out": "Sign Out",
+  "email_verification_success": "Email verified successfully!",
+  "email_verification_not_verified": "Email not verified yet. Please check your inbox.",
+  "email_verification_resend_title": "Verification Email Sent",
+  "email_verification_resend_content": "A new verification email has been sent to {email}. Please check your inbox.",
+  "@email_verification_resend_content": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "email_verification_resend_button": "OK",
+  "email_verification_error_signout": "Error signing out: {error}",
+  "@email_verification_error_signout": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "error_auth_user_not_found": "No user found with this email.",
+  "error_auth_wrong_password": "Wrong password. Please try again.",
+  "error_auth_email_already_in_use": "An account already exists with this email.",
+  "error_auth_invalid_email": "Invalid email address.",
+  "error_auth_weak_password": "Password is too weak. Use at least 8 characters.",
+  "error_auth_user_disabled": "This account has been disabled.",
+  "error_auth_too_many_requests": "Too many attempts. Please try again later.",
+  "error_auth_operation_not_allowed": "This sign-in method is not enabled.",
+  "error_auth_invalid_credential": "Invalid credentials. Please try again.",
+  "error_auth_account_exists_different": "An account already exists with this email using a different sign-in method.",
+  "error_auth_cancelled": "Sign-in was cancelled.",
+  "error_auth_network_error": "Network error. Please check your connection.",
+  "error_auth_generic": "Authentication error occurred.",
+  "error_auth_google_signin_failed": "Google Sign-In failed. Please try again.",
+  "error_auth_google_network": "Network error. Please check your connection.",
+  "error_auth_google_cancelled": "Sign-in was cancelled.",
+  "error_auth_google_in_progress": "Sign-in is already in progress.",
+  "error_auth_google_developer": "Developer error. Please configure Google Sign-In properly.",
+  "error_auth_email_not_verified": "Email not verified. Please check your inbox."
+}
