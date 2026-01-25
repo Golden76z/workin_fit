@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
-// import 'package:workin_fit/l10n/app_localizations.dart';
+import 'package:workin_fit/core/errors/auth_exception.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
 
@@ -39,17 +41,40 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
       if (!mounted) return;
 
-      // Navigation will be handled by your auth state listener
+      // Check if email is verified, if not, navigation will be handled by auth state listener
+      final user = ref.read(currentUserProvider);
+      if (user?.emailVerified ?? false) {
+        // Navigate to home page
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+          (route) => false,
+        );
+      }
+      // If not verified, the auth state listener will redirect to email verification
     } catch (e) {
       if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
+        final errorMessage = e is AuthException
+            ? e.message
+            : localizations.error_auth_generic;
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: AppColors.error,
+            content: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            backgroundColor: AppColors.error.withValues(alpha: 0.9),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -58,11 +83,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
     }
   }
 
-  void _forgotPassword() {
+  Future<void> _forgotPassword() async {
+    final localizations = AppLocalizations.of(context)!;
+    
     if (_emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Please enter your email address first'),
+          content: Text(localizations.auth_login_forgot_dialog_email_required),
           backgroundColor: AppColors.warning,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -73,6 +100,8 @@ class _LoginViewState extends ConsumerState<LoginView> {
       return;
     }
 
+    final email = _emailController.text.trim();
+    
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -80,13 +109,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.lock_reset, color: AppColors.accent, size: 28),
-            SizedBox(width: 12),
+            const Icon(Icons.lock_reset, color: AppColors.accent, size: 28),
+            const SizedBox(width: 12),
             Text(
-              'Reset Password',
-              style: TextStyle(
+              localizations.auth_login_forgot_dialog_title,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -95,7 +124,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           ],
         ),
         content: Text(
-          'Send a password reset email to ${_emailController.text.trim()}?',
+          localizations.auth_login_forgot_dialog_content(email),
           style: const TextStyle(
             color: AppColors.textSecondary,
             fontSize: 15,
@@ -104,29 +133,44 @@ class _LoginViewState extends ConsumerState<LoginView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppColors.textSecondary),
+            child: Text(
+              localizations.auth_login_forgot_dialog_cancel,
+              style: const TextStyle(color: AppColors.textSecondary),
             ),
           ),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              // Add your password reset logic here
-              // await ref.read(authActionsProvider).resetPassword(
-              //   email: _emailController.text.trim(),
-              // );
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Password reset email sent!'),
-                    backgroundColor: AppColors.success,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              try {
+                await ref.read(authActionsProvider).sendPasswordResetEmail(email);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(localizations.auth_login_forgot_dialog_success),
+                      backgroundColor: AppColors.success,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  final errorMessage = e is AuthException
+                      ? e.message
+                      : localizations.error_auth_generic;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(errorMessage),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                }
               }
             },
             style: TextButton.styleFrom(
@@ -137,9 +181,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              'Send',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              localizations.auth_login_forgot_dialog_send,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -149,8 +193,10 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    
     return Scaffold(
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: AppColors.surfaceVariant,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -160,38 +206,50 @@ class _LoginViewState extends ConsumerState<LoginView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      localizations.auth_page_login_description,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontFamily: 'AppFontMedium',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
 
                   // Email field
                   AuthTextField(
                     controller: _emailController,
-                    label: 'Email',
-                    hint: 'Enter your email',
+                    label: localizations.auth_login_email_label,
+                    hint: localizations.auth_login_email_hint,
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return localizations.auth_login_validation_email_required;
                       }
                       if (!value.contains('@') || !value.contains('.')) {
-                        return 'Please enter a valid email';
+                        return localizations.auth_login_validation_email_invalid;
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
                   // Password field
                   AuthTextField(
                     controller: _passwordController,
-                    label: 'Password',
-                    hint: 'Enter your password',
+                    label: localizations.auth_login_password_label,
+                    hint: localizations.auth_login_password_hint,
                     icon: Icons.lock_outline,
                     obscureText: true,
                     showVisibilityToggle: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return localizations.auth_login_validation_password_required;
                       }
                       return null;
                     },
@@ -206,9 +264,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       ),
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
+                      child: Text(
+                        localizations.auth_login_forgot_password,
+                        style: const TextStyle(
                           color: AppColors.accent,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -216,7 +274,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // Login button
                   _isLoading
@@ -226,10 +284,10 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           ),
                         )
                       : AppButton(
-                          label: 'Login',
+                          label: localizations.auth_page_login_button,
                           onPressed: _login,
                         ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 20),
 
                   // Social login divider
                   Row(
@@ -243,7 +301,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'OR',
+                          localizations.auth_login_or_text,
                           style: TextStyle(
                             color: AppColors.textPrimary.withValues(alpha: 0.5),
                             fontSize: 14,
@@ -259,11 +317,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 20),
 
-                  // Social login buttons (optional - you can remove if not needed)
+                  // Social login buttons
                   _buildSocialButton(
-                    label: 'Continue with Google',
+                    label: localizations.auth_login_social_google,
                     icon: Icons.g_mobiledata,
                     onPressed: () {
                       // Add Google sign-in logic
@@ -271,7 +329,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   ),
                   const SizedBox(height: 16),
                   _buildSocialButton(
-                    label: 'Continue with Apple',
+                    label: localizations.auth_login_social_apple,
                     icon: Icons.apple,
                     onPressed: () {
                       // Add Apple sign-in logic

@@ -4,7 +4,12 @@ import 'package:workin_fit/views/auth/login_view.dart';
 import 'package:workin_fit/views/auth/register_view.dart';
 
 class AuthenticationView extends StatefulWidget {
-  const AuthenticationView({super.key});
+  final int initialTabIndex;
+  
+  const AuthenticationView({
+    super.key,
+    this.initialTabIndex = 0,
+  });
 
   @override
   State<AuthenticationView> createState() => _AuthenticationViewState();
@@ -17,7 +22,11 @@ class _AuthenticationViewState extends State<AuthenticationView>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialTabIndex,
+    );
   }
 
   @override

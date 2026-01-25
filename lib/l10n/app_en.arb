@@ -153,6 +153,14 @@
   "privacy_policy_section_7_title": "7. Changes to This Privacy Policy",
   "privacy_policy_section_7_content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date.",
   "privacy_policy_contact": "If you have any questions about this Privacy Policy, please contact us.",
+  "auth_page_login_description": "Welcome back! Sign in to continue your fitness journey.",
+  "@auth_page_login_description": {
+    "description": "Little message under the title on login page"
+  },
+  "auth_page_login_button": "Login",
+  "@auth_page_login_button": {
+    "description": "The text of the button to send the login form"
+  },
   "auth_login_label": "Login",
   "auth_login_email_label": "Email",
   "auth_login_email_hint": "Enter your email",

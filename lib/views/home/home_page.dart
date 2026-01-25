@@ -92,16 +92,20 @@ class HomePage extends ConsumerWidget {
                 label: 'Log Out',
                 onPressed: () async {
                   try {
-                    await ref.read(authActionsProvider).signOut();
-                    // Navigate to login view
+                    // Sign out and navigate immediately
+                    // We navigate before signOut completes to avoid auth state listener interference
                     if (context.mounted) {
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                          builder: (context) => const AuthenticationView(),
+                          builder: (context) => const AuthenticationView(
+                            initialTabIndex: 1, // Login tab
+                          ),
                         ),
                         (route) => false,
                       );
                     }
+                    // Sign out after navigation
+                    await ref.read(authActionsProvider).signOut();
                   } catch (e) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
