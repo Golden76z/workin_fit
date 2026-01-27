@@ -25,7 +25,10 @@ class AppColors {
   
   // Semantic Colors
   static const Color success = Color(0xFF4CAF50);
+  static const Color successSoft = Color(0xFF81C784); // lighter green
   static const Color error = Color(0xFFF44336);
+  static const Color errorSoft = Color(0xFFE57373); // lighter red
   static const Color warning = Color(0xFFFF9800);
+  static const Color warningSoft = Color(0xFFFFB74D); // lighter orange
   static const Color info = Color(0xFF2196F3);
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
+import 'package:workin_fit/core/errors/auth_error_mapper.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/auth/email_verification_view.dart';
@@ -59,21 +60,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
     } catch (e) {
       if (mounted) {
-        // Extract user-friendly error message
+        final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
-            ? e.message
-            : e.toString().replaceAll('Exception: ', '');
+            ? mapAuthErrorToMessage(context, e)
+            : localizations.error_auth_generic;
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            backgroundColor: AppColors.errorSoft,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -105,10 +106,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
     } catch (e) {
       if (mounted) {
-        // Extract user-friendly error message
+        final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
-            ? e.message
-            : e.toString().replaceAll('Exception: ', '');
+            ? mapAuthErrorToMessage(context, e)
+            : localizations.error_auth_generic;
         
         // Don't show error if user cancelled
         if (e is AuthException && e.code == 'cancelled') {
@@ -120,12 +121,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            backgroundColor: AppColors.errorSoft,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -170,18 +171,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   AuthTextField(
                     controller: _usernameController,
                     label: AppLocalizations.of(context)!.auth_page_register_username_input,
-                    hint: 'Choose a username',
+                    hint: AppLocalizations.of(context)!.auth_register_username_hint,
                     icon: Icons.person_outline,
                     keyboardType: TextInputType.text,
                     validator: (value) {
+                      final localizations = AppLocalizations.of(context)!;
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a username';
+                        return localizations.auth_register_validation_username_required;
                       }
                       if (value.length < AppConstants.minUsernameLength) {
-                        return 'Username must be at least ${AppConstants.minUsernameLength} characters';
+                        return localizations.auth_register_validation_username_min(
+                          AppConstants.minUsernameLength,
+                        );
                       }
                       if (value.length > AppConstants.maxUsernameLength) {
-                        return 'Username must be at most ${AppConstants.maxUsernameLength} characters';
+                        return localizations.auth_register_validation_username_max(
+                          AppConstants.maxUsernameLength,
+                        );
                       }
                       return null;
                     },
@@ -192,15 +198,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   AuthTextField(
                     controller: _emailController,
                     label: AppLocalizations.of(context)!.auth_page_register_email_input,
-                    hint: 'Enter your email',
+                    hint: AppLocalizations.of(context)!.auth_register_email_hint,
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
+                      final localizations = AppLocalizations.of(context)!;
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return localizations.auth_register_validation_email_required;
                       }
                       if (!value.contains('@') || !value.contains('.')) {
-                        return 'Please enter a valid email';
+                        return localizations.auth_register_validation_email_invalid;
                       }
                       return null;
                     },
@@ -211,22 +218,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   AuthTextField(
                     controller: _passwordController,
                     label: AppLocalizations.of(context)!.auth_page_register_password_input,
-                    hint: 'Create a strong password',
+                    hint: AppLocalizations.of(context)!.auth_register_password_hint,
                     icon: Icons.lock_outline,
                     obscureText: true,
                     showVisibilityToggle: true,
                     validator: (value) {
+                      final localizations = AppLocalizations.of(context)!;
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
+                        return localizations.auth_register_validation_password_required;
                       }
                       if (value.length < AppConstants.minPasswordLength) {
-                        return 'Password must be at least ${AppConstants.minPasswordLength} characters';
+                        return localizations.auth_register_validation_password_min(
+                          AppConstants.minPasswordLength,
+                        );
                       }
                       if (!value.contains(RegExp(r'[A-Z]'))) {
-                        return 'Must contain an uppercase letter';
+                        return localizations.auth_register_validation_password_uppercase;
                       }
                       if (!value.contains(RegExp(r'[0-9]'))) {
-                        return 'Must contain a number';
+                        return localizations.auth_register_validation_password_number;
                       }
                       return null;
                     },
@@ -237,13 +247,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   AuthTextField(
                     controller: _confirmPasswordController,
                     label: AppLocalizations.of(context)!.auth_page_register_confirm_password_input,
-                    hint: 'Confirm your password',
+                    hint: AppLocalizations.of(context)!.auth_register_confirm_password_hint,
                     icon: Icons.lock_outline,
                     obscureText: true,
                     showVisibilityToggle: true,
                     validator: (value) {
+                      final localizations = AppLocalizations.of(context)!;
                       if (value != _passwordController.text) {
-                        return 'Passwords do not match';
+                        return localizations.auth_register_validation_password_match;
                       }
                       return null;
                     },

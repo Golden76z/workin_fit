@@ -149,6 +149,7 @@
       }
     }
   },
+  "email_verification_check_tooltip": "Vérifier le statut de vérification",
   "error_auth_user_not_found": "Aucun utilisateur trouvé avec cet email.",
   "error_auth_wrong_password": "Mot de passe incorrect. Veuillez réessayer.",
   "error_auth_email_already_in_use": "Un compte existe déjà avec cet email.",
@@ -167,5 +168,22 @@
   "error_auth_google_cancelled": "La connexion a été annulée.",
   "error_auth_google_in_progress": "Une connexion est déjà en cours.",
   "error_auth_google_developer": "Erreur développeur. Veuillez configurer la connexion Google correctement.",
-  "error_auth_email_not_verified": "Email non vérifié. Veuillez vérifier votre boîte de réception."
+  "error_auth_email_not_verified": "Email non vérifié. Veuillez vérifier votre boîte de réception.",
+  "home_welcome_title": "Bienvenue !",
+  "home_placeholder_title": "Page d'accueil",
+  "home_placeholder_subtitle": "Votre aventure fitness commence ici",
+  "home_logout": "Se déconnecter",
+  "sessions_create_success": "Session créée !",
+  "sessions_error_generic": "Erreur : {error}",
+  "@sessions_error_generic": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sessions_create_title": "Créer une session",
+  "sessions_name_label": "Nom de la session",
+  "sessions_save_button": "Enregistrer la session",
+  "sessions_list_title": "Mes sessions"
 }

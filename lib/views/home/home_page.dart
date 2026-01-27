@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/widgets/button.dart';
@@ -12,14 +13,15 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
     final userEmail = user?.email ?? 'User';
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: const Text(
-          'Workin Fit',
-          style: TextStyle(
+        title: Text(
+          localizations.welcome_page_app_title,
+          style: const TextStyle(
             color: AppColors.textPrimary,
             fontFamily: 'AppFont',
             fontSize: 28,
@@ -37,7 +39,7 @@ class HomePage extends ConsumerWidget {
               const SizedBox(height: 32),
               // Welcome message
               Text(
-                'Welcome!',
+                localizations.home_welcome_title,
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 32,
@@ -68,7 +70,7 @@ class HomePage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        'Home Page',
+                        localizations.home_placeholder_title,
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 20,
@@ -76,7 +78,7 @@ class HomePage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Your fitness journey starts here',
+                        localizations.home_placeholder_subtitle,
                         style: TextStyle(
                           color: AppColors.textTertiary,
                           fontSize: 14,
@@ -89,7 +91,7 @@ class HomePage extends ConsumerWidget {
               
               // Logout button
               AppButton(
-                label: 'Log Out',
+                label: localizations.home_logout,
                 onPressed: () async {
                   try {
                     // Sign out and navigate immediately
@@ -110,7 +112,11 @@ class HomePage extends ConsumerWidget {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Error signing out: ${e.toString()}'),
+                          content: Text(
+                            localizations.email_verification_error_signout(
+                              e.toString(),
+                            ),
+                          ),
                           backgroundColor: AppColors.error,
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(

@@ -716,6 +716,12 @@ abstract class AppLocalizations {
   /// **'Error signing out: {error}'**
   String email_verification_error_signout(String error);
 
+  /// No description provided for @email_verification_check_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Check verification status'**
+  String get email_verification_check_tooltip;
+
   /// No description provided for @error_auth_user_not_found.
   ///
   /// In en, this message translates to:
@@ -829,6 +835,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Email not verified. Please check your inbox.'**
   String get error_auth_email_not_verified;
+
+  /// No description provided for @home_welcome_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get home_welcome_title;
+
+  /// No description provided for @home_placeholder_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Page'**
+  String get home_placeholder_title;
+
+  /// No description provided for @home_placeholder_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your fitness journey starts here'**
+  String get home_placeholder_subtitle;
+
+  /// No description provided for @home_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get home_logout;
+
+  /// No description provided for @sessions_create_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Session created!'**
+  String get sessions_create_success;
+
+  /// No description provided for @sessions_error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String sessions_error_generic(String error);
+
+  /// No description provided for @sessions_create_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Session'**
+  String get sessions_create_title;
+
+  /// No description provided for @sessions_name_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Name'**
+  String get sessions_name_label;
+
+  /// No description provided for @sessions_save_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Session'**
+  String get sessions_save_button;
+
+  /// No description provided for @sessions_list_title.
+  ///
+  /// In en, this message translates to:
+  /// **'My Sessions'**
+  String get sessions_list_title;
 }
 
 class _AppLocalizationsDelegate

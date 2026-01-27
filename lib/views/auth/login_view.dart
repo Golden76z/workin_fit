@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
+import 'package:workin_fit/core/errors/auth_error_mapper.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/home/home_page.dart';
@@ -57,19 +58,19 @@ class _LoginViewState extends ConsumerState<LoginView> {
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
-            ? e.message
+            ? mapAuthErrorToMessage(context, e)
             : localizations.error_auth_generic;
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            backgroundColor: AppColors.errorSoft,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -112,7 +113,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
-            ? e.message
+            ? mapAuthErrorToMessage(context, e)
             : localizations.error_auth_generic;
         
         // Don't show error if user cancelled
@@ -125,12 +126,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            backgroundColor: AppColors.errorSoft,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -150,8 +151,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
     if (_emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.auth_login_forgot_dialog_email_required),
-          backgroundColor: AppColors.warning,
+          content: Text(
+            localizations.auth_login_forgot_dialog_email_required,
+            style: TextStyle(
+              color: AppColors.textPrimary.withValues(alpha: 0.9),
+            ),
+          ),
+          backgroundColor: AppColors.warningSoft,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -207,8 +213,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(localizations.auth_login_forgot_dialog_success),
-                      backgroundColor: AppColors.success,
+                      content: Text(
+                        localizations.auth_login_forgot_dialog_success,
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      backgroundColor: AppColors.successSoft,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -219,12 +230,17 @@ class _LoginViewState extends ConsumerState<LoginView> {
               } catch (e) {
                 if (mounted) {
                   final errorMessage = e is AuthException
-                      ? e.message
+                      ? mapAuthErrorToMessage(context, e)
                       : localizations.error_auth_generic;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(errorMessage),
-                      backgroundColor: AppColors.error,
+                      content: Text(
+                        errorMessage,
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      backgroundColor: AppColors.errorSoft,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
