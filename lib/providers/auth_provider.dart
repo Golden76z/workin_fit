@@ -85,7 +85,28 @@ class AuthActions {
 
   // Google sign-in
   Future<void> signInWithGoogle() async {
-    await _authRepo.signInWithGoogle();
+    final userCredential = await _authRepo.signInWithGoogle();
+
+    // Save/update user profile to Firestore
+    if (userCredential.user != null) {
+      try {
+        final user = userCredential.user!;
+        final email = user.email ?? '';
+        // Use display name as username, or email prefix if display name is null
+        final username = user.displayName ?? 
+            (email.isNotEmpty ? email.split('@')[0] : 'user_${user.uid.substring(0, 8)}');
+        
+        await _firestoreService.createOrUpdateUserProfile(
+          userId: user.uid,
+          username: username,
+          email: email,
+        );
+      } catch (e) {
+        // If Firestore save fails, still allow sign-in but log the error
+        // The user can update their profile later
+        print('Error saving user profile to Firestore: $e');
+      }
+    }
   }
 
   // Apple sign-in

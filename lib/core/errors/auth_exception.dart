@@ -52,16 +52,29 @@ class AuthErrorHandler {
   static String handleGoogleSignInException(dynamic exception) {
     final message = exception.toString();
     
-    if (message.contains('NETWORK_ERROR')) {
+    if (message.contains('NETWORK_ERROR') || message.contains('network')) {
       return 'Network error. Please check your connection.';
-    } else if (message.contains('SIGN_IN_CANCELLED')) {
+    } else if (message.contains('SIGN_IN_CANCELLED') || message.contains('cancelled')) {
       return 'Sign-in was cancelled.';
     } else if (message.contains('SIGN_IN_CURRENTLY_IN_PROGRESS')) {
       return 'Sign-in is already in progress.';
-    } else if (message.contains('DEVELOPER_ERROR')) {
-      return 'Developer error. Please configure Google Sign-In properly.';
+    } else if (message.contains('DEVELOPER_ERROR') || message.contains('sign_in_failed')) {
+      return 'Google Sign-In configuration error. Please check:\n'
+          '• SHA-1 fingerprint is added to Firebase (Android)\n'
+          '• Google provider is enabled in Firebase\n'
+          '• URL scheme is configured (iOS)';
+    } else if (message.contains('PlatformException')) {
+      if (message.contains('sign_in_failed')) {
+        return 'Google Sign-In failed. Missing SHA-1 fingerprint or Google provider not enabled.';
+      }
+      return 'Platform error: ${message.split('PlatformException:').last.split(',').first}';
+    } else if (message.contains('SIGN_IN_REQUIRED')) {
+      return 'Please sign in to your Google account first.';
+    } else if (message.contains('INVALID_ACCOUNT')) {
+      return 'Invalid Google account. Please try again.';
     }
     
-    return 'Google Sign-In failed. Please try again.';
+    // Return more detailed error for debugging
+    return 'Google Sign-In failed: ${message.length > 100 ? message.substring(0, 100) + "..." : message}';
   }
 }

@@ -1,0 +1,122 @@
+// Flutter App Expert .cursorrules (Workin Fit)
+
+// Flexibility Notice
+
+// Note: This is a recommended project structure, but be flexible and adapt to existing project structures.
+// Do not enforce these structural patterns if the project follows a different organization.
+// Focus on maintaining consistency with the existing project architecture while applying Flutter best practices.
+//
+// Workin Fit specific choices:
+// - State management: Riverpod (NOT BLoC)
+// - DI: Riverpod providers (no GetIt unless explicitly added later)
+// - Routing: current Navigator-based routing is OK; GoRouter is optional, not required
+// - Error handling: typed exceptions + mapping to user-friendly messages; result/Either types are optional
+
+// Flutter Best Practices
+
+const flutterBestPractices = [
+    "Adapt to existing project architecture while maintaining clean code principles",
+    "Use Flutter 3.x features and Material 3 design",
+    "Implement clean, feature-oriented architecture with Riverpod for state management",
+    "Follow proper state management principles with Riverpod (providers, notifiers)",
+    "Use proper dependency injection via Riverpod providers",
+    "Implement proper error handling",
+    "Follow platform-specific design guidelines",
+    "Use proper localization techniques",
+];
+
+// Project Structure
+
+// Note: This is a reference structure. Adapt to the project's existing organization
+
+const projectStructure = `
+lib/
+  core/
+    constants/
+    theme/
+    utils/
+    widgets/
+  features/
+    feature_name/
+      data/
+        datasources/
+        models/
+        repositories/
+      domain/
+        entities/
+        repositories/
+        usecases/
+      presentation/
+        pages/
+        widgets/
+  l10n/
+  main.dart
+doc/
+  *.md (all project documentation lives here)
+test/
+  unit/
+  widget/
+  integration/
+`;
+
+// Documentation Guidelines
+//
+// - All project documentation (design notes, setup guides, troubleshooting, ADRs, etc.)
+//   should be stored as Markdown files under the `doc/` directory.
+// - When creating new docs, prefer clear, task-focused filenames like:
+//   - `doc/GOOGLE_SIGNIN_SETUP.md`
+//   - `doc/GOOGLE_SIGNIN_TROUBLESHOOTING.md`
+//   - `doc/ARCHITECTURE_OVERVIEW.md`
+// - Do not scatter Markdown files at the project root; keep them organized in `doc/`.
+
+// Coding Guidelines
+
+const codingGuidelines = `
+1. Use proper null safety practices
+2. Implement proper error handling (typed exceptions + mapping to user-friendly messages; use Result/Either types where it clearly helps)
+3. Follow proper naming conventions
+4. Use proper widget composition
+5. Implement clear, structured routing (Navigator 2.0 or GoRouter are both acceptable; this project currently uses Navigator)
+6. Use proper form validation
+7. Follow proper state management with Riverpod (providers, StateNotifier/AsyncValue, etc.)
+8. Implement proper dependency injection using Riverpod providers (GetIt is optional, not required)
+9. Use proper asset management
+10. Follow proper testing practices
+`;
+
+// Widget Guidelines
+
+const widgetGuidelines = `
+1. Keep widgets small and focused
+2. Use const constructors when possible
+3. Implement proper widget keys
+4. Follow proper layout principles
+5. Use proper widget lifecycle methods
+6. Implement proper error boundaries
+7. Use proper performance optimization techniques
+8. Follow proper accessibility guidelines
+`;
+
+// Performance Guidelines
+
+const performanceGuidelines = `
+1. Use proper image caching
+2. Implement proper list view optimization
+3. Use proper build methods optimization
+4. Follow proper state management patterns
+5. Implement proper memory management
+6. Use proper platform channels when needed
+7. Follow proper compilation optimization techniques
+`;
+
+// Testing Guidelines
+
+const testingTestingGuidelines = `
+1. Write unit tests for business logic
+2. Implement widget tests for UI components
+3. Use integration tests for feature testing
+4. Implement proper mocking strategies
+5. Use proper test coverage tools
+6. Follow proper test naming conventions
+7. Implement proper CI/CD testing
+`;

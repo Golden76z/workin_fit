@@ -83,6 +83,67 @@ class _LoginViewState extends ConsumerState<LoginView> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      await ref.read(authActionsProvider).signInWithGoogle();
+
+      if (!mounted) return;
+
+      // Check if email is verified (Google accounts are auto-verified)
+      final user = ref.read(currentUserProvider);
+      if (user != null) {
+        // Navigate to home page
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      // Log error for debugging
+      print('Google Sign-In Error in UI: $e');
+      if (e is AuthException && e.originalException != null) {
+        print('Original exception: ${e.originalException}');
+      }
+      
+      if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
+        final errorMessage = e is AuthException
+            ? e.message
+            : localizations.error_auth_generic;
+        
+        // Don't show error if user cancelled
+        if (e is AuthException && e.code == 'cancelled') {
+          // User cancelled, no need to show error
+          return;
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   Future<void> _forgotPassword() async {
     final localizations = AppLocalizations.of(context)!;
     
@@ -323,9 +384,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   _buildSocialButton(
                     label: localizations.auth_login_social_google,
                     icon: Icons.g_mobiledata,
-                    onPressed: () {
-                      // Add Google sign-in logic
-                    },
+                    onPressed: _isLoading ? null : _signInWithGoogle,
                   ),
                   const SizedBox(height: 16),
                   _buildSocialButton(
@@ -347,7 +406,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Widget _buildSocialButton({
     required String label,
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return OutlinedButton(
       onPressed: onPressed,
