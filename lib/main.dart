@@ -9,12 +9,9 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
-import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/locale_provider.dart';
 import 'package:workin_fit/services/deep_link_service.dart';
-import 'package:workin_fit/views/auth/email_verification_view.dart';
-import 'package:workin_fit/views/home/home_page.dart';
-import 'package:workin_fit/views/welcome/welcome_page.dart';
+import 'package:workin_fit/features/auth/presentation/auth_gate.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
 
@@ -64,8 +61,6 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch auth state to determine initial route
-    final authState = ref.watch(authStateProvider);
     final locale = ref.watch(localeProvider);
 
     return MaterialApp(
@@ -81,24 +76,8 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
         ),
         useMaterial3: true,
       ),
-      // Redirect based on auth state and email verification
-      home: authState.when(
-        data: (user) {
-          if (user == null) {
-            // Show WelcomePage, but navigation from logout will override this
-            return const WelcomePage();
-          }
-          // Check if email is verified
-          if (!user.emailVerified) {
-            return const EmailVerificationView();
-          }
-          return const HomePage();
-        },
-        loading: () => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-        error: (_, __) => const WelcomePage(),
-      ),
+      // Redirect based on global auth state and email verification
+      home: const AuthGate(),
     );
   }
 }
