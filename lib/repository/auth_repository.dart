@@ -115,14 +115,39 @@ class AuthRepository {
       );
 
       // Sign in to Firebase
+      // Firebase Auth will automatically handle account linking if the email matches
+      // If account exists with different credential, it will throw 'account-exists-with-different-credential'
       return await _firebaseAuth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
+      // Log the actual error for debugging
+      print('FirebaseAuthException: ${e.code} - ${e.message}');
       throw AuthException(
         AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
         code: e.code,
         originalException: e,
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      if (e is AuthException) rethrow;
+      
+      // Log the actual error for debugging
+      print('Google Sign-In Error: $e');
+      print('Stack trace: $stackTrace');
+      
+      // Handle PlatformException (common on Android for SHA-1 issues)
+      if (e.toString().contains('PlatformException')) {
+        if (e.toString().contains('sign_in_failed') || 
+            e.toString().contains('SIGN_IN_FAILED')) {
+          throw AuthException(
+            'Google Sign-In failed. Please check:\n'
+            '1. SHA-1 fingerprint is added to Firebase Console\n'
+            '2. Google provider is enabled in Firebase\n'
+            '3. google-services.json is up to date',
+            code: 'sign_in_failed',
+            originalException: e,
+          );
+        }
+      }
+      
       throw AuthException(
         AuthErrorHandler.handleGoogleSignInException(e),
         originalException: e,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
@@ -32,12 +33,13 @@ class _EmailVerificationViewState
       if (!mounted) return;
 
       final user = ref.read(currentUserProvider);
+      final localizations = AppLocalizations.of(context)!;
       if (user?.emailVerified ?? false) {
         // Email is verified, navigate to home
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Email verified successfully!'),
+              content: Text(localizations.email_verification_success),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -61,7 +63,7 @@ class _EmailVerificationViewState
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Email not verified yet. Please check your inbox.'),
+              content: Text(localizations.email_verification_not_verified),
               backgroundColor: AppColors.warning,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -102,13 +104,16 @@ class _EmailVerificationViewState
 
       if (!mounted) return;
 
+      final localizations = AppLocalizations.of(context)!;
+
       AppDialog.show(
         context: context,
-        title: 'Verification Email Sent',
-        content:
-            'A new verification email has been sent to $_userEmail. Please check your inbox.',
+        title: localizations.email_verification_resend_title,
+        content: localizations.email_verification_resend_content(
+          _userEmail ?? '',
+        ),
         icon: Icons.email_outlined,
-        primaryButtonLabel: 'OK',
+        primaryButtonLabel: localizations.email_verification_resend_button,
       );
     } catch (e) {
       if (mounted) {
@@ -173,7 +178,7 @@ class _EmailVerificationViewState
                       color: AppColors.accent,
                     ),
               onPressed: _isChecking ? null : () => _checkVerification(),
-              tooltip: 'Check verification status',
+              tooltip: AppLocalizations.of(context)!.email_verification_check_tooltip,
             ),
           ),
         ],
@@ -192,8 +197,8 @@ class _EmailVerificationViewState
                   color: AppColors.accent,
                 ),
                 const SizedBox(height: 32),
-                const Text(
-                  'Verify Your Email',
+                Text(
+                  AppLocalizations.of(context)!.email_verification_title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.textPrimary,
@@ -204,7 +209,7 @@ class _EmailVerificationViewState
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'We\'ve sent a verification email to:',
+                  AppLocalizations.of(context)!.email_verification_sent_to,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.textSecondary,
@@ -224,7 +229,7 @@ class _EmailVerificationViewState
                   ),
                 const SizedBox(height: 32),
                 Text(
-                  'Please check your inbox and click the verification link to activate your account.',
+                  AppLocalizations.of(context)!.email_verification_instructions,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.textSecondary,
@@ -233,7 +238,9 @@ class _EmailVerificationViewState
                 ),
                 const SizedBox(height: 48),
                 AppButton(
-                  label: _isChecking ? 'Checking...' : 'I\'ve Verified My Email',
+                  label: _isChecking
+                      ? AppLocalizations.of(context)!.email_verification_button_checking
+                      : AppLocalizations.of(context)!.email_verification_button_verified,
                   onPressed: _isChecking ? null : () => _checkVerification(),
                 ),
                 const SizedBox(height: 16),
@@ -248,9 +255,9 @@ class _EmailVerificationViewState
                             color: AppColors.accent,
                           ),
                         )
-                      : const Text(
-                          'Resend Verification Email',
-                          style: TextStyle(
+                      : Text(
+                          AppLocalizations.of(context)!.email_verification_resend,
+                          style: const TextStyle(
                             color: AppColors.accent,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

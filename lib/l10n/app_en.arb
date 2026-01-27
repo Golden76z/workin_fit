@@ -215,6 +215,7 @@
       }
     }
   },
+  "email_verification_check_tooltip": "Check verification status",
   "error_auth_user_not_found": "No user found with this email.",
   "error_auth_wrong_password": "Wrong password. Please try again.",
   "error_auth_email_already_in_use": "An account already exists with this email.",
@@ -233,5 +234,22 @@
   "error_auth_google_cancelled": "Sign-in was cancelled.",
   "error_auth_google_in_progress": "Sign-in is already in progress.",
   "error_auth_google_developer": "Developer error. Please configure Google Sign-In properly.",
-  "error_auth_email_not_verified": "Email not verified. Please check your inbox."
+  "error_auth_email_not_verified": "Email not verified. Please check your inbox.",
+  "home_welcome_title": "Welcome!",
+  "home_placeholder_title": "Home Page",
+  "home_placeholder_subtitle": "Your fitness journey starts here",
+  "home_logout": "Log Out",
+  "sessions_create_success": "Session created!",
+  "sessions_error_generic": "Error: {error}",
+  "@sessions_error_generic": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sessions_create_title": "Create Session",
+  "sessions_name_label": "Session Name",
+  "sessions_save_button": "Save Session",
+  "sessions_list_title": "My Sessions"
 }

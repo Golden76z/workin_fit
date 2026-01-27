@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
+import 'package:workin_fit/core/errors/auth_error_mapper.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/home/home_page.dart';
@@ -57,19 +58,80 @@ class _LoginViewState extends ConsumerState<LoginView> {
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
-            ? e.message
+            ? mapAuthErrorToMessage(context, e)
             : localizations.error_auth_generic;
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
                 fontWeight: FontWeight.w600,
               ),
             ),
-            backgroundColor: AppColors.error.withValues(alpha: 0.9),
+            backgroundColor: AppColors.errorSoft,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      await ref.read(authActionsProvider).signInWithGoogle();
+
+      if (!mounted) return;
+
+      // Check if email is verified (Google accounts are auto-verified)
+      final user = ref.read(currentUserProvider);
+      if (user != null) {
+        // Navigate to home page
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      // Log error for debugging
+      print('Google Sign-In Error in UI: $e');
+      if (e is AuthException && e.originalException != null) {
+        print('Original exception: ${e.originalException}');
+      }
+      
+      if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
+        final errorMessage = e is AuthException
+            ? mapAuthErrorToMessage(context, e)
+            : localizations.error_auth_generic;
+        
+        // Don't show error if user cancelled
+        if (e is AuthException && e.code == 'cancelled') {
+          // User cancelled, no need to show error
+          return;
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              errorMessage,
+              style: TextStyle(
+                color: AppColors.textPrimary.withValues(alpha: 0.9),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            backgroundColor: AppColors.errorSoft,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
@@ -89,8 +151,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
     if (_emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.auth_login_forgot_dialog_email_required),
-          backgroundColor: AppColors.warning,
+          content: Text(
+            localizations.auth_login_forgot_dialog_email_required,
+            style: TextStyle(
+              color: AppColors.textPrimary.withValues(alpha: 0.9),
+            ),
+          ),
+          backgroundColor: AppColors.warningSoft,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -146,8 +213,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(localizations.auth_login_forgot_dialog_success),
-                      backgroundColor: AppColors.success,
+                      content: Text(
+                        localizations.auth_login_forgot_dialog_success,
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      backgroundColor: AppColors.successSoft,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -158,12 +230,17 @@ class _LoginViewState extends ConsumerState<LoginView> {
               } catch (e) {
                 if (mounted) {
                   final errorMessage = e is AuthException
-                      ? e.message
+                      ? mapAuthErrorToMessage(context, e)
                       : localizations.error_auth_generic;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(errorMessage),
-                      backgroundColor: AppColors.error,
+                      content: Text(
+                        errorMessage,
+                        style: TextStyle(
+                          color: AppColors.textPrimary.withValues(alpha: 0.9),
+                        ),
+                      ),
+                      backgroundColor: AppColors.errorSoft,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -323,9 +400,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   _buildSocialButton(
                     label: localizations.auth_login_social_google,
                     icon: Icons.g_mobiledata,
-                    onPressed: () {
-                      // Add Google sign-in logic
-                    },
+                    onPressed: _isLoading ? null : _signInWithGoogle,
                   ),
                   const SizedBox(height: 16),
                   _buildSocialButton(
@@ -347,7 +422,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Widget _buildSocialButton({
     required String label,
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return OutlinedButton(
       onPressed: onPressed,

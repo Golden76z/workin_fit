@@ -375,6 +375,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get email_verification_check_tooltip =>
+      'Vérifier le statut de vérification';
+
+  @override
   String get error_auth_user_not_found =>
       'Aucun utilisateur trouvé avec cet email.';
 
@@ -445,4 +449,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get error_auth_email_not_verified =>
       'Email non vérifié. Veuillez vérifier votre boîte de réception.';
+
+  @override
+  String get home_welcome_title => 'Bienvenue !';
+
+  @override
+  String get home_placeholder_title => 'Page d\'accueil';
+
+  @override
+  String get home_placeholder_subtitle => 'Votre aventure fitness commence ici';
+
+  @override
+  String get home_logout => 'Se déconnecter';
+
+  @override
+  String get sessions_create_success => 'Session créée !';
+
+  @override
+  String sessions_error_generic(String error) {
+    return 'Erreur : $error';
+  }
+
+  @override
+  String get sessions_create_title => 'Créer une session';
+
+  @override
+  String get sessions_name_label => 'Nom de la session';
+
+  @override
+  String get sessions_save_button => 'Enregistrer la session';
+
+  @override
+  String get sessions_list_title => 'Mes sessions';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
@@ -43,15 +44,21 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
       await ref.read(sessionActionsProvider).createSession(session);
       
       if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Session created!')),
+          SnackBar(content: Text(localizations.sessions_create_success)),
         );
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
+        final localizations = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(
+            content: Text(
+              localizations.sessions_error_generic(e.toString()),
+            ),
+          ),
         );
       }
     }
@@ -61,25 +68,31 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
   Widget build(BuildContext context) {
     final exercisesAsync = ref.watch(exercisesProvider);
 
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Create Session')),
+      appBar: AppBar(title: Text(localizations.sessions_create_title)),
       body: exercisesAsync.when(
         data: (exercises) => Column(
           children: [
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Session Name'),
+              decoration: InputDecoration(
+                labelText: localizations.sessions_name_label,
+              ),
             ),
             // Exercise selection and workout config UI
             // ...
             ElevatedButton(
               onPressed: _saveSession,
-              child: Text('Save Session'),
+              child: Text(localizations.sessions_save_button),
             ),
           ],
         ),
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Text('Error: $err'),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Text(
+          localizations.sessions_error_generic(err.toString()),
+        ),
       ),
     );
   }
@@ -91,8 +104,10 @@ class SessionsListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionsAsync = ref.watch(userSessionsProvider);
 
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: Text('My Sessions')),
+      appBar: AppBar(title: Text(localizations.sessions_list_title)),
       body: sessionsAsync.when(
         data: (sessions) => ListView.builder(
           itemCount: sessions.length,
@@ -116,8 +131,10 @@ class SessionsListScreen extends ConsumerWidget {
             );
           },
         ),
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Text('Error: $err'),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Text(
+          localizations.sessions_error_generic(err.toString()),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
