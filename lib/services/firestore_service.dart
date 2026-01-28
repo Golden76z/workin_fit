@@ -1,11 +1,28 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 
+/// Custom exception for Firestore operations
+class FirestoreException implements Exception {
+  final String message;
+  final String? code;
+
+  FirestoreException(this.message, {this.code});
+
+  @override
+  String toString() => 'FirestoreException: $message${code != null ? ' (code: $code)' : ''}';
+}
+
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  /// Note: Firestore offline persistence is enabled by default in Flutter.
+  /// No additional configuration needed. Firestore automatically caches
+  /// data locally and syncs when connection is restored.
 
   // ===== USER PROFILE =====
   
@@ -50,83 +67,147 @@ class FirestoreService {
   // ===== EXERCISES (READ-ONLY FOR USERS) =====
   
   /// Get all exercises
-  Future<List<Exercise>> getAllExercises() async {
+  Future<List<Exercise>> getExercises() async {
     try {
       final snapshot = await _firestore
-          .collection('exercises')
+          .collection(FirebaseConstants.exercisesCollection)
           .orderBy('name')
           .get();
       
       return snapshot.docs
-          .map((doc) => Exercise.fromJson(doc.data()))
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id; // Ensure ID is set
+            return Exercise.fromJson(data);
+          })
           .toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch exercises: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error fetching exercises: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching exercises: $e');
     }
   }
 
   /// Get exercise by ID
   Future<Exercise?> getExerciseById(String id) async {
     try {
-      final doc = await _firestore.collection('exercises').doc(id).get();
+      final doc = await _firestore
+          .collection(FirebaseConstants.exercisesCollection)
+          .doc(id)
+          .get();
       
       if (!doc.exists) return null;
       
-      return Exercise.fromJson(doc.data()!);
+      final data = doc.data()!;
+      data['id'] = doc.id;
+      return Exercise.fromJson(data);
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch exercise: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error fetching exercise: $e');
-      return null;
+      throw FirestoreException('Unexpected error fetching exercise: $e');
     }
   }
 
   /// Search exercises by name or muscle group
   Future<List<Exercise>> searchExercises(String query) async {
+    if (query.trim().isEmpty) {
+      return await getExercises();
+    }
+    
     try {
       // Note: This is a simple client-side search
       // For production, consider using Algolia or similar
-      final allExercises = await getAllExercises();
+      final allExercises = await getExercises();
       
       final lowerQuery = query.toLowerCase();
       return allExercises.where((exercise) {
         return exercise.name.toLowerCase().contains(lowerQuery) ||
                exercise.muscleGroupsDisplay.toLowerCase().contains(lowerQuery);
       }).toList();
+    } on FirestoreException {
+      rethrow;
     } catch (e) {
-      print('Error searching exercises: $e');
-      return [];
+      throw FirestoreException('Unexpected error searching exercises: $e');
     }
   }
 
   /// Stream exercises (real-time updates)
   Stream<List<Exercise>> exercisesStream() {
     return _firestore
-        .collection('exercises')
+        .collection(FirebaseConstants.exercisesCollection)
         .orderBy('name')
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => Exercise.fromJson(doc.data()))
-            .toList());
+            .map((doc) {
+              final data = doc.data();
+              data['id'] = doc.id;
+              return Exercise.fromJson(data);
+            })
+            .toList())
+        .handleError((error) {
+          throw FirestoreException(
+            'Error streaming exercises: $error',
+          );
+        });
   }
 
   // ===== USER SESSIONS (CRUD) =====
   
   /// Get user's custom sessions
-  Future<List<Session>> getUserSessions(String userId) async {
+  Future<List<Session>> getSessions(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('sessions')
+          .collection(FirebaseConstants.sessionsCollection)
           .orderBy('createdAt', descending: true)
           .get();
       
       return snapshot.docs
-          .map((doc) => Session.fromFirestore(doc.data()))
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Session.fromFirestore(data);
+          })
           .toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch sessions: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error fetching user sessions: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching sessions: $e');
+    }
+  }
+
+  /// Get session by ID
+  Future<Session?> getSessionById(String userId, String sessionId) async {
+    try {
+      final doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.sessionsCollection)
+          .doc(sessionId)
+          .get();
+      
+      if (!doc.exists) return null;
+      
+      final data = doc.data()!;
+      data['id'] = doc.id;
+      return Session.fromFirestore(data);
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch session: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error fetching session: $e');
     }
   }
 
@@ -134,14 +215,18 @@ class FirestoreService {
   Future<void> createSession(String userId, Session session) async {
     try {
       await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('sessions')
+          .collection(FirebaseConstants.sessionsCollection)
           .doc(session.id)
           .set(session.toFirestore());
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to create session: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error creating session: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error creating session: $e');
     }
   }
 
@@ -149,14 +234,18 @@ class FirestoreService {
   Future<void> updateSession(String userId, Session session) async {
     try {
       await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('sessions')
+          .collection(FirebaseConstants.sessionsCollection)
           .doc(session.id)
           .update(session.toFirestore());
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to update session: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error updating session: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error updating session: $e');
     }
   }
 
@@ -164,28 +253,41 @@ class FirestoreService {
   Future<void> deleteSession(String userId, String sessionId) async {
     try {
       await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('sessions')
+          .collection(FirebaseConstants.sessionsCollection)
           .doc(sessionId)
           .delete();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to delete session: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error deleting session: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error deleting session: $e');
     }
   }
 
   /// Stream user sessions (real-time)
   Stream<List<Session>> userSessionsStream(String userId) {
     return _firestore
-        .collection('users')
+        .collection(FirebaseConstants.usersCollection)
         .doc(userId)
-        .collection('sessions')
+        .collection(FirebaseConstants.sessionsCollection)
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => Session.fromFirestore(doc.data()))
-            .toList());
+            .map((doc) {
+              final data = doc.data();
+              data['id'] = doc.id;
+              return Session.fromFirestore(data);
+            })
+            .toList())
+        .handleError((error) {
+          throw FirestoreException(
+            'Error streaming sessions: $error',
+          );
+        });
   }
 
   // ===== PRESET SESSIONS (READ-ONLY) =====
@@ -210,38 +312,169 @@ class FirestoreService {
   // ===== PROGRAMS =====
   
   /// Get all preset programs
-  Future<List<Program>> getPresetPrograms() async {
+  Future<List<Program>> getPrograms() async {
     try {
       final snapshot = await _firestore
-          .collection('programs')
+          .collection(FirebaseConstants.programsCollection)
           .orderBy('difficulty')
           .get();
       
       return snapshot.docs
-          .map((doc) => Program.fromFirestore(doc.data()))
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Program.fromFirestore(data);
+          })
           .toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch programs: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error fetching programs: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching programs: $e');
     }
+  }
+
+  /// Get program by ID (checks both preset and user programs)
+  Future<Program?> getProgramById(String programId, {String? userId}) async {
+    try {
+      // First check preset programs
+      final presetDoc = await _firestore
+          .collection(FirebaseConstants.programsCollection)
+          .doc(programId)
+          .get();
+      
+      if (presetDoc.exists) {
+        final data = presetDoc.data()!;
+        data['id'] = presetDoc.id;
+        return Program.fromFirestore(data);
+      }
+      
+      // If not found and userId provided, check user programs
+      if (userId != null) {
+        final userDoc = await _firestore
+            .collection(FirebaseConstants.usersCollection)
+            .doc(userId)
+            .collection(FirebaseConstants.programsCollection)
+            .doc(programId)
+            .get();
+        
+        if (userDoc.exists) {
+          final data = userDoc.data()!;
+          data['id'] = userDoc.id;
+          return Program.fromFirestore(data);
+        }
+      }
+      
+      return null;
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch program: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error fetching program: $e');
+    }
+  }
+
+  /// Subscribe to program updates (real-time stream)
+  /// Checks preset programs first, then user programs if userId is provided
+  Stream<Program?> subscribeToProgram(String programId, {String? userId}) {
+    // Try preset programs first
+    final presetStream = _firestore
+        .collection(FirebaseConstants.programsCollection)
+        .doc(programId)
+        .snapshots()
+        .map((doc) {
+          if (!doc.exists) return null;
+          final data = doc.data()!;
+          data['id'] = doc.id;
+          return Program.fromFirestore(data);
+        });
+    
+    // If userId provided, also listen to user programs
+    if (userId != null) {
+      final userStream = _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.programsCollection)
+          .doc(programId)
+          .snapshots()
+          .map((doc) {
+            if (!doc.exists) return null;
+            final data = doc.data()!;
+            data['id'] = doc.id;
+            return Program.fromFirestore(data);
+          });
+      
+      // Listen to both streams and return whichever has data
+      // Prefer preset programs, fallback to user programs
+      final controller = StreamController<Program?>.broadcast();
+      StreamSubscription<Program?>? presetSub;
+      StreamSubscription<Program?>? userSub;
+      
+      presetSub = presetStream.listen(
+        (program) {
+          if (program != null) {
+            controller.add(program);
+          }
+        },
+        onError: controller.addError,
+      );
+      
+      userSub = userStream.listen(
+        (program) {
+          if (program != null) {
+            controller.add(program);
+          }
+        },
+        onError: controller.addError,
+      );
+      
+      controller.onCancel = () {
+        presetSub?.cancel();
+        userSub?.cancel();
+      };
+      
+      return controller.stream.handleError((error) {
+        throw FirestoreException(
+          'Error subscribing to program: $error',
+        );
+      });
+    }
+    
+    return presetStream.handleError((error) {
+      throw FirestoreException(
+        'Error subscribing to program: $error',
+      );
+    });
   }
 
   /// Get user's custom programs
   Future<List<Program>> getUserPrograms(String userId) async {
     try {
       final snapshot = await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('programs')
+          .collection(FirebaseConstants.programsCollection)
           .orderBy('createdAt', descending: true)
           .get();
       
       return snapshot.docs
-          .map((doc) => Program.fromFirestore(doc.data()))
+          .map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Program.fromFirestore(data);
+          })
           .toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch user programs: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error fetching user programs: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching user programs: $e');
     }
   }
 
@@ -249,14 +482,56 @@ class FirestoreService {
   Future<void> createProgram(String userId, Program program) async {
     try {
       await _firestore
-          .collection('users')
+          .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .collection('programs')
+          .collection(FirebaseConstants.programsCollection)
           .doc(program.id)
           .set(program.toFirestore());
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to create program: ${e.message}',
+        code: e.code,
+      );
     } catch (e) {
-      print('Error creating program: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error creating program: $e');
+    }
+  }
+
+  /// Update program
+  Future<void> updateProgram(String userId, Program program) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.programsCollection)
+          .doc(program.id)
+          .update(program.toFirestore());
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to update program: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error updating program: $e');
+    }
+  }
+
+  /// Delete program
+  Future<void> deleteProgram(String userId, String programId) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.programsCollection)
+          .doc(programId)
+          .delete();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to delete program: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error deleting program: $e');
     }
   }
 
