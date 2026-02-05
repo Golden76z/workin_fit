@@ -44,3 +44,13 @@ arb_gen: ## Re-generate localization files from ARB files
 	@printf "$(GREEN)🌐 Generating localization files...$(NC)\n"
 	flutter gen-l10n
 	@printf "$(GREEN)✅ Localization files generated$(NC)\n"
+
+icons: ## Generate app launcher icons from assets/icons/app_icon.png
+	@printf "$(GREEN)🖼  Generating launcher icons...$(NC)\n"
+	flutter pub get && flutter pub run flutter_launcher_icons
+	@printf "$(GREEN)✅ Launcher icons generated$(NC)\n"
+
+splash: ## Generate native splash screens from assets/images/splash_logo.png
+	@printf "$(GREEN)🖼  Generating splash screens...$(NC)\n"
+	flutter pub get && flutter pub run flutter_native_splash:create
+	@printf "$(GREEN)✅ Splash screens generated$(NC)\n"
