@@ -2,7 +2,7 @@
 
 ## Status
 - ✅ 300 ARB entries created (100 exercises × 3 fields)
-- ⚠️  All currently have English text - need French translation
+- ✅ French translations are present for current exercise entries
 
 ## Translation Options
 
@@ -62,11 +62,10 @@ Translate exercise by exercise. Key terms:
 
 ## Next Steps
 
-1. **For now**: The app will work with English text in French ARB (fallback)
-2. **Priority**: Translate exercise names first (100 entries)
-3. **Then**: Translate descriptions (100 entries)  
-4. **Finally**: Translate beginner tips (100 entries)
+1. **When adding new exercises**: translate new `exercise_*` keys in `app_fr.arb`
+2. **Before release**: spot-check long descriptions and tips for natural phrasing
+3. **Automation**: rerun `translate_exercises.py` for name consistency, then review manually
 
 ## Automated Translation Script
 
-See `translate_exercises_fr.py` for a script that can help automate translations using translation APIs.
+See `translate_exercises.py` for a script that updates French exercise names from a curated dictionary.

@@ -14,7 +14,7 @@ Exercises in `data/exercises/*.json` contain:
 ### ARB Files
 Localization entries are in:
 - `lib/l10n/app_en.arb` (English - complete)
-- `lib/l10n/app_fr.arb` (French - needs translation)
+- `lib/l10n/app_fr.arb` (French - translated for current exercise set)
 
 Each exercise has 3 ARB entries:
 - `exercise_{id}_name`
@@ -47,20 +47,15 @@ Text(exercise.getLocalizedName(context))
 Text(exercise.getLocalizedDescription(context))
 ```
 
-**Note**: The extension uses reflection which may not work in all cases. Option 1 is more reliable.
+**Note**: The extension uses a generated helper map (`ExerciseLocalizationHelper`) and is safe for production use.
 
-### Option 3: Helper Function
+### Option 3: Generated Helper Class
 
-Create a helper function that maps exercise IDs to getters:
+Use `ExerciseLocalizationHelper` for key-based lookup:
 
 ```dart
-String getExerciseName(BuildContext context, String exerciseId) {
-  final localizations = AppLocalizations.of(context)!;
-  final key = 'exercise_${exerciseId}_name';
-  // Use a switch statement or Map to map to the getter
-  // For now, access directly:
-  return (localizations as dynamic)[Symbol(key)] ?? '';
-}
+ExerciseLocalizationHelper.getName(localizations, exerciseId);
+ExerciseLocalizationHelper.getDescription(localizations, exerciseId);
 ```
 
 ## Adding New Exercises
@@ -74,16 +69,17 @@ String getExerciseName(BuildContext context, String exerciseId) {
    ```bash
    flutter gen-l10n
    ```
-4. **Add French translations** to `lib/l10n/app_fr.arb`
+4. **Add/adjust French translations** in `lib/l10n/app_fr.arb` if needed
 
 ## Current Status
 
 - ✅ 100 exercises with localization keys
 - ✅ English ARB entries generated (300 entries)
-- ⚠️  French ARB entries need translation (currently same as English)
+- ✅ French exercise names/descriptions/tips available for current 100-exercise set
+- ✅ Runtime helper generated for key-based lookup with English fallback
 
 ## Next Steps
 
-1. Translate French ARB entries
+1. Keep translating any newly added exercise entries
 2. Test localization in the app
-3. Update UI to use localized strings
+3. Continue replacing direct text usage with localized exercise helpers in new UI screens

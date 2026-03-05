@@ -95,6 +95,8 @@
   "auth_register_dialog_verify_content": "A verification email has been sent to your inbox. Please verify your email address before logging in.",
   "auth_register_dialog_verify_button": "Got it",
   "auth_register_terms_text": "By creating an account, you agree to our\nTerms of Service and Privacy Policy",
+  "auth_register_terms_prefix": "By creating an account, you agree to our\n",
+  "auth_register_terms_and": " and ",
   "terms_of_service_title": "Terms of Service",
   "@terms_of_service_title": {
     "description": "Title of the Terms of Service page"
@@ -238,6 +240,9 @@
   "home_welcome_title": "Welcome!",
   "home_placeholder_title": "Home Page",
   "home_placeholder_subtitle": "Your fitness journey starts here",
+  "home_user_fallback": "User",
+  "home_preview_front": "FRONT",
+  "home_preview_back": "BACK",
   "home_logout": "Log Out",
   "sessions_create_success": "Session created!",
   "sessions_error_generic": "Error: {error}",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/core/errors/auth_error_mapper.dart';
@@ -27,6 +28,30 @@ class _LoginViewState extends ConsumerState<LoginView> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _showSnackBar({
+    required String message,
+    required Color backgroundColor,
+    FontWeight? fontWeight,
+  }) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            color: AppColors.textPrimary.withValues(alpha: 0.9),
+            fontWeight: fontWeight,
+          ),
+        ),
+        backgroundColor: backgroundColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+        ),
+        duration: AppDurations.snackBar,
+      ),
+    );
   }
 
   Future<void> _login() async {
@@ -60,23 +85,11 @@ class _LoginViewState extends ConsumerState<LoginView> {
         final errorMessage = e is AuthException
             ? mapAuthErrorToMessage(context, e)
             : localizations.error_auth_generic;
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              errorMessage,
-              style: TextStyle(
-                color: AppColors.textPrimary.withValues(alpha: 0.9),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            backgroundColor: AppColors.errorSoft,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            duration: const Duration(seconds: 4),
-          ),
+
+        _showSnackBar(
+          message: errorMessage,
+          backgroundColor: AppColors.errorSoft,
+          fontWeight: FontWeight.w600,
         );
       }
     } finally {
@@ -105,39 +118,27 @@ class _LoginViewState extends ConsumerState<LoginView> {
       }
     } catch (e) {
       // Log error for debugging
-      print('Google Sign-In Error in UI: $e');
+      debugPrint('Google Sign-In Error in UI: $e');
       if (e is AuthException && e.originalException != null) {
-        print('Original exception: ${e.originalException}');
+        debugPrint('Original exception: ${e.originalException}');
       }
-      
+
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
         final errorMessage = e is AuthException
             ? mapAuthErrorToMessage(context, e)
             : localizations.error_auth_generic;
-        
+
         // Don't show error if user cancelled
         if (e is AuthException && e.code == 'cancelled') {
           // User cancelled, no need to show error
           return;
         }
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              errorMessage,
-              style: TextStyle(
-                color: AppColors.textPrimary.withValues(alpha: 0.9),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            backgroundColor: AppColors.errorSoft,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            duration: const Duration(seconds: 4),
-          ),
+
+        _showSnackBar(
+          message: errorMessage,
+          backgroundColor: AppColors.errorSoft,
+          fontWeight: FontWeight.w600,
         );
       }
     } finally {
@@ -147,39 +148,28 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   Future<void> _forgotPassword() async {
     final localizations = AppLocalizations.of(context)!;
-    
+
     if (_emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            localizations.auth_login_forgot_dialog_email_required,
-            style: TextStyle(
-              color: AppColors.textPrimary.withValues(alpha: 0.9),
-            ),
-          ),
-          backgroundColor: AppColors.warningSoft,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
+      _showSnackBar(
+        message: localizations.auth_login_forgot_dialog_email_required,
+        backgroundColor: AppColors.warningSoft,
       );
       return;
     }
 
     final email = _emailController.text.trim();
-    
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadii.xl),
         ),
         title: Row(
           children: [
             const Icon(Icons.lock_reset, color: AppColors.accent, size: 28),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.sm),
             Text(
               localizations.auth_login_forgot_dialog_title,
               style: const TextStyle(
@@ -209,22 +199,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
             onPressed: () async {
               Navigator.pop(context);
               try {
-                await ref.read(authActionsProvider).sendPasswordResetEmail(email);
+                await ref
+                    .read(authActionsProvider)
+                    .sendPasswordResetEmail(email);
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        localizations.auth_login_forgot_dialog_success,
-                        style: TextStyle(
-                          color: AppColors.textPrimary.withValues(alpha: 0.9),
-                        ),
-                      ),
-                      backgroundColor: AppColors.successSoft,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                  _showSnackBar(
+                    message: localizations.auth_login_forgot_dialog_success,
+                    backgroundColor: AppColors.successSoft,
                   );
                 }
               } catch (e) {
@@ -232,20 +213,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   final errorMessage = e is AuthException
                       ? mapAuthErrorToMessage(context, e)
                       : localizations.error_auth_generic;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        errorMessage,
-                        style: TextStyle(
-                          color: AppColors.textPrimary.withValues(alpha: 0.9),
-                        ),
-                      ),
-                      backgroundColor: AppColors.errorSoft,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                  _showSnackBar(
+                    message: errorMessage,
+                    backgroundColor: AppColors.errorSoft,
                   );
                 }
               }
@@ -253,9 +223,12 @@ class _LoginViewState extends ConsumerState<LoginView> {
             style: TextButton.styleFrom(
               backgroundColor: AppColors.accent,
               foregroundColor: AppColors.textPrimary,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xl,
+                vertical: AppSpacing.sm,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadii.sm),
               ),
             ),
             child: Text(
@@ -271,13 +244,16 @@ class _LoginViewState extends ConsumerState<LoginView> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xl,
+              vertical: AppSpacing.xxl,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -295,7 +271,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
 
                   // Email field
                   AuthTextField(
@@ -306,15 +282,17 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return localizations.auth_login_validation_email_required;
+                        return localizations
+                            .auth_login_validation_email_required;
                       }
                       if (!value.contains('@') || !value.contains('.')) {
-                        return localizations.auth_login_validation_email_invalid;
+                        return localizations
+                            .auth_login_validation_email_invalid;
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // Password field
                   AuthTextField(
@@ -326,12 +304,13 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     showVisibilityToggle: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return localizations.auth_login_validation_password_required;
+                        return localizations
+                            .auth_login_validation_password_required;
                       }
                       return null;
                     },
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
 
                   // Forgot password
                   Align(
@@ -339,7 +318,10 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     child: TextButton(
                       onPressed: _forgotPassword,
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xs,
+                          vertical: AppSpacing.xxs,
+                        ),
                       ),
                       child: Text(
                         localizations.auth_login_forgot_password,
@@ -351,7 +333,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Login button
                   _isLoading
@@ -364,7 +346,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                           label: localizations.auth_page_login_button,
                           onPressed: _login,
                         ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Social login divider
                   Row(
@@ -376,7 +358,9 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                        ),
                         child: Text(
                           localizations.auth_login_or_text,
                           style: TextStyle(
@@ -394,7 +378,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Social login buttons
                   _buildSocialButton(
@@ -402,7 +386,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     icon: Icons.g_mobiledata,
                     onPressed: _isLoading ? null : _signInWithGoogle,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   _buildSocialButton(
                     label: localizations.auth_login_social_apple,
                     icon: Icons.apple,
@@ -432,16 +416,19 @@ class _LoginViewState extends ConsumerState<LoginView> {
           color: AppColors.textPrimary.withValues(alpha: 0.2),
           width: 1.5,
         ),
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.sm + 2,
+          horizontal: AppSpacing.xl,
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppRadii.md),
         ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 24, color: AppColors.textPrimary),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.sm),
           Text(
             label,
             style: const TextStyle(

@@ -290,6 +290,18 @@ abstract class AppLocalizations {
   /// **'By creating an account, you agree to our\nTerms of Service and Privacy Policy'**
   String get auth_register_terms_text;
 
+  /// No description provided for @auth_register_terms_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'By creating an account, you agree to our\n'**
+  String get auth_register_terms_prefix;
+
+  /// No description provided for @auth_register_terms_and.
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get auth_register_terms_and;
+
   /// Title of the Terms of Service page
   ///
   /// In en, this message translates to:
@@ -853,6 +865,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your fitness journey starts here'**
   String get home_placeholder_subtitle;
+
+  /// No description provided for @home_user_fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get home_user_fallback;
+
+  /// No description provided for @home_preview_front.
+  ///
+  /// In en, this message translates to:
+  /// **'FRONT'**
+  String get home_preview_front;
+
+  /// No description provided for @home_preview_back.
+  ///
+  /// In en, this message translates to:
+  /// **'BACK'**
+  String get home_preview_back;
 
   /// No description provided for @home_logout.
   ///

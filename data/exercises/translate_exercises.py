@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-Script to translate exercise entries from English to French in app_fr.arb
-This script reads the English ARB file and creates French translations.
+Translate exercise names from English to French in lib/l10n/app_fr.arb.
+
+This script is intentionally conservative:
+- It updates only `exercise_*_name` keys.
+- It leaves descriptions and beginner tips unchanged.
+- It reports any missing dictionary entries.
 """
 
-import json
-import re
+from __future__ import annotations
 
-# Translation dictionary for common exercise terms
+import json
+from pathlib import Path
+
+# Translation dictionary for exercise names.
 TRANSLATIONS = {
-    # Exercise names
     "Push-up": "Pompes",
     "Incline Push-up": "Pompes inclinées",
     "Decline Push-up": "Pompes déclinées",
@@ -30,7 +35,6 @@ TRANSLATIONS = {
     "One-Arm Push-up": "Pompes à un bras",
     "Handstand Push-up": "Pompes en équilibre sur les mains",
     "Dive Bomber Push-up": "Pompes plongeant",
-    
     "Inverted Row": "Tractions inversées",
     "Superman": "Superman",
     "Reverse Snow Angels": "Anges de neige inversés",
@@ -51,7 +55,6 @@ TRANSLATIONS = {
     "Wide Grip Inverted Row": "Tractions inversées prise large",
     "Close Grip Inverted Row": "Tractions inversées prise serrée",
     "Reverse Fly": "Écarté inversé",
-    
     "Bodyweight Squat": "Squat au poids du corps",
     "Jump Squat": "Squat sauté",
     "Pistol Squat": "Pistol squat",
@@ -77,7 +80,6 @@ TRANSLATIONS = {
     "Cossack Squat": "Squat cosaque",
     "Wall Sit Pulse": "Pulsation chaise au mur",
     "Jump Squat to Tuck": "Squat sauté avec genoux au buste",
-    
     "Plank": "Planche",
     "Side Plank": "Planche latérale",
     "Mountain Climbers": "Grimpeurs",
@@ -98,7 +100,6 @@ TRANSLATIONS = {
     "Plank to Downward Dog": "Planche vers chien tête en bas",
     "Side Plank with Leg Lift": "Planche latérale avec levée de jambe",
     "Plank Up-Downs": "Planche haut-bas",
-    
     "Jumping Jacks": "Sauts écartés",
     "High Knees": "Genoux hauts",
     "Butt Kicks": "Talons-fesses",
@@ -116,27 +117,56 @@ TRANSLATIONS = {
     "Jumping Lunges": "Fentes sautées",
 }
 
-def translate_text(text):
-    """Simple translation - in production, use a proper translation API"""
-    # This is a placeholder - you'd use Google Translate API or similar
-    # For now, return the text with a note that it needs translation
-    return text
 
-# Read English ARB
-with open('lib/l10n/app_en.arb', 'r', encoding='utf-8') as f:
-    en_data = json.load(f)
+def load_json(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as file:
+        return json.load(file)
 
-# Read French ARB
-with open('lib/l10n/app_fr.arb', 'r', encoding='utf-8') as f:
-    fr_data = json.load(f)
 
-# Find all exercise entries
-exercise_keys = [k for k in en_data.keys() if k.startswith('exercise_')]
+def save_json(path: Path, data: dict) -> None:
+    with path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, indent=2, ensure_ascii=False)
+        file.write("\n")
 
-print(f"Found {len(exercise_keys)} exercise keys to translate")
-print("Note: This script provides a framework. Manual translation or API integration needed.")
-print("\nTo complete translations, you can:")
-print("1. Use Google Translate API")
-print("2. Use DeepL API")
-print("3. Manual translation")
-print("\nFor now, the French file has English placeholders that need translation.")
+
+def main() -> None:
+    en_path = Path("lib/l10n/app_en.arb")
+    fr_path = Path("lib/l10n/app_fr.arb")
+
+    en_data = load_json(en_path)
+    fr_data = load_json(fr_path)
+
+    name_keys = sorted(
+        key
+        for key in en_data
+        if key.startswith("exercise_") and key.endswith("_name")
+    )
+
+    updated_count = 0
+    missing = []
+
+    for key in name_keys:
+        en_name = en_data[key]
+        fr_name = TRANSLATIONS.get(en_name)
+        if fr_name is None:
+            missing.append((key, en_name))
+            continue
+        if fr_data.get(key) != fr_name:
+            fr_data[key] = fr_name
+            updated_count += 1
+
+    save_json(fr_path, fr_data)
+
+    print(f"Exercise names found: {len(name_keys)}")
+    print(f"Updated French entries: {updated_count}")
+    if missing:
+        print(f"Missing dictionary entries: {len(missing)}")
+        for key, en_name in missing:
+            print(f"- {key}: {en_name}")
+    else:
+        print("Missing dictionary entries: 0")
+    print(f"Saved: {fr_path}")
+
+
+if __name__ == "__main__":
+    main()

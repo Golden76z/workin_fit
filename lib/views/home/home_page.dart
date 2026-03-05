@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
@@ -12,8 +13,8 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
-    final userEmail = user?.email ?? 'User';
     final localizations = AppLocalizations.of(context)!;
+    final userEmail = user?.email ?? localizations.home_user_fallback;
 
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
@@ -32,11 +33,11 @@ class HomePage extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
               // Welcome message
               Text(
                 localizations.home_welcome_title,
@@ -47,16 +48,47 @@ class HomePage extends ConsumerWidget {
                   fontFamily: 'AppFontMedium',
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 userEmail,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 18,
                 ),
               ),
-              const SizedBox(height: 48),
-              
+              const SizedBox(height: AppSpacing.xxxl),
+              // Test labels with AppFont
+              Text(
+                localizations.home_preview_front,
+                style: const TextStyle(
+                  fontFamily: 'AppFont',
+                  fontSize: 24,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Text(
+                localizations.home_preview_back,
+                style: const TextStyle(
+                  fontFamily: 'AppFont',
+                  fontSize: 24,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              // Test image with horizontal margin (for render preview)
+              Padding(
+                padding: EdgeInsets.zero,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadii.lg),
+                  child: Image.asset(
+                    'assets/images/test.png',
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
               // Placeholder content
               Expanded(
                 child: Center(
@@ -68,18 +100,18 @@ class HomePage extends ConsumerWidget {
                         size: 80,
                         color: AppColors.accent.withValues(alpha: 0.5),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xl),
                       Text(
                         localizations.home_placeholder_title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 20,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         localizations.home_placeholder_subtitle,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.textTertiary,
                           fontSize: 14,
                         ),
@@ -88,7 +120,7 @@ class HomePage extends ConsumerWidget {
                   ),
                 ),
               ),
-              
+
               // Logout button
               AppButton(
                 label: localizations.home_logout,
@@ -120,7 +152,7 @@ class HomePage extends ConsumerWidget {
                           backgroundColor: AppColors.error,
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(AppRadii.sm),
                           ),
                         ),
                       );
@@ -128,7 +160,7 @@ class HomePage extends ConsumerWidget {
                   }
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
             ],
           ),
         ),

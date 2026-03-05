@@ -121,6 +121,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'By creating an account, you agree to our\nTerms of Service and Privacy Policy';
 
   @override
+  String get auth_register_terms_prefix =>
+      'By creating an account, you agree to our\n';
+
+  @override
+  String get auth_register_terms_and => ' and ';
+
+  @override
   String get terms_of_service_title => 'Terms of Service';
 
   @override
@@ -449,6 +456,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get home_placeholder_subtitle => 'Your fitness journey starts here';
+
+  @override
+  String get home_user_fallback => 'User';
+
+  @override
+  String get home_preview_front => 'FRONT';
+
+  @override
+  String get home_preview_back => 'BACK';
 
   @override
   String get home_logout => 'Log Out';

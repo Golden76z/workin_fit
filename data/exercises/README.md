@@ -20,7 +20,7 @@ Exercises use **localization keys** that reference ARB files for translations:
 
 - The actual text is stored in:
   - `lib/l10n/app_en.arb` (English)
-  - `lib/l10n/app_fr.arb` (French - needs translation)
+  - `lib/l10n/app_fr.arb` (French)
 
 - The JSON files also contain the English text as fallback (`name`, `description`, `beginnerTips`)
 
@@ -51,9 +51,10 @@ The extension methods automatically:
    This will:
    - Add localization keys to the exercise JSON
    - Generate ARB entries in `app_en.arb` and `app_fr.arb`
+   - Preserve existing French translations when keys already exist
    - Update all difficulty files
 
-3. **Translate to French**: Edit `lib/l10n/app_fr.arb` and add French translations for the new exercise keys.
+3. **Translate to French**: Edit `lib/l10n/app_fr.arb` and add/adjust translations for new exercise keys.
 
 4. **Regenerate ARB code**: Run:
    ```bash
