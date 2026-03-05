@@ -1,0 +1,184 @@
+[
+  {
+    "id": "push_009",
+    "name": "Archer Push-up",
+    "description": "Advanced unilateral push-up variation. Shifts weight to one arm while the other arm extends, building incredible strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Master regular push-ups first. Start with a small shift and gradually increase the range.",
+    "equipment": [],
+    "nameKey": "exercise_push_009_name",
+    "descriptionKey": "exercise_push_009_description",
+    "beginnerTipsKey": "exercise_push_009_beginner_tips"
+  },
+  {
+    "id": "push_016",
+    "name": "Pseudo Planche Push-up",
+    "description": "Advanced push-up with hands positioned further back toward waist. Extremely challenging variation that builds incredible strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "abs"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Start with hands slightly behind shoulders and gradually move them back as you get stronger.",
+    "equipment": [],
+    "nameKey": "exercise_push_016_name",
+    "descriptionKey": "exercise_push_016_description",
+    "beginnerTipsKey": "exercise_push_016_beginner_tips"
+  },
+  {
+    "id": "push_017",
+    "name": "Clapping Push-up",
+    "description": "Explosive push-up variation where you clap hands together at the top. Develops power and upper body explosiveness.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Master regular push-ups first. Start with small claps and gradually increase height. Land softly.",
+    "equipment": [],
+    "nameKey": "exercise_push_017_name",
+    "descriptionKey": "exercise_push_017_description",
+    "beginnerTipsKey": "exercise_push_017_beginner_tips"
+  },
+  {
+    "id": "push_018",
+    "name": "One-Arm Push-up",
+    "description": "Ultimate push-up challenge performed with one arm. Requires exceptional strength, stability, and core control.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "abs",
+      "obliques"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Progress from archer push-ups. Start with feet wide apart and gradually bring them closer together.",
+    "equipment": [],
+    "nameKey": "exercise_push_018_name",
+    "descriptionKey": "exercise_push_018_description",
+    "beginnerTipsKey": "exercise_push_018_beginner_tips"
+  },
+  {
+    "id": "push_019",
+    "name": "Handstand Push-up",
+    "description": "Advanced exercise performed in handstand position. Ultimate test of shoulder strength and stability.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "shoulders",
+      "triceps",
+      "abs"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Master handstand hold first. Practice against a wall before attempting freestanding. Use pike push-ups to build strength.",
+    "equipment": [],
+    "nameKey": "exercise_push_019_name",
+    "descriptionKey": "exercise_push_019_description",
+    "beginnerTipsKey": "exercise_push_019_beginner_tips"
+  },
+  {
+    "id": "legs_003",
+    "name": "Pistol Squat",
+    "description": "Advanced single-leg squat. Requires exceptional strength, balance, and mobility. Ultimate leg strength test.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Start with assisted pistol squats using a chair or holding onto something. Progress gradually.",
+    "equipment": [],
+    "nameKey": "exercise_legs_003_name",
+    "descriptionKey": "exercise_legs_003_description",
+    "beginnerTipsKey": "exercise_legs_003_beginner_tips"
+  },
+  {
+    "id": "legs_019",
+    "name": "Skater Squats",
+    "description": "Advanced single-leg squat variation. Requires exceptional balance and leg strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Start with assisted version holding onto something. Lower down on one leg, extend other leg forward.",
+    "equipment": [],
+    "nameKey": "exercise_legs_019_name",
+    "descriptionKey": "exercise_legs_019_description",
+    "beginnerTipsKey": "exercise_legs_019_beginner_tips"
+  },
+  {
+    "id": "legs_022",
+    "name": "Single Leg Squat",
+    "description": "Advanced unilateral squat. Performed on one leg, requires exceptional strength and balance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Start with assisted version or pistol squat progression. Lower down on one leg, extend other leg forward for balance.",
+    "equipment": [],
+    "nameKey": "exercise_legs_022_name",
+    "descriptionKey": "exercise_legs_022_description",
+    "beginnerTipsKey": "exercise_legs_022_beginner_tips"
+  },
+  {
+    "id": "legs_024",
+    "name": "Jump Squat to Tuck",
+    "description": "Advanced jump squat variation bringing knees to chest in the air. Develops explosive power and core strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes",
+      "calves",
+      "abs"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Master regular jump squats first. Bring knees toward chest at peak of jump. Land softly.",
+    "equipment": [],
+    "nameKey": "exercise_legs_024_name",
+    "descriptionKey": "exercise_legs_024_description",
+    "beginnerTipsKey": "exercise_legs_024_beginner_tips"
+  },
+  {
+    "id": "core_017",
+    "name": "L-Sit",
+    "description": "Advanced isometric core exercise. Sit with legs extended, lift body off ground using core and arms.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "triceps"
+    ],
+    "difficulty": "advanced",
+    "beginnerTips": "Start with bent knees or using chair for support. Gradually work toward full L-sit.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_core_017_name",
+    "descriptionKey": "exercise_core_017_description",
+    "beginnerTipsKey": "exercise_core_017_beginner_tips"
+  }
+]

@@ -1,0 +1,755 @@
+[
+  {
+    "id": "push_001",
+    "name": "Push-up",
+    "description": "Classic bodyweight exercise targeting chest, shoulders, and triceps. Start in plank position, lower body until chest nearly touches floor, then push back up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Start with knee push-ups if full push-ups are too difficult. Keep your core tight and body in a straight line.",
+    "equipment": [],
+    "nameKey": "exercise_push_001_name",
+    "descriptionKey": "exercise_push_001_description",
+    "beginnerTipsKey": "exercise_push_001_beginner_tips"
+  },
+  {
+    "id": "push_002",
+    "name": "Incline Push-up",
+    "description": "Easier variation of push-up performed with hands elevated on a chair or wall. Reduces bodyweight load, perfect for beginners.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Place hands on a sturdy chair or wall. The higher the surface, the easier the exercise.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_push_002_name",
+    "descriptionKey": "exercise_push_002_description",
+    "beginnerTipsKey": "exercise_push_002_beginner_tips"
+  },
+  {
+    "id": "push_005",
+    "name": "Wide Push-up",
+    "description": "Push-up with hands placed wider than shoulder-width. Targets outer chest and shoulders more than standard push-up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Place hands wider than shoulder-width apart. Keep elbows slightly flared out during movement.",
+    "equipment": [],
+    "nameKey": "exercise_push_005_name",
+    "descriptionKey": "exercise_push_005_description",
+    "beginnerTipsKey": "exercise_push_005_beginner_tips"
+  },
+  {
+    "id": "push_007",
+    "name": "Wall Push-up",
+    "description": "Beginner-friendly push-up performed standing against a wall. Perfect for those building upper body strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Stand facing wall, place hands on wall at shoulder height. Step back to increase difficulty.",
+    "equipment": [],
+    "nameKey": "exercise_push_007_name",
+    "descriptionKey": "exercise_push_007_description",
+    "beginnerTipsKey": "exercise_push_007_beginner_tips"
+  },
+  {
+    "id": "push_008",
+    "name": "Knee Push-up",
+    "description": "Modified push-up performed on knees instead of toes. Reduces bodyweight load significantly.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep your body straight from knees to head. Don't let your hips sag or rise too high.",
+    "equipment": [],
+    "nameKey": "exercise_push_008_name",
+    "descriptionKey": "exercise_push_008_description",
+    "beginnerTipsKey": "exercise_push_008_beginner_tips"
+  },
+  {
+    "id": "push_015",
+    "name": "Wall Sit",
+    "description": "Isometric leg exercise performed against a wall. Builds quadriceps and glute endurance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Slide down wall until thighs are parallel to floor. Hold position with back flat against wall.",
+    "equipment": [],
+    "nameKey": "exercise_push_015_name",
+    "descriptionKey": "exercise_push_015_description",
+    "beginnerTipsKey": "exercise_push_015_beginner_tips"
+  },
+  {
+    "id": "pull_001",
+    "name": "Inverted Row",
+    "description": "Bodyweight rowing exercise using a table or sturdy surface. Excellent for building back and bicep strength without equipment.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Use a sturdy table or chair. Keep body straight, pull chest to surface. Adjust angle to change difficulty.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_pull_001_name",
+    "descriptionKey": "exercise_pull_001_description",
+    "beginnerTipsKey": "exercise_pull_001_beginner_tips"
+  },
+  {
+    "id": "pull_002",
+    "name": "Superman",
+    "description": "Prone exercise targeting lower back and glutes. Lie face down, lift arms and legs simultaneously, hold briefly.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "lowerBack",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Lift only as high as comfortable. Focus on squeezing glutes and lower back muscles.",
+    "equipment": [],
+    "nameKey": "exercise_pull_002_name",
+    "descriptionKey": "exercise_pull_002_description",
+    "beginnerTipsKey": "exercise_pull_002_beginner_tips"
+  },
+  {
+    "id": "pull_003",
+    "name": "Reverse Snow Angels",
+    "description": "Prone exercise where you move arms in snow angel motion. Strengthens posterior deltoids and upper back.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep arms straight and lift them off the ground. Move slowly and controlled through full range of motion.",
+    "equipment": [],
+    "nameKey": "exercise_pull_003_name",
+    "descriptionKey": "exercise_pull_003_description",
+    "beginnerTipsKey": "exercise_pull_003_beginner_tips"
+  },
+  {
+    "id": "pull_004",
+    "name": "Y-T-W Raises",
+    "description": "Prone exercise series forming Y, T, and W shapes with arms. Targets entire upper back and rear deltoids.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Perform each letter shape separately. Keep core engaged and avoid arching lower back excessively.",
+    "equipment": [],
+    "nameKey": "exercise_pull_004_name",
+    "descriptionKey": "exercise_pull_004_description",
+    "beginnerTipsKey": "exercise_pull_004_beginner_tips"
+  },
+  {
+    "id": "pull_005",
+    "name": "Wall Angels",
+    "description": "Standing exercise against wall mimicking snow angels. Improves posture and strengthens upper back muscles.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep back, head, and arms in contact with wall. Move slowly and maintain contact throughout movement.",
+    "equipment": [],
+    "nameKey": "exercise_pull_005_name",
+    "descriptionKey": "exercise_pull_005_description",
+    "beginnerTipsKey": "exercise_pull_005_beginner_tips"
+  },
+  {
+    "id": "pull_006",
+    "name": "Prone Y Raise",
+    "description": "Prone exercise lifting arms in Y position. Targets upper traps and rear deltoids.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Lift arms at 45-degree angle. Squeeze shoulder blades together at the top.",
+    "equipment": [],
+    "nameKey": "exercise_pull_006_name",
+    "descriptionKey": "exercise_pull_006_description",
+    "beginnerTipsKey": "exercise_pull_006_beginner_tips"
+  },
+  {
+    "id": "pull_007",
+    "name": "Prone T Raise",
+    "description": "Prone exercise lifting arms straight out to sides forming T shape. Strengthens rear deltoids and mid traps.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep arms straight and lift them parallel to ground. Focus on squeezing shoulder blades.",
+    "equipment": [],
+    "nameKey": "exercise_pull_007_name",
+    "descriptionKey": "exercise_pull_007_description",
+    "beginnerTipsKey": "exercise_pull_007_beginner_tips"
+  },
+  {
+    "id": "pull_008",
+    "name": "Prone W Raise",
+    "description": "Prone exercise with arms bent forming W shape. Targets rhomboids and rear deltoids.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Bend elbows and lift arms, squeezing shoulder blades together. Keep core engaged.",
+    "equipment": [],
+    "nameKey": "exercise_pull_008_name",
+    "descriptionKey": "exercise_pull_008_description",
+    "beginnerTipsKey": "exercise_pull_008_beginner_tips"
+  },
+  {
+    "id": "pull_010",
+    "name": "Scapular Wall Slides",
+    "description": "Posture exercise performed against wall. Strengthens upper back and improves shoulder mobility.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep back, head, and arms against wall. Slide arms up and down while maintaining contact.",
+    "equipment": [],
+    "nameKey": "exercise_pull_010_name",
+    "descriptionKey": "exercise_pull_010_description",
+    "beginnerTipsKey": "exercise_pull_010_beginner_tips"
+  },
+  {
+    "id": "pull_015",
+    "name": "Doorway Row",
+    "description": "Rowing exercise using doorway frame. Stand in doorway, pull body toward frame using back muscles.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Use sturdy doorway. Place hands on frame, lean back, and pull body forward. Adjust angle for difficulty.",
+    "equipment": [],
+    "nameKey": "exercise_pull_015_name",
+    "descriptionKey": "exercise_pull_015_description",
+    "beginnerTipsKey": "exercise_pull_015_beginner_tips"
+  },
+  {
+    "id": "pull_018",
+    "name": "Reverse Fly",
+    "description": "Prone exercise mimicking reverse fly motion. Strengthens rear deltoids and upper back without weights.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Lie face down, lift arms out to sides. Squeeze shoulder blades together at the top.",
+    "equipment": [],
+    "nameKey": "exercise_pull_018_name",
+    "descriptionKey": "exercise_pull_018_description",
+    "beginnerTipsKey": "exercise_pull_018_beginner_tips"
+  },
+  {
+    "id": "legs_001",
+    "name": "Bodyweight Squat",
+    "description": "Fundamental lower body exercise. Stand with feet shoulder-width, lower down as if sitting in chair, then stand back up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep knees tracking over toes. Lower until thighs are parallel to floor or as low as comfortable.",
+    "equipment": [],
+    "nameKey": "exercise_legs_001_name",
+    "descriptionKey": "exercise_legs_001_description",
+    "beginnerTipsKey": "exercise_legs_001_beginner_tips"
+  },
+  {
+    "id": "legs_005",
+    "name": "Forward Lunge",
+    "description": "Unilateral leg exercise stepping forward. Targets quads, glutes, and improves balance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Step forward, lower back knee toward ground. Keep front knee over ankle. Push back to start.",
+    "equipment": [],
+    "nameKey": "exercise_legs_005_name",
+    "descriptionKey": "exercise_legs_005_description",
+    "beginnerTipsKey": "exercise_legs_005_beginner_tips"
+  },
+  {
+    "id": "legs_006",
+    "name": "Reverse Lunge",
+    "description": "Lunge variation stepping backward. Easier on knees and emphasizes glutes more than forward lunge.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Step backward, lower down until both knees form 90-degree angles. Push back to start position.",
+    "equipment": [],
+    "nameKey": "exercise_legs_006_name",
+    "descriptionKey": "exercise_legs_006_description",
+    "beginnerTipsKey": "exercise_legs_006_beginner_tips"
+  },
+  {
+    "id": "legs_009",
+    "name": "Side Lunge",
+    "description": "Lateral lunge variation stepping to the side. Targets inner thighs and improves hip mobility.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Step to the side, lower down keeping other leg straight. Push back to center. Alternate sides.",
+    "equipment": [],
+    "nameKey": "exercise_legs_009_name",
+    "descriptionKey": "exercise_legs_009_description",
+    "beginnerTipsKey": "exercise_legs_009_beginner_tips"
+  },
+  {
+    "id": "legs_010",
+    "name": "Calf Raise",
+    "description": "Isolated calf exercise. Stand on balls of feet, rise up onto toes, then lower down slowly.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "calves"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Rise up as high as possible, hold briefly, then lower slowly. Can be done on floor or elevated surface.",
+    "equipment": [],
+    "nameKey": "exercise_legs_010_name",
+    "descriptionKey": "exercise_legs_010_description",
+    "beginnerTipsKey": "exercise_legs_010_beginner_tips"
+  },
+  {
+    "id": "legs_012",
+    "name": "Glute Bridge",
+    "description": "Hip extension exercise targeting glutes and hamstrings. Lie on back, lift hips up, squeeze glutes.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "hamstrings"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep feet flat on floor, lift hips until body forms straight line. Squeeze glutes at the top.",
+    "equipment": [],
+    "nameKey": "exercise_legs_012_name",
+    "descriptionKey": "exercise_legs_012_description",
+    "beginnerTipsKey": "exercise_legs_012_beginner_tips"
+  },
+  {
+    "id": "legs_014",
+    "name": "Donkey Kicks",
+    "description": "Quadruped exercise targeting glutes. Start on hands and knees, kick one leg back and up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep core engaged and back straight. Lift leg without arching lower back. Squeeze glute at top.",
+    "equipment": [],
+    "nameKey": "exercise_legs_014_name",
+    "descriptionKey": "exercise_legs_014_description",
+    "beginnerTipsKey": "exercise_legs_014_beginner_tips"
+  },
+  {
+    "id": "legs_015",
+    "name": "Fire Hydrants",
+    "description": "Quadruped exercise lifting leg to the side. Targets glutes and hip abductors.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Start on hands and knees. Lift leg out to side, keeping knee bent. Don't rotate hips.",
+    "equipment": [],
+    "nameKey": "exercise_legs_015_name",
+    "descriptionKey": "exercise_legs_015_description",
+    "beginnerTipsKey": "exercise_legs_015_beginner_tips"
+  },
+  {
+    "id": "legs_016",
+    "name": "Clamshells",
+    "description": "Side-lying exercise targeting hip abductors and glutes. Lie on side, lift top knee while keeping feet together.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep feet together, lift only the knee. Don't roll backward. Move slowly and controlled.",
+    "equipment": [],
+    "nameKey": "exercise_legs_016_name",
+    "descriptionKey": "exercise_legs_016_description",
+    "beginnerTipsKey": "exercise_legs_016_beginner_tips"
+  },
+  {
+    "id": "legs_017",
+    "name": "Leg Raises",
+    "description": "Core and hip flexor exercise. Lie on back, lift legs straight up, then lower down slowly.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "quads"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep lower back pressed to floor. Lower legs only as far as you can maintain back contact.",
+    "equipment": [],
+    "nameKey": "exercise_legs_017_name",
+    "descriptionKey": "exercise_legs_017_description",
+    "beginnerTipsKey": "exercise_legs_017_beginner_tips"
+  },
+  {
+    "id": "legs_020",
+    "name": "Step-up",
+    "description": "Unilateral leg exercise using chair or step. Step up onto surface, then step back down.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Use sturdy chair or step. Place entire foot on surface. Push through heel to step up.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_legs_020_name",
+    "descriptionKey": "exercise_legs_020_description",
+    "beginnerTipsKey": "exercise_legs_020_beginner_tips"
+  },
+  {
+    "id": "legs_021",
+    "name": "Sumo Squat",
+    "description": "Wide-stance squat variation. Targets inner thighs and glutes more than standard squat.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Stand with feet wider than shoulder-width, toes pointed slightly out. Lower down, keeping knees tracking over toes.",
+    "equipment": [],
+    "nameKey": "exercise_legs_021_name",
+    "descriptionKey": "exercise_legs_021_description",
+    "beginnerTipsKey": "exercise_legs_021_beginner_tips"
+  },
+  {
+    "id": "core_001",
+    "name": "Plank",
+    "description": "Fundamental core exercise. Hold body in straight line supported by forearms and toes. Builds core strength and stability.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "lowerBack"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep body straight from head to heels. Don't let hips sag or rise. Start with 20-30 seconds.",
+    "equipment": [],
+    "nameKey": "exercise_core_001_name",
+    "descriptionKey": "exercise_core_001_description",
+    "beginnerTipsKey": "exercise_core_001_beginner_tips"
+  },
+  {
+    "id": "core_002",
+    "name": "Side Plank",
+    "description": "Unilateral core exercise performed on side. Targets obliques and improves lateral stability.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "obliques",
+      "abs"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Support body on one forearm and side of foot. Keep body straight. Start with 15-20 seconds per side.",
+    "equipment": [],
+    "nameKey": "exercise_core_002_name",
+    "descriptionKey": "exercise_core_002_description",
+    "beginnerTipsKey": "exercise_core_002_beginner_tips"
+  },
+  {
+    "id": "core_004",
+    "name": "Bicycle Crunches",
+    "description": "Rotational core exercise mimicking bicycle motion. Targets abs and obliques effectively.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "obliques"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Lie on back, bring opposite elbow to knee. Extend other leg. Move slowly and controlled.",
+    "equipment": [],
+    "nameKey": "exercise_core_004_name",
+    "descriptionKey": "exercise_core_004_description",
+    "beginnerTipsKey": "exercise_core_004_beginner_tips"
+  },
+  {
+    "id": "core_005",
+    "name": "Russian Twists",
+    "description": "Seated rotational exercise targeting obliques. Sit with knees bent, lean back slightly, rotate torso side to side.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "obliques",
+      "abs"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep core engaged and back straight. Rotate from torso, not just arms. Start without weight.",
+    "equipment": [],
+    "nameKey": "exercise_core_005_name",
+    "descriptionKey": "exercise_core_005_description",
+    "beginnerTipsKey": "exercise_core_005_beginner_tips"
+  },
+  {
+    "id": "core_006",
+    "name": "Flutter Kicks",
+    "description": "Core exercise performed lying on back. Alternately kick legs up and down while keeping core engaged.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep lower back pressed to floor. Move legs in small, controlled motions. Don't arch back.",
+    "equipment": [],
+    "nameKey": "exercise_core_006_name",
+    "descriptionKey": "exercise_core_006_description",
+    "beginnerTipsKey": "exercise_core_006_beginner_tips"
+  },
+  {
+    "id": "core_007",
+    "name": "Dead Bug",
+    "description": "Core stability exercise performed on back. Extend opposite arm and leg while maintaining core engagement.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "lowerBack"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep lower back pressed to floor. Move slowly and controlled. Alternate opposite arm and leg.",
+    "equipment": [],
+    "nameKey": "exercise_core_007_name",
+    "descriptionKey": "exercise_core_007_description",
+    "beginnerTipsKey": "exercise_core_007_beginner_tips"
+  },
+  {
+    "id": "core_008",
+    "name": "Bird Dog",
+    "description": "Quadruped core stability exercise. Extend opposite arm and leg while maintaining balance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "lowerBack",
+      "glutes"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Start on hands and knees. Extend opposite arm and leg. Hold briefly, then switch sides.",
+    "equipment": [],
+    "nameKey": "exercise_core_008_name",
+    "descriptionKey": "exercise_core_008_description",
+    "beginnerTipsKey": "exercise_core_008_beginner_tips"
+  },
+  {
+    "id": "core_011",
+    "name": "Toe Touches",
+    "description": "Core exercise reaching for toes. Lie on back, lift legs and reach hands toward toes.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep legs as straight as possible. Lift shoulders off ground. Reach up, not forward.",
+    "equipment": [],
+    "nameKey": "exercise_core_011_name",
+    "descriptionKey": "exercise_core_011_description",
+    "beginnerTipsKey": "exercise_core_011_beginner_tips"
+  },
+  {
+    "id": "core_012",
+    "name": "Reverse Crunches",
+    "description": "Core exercise lifting hips. Lie on back, bring knees toward chest, lift hips off ground.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Keep knees bent. Lift hips by contracting abs, not by swinging legs. Lower slowly.",
+    "equipment": [],
+    "nameKey": "exercise_core_012_name",
+    "descriptionKey": "exercise_core_012_description",
+    "beginnerTipsKey": "exercise_core_012_beginner_tips"
+  },
+  {
+    "id": "cardio_001",
+    "name": "Jumping Jacks",
+    "description": "Classic full-body cardio exercise. Jump feet apart while raising arms overhead, then return.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "shoulders",
+      "calves"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Start slowly to master coordination. Land softly on balls of feet. Can be done low-impact by stepping instead of jumping.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_001_name",
+    "descriptionKey": "exercise_cardio_001_description",
+    "beginnerTipsKey": "exercise_cardio_001_beginner_tips"
+  },
+  {
+    "id": "cardio_002",
+    "name": "High Knees",
+    "description": "Running in place bringing knees up high. Excellent cardio exercise that also improves coordination.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Run in place, bringing knees up toward chest. Pump arms naturally. Start with 20-30 seconds.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_002_name",
+    "descriptionKey": "exercise_cardio_002_description",
+    "beginnerTipsKey": "exercise_cardio_002_beginner_tips"
+  },
+  {
+    "id": "cardio_003",
+    "name": "Butt Kicks",
+    "description": "Running in place kicking heels toward glutes. Targets hamstrings while providing cardio benefits.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "hamstrings"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Run in place, kick heels up toward glutes. Keep knees pointing down. Start with 20-30 seconds.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_003_name",
+    "descriptionKey": "exercise_cardio_003_description",
+    "beginnerTipsKey": "exercise_cardio_003_beginner_tips"
+  },
+  {
+    "id": "cardio_009",
+    "name": "Shadow Boxing",
+    "description": "Cardio exercise mimicking boxing movements. Throw punches in air, combining cardio with coordination.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Throw jabs, crosses, hooks, and uppercuts. Keep moving, don't stop between punches. 30-60 seconds rounds.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_009_name",
+    "descriptionKey": "exercise_cardio_009_description",
+    "beginnerTipsKey": "exercise_cardio_009_beginner_tips"
+  },
+  {
+    "id": "cardio_010",
+    "name": "Jump Rope (No Rope)",
+    "description": "Mimic jump rope motion without equipment. Jump lightly on balls of feet, rotating wrists as if holding rope.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "calves"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Jump lightly on balls of feet. Rotate wrists as if holding rope. Start with 20-30 seconds.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_010_name",
+    "descriptionKey": "exercise_cardio_010_description",
+    "beginnerTipsKey": "exercise_cardio_010_beginner_tips"
+  },
+  {
+    "id": "cardio_014",
+    "name": "Dancing in Place",
+    "description": "Fun cardio exercise moving to music. Freestyle dance movements to get heart rate up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio"
+    ],
+    "difficulty": "beginner",
+    "beginnerTips": "Move your body to music. Include arm movements, leg lifts, and hip movements. Have fun!",
+    "equipment": [],
+    "nameKey": "exercise_cardio_014_name",
+    "descriptionKey": "exercise_cardio_014_description",
+    "beginnerTipsKey": "exercise_cardio_014_beginner_tips"
+  }
+]

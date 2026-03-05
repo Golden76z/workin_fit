@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/views/auth/login_view.dart';
 import 'package:workin_fit/views/auth/register_view.dart';
 
 class AuthenticationView extends StatefulWidget {
   final int initialTabIndex;
-  
+
   const AuthenticationView({
     super.key,
     this.initialTabIndex = 0,
@@ -15,7 +17,7 @@ class AuthenticationView extends StatefulWidget {
   State<AuthenticationView> createState() => _AuthenticationViewState();
 }
 
-class _AuthenticationViewState extends State<AuthenticationView> 
+class _AuthenticationViewState extends State<AuthenticationView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -38,24 +40,24 @@ class _AuthenticationViewState extends State<AuthenticationView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         // To hide the arrow back button on the screen (only keep the phone one)
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.only(top: 15.0),
+        title: Padding(
+          padding: const EdgeInsets.only(top: AppSpacing.sm + 3),
           child: Center(
             child: Text(
-          'Workin Fit',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontFamily:
-                'AppFont',
-            fontSize: 44,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
+              localizations.welcome_page_app_title,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontFamily: 'AppFont',
+                fontSize: 44,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
           ),
         ),
         backgroundColor: AppColors.primary,
@@ -66,7 +68,8 @@ class _AuthenticationViewState extends State<AuthenticationView>
             child: TabBar(
               controller: _tabController,
               labelColor: AppColors.textPrimary,
-              unselectedLabelColor: AppColors.textPrimary.withValues(alpha: 0.7),
+              unselectedLabelColor:
+                  AppColors.textPrimary.withValues(alpha: 0.7),
               indicatorColor: AppColors.textPrimary,
               indicatorWeight: 3,
               labelStyle: theme.textTheme.titleLarge?.copyWith(
@@ -76,9 +79,9 @@ class _AuthenticationViewState extends State<AuthenticationView>
               unselectedLabelStyle: theme.textTheme.titleLarge?.copyWith(
                 fontFamily: 'AppFontMedium',
               ),
-              tabs: const [
-                Tab(text: 'Register'),
-                Tab(text: 'Login'),
+              tabs: [
+                Tab(text: localizations.auth_tab_register),
+                Tab(text: localizations.auth_tab_login),
               ],
             ),
           ),

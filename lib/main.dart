@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/core/theme/app_theme.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 // import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
@@ -64,18 +66,12 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
     final locale = ref.watch(localeProvider);
 
     return MaterialApp(
-      title: 'Workin Fit',
+      title: AppConstants.appName,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF7B68EE),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.darkTheme,
       // Redirect based on global auth state and email verification
       home: const AuthGate(),
     );

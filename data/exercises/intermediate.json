@@ -1,0 +1,835 @@
+[
+  {
+    "id": "push_003",
+    "name": "Decline Push-up",
+    "description": "Advanced push-up variation with feet elevated on a chair. Increases difficulty by shifting more weight to upper body.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with a low elevation and gradually increase. Ensure the chair is stable and won't slide.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_push_003_name",
+    "descriptionKey": "exercise_push_003_description",
+    "beginnerTipsKey": "exercise_push_003_beginner_tips"
+  },
+  {
+    "id": "push_004",
+    "name": "Diamond Push-up",
+    "description": "Push-up variation with hands forming a diamond shape. Emphasizes triceps and inner chest muscles.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "triceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with regular push-ups to build strength. Place thumbs and index fingers together to form diamond.",
+    "equipment": [],
+    "nameKey": "exercise_push_004_name",
+    "descriptionKey": "exercise_push_004_description",
+    "beginnerTipsKey": "exercise_push_004_beginner_tips"
+  },
+  {
+    "id": "push_006",
+    "name": "Pike Push-up",
+    "description": "Push-up performed in downward dog position. Excellent for building shoulder strength and preparing for handstand push-ups.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with feet wider apart for better balance. Lower head toward floor between hands, then push back up.",
+    "equipment": [],
+    "nameKey": "exercise_push_006_name",
+    "descriptionKey": "exercise_push_006_description",
+    "beginnerTipsKey": "exercise_push_006_beginner_tips"
+  },
+  {
+    "id": "push_010",
+    "name": "Hindu Push-up",
+    "description": "Dynamic push-up variation with flowing movement. Combines strength training with mobility work.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "back"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in downward dog, lower into upward dog position, then return. Focus on smooth, controlled movement.",
+    "equipment": [],
+    "nameKey": "exercise_push_010_name",
+    "descriptionKey": "exercise_push_010_description",
+    "beginnerTipsKey": "exercise_push_010_beginner_tips"
+  },
+  {
+    "id": "push_011",
+    "name": "Spiderman Push-up",
+    "description": "Push-up variation where you bring knee to elbow during the lowering phase. Adds core engagement and hip mobility.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "abs",
+      "obliques"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with regular push-ups. Add the knee movement once you're comfortable with the base exercise.",
+    "equipment": [],
+    "nameKey": "exercise_push_011_name",
+    "descriptionKey": "exercise_push_011_description",
+    "beginnerTipsKey": "exercise_push_011_beginner_tips"
+  },
+  {
+    "id": "push_012",
+    "name": "Shoulder Tap Push-up",
+    "description": "Push-up variation where you tap opposite shoulder at the top of each rep. Challenges stability and core strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "abs"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular push-ups first. Keep your hips level and avoid rotating your body when tapping.",
+    "equipment": [],
+    "nameKey": "exercise_push_012_name",
+    "descriptionKey": "exercise_push_012_description",
+    "beginnerTipsKey": "exercise_push_012_beginner_tips"
+  },
+  {
+    "id": "push_013",
+    "name": "Tricep Dips",
+    "description": "Upper body exercise using a chair. Targets triceps, shoulders, and chest. Sit on edge of chair, lower body, then push up.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "triceps",
+      "shoulders",
+      "chest"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep feet closer to chair for easier variation. Ensure chair is stable and won't tip over.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_push_013_name",
+    "descriptionKey": "exercise_push_013_description",
+    "beginnerTipsKey": "exercise_push_013_beginner_tips"
+  },
+  {
+    "id": "push_014",
+    "name": "Diamond Tricep Dips",
+    "description": "Tricep dips with hands close together in diamond position. Increases tricep emphasis and difficulty.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "triceps",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular tricep dips first. Place hands close together with fingers pointing forward.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_push_014_name",
+    "descriptionKey": "exercise_push_014_description",
+    "beginnerTipsKey": "exercise_push_014_beginner_tips"
+  },
+  {
+    "id": "push_020",
+    "name": "Dive Bomber Push-up",
+    "description": "Dynamic push-up variation combining downward dog, low push-up, and upward dog positions in one fluid motion.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps",
+      "back"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start slowly to master the movement pattern. Focus on smooth transitions between positions.",
+    "equipment": [],
+    "nameKey": "exercise_push_020_name",
+    "descriptionKey": "exercise_push_020_description",
+    "beginnerTipsKey": "exercise_push_020_beginner_tips"
+  },
+  {
+    "id": "pull_009",
+    "name": "Reverse Plank",
+    "description": "Bodyweight exercise performed face-up. Strengthens posterior chain including back, glutes, and hamstrings.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "glutes",
+      "hamstrings",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with bent knees and gradually straighten legs as you get stronger. Keep hips lifted.",
+    "equipment": [],
+    "nameKey": "exercise_pull_009_name",
+    "descriptionKey": "exercise_pull_009_description",
+    "beginnerTipsKey": "exercise_pull_009_beginner_tips"
+  },
+  {
+    "id": "pull_011",
+    "name": "Isometric Pull Hold",
+    "description": "Static hold exercise mimicking pull-up position. Builds grip strength and back endurance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps",
+      "forearms"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Hang from a bar or sturdy surface. Hold chin over bar as long as possible. Use assistance if needed.",
+    "equipment": [],
+    "nameKey": "exercise_pull_011_name",
+    "descriptionKey": "exercise_pull_011_description",
+    "beginnerTipsKey": "exercise_pull_011_beginner_tips"
+  },
+  {
+    "id": "pull_012",
+    "name": "Reverse Plank Walk",
+    "description": "Dynamic reverse plank variation. Walk hands backward while maintaining reverse plank position.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders",
+      "glutes",
+      "hamstrings"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with small steps. Keep hips elevated and body straight throughout movement.",
+    "equipment": [],
+    "nameKey": "exercise_pull_012_name",
+    "descriptionKey": "exercise_pull_012_description",
+    "beginnerTipsKey": "exercise_pull_012_beginner_tips"
+  },
+  {
+    "id": "pull_013",
+    "name": "Single Arm Row",
+    "description": "Unilateral rowing exercise using bodyweight. Can be performed with towel or resistance band if available.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Use a towel wrapped around a door handle or sturdy anchor. Pull with one arm, focusing on squeezing back muscles.",
+    "equipment": [],
+    "nameKey": "exercise_pull_013_name",
+    "descriptionKey": "exercise_pull_013_description",
+    "beginnerTipsKey": "exercise_pull_013_beginner_tips"
+  },
+  {
+    "id": "pull_014",
+    "name": "Towel Row",
+    "description": "Rowing exercise using a towel for grip. Wrap towel around door handle or sturdy anchor and row.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps",
+      "forearms"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Ensure door or anchor is secure. Adjust distance to change difficulty. Closer = easier, farther = harder.",
+    "equipment": [],
+    "nameKey": "exercise_pull_014_name",
+    "descriptionKey": "exercise_pull_014_description",
+    "beginnerTipsKey": "exercise_pull_014_beginner_tips"
+  },
+  {
+    "id": "pull_016",
+    "name": "Australian Pull-up",
+    "description": "Horizontal pulling exercise using table or bar. Body positioned horizontally, pull chest to surface.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Use sturdy table or low bar. Keep body straight. Higher surface = easier, lower = harder.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_pull_016_name",
+    "descriptionKey": "exercise_pull_016_description",
+    "beginnerTipsKey": "exercise_pull_016_beginner_tips"
+  },
+  {
+    "id": "pull_017",
+    "name": "Pull-up Negative",
+    "description": "Eccentric phase of pull-up. Jump or step up to top position, then lower slowly. Builds strength for full pull-ups.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Use a chair to reach top position. Lower as slowly as possible, aiming for 3-5 seconds descent.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_pull_017_name",
+    "descriptionKey": "exercise_pull_017_description",
+    "beginnerTipsKey": "exercise_pull_017_beginner_tips"
+  },
+  {
+    "id": "pull_019",
+    "name": "Wide Grip Inverted Row",
+    "description": "Inverted row with hands placed wider than shoulder-width. Emphasizes outer back and rear deltoids.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Use table or bar. Place hands wider than shoulders. Pull chest to surface while keeping body straight.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_pull_019_name",
+    "descriptionKey": "exercise_pull_019_description",
+    "beginnerTipsKey": "exercise_pull_019_beginner_tips"
+  },
+  {
+    "id": "pull_020",
+    "name": "Close Grip Inverted Row",
+    "description": "Inverted row with hands close together. Increases bicep emphasis and difficulty.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Place hands close together, palms facing each other if possible. Pull with biceps and back muscles.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_pull_020_name",
+    "descriptionKey": "exercise_pull_020_description",
+    "beginnerTipsKey": "exercise_pull_020_beginner_tips"
+  },
+  {
+    "id": "legs_002",
+    "name": "Jump Squat",
+    "description": "Explosive squat variation with jump at the top. Develops power and athleticism in lower body.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular squats first. Land softly with knees slightly bent to absorb impact.",
+    "equipment": [],
+    "nameKey": "exercise_legs_002_name",
+    "descriptionKey": "exercise_legs_002_description",
+    "beginnerTipsKey": "exercise_legs_002_beginner_tips"
+  },
+  {
+    "id": "legs_004",
+    "name": "Bulgarian Split Squat",
+    "description": "Single-leg squat with rear foot elevated on chair. Excellent for building unilateral leg strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Place rear foot on chair behind you. Lower down, keeping front knee over ankle. Start with shallow depth.",
+    "equipment": [
+      "chair"
+    ],
+    "nameKey": "exercise_legs_004_name",
+    "descriptionKey": "exercise_legs_004_description",
+    "beginnerTipsKey": "exercise_legs_004_beginner_tips"
+  },
+  {
+    "id": "legs_007",
+    "name": "Walking Lunge",
+    "description": "Dynamic lunge variation moving forward. Combines strength training with coordination.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with stationary lunges. Alternate legs as you move forward, maintaining good form.",
+    "equipment": [],
+    "nameKey": "exercise_legs_007_name",
+    "descriptionKey": "exercise_legs_007_description",
+    "beginnerTipsKey": "exercise_legs_007_beginner_tips"
+  },
+  {
+    "id": "legs_008",
+    "name": "Jumping Lunge",
+    "description": "Explosive lunge variation with jump between reps. Develops power and cardiovascular fitness.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular lunges first. Land softly and switch legs in the air. Start with low jumps.",
+    "equipment": [],
+    "nameKey": "exercise_legs_008_name",
+    "descriptionKey": "exercise_legs_008_description",
+    "beginnerTipsKey": "exercise_legs_008_beginner_tips"
+  },
+  {
+    "id": "legs_011",
+    "name": "Single Leg Calf Raise",
+    "description": "Unilateral calf exercise. Performed on one leg to increase difficulty and address imbalances.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master two-legged calf raises first. Hold onto something for balance if needed.",
+    "equipment": [],
+    "nameKey": "exercise_legs_011_name",
+    "descriptionKey": "exercise_legs_011_description",
+    "beginnerTipsKey": "exercise_legs_011_beginner_tips"
+  },
+  {
+    "id": "legs_013",
+    "name": "Single Leg Glute Bridge",
+    "description": "Advanced glute bridge variation performed on one leg. Significantly increases difficulty and glute activation.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "hamstrings"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular glute bridge first. Extend one leg straight, lift hips with one leg.",
+    "equipment": [],
+    "nameKey": "exercise_legs_013_name",
+    "descriptionKey": "exercise_legs_013_description",
+    "beginnerTipsKey": "exercise_legs_013_beginner_tips"
+  },
+  {
+    "id": "legs_018",
+    "name": "Single Leg Deadlift",
+    "description": "Unilateral hip hinge exercise. Develops balance, hamstring strength, and glute activation.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "hamstrings",
+      "glutes",
+      "lowerBack"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with small range of motion. Hinge at hips, extend opposite leg back. Keep back straight.",
+    "equipment": [],
+    "nameKey": "exercise_legs_018_name",
+    "descriptionKey": "exercise_legs_018_description",
+    "beginnerTipsKey": "exercise_legs_018_beginner_tips"
+  },
+  {
+    "id": "legs_023",
+    "name": "Cossack Squat",
+    "description": "Lateral squat variation with one leg extended. Improves hip mobility and builds leg strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Shift weight to one side, lower down while extending other leg. Keep extended leg straight.",
+    "equipment": [],
+    "nameKey": "exercise_legs_023_name",
+    "descriptionKey": "exercise_legs_023_description",
+    "beginnerTipsKey": "exercise_legs_023_beginner_tips"
+  },
+  {
+    "id": "legs_025",
+    "name": "Wall Sit Pulse",
+    "description": "Dynamic wall sit variation. Hold wall sit position, then pulse up and down slightly.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in wall sit position. Pulse up and down 2-3 inches. Keep back against wall throughout.",
+    "equipment": [],
+    "nameKey": "exercise_legs_025_name",
+    "descriptionKey": "exercise_legs_025_description",
+    "beginnerTipsKey": "exercise_legs_025_beginner_tips"
+  },
+  {
+    "id": "core_003",
+    "name": "Mountain Climbers",
+    "description": "Dynamic core exercise alternating knees to chest. Combines strength with cardiovascular training.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in plank position. Alternate bringing knees to chest. Keep hips level, don't bounce.",
+    "equipment": [],
+    "nameKey": "exercise_core_003_name",
+    "descriptionKey": "exercise_core_003_description",
+    "beginnerTipsKey": "exercise_core_003_beginner_tips"
+  },
+  {
+    "id": "core_009",
+    "name": "Hollow Body Hold",
+    "description": "Advanced isometric core exercise. Lie on back, lift shoulders and legs, hold position.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with bent knees. Gradually straighten legs as you get stronger. Keep lower back pressed to floor.",
+    "equipment": [],
+    "nameKey": "exercise_core_009_name",
+    "descriptionKey": "exercise_core_009_description",
+    "beginnerTipsKey": "exercise_core_009_beginner_tips"
+  },
+  {
+    "id": "core_010",
+    "name": "V-Ups",
+    "description": "Advanced core exercise forming V shape. Lie on back, lift torso and legs simultaneously to touch.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with knees bent. Gradually work toward straight legs. Don't use momentum.",
+    "equipment": [],
+    "nameKey": "exercise_core_010_name",
+    "descriptionKey": "exercise_core_010_description",
+    "beginnerTipsKey": "exercise_core_010_beginner_tips"
+  },
+  {
+    "id": "core_013",
+    "name": "Plank Jacks",
+    "description": "Dynamic plank variation jumping feet apart and together. Combines core strength with cardio.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in plank position. Jump feet apart and together while maintaining plank position.",
+    "equipment": [],
+    "nameKey": "exercise_core_013_name",
+    "descriptionKey": "exercise_core_013_description",
+    "beginnerTipsKey": "exercise_core_013_beginner_tips"
+  },
+  {
+    "id": "core_014",
+    "name": "Bear Crawl",
+    "description": "Quadruped movement exercise. Crawl forward and backward on hands and feet, keeping knees off ground.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "shoulders",
+      "quads"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep core engaged and back flat. Move opposite hand and foot together. Start with short distances.",
+    "equipment": [],
+    "nameKey": "exercise_core_014_name",
+    "descriptionKey": "exercise_core_014_description",
+    "beginnerTipsKey": "exercise_core_014_beginner_tips"
+  },
+  {
+    "id": "core_015",
+    "name": "Crab Walk",
+    "description": "Reverse quadruped movement. Sit with hands behind you, lift hips, walk forward and backward.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "triceps",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep hips lifted throughout. Move opposite hand and foot together. Start with short distances.",
+    "equipment": [],
+    "nameKey": "exercise_core_015_name",
+    "descriptionKey": "exercise_core_015_description",
+    "beginnerTipsKey": "exercise_core_015_beginner_tips"
+  },
+  {
+    "id": "core_016",
+    "name": "Windshield Wipers",
+    "description": "Core exercise moving legs side to side. Lie on back, lift legs, rotate them side to side.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "obliques"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep legs together and lower back pressed to floor. Move slowly and controlled.",
+    "equipment": [],
+    "nameKey": "exercise_core_016_name",
+    "descriptionKey": "exercise_core_016_description",
+    "beginnerTipsKey": "exercise_core_016_beginner_tips"
+  },
+  {
+    "id": "core_018",
+    "name": "Plank to Downward Dog",
+    "description": "Dynamic movement transitioning from plank to downward dog. Combines core strength with mobility.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in plank, push hips up to downward dog, then return. Move slowly and controlled.",
+    "equipment": [],
+    "nameKey": "exercise_core_018_name",
+    "descriptionKey": "exercise_core_018_description",
+    "beginnerTipsKey": "exercise_core_018_beginner_tips"
+  },
+  {
+    "id": "core_019",
+    "name": "Side Plank with Leg Lift",
+    "description": "Advanced side plank variation. Hold side plank, lift top leg up and down.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "obliques",
+      "glutes"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Master regular side plank first. Lift leg slowly, keeping body straight. Don't rotate hips.",
+    "equipment": [],
+    "nameKey": "exercise_core_019_name",
+    "descriptionKey": "exercise_core_019_description",
+    "beginnerTipsKey": "exercise_core_019_beginner_tips"
+  },
+  {
+    "id": "core_020",
+    "name": "Plank Up-Downs",
+    "description": "Dynamic plank variation transitioning between high and low plank. Alternates between hands and forearms.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "shoulders",
+      "triceps"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in plank, push up to high plank one arm at a time, then lower back down. Keep core engaged.",
+    "equipment": [],
+    "nameKey": "exercise_core_020_name",
+    "descriptionKey": "exercise_core_020_description",
+    "beginnerTipsKey": "exercise_core_020_beginner_tips"
+  },
+  {
+    "id": "cardio_004",
+    "name": "Burpees",
+    "description": "Full-body explosive exercise combining squat, plank, push-up, and jump. Ultimate bodyweight cardio challenge.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "chest",
+      "quads",
+      "shoulders"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start with step-back burpees (no jump). Master each component separately before combining. Land softly from jump.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_004_name",
+    "descriptionKey": "exercise_cardio_004_description",
+    "beginnerTipsKey": "exercise_cardio_004_beginner_tips"
+  },
+  {
+    "id": "cardio_005",
+    "name": "Skater Jumps",
+    "description": "Lateral jumping exercise mimicking ice skating motion. Develops power, balance, and cardiovascular fitness.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Jump side to side, landing on one foot. Swing opposite arm across body. Start with small jumps.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_005_name",
+    "descriptionKey": "exercise_cardio_005_description",
+    "beginnerTipsKey": "exercise_cardio_005_beginner_tips"
+  },
+  {
+    "id": "cardio_006",
+    "name": "Star Jumps",
+    "description": "Explosive jumping exercise forming star shape. Jump up, spread arms and legs wide, then return.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "shoulders",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Jump up, spread arms and legs wide at peak. Land softly with feet together. Start with low jumps.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_006_name",
+    "descriptionKey": "exercise_cardio_006_description",
+    "beginnerTipsKey": "exercise_cardio_006_beginner_tips"
+  },
+  {
+    "id": "cardio_007",
+    "name": "Tuck Jumps",
+    "description": "Explosive jump bringing knees to chest. Develops power and cardiovascular fitness.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "calves",
+      "abs"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Jump as high as possible, bringing knees toward chest. Land softly with knees slightly bent.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_007_name",
+    "descriptionKey": "exercise_cardio_007_description",
+    "beginnerTipsKey": "exercise_cardio_007_beginner_tips"
+  },
+  {
+    "id": "cardio_008",
+    "name": "Inchworms",
+    "description": "Full-body movement exercise. Stand, walk hands out to plank, then walk feet back to hands.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "shoulders",
+      "abs",
+      "hamstrings"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep legs as straight as possible when walking hands out. Move slowly and controlled.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_008_name",
+    "descriptionKey": "exercise_cardio_008_description",
+    "beginnerTipsKey": "exercise_cardio_008_beginner_tips"
+  },
+  {
+    "id": "cardio_011",
+    "name": "Fast Feet",
+    "description": "High-intensity cardio exercise. Run in place as fast as possible, staying on balls of feet.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Stay on balls of feet, move feet as fast as possible. Keep core engaged. Start with 10-15 second bursts.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_011_name",
+    "descriptionKey": "exercise_cardio_011_description",
+    "beginnerTipsKey": "exercise_cardio_011_beginner_tips"
+  },
+  {
+    "id": "cardio_012",
+    "name": "Squat Jumps",
+    "description": "Explosive squat variation with jump. Combines strength training with high-intensity cardio.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Squat down, then explode up into jump. Land softly and immediately go into next rep.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_012_name",
+    "descriptionKey": "exercise_cardio_012_description",
+    "beginnerTipsKey": "exercise_cardio_012_beginner_tips"
+  },
+  {
+    "id": "cardio_013",
+    "name": "Lunge Jumps",
+    "description": "Explosive lunge variation with jump. Alternates legs while jumping, providing intense cardio workout.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in lunge position, jump up and switch legs in air. Land in opposite lunge position.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_013_name",
+    "descriptionKey": "exercise_cardio_013_description",
+    "beginnerTipsKey": "exercise_cardio_013_beginner_tips"
+  },
+  {
+    "id": "cardio_015",
+    "name": "Jumping Lunges",
+    "description": "High-intensity lunge variation with explosive jumps. Alternates legs while maintaining lunge position.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "difficulty": "intermediate",
+    "beginnerTips": "Start in lunge, jump up and switch legs. Land softly in opposite lunge. Master regular lunges first.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_015_name",
+    "descriptionKey": "exercise_cardio_015_description",
+    "beginnerTipsKey": "exercise_cardio_015_beginner_tips"
+  }
+]
