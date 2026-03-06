@@ -490,6 +490,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessions_list_title => 'My Sessions';
 
   @override
+  String get home_tab_home => 'Home';
+
+  @override
+  String get home_tab_sessions => 'Sessions';
+
+  @override
+  String get home_tab_lab => 'Lab';
+
+  @override
+  String get home_tab_programs => 'Programs';
+
+  @override
+  String get home_tab_profile => 'Profile';
+
+  @override
+  String get home_placeholder_coming_soon => 'Coming soon';
+
+  @override
+  String get workout_state_no_exercises => 'No exercises in this session.';
+
+  @override
+  String workout_state_load_error(String error) {
+    return 'Failed to load exercises: $error';
+  }
+
+  @override
+  String get workout_phase_get_ready => 'Get ready';
+
+  @override
+  String get workout_phase_exercise => 'Exercise';
+
+  @override
+  String get workout_phase_finished => 'Workout complete';
+
+  @override
+  String get workout_hint_tap_pause => 'Tap timer to pause';
+
+  @override
+  String get workout_hint_tap_resume => 'Tap timer to resume';
+
+  @override
+  String get workout_hint_tap_start => 'Tap timer to start';
+
+  @override
+  String get workout_current_label => 'Current';
+
+  @override
+  String get workout_next_label => 'Next exercise';
+
+  @override
+  String get workout_final_exercise => 'Final exercise in progress.';
+
+  @override
+  String get workout_tips_fallback =>
+      'Keep your core engaged and move with control.';
+
+  @override
+  String workout_unnamed_exercise(int index) {
+    return 'Exercise $index';
+  }
+
+  @override
   String get exercise_push_001_name => 'Push-up';
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/session.dart';
@@ -11,13 +12,19 @@ class CreateSessionScreen extends ConsumerStatefulWidget {
   const CreateSessionScreen({super.key});
 
   @override
-  ConsumerState<CreateSessionScreen> createState() => _CreateSessionScreenState();
+  ConsumerState<CreateSessionScreen> createState() =>
+      _CreateSessionScreenState();
 }
 
 class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
   final _nameController = TextEditingController();
   final List<WorkoutConfig> _workouts = [];
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
 
   /* void _addTabataWorkout(String exerciseId) {
     setState(() {
@@ -42,7 +49,7 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
 
     try {
       await ref.read(sessionActionsProvider).createSession(session);
-      
+
       if (mounted) {
         final localizations = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -100,6 +107,8 @@ class _CreateSessionScreenState extends ConsumerState<CreateSessionScreen> {
 
 // Example: Display Sessions List
 class SessionsListScreen extends ConsumerWidget {
+  const SessionsListScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionsAsync = ref.watch(userSessionsProvider);
@@ -116,17 +125,23 @@ class SessionsListScreen extends ConsumerWidget {
             return ListTile(
               title: Text(session.name),
               subtitle: Text(
-                '${session.exerciseCount} exercises • ${session.durationDisplay}'
+                '${session.exerciseCount} exercises • ${session.durationDisplay}',
               ),
               trailing: IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 onPressed: () async {
-                  await ref.read(sessionActionsProvider)
+                  await ref
+                      .read(sessionActionsProvider)
                       .deleteSession(session.id);
                 },
               ),
               onTap: () {
-                // Navigate to workout execution
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => WorkoutExecutionScreen(session: session),
+                  ),
+                );
               },
             );
           },
@@ -140,10 +155,10 @@ class SessionsListScreen extends ConsumerWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => CreateSessionScreen()),
+            MaterialPageRoute(builder: (_) => const CreateSessionScreen()),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

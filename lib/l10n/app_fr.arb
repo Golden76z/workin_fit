@@ -229,6 +229,39 @@
   "sessions_name_label": "Nom de la session",
   "sessions_save_button": "Enregistrer la session",
   "sessions_list_title": "Mes sessions",
+  "home_tab_home": "Accueil",
+  "home_tab_sessions": "Sessions",
+  "home_tab_lab": "Labo",
+  "home_tab_programs": "Programmes",
+  "home_tab_profile": "Profil",
+  "home_placeholder_coming_soon": "Bientôt disponible",
+  "workout_state_no_exercises": "Aucun exercice dans cette session.",
+  "workout_state_load_error": "Impossible de charger les exercices : {error}",
+  "@workout_state_load_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "workout_phase_get_ready": "Prépare-toi",
+  "workout_phase_exercise": "Exercice",
+  "workout_phase_finished": "Entraînement terminé",
+  "workout_hint_tap_pause": "Touchez le minuteur pour mettre en pause",
+  "workout_hint_tap_resume": "Touchez le minuteur pour reprendre",
+  "workout_hint_tap_start": "Touchez le minuteur pour démarrer",
+  "workout_current_label": "Actuel",
+  "workout_next_label": "Exercice suivant",
+  "workout_final_exercise": "Dernier exercice en cours.",
+  "workout_tips_fallback": "Garde le tronc engagé et contrôle le mouvement.",
+  "workout_unnamed_exercise": "Exercice {index}",
+  "@workout_unnamed_exercise": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
   "exercise_push_001_name": "Pompes",
   "exercise_push_001_description": "Exercice classique au poids du corps ciblant la poitrine, les épaules et les triceps. Commencez en position de planche, descendez le corps jusqu'à ce que la poitrine touche presque le sol, puis remontez.",
   "exercise_push_001_beginner_tips": "Commencez par des pompes sur les genoux si les pompes complètes sont trop difficiles. Gardez votre tronc serré et votre corps en ligne droite.",

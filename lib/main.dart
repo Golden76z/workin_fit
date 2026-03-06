@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/theme/app_theme.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
-// import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
@@ -17,8 +18,20 @@ import 'package:workin_fit/features/auth/presentation/auth_gate.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
 
+const SystemUiOverlayStyle _globalSystemOverlayStyle = SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+  statusBarIconBrightness: Brightness.light,
+  statusBarBrightness: Brightness.dark,
+  systemNavigationBarColor: AppColors.navigationBarBackground,
+  systemNavigationBarDividerColor: AppColors.navigationBarBackground,
+  systemNavigationBarIconBrightness: Brightness.light,
+  systemNavigationBarContrastEnforced: false,
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(_globalSystemOverlayStyle);
 
   // Initialize Firebase for authentication and cloud services
   await Firebase.initializeApp();
@@ -71,7 +84,15 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
+      builder: (BuildContext context, Widget? child) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: _globalSystemOverlayStyle,
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       // Redirect based on global auth state and email verification
       home: const AuthGate(),
     );

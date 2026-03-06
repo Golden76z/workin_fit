@@ -257,6 +257,39 @@
   "sessions_name_label": "Session Name",
   "sessions_save_button": "Save Session",
   "sessions_list_title": "My Sessions",
+  "home_tab_home": "Home",
+  "home_tab_sessions": "Sessions",
+  "home_tab_lab": "Lab",
+  "home_tab_programs": "Programs",
+  "home_tab_profile": "Profile",
+  "home_placeholder_coming_soon": "Coming soon",
+  "workout_state_no_exercises": "No exercises in this session.",
+  "workout_state_load_error": "Failed to load exercises: {error}",
+  "@workout_state_load_error": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "workout_phase_get_ready": "Get ready",
+  "workout_phase_exercise": "Exercise",
+  "workout_phase_finished": "Workout complete",
+  "workout_hint_tap_pause": "Tap timer to pause",
+  "workout_hint_tap_resume": "Tap timer to resume",
+  "workout_hint_tap_start": "Tap timer to start",
+  "workout_current_label": "Current",
+  "workout_next_label": "Next exercise",
+  "workout_final_exercise": "Final exercise in progress.",
+  "workout_tips_fallback": "Keep your core engaged and move with control.",
+  "workout_unnamed_exercise": "Exercise {index}",
+  "@workout_unnamed_exercise": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
   "exercise_push_001_name": "Push-up",
   "exercise_push_001_description": "Classic bodyweight exercise targeting chest, shoulders, and triceps. Start in plank position, lower body until chest nearly touches floor, then push back up.",
   "exercise_push_001_beginner_tips": "Start with knee push-ups if full push-ups are too difficult. Keep your core tight and body in a straight line.",
