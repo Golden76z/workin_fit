@@ -88,6 +88,7 @@ flutter:
   
   shaders:
     - assets/shaders/workout_wave.frag
+    - assets/shaders/exercise_wave.frag
 
   assets:
     - assets/images/
