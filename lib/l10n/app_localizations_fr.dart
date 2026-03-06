@@ -504,6 +504,69 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sessions_list_title => 'Mes sessions';
 
   @override
+  String get home_tab_home => 'Accueil';
+
+  @override
+  String get home_tab_sessions => 'Sessions';
+
+  @override
+  String get home_tab_lab => 'Labo';
+
+  @override
+  String get home_tab_programs => 'Programmes';
+
+  @override
+  String get home_tab_profile => 'Profil';
+
+  @override
+  String get home_placeholder_coming_soon => 'Bientôt disponible';
+
+  @override
+  String get workout_state_no_exercises => 'Aucun exercice dans cette session.';
+
+  @override
+  String workout_state_load_error(String error) {
+    return 'Impossible de charger les exercices : $error';
+  }
+
+  @override
+  String get workout_phase_get_ready => 'Prépare-toi';
+
+  @override
+  String get workout_phase_exercise => 'Exercice';
+
+  @override
+  String get workout_phase_finished => 'Entraînement terminé';
+
+  @override
+  String get workout_hint_tap_pause =>
+      'Touchez le minuteur pour mettre en pause';
+
+  @override
+  String get workout_hint_tap_resume => 'Touchez le minuteur pour reprendre';
+
+  @override
+  String get workout_hint_tap_start => 'Touchez le minuteur pour démarrer';
+
+  @override
+  String get workout_current_label => 'Actuel';
+
+  @override
+  String get workout_next_label => 'Exercice suivant';
+
+  @override
+  String get workout_final_exercise => 'Dernier exercice en cours.';
+
+  @override
+  String get workout_tips_fallback =>
+      'Garde le tronc engagé et contrôle le mouvement.';
+
+  @override
+  String workout_unnamed_exercise(int index) {
+    return 'Exercice $index';
+  }
+
+  @override
   String get exercise_push_001_name => 'Pompes';
 
   @override

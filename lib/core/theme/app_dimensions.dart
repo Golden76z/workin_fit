@@ -20,6 +20,14 @@ class AppRadii {
 
 class AppSizes {
   static const Size buttonMinimum = Size(250, 0);
+
+  // Workout execution layout
+  static const double workoutTimerDiameter = 220;
+  static const double workoutTimerStroke = 14;
+  static const double workoutCurrentImageHeight = 190;
+  static const double workoutNextImageSize = 66;
+  static const double workoutBottomBarHeight = 72;
+  static const double workoutControlButtonHeight = 50;
 }
 
 class AppDurations {

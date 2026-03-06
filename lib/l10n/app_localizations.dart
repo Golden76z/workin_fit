@@ -926,6 +926,120 @@ abstract class AppLocalizations {
   /// **'My Sessions'**
   String get sessions_list_title;
 
+  /// No description provided for @home_tab_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home_tab_home;
+
+  /// No description provided for @home_tab_sessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions'**
+  String get home_tab_sessions;
+
+  /// No description provided for @home_tab_lab.
+  ///
+  /// In en, this message translates to:
+  /// **'Lab'**
+  String get home_tab_lab;
+
+  /// No description provided for @home_tab_programs.
+  ///
+  /// In en, this message translates to:
+  /// **'Programs'**
+  String get home_tab_programs;
+
+  /// No description provided for @home_tab_profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get home_tab_profile;
+
+  /// No description provided for @home_placeholder_coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get home_placeholder_coming_soon;
+
+  /// No description provided for @workout_state_no_exercises.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises in this session.'**
+  String get workout_state_no_exercises;
+
+  /// No description provided for @workout_state_load_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load exercises: {error}'**
+  String workout_state_load_error(String error);
+
+  /// No description provided for @workout_phase_get_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Get ready'**
+  String get workout_phase_get_ready;
+
+  /// No description provided for @workout_phase_exercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get workout_phase_exercise;
+
+  /// No description provided for @workout_phase_finished.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout complete'**
+  String get workout_phase_finished;
+
+  /// No description provided for @workout_hint_tap_pause.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap timer to pause'**
+  String get workout_hint_tap_pause;
+
+  /// No description provided for @workout_hint_tap_resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap timer to resume'**
+  String get workout_hint_tap_resume;
+
+  /// No description provided for @workout_hint_tap_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap timer to start'**
+  String get workout_hint_tap_start;
+
+  /// No description provided for @workout_current_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get workout_current_label;
+
+  /// No description provided for @workout_next_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Next exercise'**
+  String get workout_next_label;
+
+  /// No description provided for @workout_final_exercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Final exercise in progress.'**
+  String get workout_final_exercise;
+
+  /// No description provided for @workout_tips_fallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your core engaged and move with control.'**
+  String get workout_tips_fallback;
+
+  /// No description provided for @workout_unnamed_exercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise {index}'**
+  String workout_unnamed_exercise(int index);
+
   /// No description provided for @exercise_push_001_name.
   ///
   /// In en, this message translates to:

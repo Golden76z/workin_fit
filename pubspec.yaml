@@ -86,6 +86,9 @@ flutter:
   
   uses-material-design: true
   
+  shaders:
+    - assets/shaders/workout_wave.frag
+
   assets:
     - assets/images/
     - assets/icons/
