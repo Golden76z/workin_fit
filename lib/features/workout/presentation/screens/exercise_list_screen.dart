@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
@@ -41,237 +42,276 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
             );
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
+    const Color appBarSurfaceColor = Color(0xB34D5FAF);
+    const Color filterSurfaceColor = Colors.transparent;
+    final Color searchFieldColor = AppColors.surface.withValues(alpha: 0.95);
+    final Color chipBackgroundColor =
+        AppColors.lightCyan.withValues(alpha: 0.64);
+    final Color chipSelectedColor =
+        AppColors.background.withValues(alpha: 0.88);
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceVariant,
-      body: SafeArea(
-        bottom: false,
-        child: exercisesAsync.when(
-          data: (List<Exercise> exercises) {
-            final List<Exercise> filtered =
-                _filteredExercises(context: context, exercises: exercises);
-            const Offset velocity = Offset(42, 12);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Color(0xB34D5FAF),
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        systemStatusBarContrastEnforced: false,
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.surfaceVariant,
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: exercisesAsync.when(
+            data: (List<Exercise> exercises) {
+              final List<Exercise> filtered =
+                  _filteredExercises(context: context, exercises: exercises);
+              const Offset velocity = Offset(42, 12);
 
-            return CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  pinned: true,
-                  backgroundColor: AppColors.surface,
-                  surfaceTintColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  titleSpacing: AppSpacing.md,
-                  title: Text(
-                    isFrench ? 'Exercices' : 'Exercises',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'AppFontMedium',
-                    ),
-                  ),
-                  bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(116),
-                    child: Container(
-                      color: AppColors.surface,
-                      padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.md,
-                        AppSpacing.xs,
-                        AppSpacing.md,
-                        AppSpacing.sm,
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          TextField(
-                            controller: _searchController,
-                            textInputAction: TextInputAction.search,
-                            onChanged: (_) => setState(() {}),
-                            decoration: InputDecoration(
-                              hintText: isFrench
-                                  ? 'Rechercher un exercice (ex: plank / planche)'
-                                  : 'Search an exercise (e.g. plank / planche)',
-                              prefixIcon: const Icon(Icons.search_rounded),
-                              suffixIcon: _searchController.text.trim().isEmpty
-                                  ? null
-                                  : IconButton(
-                                      onPressed: () {
-                                        _searchController.clear();
-                                        setState(() {});
-                                      },
-                                      icon: const Icon(Icons.close_rounded),
+              return CustomScrollView(
+                slivers: <Widget>[
+                  SliverAppBar(
+                    pinned: true,
+                    backgroundColor: appBarSurfaceColor,
+                    surfaceTintColor: Colors.transparent,
+                    automaticallyImplyLeading: false,
+                    toolbarHeight: 0,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(116),
+                      child: Container(
+                        color: filterSurfaceColor,
+                        padding: const EdgeInsets.fromLTRB(
+                          0,
+                          AppSpacing.xs,
+                          0,
+                          AppSpacing.sm,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                textInputAction: TextInputAction.search,
+                                onChanged: (_) => setState(() {}),
+                                decoration: InputDecoration(
+                                  hintText: isFrench
+                                      ? 'Rechercher un exercice (ex: plank / planche)'
+                                      : 'Search an exercise (e.g. plank / planche)',
+                                  prefixIcon: const Icon(Icons.search_rounded),
+                                  suffixIcon: _searchController.text
+                                          .trim()
+                                          .isEmpty
+                                      ? null
+                                      : IconButton(
+                                          onPressed: () {
+                                            _searchController.clear();
+                                            setState(() {});
+                                          },
+                                          icon: const Icon(Icons.close_rounded),
+                                        ),
+                                  filled: true,
+                                  fillColor: searchFieldColor,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: AppSpacing.xs,
+                                    horizontal: AppSpacing.sm,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.xl),
+                                    borderSide: BorderSide(
+                                      color: AppColors.background
+                                          .withValues(alpha: 0.4),
                                     ),
-                              filled: true,
-                              fillColor:
-                                  AppColors.lightCyan.withValues(alpha: 0.65),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.xs,
-                                horizontal: AppSpacing.sm,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(AppRadii.xl),
-                                borderSide: BorderSide(
-                                  color: AppColors.primaryLight
-                                      .withValues(alpha: 0.35),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(AppRadii.xl),
-                                borderSide: BorderSide(
-                                  color: AppColors.primaryLight
-                                      .withValues(alpha: 0.35),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(AppRadii.xl),
-                                borderSide: const BorderSide(
-                                  color: AppColors.primary,
-                                  width: 1.4,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.xl),
+                                    borderSide: BorderSide(
+                                      color: AppColors.background
+                                          .withValues(alpha: 0.4),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.xl),
+                                    borderSide: const BorderSide(
+                                      color: AppColors.background,
+                                      width: 1.4,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
-                          SizedBox(
-                            height: 36,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    right: AppSpacing.xs,
-                                  ),
-                                  child: ChoiceChip(
-                                    label: Text(
-                                      isFrench ? 'Tout' : 'All muscles',
-                                    ),
-                                    selected: _selectedMuscleGroup == null,
-                                    onSelected: (_) {
-                                      setState(() {
-                                        _selectedMuscleGroup = null;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                ...MuscleGroup.values.map(
-                                  (MuscleGroup muscle) => Padding(
+                            const SizedBox(height: AppSpacing.xs),
+                            SizedBox(
+                              height: 36,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                  const SizedBox(width: AppSpacing.md),
+                                  Padding(
                                     padding: const EdgeInsets.only(
                                       right: AppSpacing.xs,
                                     ),
                                     child: ChoiceChip(
                                       label: Text(
-                                        _muscleLabel(
-                                          muscle: muscle,
-                                          isFrench: isFrench,
-                                        ),
+                                        isFrench ? 'Tout' : 'All muscles',
                                       ),
-                                      selected: _selectedMuscleGroup == muscle,
+                                      selected: _selectedMuscleGroup == null,
+                                      backgroundColor: chipBackgroundColor,
+                                      selectedColor: chipSelectedColor,
+                                      side: BorderSide(
+                                        color: AppColors.background
+                                            .withValues(alpha: 0.28),
+                                      ),
+                                      labelStyle: const TextStyle(
+                                        color: AppColors.primaryAbyss,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                       onSelected: (_) {
                                         setState(() {
-                                          _selectedMuscleGroup =
-                                              _selectedMuscleGroup == muscle
-                                                  ? null
-                                                  : muscle;
+                                          _selectedMuscleGroup = null;
                                         });
                                       },
                                     ),
                                   ),
-                                ),
-                              ],
+                                  ...MuscleGroup.values.map(
+                                    (MuscleGroup muscle) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: AppSpacing.xs,
+                                      ),
+                                      child: ChoiceChip(
+                                        backgroundColor: chipBackgroundColor,
+                                        selectedColor: chipSelectedColor,
+                                        side: BorderSide(
+                                          color: AppColors.background
+                                              .withValues(alpha: 0.28),
+                                        ),
+                                        labelStyle: const TextStyle(
+                                          color: AppColors.primaryAbyss,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        label: Text(
+                                          _muscleLabel(
+                                            muscle: muscle,
+                                            isFrench: isFrench,
+                                          ),
+                                        ),
+                                        selected:
+                                            _selectedMuscleGroup == muscle,
+                                        onSelected: (_) {
+                                          setState(() {
+                                            _selectedMuscleGroup =
+                                                _selectedMuscleGroup == muscle
+                                                    ? null
+                                                    : muscle;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                if (filtered.isEmpty)
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.xl),
-                        child: Text(
-                          _emptyStateMessage(
-                            isFrench: isFrench,
-                            hasActiveFilters: _selectedMuscleGroup != null ||
-                                _searchController.text.trim().isNotEmpty,
-                            hasAnyExercise: exercises.isNotEmpty,
-                          ),
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 15,
-                          ),
+                          ],
                         ),
                       ),
                     ),
-                  )
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.xl,
-                    ),
-                    sliver: SliverList.builder(
-                      itemCount: filtered.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Exercise exercise = filtered[index];
-                        final String title = exercise.getLocalizedName(context);
-                        final String description =
-                            exercise.getLocalizedDescription(context);
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: _ExerciseCard(
-                            exercise: exercise,
-                            title: title,
-                            description: description,
-                            muscleSummary: exercise.muscleGroups
-                                .map(
-                                  (MuscleGroup muscle) => _muscleLabel(
-                                    muscle: muscle,
-                                    isFrench: isFrench,
-                                  ),
-                                )
-                                .join(', '),
-                            difficultyLabel: _difficultyLabel(
-                              exercise.difficulty,
-                              isFrench,
-                            ),
-                            difficultyColor:
-                                _difficultyColor(exercise.difficulty),
-                            shaderVelocity: velocity,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => ExerciseDetailScreen(
-                                    exercise: exercise,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
                   ),
-              ],
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Text(
-                isFrench
-                    ? 'Impossible de charger les exercices: $error'
-                    : 'Failed to load exercises: $error',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.error,
-                  fontSize: 14,
+                  if (filtered.isEmpty)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.xl),
+                          child: Text(
+                            _emptyStateMessage(
+                              isFrench: isFrench,
+                              hasActiveFilters: _selectedMuscleGroup != null ||
+                                  _searchController.text.trim().isNotEmpty,
+                              hasAnyExercise: exercises.isNotEmpty,
+                            ),
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.xs,
+                        AppSpacing.md,
+                        AppSpacing.xs,
+                        104,
+                      ),
+                      sliver: SliverList.builder(
+                        itemCount: filtered.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final Exercise exercise = filtered[index];
+                          final String title =
+                              exercise.getLocalizedName(context);
+                          final String description =
+                              exercise.getLocalizedDescription(context);
+
+                          return Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: AppSpacing.xs),
+                            child: _ExerciseCard(
+                              exercise: exercise,
+                              title: title,
+                              description: description,
+                              muscleSummary: exercise.muscleGroups
+                                  .map(
+                                    (MuscleGroup muscle) => _muscleLabel(
+                                      muscle: muscle,
+                                      isFrench: isFrench,
+                                    ),
+                                  )
+                                  .join(', '),
+                              difficultyLabel: _difficultyLabel(
+                                exercise.difficulty,
+                                isFrench,
+                              ),
+                              difficultyColor:
+                                  _difficultyColor(exercise.difficulty),
+                              shaderVelocity: velocity,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => ExerciseDetailScreen(
+                                      exercise: exercise,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.xl),
+                child: Text(
+                  isFrench
+                      ? 'Impossible de charger les exercices: $error'
+                      : 'Failed to load exercises: $error',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.error,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
@@ -301,10 +341,16 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
     }).toList(growable: false);
 
     filtered.sort(
-      (Exercise a, Exercise b) =>
-          a.getLocalizedName(context).toLowerCase().compareTo(
-                b.getLocalizedName(context).toLowerCase(),
-              ),
+      (Exercise a, Exercise b) {
+        final int difficultyCompare = _difficultyRank(a.difficulty)
+            .compareTo(_difficultyRank(b.difficulty));
+        if (difficultyCompare != 0) {
+          return difficultyCompare;
+        }
+        return a.getLocalizedName(context).toLowerCase().compareTo(
+              b.getLocalizedName(context).toLowerCase(),
+            );
+      },
     );
 
     return filtered;
@@ -504,6 +550,17 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
         return AppColors.error;
     }
   }
+
+  int _difficultyRank(DifficultyLevel difficulty) {
+    switch (difficulty) {
+      case DifficultyLevel.beginner:
+        return 0;
+      case DifficultyLevel.intermediate:
+        return 1;
+      case DifficultyLevel.advanced:
+        return 2;
+    }
+  }
 }
 
 class _ExerciseCard extends StatelessWidget {
@@ -532,49 +589,80 @@ class _ExerciseCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.xl),
+        borderRadius: BorderRadius.circular(AppRadii.md),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadii.xl),
+            borderRadius: BorderRadius.circular(AppRadii.md),
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: <Color>[
-                Color(0xFFEFF6FF),
-                Color(0xFFF7FBFF),
+                Color(0xFFD7E5FF),
+                Color(0xFFE4EEFF),
               ],
             ),
             border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.35),
+              color: AppColors.primaryLight.withValues(alpha: 0.45),
             ),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: 0.15),
+                color: AppColors.primaryLight.withValues(alpha: 0.2),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xs),
+            padding: const EdgeInsets.all(AppSpacing.xxs),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadii.lg),
-                  child: SizedBox(
-                    width: 118,
-                    height: 118,
-                    child: Hero(
-                      tag: 'exercise-image-${exercise.id}',
-                      child: _ExerciseWaveFilter(
-                        velocity: shaderVelocity,
-                        child: _ExerciseImage(
-                          imageUrl: exercise.imageTutorialUrl,
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  child: Stack(
+                    children: <Widget>[
+                      SizedBox(
+                        width: 102,
+                        height: 102,
+                        child: Hero(
+                          tag: 'exercise-image-${exercise.id}',
+                          child: _ExerciseWaveFilter(
+                            velocity: shaderVelocity,
+                            child: _ExerciseImage(
+                              imageUrl: exercise.imageTutorialUrl,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: difficultyColor.withValues(alpha: 0.24),
+                              borderRadius: BorderRadius.circular(AppRadii.md),
+                              border: Border.all(
+                                color: difficultyColor.withValues(alpha: 0.5),
+                              ),
+                            ),
+                            child: Text(
+                              difficultyLabel,
+                              style: TextStyle(
+                                color: difficultyColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -582,41 +670,16 @@ class _ExerciseCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'AppFontMedium',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.xs,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: difficultyColor,
-                              borderRadius: BorderRadius.circular(AppRadii.lg),
-                            ),
-                            child: Text(
-                              difficultyLabel,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'AppFontMedium',
+                        ),
                       ),
                       const SizedBox(height: 3),
                       Text(
@@ -632,7 +695,7 @@ class _ExerciseCard extends StatelessWidget {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         description,
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: AppColors.textSecondary,

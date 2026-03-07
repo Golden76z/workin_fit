@@ -22,6 +22,7 @@ const SystemUiOverlayStyle _globalSystemOverlayStyle = SystemUiOverlayStyle(
   statusBarColor: Colors.transparent,
   statusBarIconBrightness: Brightness.light,
   statusBarBrightness: Brightness.dark,
+  systemStatusBarContrastEnforced: false,
   systemNavigationBarColor: AppColors.navigationBarBackground,
   systemNavigationBarDividerColor: AppColors.navigationBarBackground,
   systemNavigationBarIconBrightness: Brightness.light,

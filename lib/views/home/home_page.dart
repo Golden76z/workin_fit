@@ -14,6 +14,7 @@ const SystemUiOverlayStyle _homeSystemOverlayStyle = SystemUiOverlayStyle(
   statusBarColor: Colors.transparent,
   statusBarIconBrightness: Brightness.light,
   statusBarBrightness: Brightness.dark,
+  systemStatusBarContrastEnforced: false,
   systemNavigationBarColor: Colors.transparent,
   systemNavigationBarDividerColor: Colors.transparent,
   systemNavigationBarIconBrightness: Brightness.light,
@@ -178,7 +179,7 @@ class _FloatingBottomBar extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: selectedIndex == 2
                         ? AppColors.raspberry
-                        : AppColors.bubblegumPink.withValues(alpha: 0.92),
+                        : AppColors.bubblegumPink,
                     border: Border.all(
                       color: AppColors.background.withValues(alpha: 0.48),
                       width: centerButtonBorderWidth,
