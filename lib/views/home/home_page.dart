@@ -6,7 +6,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
-import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/views/home/home_dashboard_tab.dart';
 import 'package:workin_fit/views/test/render_test_hub_page.dart';
 import 'package:workin_fit/widgets/button.dart';
 
@@ -34,7 +34,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         .toLowerCase()
         .startsWith('fr');
     final List<Widget> tabs = <Widget>[
-      const _HomeDashboardTab(),
+      const HomeDashboardTab(),
       const ExerciseListScreen(),
       _PlaceholderTab(
         title: localizations.home_tab_programs,
@@ -377,153 +377,3 @@ class _ProfileTab extends ConsumerWidget {
   }
 }
 
-class _HomeDashboardTab extends ConsumerWidget {
-  const _HomeDashboardTab();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(currentUserProvider);
-    final localizations = AppLocalizations.of(context)!;
-    final String userEmail = user?.email ?? localizations.home_user_fallback;
-
-    return Scaffold(
-      backgroundColor: AppColors.surfaceVariant,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        title: Text(
-          localizations.welcome_page_app_title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'AppFont',
-            fontSize: 28,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.xxl),
-              Text(
-                localizations.home_welcome_title,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'AppFontMedium',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                userEmail,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxxl),
-              Text(
-                localizations.home_preview_front,
-                style: const TextStyle(
-                  fontFamily: 'AppFont',
-                  fontSize: 24,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                localizations.home_preview_back,
-                style: const TextStyle(
-                  fontFamily: 'AppFont',
-                  fontSize: 24,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppRadii.lg),
-                child: Image.asset(
-                  'assets/images/test.png',
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.fitness_center,
-                        size: 80,
-                        color: AppColors.accent.withValues(alpha: 0.5),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-                      Text(
-                        localizations.home_placeholder_title,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 20,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        localizations.home_placeholder_subtitle,
-                        style: const TextStyle(
-                          color: AppColors.textTertiary,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              AppButton(
-                label: localizations.home_logout,
-                onPressed: () async {
-                  try {
-                    if (context.mounted) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              const AuthenticationView(
-                            initialTabIndex: 1,
-                          ),
-                        ),
-                        (Route<dynamic> route) => false,
-                      );
-                    }
-                    await ref.read(authActionsProvider).signOut();
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            localizations.email_verification_error_signout(
-                              e.toString(),
-                            ),
-                          ),
-                          backgroundColor: AppColors.error,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadii.sm),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                },
-              ),
-              const SizedBox(height: AppSpacing.md),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
