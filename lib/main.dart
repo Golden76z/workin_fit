@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
-import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_theme.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/models/enums.dart';
@@ -18,21 +18,10 @@ import 'package:workin_fit/features/auth/presentation/auth_gate.dart';
 // import 'firebase_options.dart';
 // import 'package:workin_fit/views/test/test_page_001.dart';
 
-const SystemUiOverlayStyle _globalSystemOverlayStyle = SystemUiOverlayStyle(
-  statusBarColor: Colors.transparent,
-  statusBarIconBrightness: Brightness.light,
-  statusBarBrightness: Brightness.dark,
-  systemStatusBarContrastEnforced: false,
-  systemNavigationBarColor: AppColors.navigationBarBackground,
-  systemNavigationBarDividerColor: AppColors.navigationBarBackground,
-  systemNavigationBarIconBrightness: Brightness.light,
-  systemNavigationBarContrastEnforced: false,
-);
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(_globalSystemOverlayStyle);
+  SystemChrome.setSystemUIOverlayStyle(AppChrome.globalOverlay);
 
   // Initialize Firebase for authentication and cloud services
   await Firebase.initializeApp();
@@ -89,8 +78,8 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
       builder: (BuildContext context, Widget? child) {
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: _globalSystemOverlayStyle,
+        return AppSystemOverlayRegion(
+          style: AppChrome.globalOverlay,
           child: child ?? const SizedBox.shrink(),
         );
       },

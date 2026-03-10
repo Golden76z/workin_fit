@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Brand Palette
-  static const Color crushedBerry = Color(0xFF5465FF); // Electric Sapphire
-  static const Color raspberry = Color(0xFF788BFF); // Cornflower Blue
-  static const Color bubblegumPink = Color(0xFF9BB1FF); // Baby Blue Ice
-  static const Color pinkMist = Color(0xFFBFD7FF); // Periwinkle
-  static const Color lightCyan = Color(0xFFE2FDFF); // Light Cyan
+  // Brand Palette — indigo-blue scale from deep to pale
+  static const Color electricSapphire = Color(0xFF5465FF); // deep electric blue
+  static const Color cornflowerBlue = Color(0xFF788BFF);   // medium blue-purple
+  static const Color babyBlueIce = Color(0xFF9BB1FF);      // soft blue
+  static const Color pearlBlue = Color(0xFFBFD7FF);        // pale blue
+  static const Color frostedCyan = Color(0xFFE2FDFF);      // near-white ice blue
 
   // Light Theme Palette
-  static const Color lightPrimary = crushedBerry;
+  static const Color lightPrimary = electricSapphire;
   static const Color lightPrimaryDark = Color(0xFF4252E6);
   static const Color lightPrimaryDarker = Color(0xFF3340B8);
   static const Color lightPrimaryDarkest = Color(0xFF252F8A);
   static const Color lightPrimaryAbyss = Color(0xFF171E57);
-  static const Color lightPrimaryLight = raspberry;
-  static const Color lightPrimaryPastel = pinkMist;
-  static const Color lightAccent = bubblegumPink;
-  static const Color lightAccentLight = pinkMist;
-  static const Color lightBackground = lightCyan;
+  static const Color lightPrimaryLight = cornflowerBlue;
+  static const Color lightPrimaryPastel = pearlBlue;
+  static const Color lightAccent = babyBlueIce;
+  static const Color lightAccentLight = pearlBlue;
+  static const Color lightBackground = frostedCyan;
   static const Color lightSurface = Color(0xFFFDFEFF);
   static const Color lightSurfaceVariant = Color(0xFFF1FAFF);
   static const Color lightTextPrimary = Color(0xFF1D275E);
   static const Color lightTextSecondary = Color(0xFF4D5FAF);
-  static const Color lightTextTertiary = raspberry;
+  static const Color lightTextTertiary = cornflowerBlue;
 
   // Dark Theme Palette (kept for future theme toggle)
-  static const Color darkPrimary = raspberry;
-  static const Color darkPrimaryDark = crushedBerry;
+  static const Color darkPrimary = cornflowerBlue;
+  static const Color darkPrimaryDark = electricSapphire;
   static const Color darkPrimaryDarker = Color(0xFF4252E6);
   static const Color darkPrimaryDarkest = Color(0xFF3340B8);
   static const Color darkPrimaryAbyss = Color(0xFF151C4F);
-  static const Color darkPrimaryLight = bubblegumPink;
-  static const Color darkPrimaryPastel = pinkMist;
-  static const Color darkAccent = bubblegumPink;
-  static const Color darkAccentLight = pinkMist;
+  static const Color darkPrimaryLight = babyBlueIce;
+  static const Color darkPrimaryPastel = pearlBlue;
+  static const Color darkAccent = babyBlueIce;
+  static const Color darkAccentLight = pearlBlue;
   static const Color darkBackground = Color(0xFF0D1233);
   static const Color darkSurface = Color(0xFF141B42);
   static const Color darkSurfaceVariant = Color(0xFF1C2557);
-  static const Color darkTextPrimary = lightCyan;
-  static const Color darkTextSecondary = pinkMist;
-  static const Color darkTextTertiary = raspberry;
+  static const Color darkTextPrimary = frostedCyan;
+  static const Color darkTextSecondary = pearlBlue;
+  static const Color darkTextTertiary = cornflowerBlue;
 
   // Active Palette (currently light mode)
   static const Color primary = lightPrimary;
@@ -68,6 +68,6 @@ class AppColors {
   static const Color warningSoft = Color(0xFFFFB74D); // lighter orange
   static const Color info = Color(0xFF2196F3);
 
-  // Navigation surfaces
-  static const Color navigationBarBackground = Color(0x99171E57);
+  // Navigation surfaces — primary blue at 70 % opacity, matches top chrome tone.
+  static const Color navBarSurface = Color(0xB35465FF);
 }

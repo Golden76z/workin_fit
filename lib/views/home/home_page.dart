@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
@@ -9,17 +9,6 @@ import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/test/render_test_hub_page.dart';
 import 'package:workin_fit/widgets/button.dart';
-
-const SystemUiOverlayStyle _homeSystemOverlayStyle = SystemUiOverlayStyle(
-  statusBarColor: Colors.transparent,
-  statusBarIconBrightness: Brightness.light,
-  statusBarBrightness: Brightness.dark,
-  systemStatusBarContrastEnforced: false,
-  systemNavigationBarColor: Colors.transparent,
-  systemNavigationBarDividerColor: Colors.transparent,
-  systemNavigationBarIconBrightness: Brightness.light,
-  systemNavigationBarContrastEnforced: false,
-);
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -61,8 +50,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     ];
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _homeSystemOverlayStyle,
+    return AppSystemOverlayRegion(
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         extendBody: true,
         body: IndexedStack(
@@ -110,7 +99,7 @@ class _FloatingBottomBar extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
+            child: AppBottomBarSurface(
               height: navContentHeight + bottomInset,
               padding: EdgeInsets.only(
                 left: AppSpacing.xxs,
@@ -118,12 +107,9 @@ class _FloatingBottomBar extends StatelessWidget {
                 top: AppSpacing.xxs,
                 bottom: AppSpacing.xxs + bottomInset,
               ),
-              decoration: BoxDecoration(
-                color: AppColors.navigationBarBackground,
-                border: Border(
-                  top: BorderSide(
-                    color: AppColors.background.withValues(alpha: 0.28),
-                  ),
+              border: Border(
+                top: BorderSide(
+                  color: AppColors.background.withValues(alpha: 0.28),
                 ),
               ),
               child: Row(
@@ -178,8 +164,8 @@ class _FloatingBottomBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedIndex == 2
-                        ? AppColors.raspberry
-                        : AppColors.bubblegumPink,
+                        ? AppColors.cornflowerBlue
+                        : AppColors.babyBlueIce,
                     border: Border.all(
                       color: AppColors.background.withValues(alpha: 0.48),
                       width: centerButtonBorderWidth,
@@ -218,43 +204,55 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color iconColor = isSelected
-        ? AppColors.bubblegumPink
-        : AppColors.lightCyan.withValues(alpha: 0.72);
+        ? Colors.white
+        : AppColors.frostedCyan.withValues(alpha: 0.72);
     final Color textColor = isSelected
-        ? AppColors.pinkMist
-        : AppColors.lightCyan.withValues(alpha: 0.75);
+        ? Colors.white
+        : AppColors.frostedCyan.withValues(alpha: 0.75);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.xs,
-            vertical: 2,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: iconColor,
-                size: 23,
+    // GestureDetector covers the full Expanded width for a large tap area,
+    // while Material + InkWell clip the ripple to the pill bounds.
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Center(
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.lg),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 170),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: 4,
               ),
-              const SizedBox(height: 1),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textScaler: TextScaler.noScaling,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 8.8,
-                  fontWeight: FontWeight.w600,
-                ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(AppRadii.lg),
               ),
-            ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: iconColor, size: 23),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textScaler: TextScaler.noScaling,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

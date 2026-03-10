@@ -310,7 +310,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
         return _wrapWithTransparentSystemBars(
           Scaffold(
-            backgroundColor: AppColors.crushedBerry,
+            backgroundColor: AppColors.electricSapphire,
             body: SafeArea(
               bottom: false,
               child: LayoutBuilder(
@@ -336,7 +336,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   return Stack(
                     children: [
                       const Positioned.fill(
-                        child: ColoredBox(color: AppColors.crushedBerry),
+                        child: ColoredBox(color: AppColors.electricSapphire),
                       ),
                       Positioned(
                         left: 0,
@@ -959,7 +959,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return Container(
         padding: const EdgeInsets.all(AppSpacing.xs),
         decoration: BoxDecoration(
-          color: AppColors.bubblegumPink,
+          color: AppColors.babyBlueIce,
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
         child: Row(

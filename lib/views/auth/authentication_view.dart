@@ -52,7 +52,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
             child: Text(
               localizations.welcome_page_app_title,
               style: const TextStyle(
-                color: AppColors.textPrimary,
+                color: Colors.white,
                 fontFamily: 'AppFont',
                 fontSize: 44,
                 fontWeight: FontWeight.normal,
@@ -67,10 +67,9 @@ class _AuthenticationViewState extends State<AuthenticationView>
             color: AppColors.primary,
             child: TabBar(
               controller: _tabController,
-              labelColor: AppColors.textPrimary,
-              unselectedLabelColor:
-                  AppColors.textPrimary.withValues(alpha: 0.7),
-              indicatorColor: AppColors.textPrimary,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
+              indicatorColor: Colors.white,
               indicatorWeight: 3,
               labelStyle: theme.textTheme.titleLarge?.copyWith(
                 // fontWeight: FontWeight.bold,

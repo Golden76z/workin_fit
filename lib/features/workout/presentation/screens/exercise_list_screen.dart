@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_detail_screen.dart';
@@ -42,21 +42,16 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
             );
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
-    const Color appBarSurfaceColor = Color(0xB34D5FAF);
+    const Color appBarSurfaceColor = AppChrome.topSurface;
     const Color filterSurfaceColor = Colors.transparent;
     final Color searchFieldColor = AppColors.surface.withValues(alpha: 0.95);
     final Color chipBackgroundColor =
-        AppColors.lightCyan.withValues(alpha: 0.64);
+        AppColors.frostedCyan.withValues(alpha: 0.64);
     final Color chipSelectedColor =
         AppColors.background.withValues(alpha: 0.88);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xB34D5FAF),
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemStatusBarContrastEnforced: false,
-      ),
+    return AppSystemOverlayRegion(
+      style: AppChrome.topSurfaceOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         body: SafeArea(
@@ -284,10 +279,8 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                               shaderVelocity: velocity,
                               onTap: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => ExerciseDetailScreen(
-                                      exercise: exercise,
-                                    ),
+                                  ExerciseDetailScreen.route(
+                                    exercise: exercise,
                                   ),
                                 );
                               },
@@ -625,13 +618,10 @@ class _ExerciseCard extends StatelessWidget {
                       SizedBox(
                         width: 102,
                         height: 102,
-                        child: Hero(
-                          tag: 'exercise-image-${exercise.id}',
-                          child: _ExerciseWaveFilter(
-                            velocity: shaderVelocity,
-                            child: _ExerciseImage(
-                              imageUrl: exercise.imageTutorialUrl,
-                            ),
+                        child: _ExerciseWaveFilter(
+                          velocity: shaderVelocity,
+                          child: _ExerciseImage(
+                            imageUrl: exercise.imageTutorialUrl,
                           ),
                         ),
                       ),
