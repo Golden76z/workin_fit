@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 
@@ -23,15 +22,6 @@ class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
-          systemNavigationBarColor: AppColors.navigationBarBackground,
-          systemNavigationBarDividerColor: AppColors.navigationBarBackground,
-          systemNavigationBarIconBrightness: Brightness.light,
-          systemNavigationBarContrastEnforced: false,
-        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
@@ -61,15 +51,6 @@ class AppTheme {
         backgroundColor: AppColors.darkPrimary,
         foregroundColor: AppColors.darkTextPrimary,
         centerTitle: true,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
-          systemNavigationBarColor: AppColors.navigationBarBackground,
-          systemNavigationBarDividerColor: AppColors.navigationBarBackground,
-          systemNavigationBarIconBrightness: Brightness.light,
-          systemNavigationBarContrastEnforced: false,
-        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

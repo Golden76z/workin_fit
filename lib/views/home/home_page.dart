@@ -1,24 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/test/render_test_hub_page.dart';
-import 'package:workin_fit/views/test/test_page_002.dart';
 import 'package:workin_fit/widgets/button.dart';
-
-const SystemUiOverlayStyle _homeSystemOverlayStyle = SystemUiOverlayStyle(
-  statusBarColor: Colors.transparent,
-  statusBarIconBrightness: Brightness.light,
-  statusBarBrightness: Brightness.dark,
-  systemNavigationBarColor: Colors.transparent,
-  systemNavigationBarDividerColor: Colors.transparent,
-  systemNavigationBarIconBrightness: Brightness.light,
-  systemNavigationBarContrastEnforced: false,
-);
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -39,22 +29,29 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
     final List<Widget> tabs = <Widget>[
       const _HomeDashboardTab(),
-      const SessionsListScreen(),
-      const RenderTestHubPage(),
+      const ExerciseListScreen(),
       _PlaceholderTab(
         title: localizations.home_tab_programs,
         subtitle: localizations.home_placeholder_coming_soon,
       ),
       _PlaceholderTab(
+        title: isFrench ? 'Social' : 'Social',
+        subtitle: localizations.home_placeholder_coming_soon,
+      ),
+      _ProfileTab(
         title: localizations.home_tab_profile,
         subtitle: localizations.home_placeholder_coming_soon,
       ),
     ];
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _homeSystemOverlayStyle,
+    return AppSystemOverlayRegion(
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         extendBody: true,
         body: IndexedStack(
@@ -82,6 +79,10 @@ class _FloatingBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
     final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     const double navContentHeight = 58;
     const double centerButtonSize = 58;
@@ -98,20 +99,17 @@ class _FloatingBottomBar extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
+            child: AppBottomBarSurface(
               height: navContentHeight + bottomInset,
               padding: EdgeInsets.only(
-                left: AppSpacing.sm,
-                right: AppSpacing.sm,
+                left: AppSpacing.xxs,
+                right: AppSpacing.xxs,
                 top: AppSpacing.xxs,
                 bottom: AppSpacing.xxs + bottomInset,
               ),
-              decoration: BoxDecoration(
-                color: AppColors.navigationBarBackground,
-                border: Border(
-                  top: BorderSide(
-                    color: AppColors.background.withValues(alpha: 0.28),
-                  ),
+              border: Border(
+                top: BorderSide(
+                  color: AppColors.background.withValues(alpha: 0.28),
                 ),
               ),
               child: Row(
@@ -127,7 +125,7 @@ class _FloatingBottomBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.fitness_center_rounded,
-                      label: localizations.home_tab_sessions,
+                      label: isFrench ? 'Exercices' : 'Exercises',
                       isSelected: selectedIndex == 1,
                       onTap: () => onTabSelected(1),
                     ),
@@ -135,8 +133,8 @@ class _FloatingBottomBar extends StatelessWidget {
                   const SizedBox(width: centerButtonSize),
                   Expanded(
                     child: _NavItem(
-                      icon: Icons.calendar_month_rounded,
-                      label: localizations.home_tab_programs,
+                      icon: Icons.chat_bubble_outline_rounded,
+                      label: isFrench ? 'Social' : 'Social',
                       isSelected: selectedIndex == 3,
                       onTap: () => onTabSelected(3),
                     ),
@@ -156,7 +154,7 @@ class _FloatingBottomBar extends StatelessWidget {
           Positioned(
             bottom: bottomInset + centerButtonLift,
             child: Tooltip(
-              message: localizations.home_tab_lab,
+              message: localizations.home_tab_programs,
               child: GestureDetector(
                 onTap: () => onTabSelected(2),
                 child: AnimatedContainer(
@@ -166,15 +164,15 @@ class _FloatingBottomBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedIndex == 2
-                        ? AppColors.raspberry
-                        : AppColors.bubblegumPink.withValues(alpha: 0.92),
+                        ? AppColors.cornflowerBlue
+                        : AppColors.babyBlueIce,
                     border: Border.all(
                       color: AppColors.background.withValues(alpha: 0.48),
                       width: centerButtonBorderWidth,
                     ),
                   ),
                   child: Icon(
-                    Icons.science_rounded,
+                    Icons.calendar_month_rounded,
                     size: 30,
                     color: selectedIndex == 2
                         ? Colors.white
@@ -206,43 +204,55 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color iconColor = isSelected
-        ? AppColors.bubblegumPink
-        : AppColors.lightCyan.withValues(alpha: 0.72);
+        ? Colors.white
+        : AppColors.frostedCyan.withValues(alpha: 0.72);
     final Color textColor = isSelected
-        ? AppColors.pinkMist
-        : AppColors.lightCyan.withValues(alpha: 0.75);
+        ? Colors.white
+        : AppColors.frostedCyan.withValues(alpha: 0.75);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.xxs,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                color: iconColor,
-                size: 19,
+    // GestureDetector covers the full Expanded width for a large tap area,
+    // while Material + InkWell clip the ripple to the pill bounds.
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Center(
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.lg),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 170),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: 4,
               ),
-              const SizedBox(height: AppSpacing.xxs),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textScaler: TextScaler.noScaling,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                ),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(AppRadii.lg),
               ),
-            ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: iconColor, size: 23),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textScaler: TextScaler.noScaling,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -295,6 +305,71 @@ class _PlaceholderTab extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileTab extends ConsumerWidget {
+  final String title;
+  final String subtitle;
+
+  const _ProfileTab({
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider);
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+
+    return Scaffold(
+      backgroundColor: AppColors.surfaceVariant,
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                user?.email ?? title,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xl),
+              AppButton(
+                label:
+                    isFrench ? 'Ouvrir le hub de test' : 'Open Render Test Hub',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const RenderTestHubPage(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
