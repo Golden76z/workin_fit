@@ -42,9 +42,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab> {
           color: AppColors.primary,
           backgroundColor: AppColors.surface,
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
+            physics: const AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               // ─── Banner ───────────────────────────────────────────
               _HomeBannerSliver(
@@ -226,31 +224,6 @@ class _HomeBannerSliver extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // App brand
-                Row(
-                  children: <Widget>[
-                    const Icon(
-                      Icons.bolt_rounded,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                    const SizedBox(width: AppSpacing.xxs),
-                    Text(
-                      'Workin Fit',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.92),
-                        fontFamily: 'AppFont',
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
-                    const Spacer(),
-                    _NotificationBell(),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.lg),
-
                 // Greeting
                 Text(
                   '$greeting,',
@@ -284,39 +257,6 @@ class _HomeBannerSliver extends StatelessWidget {
   }
 }
 
-class _NotificationBell extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.notifications_none_rounded,
-            color: Colors.white,
-            size: 26,
-          ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-        ),
-        Positioned(
-          top: 0,
-          right: 0,
-          child: Container(
-            width: 9,
-            height: 9,
-            decoration: BoxDecoration(
-              color: AppColors.warning,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primaryDarker, width: 1.5),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _BannerStatsRow extends StatelessWidget {
   final bool isFrench;
@@ -373,7 +313,7 @@ class _StatPill extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppRadii.xl),
+        borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.25),
         ),
@@ -521,7 +461,7 @@ class _SessionOfTheDayCard extends StatelessWidget {
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -671,7 +611,7 @@ class _DailyChallengeCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           border: Border.all(
             color: AppColors.primaryLight.withValues(alpha: 0.35),
           ),
@@ -1009,7 +949,7 @@ class _ProgramCard extends StatelessWidget {
               data.color.withValues(alpha: 0.7),
             ],
           ),
-          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: data.color.withValues(alpha: 0.3),
@@ -1185,7 +1125,7 @@ class _SessionCard extends StatelessWidget {
         width: 180,
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           border: Border.all(
             color: AppColors.primaryLight.withValues(alpha: 0.3),
           ),
@@ -1367,7 +1307,7 @@ class _QuickAccessCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(AppRadii.xl),
+          borderRadius: BorderRadius.circular(AppRadii.lg),
           border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
         child: Column(
