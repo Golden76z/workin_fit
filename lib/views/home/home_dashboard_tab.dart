@@ -34,7 +34,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab> {
     final String greeting = _greeting(isFrench: isFrench);
 
     return AppSystemOverlayRegion(
-      style: AppChrome.topSurfaceOverlay,
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         body: RefreshIndicator(
@@ -219,7 +219,7 @@ class _HomeBannerSliver extends StatelessWidget {
               AppSpacing.lg,
               topPadding + AppSpacing.md,
               AppSpacing.lg,
-              AppSpacing.xxxl + AppSpacing.lg,
+              AppSpacing.xl + AppSpacing.sm,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

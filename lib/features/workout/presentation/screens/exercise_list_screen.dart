@@ -51,7 +51,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
         AppColors.background.withValues(alpha: 0.88);
 
     return AppSystemOverlayRegion(
-      style: AppChrome.topSurfaceOverlay,
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         body: SafeArea(

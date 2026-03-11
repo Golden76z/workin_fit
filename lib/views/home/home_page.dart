@@ -5,10 +5,8 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
-import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
-import 'package:workin_fit/views/test/render_test_hub_page.dart';
-import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/views/profile/profile_tab.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -19,8 +17,40 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int _selectedTabIndex = 0;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _selectedTabIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   void _onTabSelected(int index) {
+    if (index == _selectedTabIndex) {
+      return;
+    }
+
+    setState(() {
+      _selectedTabIndex = index;
+    });
+
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _onPageChanged(int index) {
+    if (index == _selectedTabIndex) {
+      return;
+    }
     setState(() {
       _selectedTabIndex = index;
     });
@@ -44,18 +74,16 @@ class _HomePageState extends ConsumerState<HomePage> {
         title: isFrench ? 'Social' : 'Social',
         subtitle: localizations.home_placeholder_coming_soon,
       ),
-      _ProfileTab(
-        title: localizations.home_tab_profile,
-        subtitle: localizations.home_placeholder_coming_soon,
-      ),
+      const ProfileTab(),
     ];
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
       child: Scaffold(
         extendBody: true,
-        body: IndexedStack(
-          index: _selectedTabIndex,
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
           children: tabs,
         ),
         bottomNavigationBar: _FloatingBottomBar(
@@ -305,71 +333,6 @@ class _PlaceholderTab extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProfileTab extends ConsumerWidget {
-  final String title;
-  final String subtitle;
-
-  const _ProfileTab({
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(currentUserProvider);
-    final bool isFrench = Localizations.localeOf(context)
-        .languageCode
-        .toLowerCase()
-        .startsWith('fr');
-
-    return Scaffold(
-      backgroundColor: AppColors.surfaceVariant,
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                user?.email ?? title,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'AppFontMedium',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(
-                label:
-                    isFrench ? 'Ouvrir le hub de test' : 'Open Render Test Hub',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const RenderTestHubPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
           ),
         ),
       ),
