@@ -39,6 +39,7 @@ class FirebaseConstants {
   static const String programsCollection = 'programs';
   static const String warmupsCollection = 'warmups';
   static const String workoutHistoryCollection = 'workout_history';
+  static const String exerciseMonthlyCollection = 'exercise_monthly';
   static const String dailyChallengesCollection = 'daily_challenges';
   static const String friendsCollection = 'friends';
   static const String friendRequestsCollection = 'friend_requests';

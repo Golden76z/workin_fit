@@ -53,6 +53,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   _WorkoutPhase _phase = _WorkoutPhase.getReady;
   bool _hasStarted = false;
   bool _isRunning = false;
+  DateTime? _workoutStartedAt;
+  bool _workoutHistorySaved = false;
+  final Map<int, _ExerciseActualMetrics> _actualMetricsByIndex =
+      <int, _ExerciseActualMetrics>{};
 
   int get _totalExercises => widget.session.workouts.length;
 
@@ -129,6 +133,469 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return duration;
   }
 
+  int _plannedWorkDurationForWorkout(WorkoutConfig workout) {
+    if (workout is TimedConfig) {
+      return workout.duration;
+    }
+    if (workout is TabataConfig) {
+      return workout.totalWorkTime;
+    }
+    if (workout is SetsConfig) {
+      return workout.estimatedWorkDuration;
+    }
+    return _durationForWorkout(workout);
+  }
+
+  _ExerciseActualMetrics? _actualMetricsAt(int index) {
+    return _actualMetricsByIndex[index];
+  }
+
+  bool get _hasAnyActualMetrics {
+    return _actualMetricsByIndex.values.any(
+      (_ExerciseActualMetrics metrics) => metrics.hasAnyInput,
+    );
+  }
+
+  int _doneDurationForWorkout({
+    required WorkoutConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int? manualDuration = actual?.doneDurationSeconds;
+    if (manualDuration != null && manualDuration > 0) {
+      return manualDuration;
+    }
+
+    if (workout is TimedConfig) {
+      final int timedSeconds = actual?.doneTimedSeconds ?? workout.duration;
+      return timedSeconds > 0 ? timedSeconds : workout.duration;
+    }
+
+    if (workout is TabataConfig) {
+      final int rounds = actual?.doneRounds ?? workout.rounds;
+      final int clampedRounds = rounds < 0 ? 0 : rounds;
+      return clampedRounds * (workout.workTime + workout.restTime);
+    }
+
+    if (workout is SetsConfig) {
+      final int reps = actual?.doneReps ?? workout.totalReps;
+      final int safeReps = reps < 0 ? 0 : reps;
+      final int sets = actual?.doneSets ?? workout.sets;
+      final int safeSets = sets < 0 ? 0 : sets;
+      final int restSeconds =
+          safeSets > 1 ? (safeSets - 1) * workout.restBetweenSets : 0;
+      return (safeReps * 3) + restSeconds;
+    }
+
+    return _durationForWorkout(workout);
+  }
+
+  int _doneWorkDurationForWorkout({
+    required WorkoutConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int? manualWorkSeconds = actual?.doneWorkSeconds;
+    if (manualWorkSeconds != null && manualWorkSeconds > 0) {
+      return manualWorkSeconds;
+    }
+
+    if (workout is TimedConfig) {
+      final int timedSeconds = actual?.doneTimedSeconds ?? workout.duration;
+      return timedSeconds > 0 ? timedSeconds : workout.duration;
+    }
+
+    if (workout is TabataConfig) {
+      final int rounds = actual?.doneRounds ?? workout.rounds;
+      final int clampedRounds = rounds < 0 ? 0 : rounds;
+      return clampedRounds * workout.workTime;
+    }
+
+    if (workout is SetsConfig) {
+      final int reps = actual?.doneReps ?? workout.totalReps;
+      final int safeReps = reps < 0 ? 0 : reps;
+      return safeReps * 3;
+    }
+
+    return _plannedWorkDurationForWorkout(workout);
+  }
+
+  int _doneSetsForWorkout({
+    required SetsConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int value = actual?.doneSets ?? workout.sets;
+    return value < 0 ? 0 : value;
+  }
+
+  int _doneRepsForWorkout({
+    required SetsConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int value = actual?.doneReps ?? workout.totalReps;
+    return value < 0 ? 0 : value;
+  }
+
+  int _doneRoundsForWorkout({
+    required TabataConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int value = actual?.doneRounds ?? workout.rounds;
+    return value < 0 ? 0 : value;
+  }
+
+  int _doneTimedSecondsForWorkout({
+    required TimedConfig workout,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int value = actual?.doneTimedSeconds ?? workout.duration;
+    return value < 0 ? 0 : value;
+  }
+
+  Map<String, dynamic> _serializeWorkoutPlan({
+    required WorkoutConfig workout,
+    required int index,
+    required _ExerciseActualMetrics? actual,
+  }) {
+    final int doneDurationSeconds = _doneDurationForWorkout(
+      workout: workout,
+      actual: actual,
+    );
+    final int doneWorkSeconds = _doneWorkDurationForWorkout(
+      workout: workout,
+      actual: actual,
+    );
+
+    final Map<String, dynamic> data = <String, dynamic>{
+      'index': index,
+      'exerciseId': workout.exerciseId,
+      'type': workout.type.name,
+      'plannedDurationSeconds': _durationForWorkout(workout),
+      'plannedWorkSeconds': _plannedWorkDurationForWorkout(workout),
+      'doneDurationSeconds': doneDurationSeconds,
+      'doneWorkSeconds': doneWorkSeconds,
+      'actualDurationSeconds': actual?.doneDurationSeconds,
+    };
+
+    if (workout is SetsConfig) {
+      final int doneSets = _doneSetsForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      final int doneReps = _doneRepsForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      data.addAll(<String, dynamic>{
+        'sets': workout.sets,
+        'reps': workout.reps,
+        'totalReps': workout.totalReps,
+        'restBetweenSets': workout.restBetweenSets,
+        'weight': workout.weight,
+        'weightUnit': workout.weightUnit,
+        'doneSets': doneSets,
+        'doneReps': doneReps,
+        'doneWeight': actual?.doneWeight ?? workout.weight,
+        'doneWeightUnit': actual?.doneWeightUnit ?? workout.weightUnit,
+        'actualSets': actual?.doneSets,
+        'actualReps': actual?.doneReps,
+        'actualWeight': actual?.doneWeight,
+        'actualWeightUnit': actual?.doneWeightUnit,
+      });
+    } else if (workout is TabataConfig) {
+      final int doneRounds = _doneRoundsForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      data.addAll(<String, dynamic>{
+        'rounds': workout.rounds,
+        'workTime': workout.workTime,
+        'restTime': workout.restTime,
+        'doneRounds': doneRounds,
+        'actualRounds': actual?.doneRounds,
+      });
+    } else if (workout is TimedConfig) {
+      final int doneTimedSeconds = _doneTimedSecondsForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      data.addAll(<String, dynamic>{
+        'duration': workout.duration,
+        'doneDuration': doneTimedSeconds,
+        'actualDuration': actual?.doneTimedSeconds,
+      });
+    }
+
+    return data;
+  }
+
+  String _twoDigits(int value) => value.toString().padLeft(2, '0');
+
+  String _dateKey(DateTime localDate) {
+    return '${localDate.year}-${_twoDigits(localDate.month)}-${_twoDigits(localDate.day)}';
+  }
+
+  String _monthKey(DateTime localDate) {
+    return '${localDate.year}-${_twoDigits(localDate.month)}';
+  }
+
+  String _weekKey(DateTime localDate) {
+    final DateTime weekStart = localDate.subtract(
+      Duration(days: localDate.weekday - DateTime.monday),
+    );
+    return _dateKey(weekStart);
+  }
+
+  int? _parsePositiveInt(String rawValue) {
+    final String trimmed = rawValue.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    final int? parsed = int.tryParse(trimmed);
+    if (parsed == null || parsed < 0) {
+      return null;
+    }
+    return parsed;
+  }
+
+  double? _parsePositiveDouble(String rawValue) {
+    final String trimmed = rawValue.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    final double? parsed = double.tryParse(trimmed);
+    if (parsed == null || parsed < 0) {
+      return null;
+    }
+    return parsed;
+  }
+
+  Future<void> _openActualMetricsSheet({
+    required WorkoutConfig workout,
+    required int index,
+    required String exerciseName,
+  }) async {
+    final _ExerciseActualMetrics? existing = _actualMetricsAt(index);
+    final TextEditingController repsController = TextEditingController(
+      text: existing?.doneReps?.toString() ??
+          (workout is SetsConfig ? workout.totalReps.toString() : ''),
+    );
+    final TextEditingController setsController = TextEditingController(
+      text: existing?.doneSets?.toString() ??
+          (workout is SetsConfig ? workout.sets.toString() : ''),
+    );
+    final TextEditingController weightController = TextEditingController(
+      text: existing?.doneWeight?.toString() ??
+          (workout is SetsConfig && workout.weight != null
+              ? workout.weight!.toString()
+              : ''),
+    );
+    final TextEditingController weightUnitController = TextEditingController(
+      text: existing?.doneWeightUnit ??
+          (workout is SetsConfig ? (workout.weightUnit ?? '') : ''),
+    );
+    final TextEditingController roundsController = TextEditingController(
+      text: existing?.doneRounds?.toString() ??
+          (workout is TabataConfig ? workout.rounds.toString() : ''),
+    );
+    final TextEditingController timedSecondsController = TextEditingController(
+      text: existing?.doneTimedSeconds?.toString() ??
+          (workout is TimedConfig ? workout.duration.toString() : ''),
+    );
+    final TextEditingController durationController = TextEditingController(
+      text: existing?.doneDurationSeconds?.toString() ?? '',
+    );
+    final TextEditingController workSecondsController = TextEditingController(
+      text: existing?.doneWorkSeconds?.toString() ?? '',
+    );
+
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: AppColors.surface,
+        builder: (BuildContext context) {
+          final bool isFrench = Localizations.localeOf(context)
+              .languageCode
+              .toLowerCase()
+              .startsWith('fr');
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md,
+                AppSpacing.md +
+                    MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Text(
+                      isFrench
+                          ? 'Enregistrer les performances réelles'
+                          : 'Log actual performance',
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'AppFontMedium',
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxs),
+                    Text(
+                      exerciseName,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    if (workout is SetsConfig) ...<Widget>[
+                      _ActualInputField(
+                        controller: setsController,
+                        label: 'Sets done',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      _ActualInputField(
+                        controller: repsController,
+                        label: 'Total reps done',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: _ActualInputField(
+                              controller: weightController,
+                              label: 'Weight used',
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          SizedBox(
+                            width: 96,
+                            child: _ActualInputField(
+                              controller: weightUnitController,
+                              label: 'Unit',
+                              keyboardType: TextInputType.text,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                    ],
+                    if (workout is TabataConfig) ...<Widget>[
+                      _ActualInputField(
+                        controller: roundsController,
+                        label: 'Rounds done',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                    ],
+                    if (workout is TimedConfig) ...<Widget>[
+                      _ActualInputField(
+                        controller: timedSecondsController,
+                        label: 'Seconds done',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                    ],
+                    _ActualInputField(
+                      controller: durationController,
+                      label: 'Total duration done (sec)',
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    _ActualInputField(
+                      controller: workSecondsController,
+                      label: 'Active work done (sec)',
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                _actualMetricsByIndex.remove(index);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Clear'),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: () {
+                              final _ExerciseActualMetrics metrics =
+                                  _ExerciseActualMetrics(
+                                doneSets: _parsePositiveInt(
+                                  setsController.text,
+                                ),
+                                doneReps: _parsePositiveInt(
+                                  repsController.text,
+                                ),
+                                doneWeight: _parsePositiveDouble(
+                                  weightController.text,
+                                ),
+                                doneWeightUnit: weightUnitController.text.trim()
+                                        .isEmpty
+                                    ? null
+                                    : weightUnitController.text.trim(),
+                                doneRounds: _parsePositiveInt(
+                                  roundsController.text,
+                                ),
+                                doneTimedSeconds: _parsePositiveInt(
+                                  timedSecondsController.text,
+                                ),
+                                doneDurationSeconds: _parsePositiveInt(
+                                  durationController.text,
+                                ),
+                                doneWorkSeconds: _parsePositiveInt(
+                                  workSecondsController.text,
+                                ),
+                              );
+                              setState(() {
+                                if (metrics.hasAnyInput) {
+                                  _actualMetricsByIndex[index] = metrics;
+                                } else {
+                                  _actualMetricsByIndex.remove(index);
+                                }
+                              });
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Save'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } finally {
+      repsController.dispose();
+      setsController.dispose();
+      weightController.dispose();
+      weightUnitController.dispose();
+      roundsController.dispose();
+      timedSecondsController.dispose();
+      durationController.dispose();
+      workSecondsController.dispose();
+    }
+  }
+
   void _onPrimaryActionPressed() {
     if (_phase == _WorkoutPhase.finished) {
       Navigator.of(context).maybePop();
@@ -138,6 +605,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     if (!_hasStarted) {
       setState(() {
         _hasStarted = true;
+        _workoutStartedAt ??= DateTime.now();
       });
       _startCurrentPhase();
       return;
@@ -204,6 +672,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         _phase = _WorkoutPhase.finished;
         _isRunning = false;
       });
+      _saveWorkoutHistoryIfNeeded();
       return;
     }
 
@@ -212,6 +681,193 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       _phase = _WorkoutPhase.getReady;
     });
     _startCurrentPhase();
+  }
+
+  Future<void> _saveWorkoutHistoryIfNeeded() async {
+    if (_workoutHistorySaved) {
+      return;
+    }
+
+    final String? userId = ref.read(currentUserIdProvider);
+    if (userId == null) {
+      return;
+    }
+
+    final DateTime completedAt = DateTime.now();
+    final DateTime startedAt = _workoutStartedAt ?? completedAt;
+    final DateTime completedAtUtc = completedAt.toUtc();
+    final DateTime startedAtUtc = startedAt.toUtc();
+    int durationSeconds = completedAt.difference(startedAt).inSeconds;
+    if (durationSeconds <= 0) {
+      durationSeconds = widget.session.estimatedDuration;
+    }
+
+    final List<Map<String, dynamic>> workoutPlans =
+        widget.session.workouts.asMap().entries.map((entry) {
+      final _ExerciseActualMetrics? actual = _actualMetricsAt(entry.key);
+      return _serializeWorkoutPlan(
+        workout: entry.value,
+        index: entry.key,
+        actual: actual,
+      );
+    }).toList();
+
+    final Map<String, Map<String, dynamic>> exerciseAggregateById =
+        <String, Map<String, dynamic>>{};
+    for (final MapEntry<int, WorkoutConfig> entry
+        in widget.session.workouts.asMap().entries) {
+      final WorkoutConfig workout = entry.value;
+      final _ExerciseActualMetrics? actual = _actualMetricsAt(entry.key);
+      final Map<String, dynamic> aggregate =
+          exerciseAggregateById.putIfAbsent(workout.exerciseId, () {
+        return <String, dynamic>{
+          'exerciseId': workout.exerciseId,
+          'workoutCount': 0,
+          'plannedDurationSeconds': 0,
+          'plannedWorkSeconds': 0,
+          'plannedSets': 0,
+          'plannedReps': 0,
+          'plannedRounds': 0,
+          'plannedTimedSeconds': 0,
+          'doneDurationSeconds': 0,
+          'doneWorkSeconds': 0,
+          'doneSets': 0,
+          'doneReps': 0,
+          'doneRounds': 0,
+          'doneTimedSeconds': 0,
+        };
+      });
+
+      aggregate['workoutCount'] = (aggregate['workoutCount'] as int) + 1;
+      aggregate['plannedDurationSeconds'] =
+          (aggregate['plannedDurationSeconds'] as int) +
+          _durationForWorkout(workout);
+      aggregate['plannedWorkSeconds'] =
+          (aggregate['plannedWorkSeconds'] as int) +
+          _plannedWorkDurationForWorkout(workout);
+      final int doneDurationSeconds = _doneDurationForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      final int doneWorkSeconds = _doneWorkDurationForWorkout(
+        workout: workout,
+        actual: actual,
+      );
+      aggregate['doneDurationSeconds'] =
+          (aggregate['doneDurationSeconds'] as int) +
+          doneDurationSeconds;
+      aggregate['doneWorkSeconds'] =
+          (aggregate['doneWorkSeconds'] as int) +
+          doneWorkSeconds;
+
+      if (workout is SetsConfig) {
+        final int doneSets = _doneSetsForWorkout(
+          workout: workout,
+          actual: actual,
+        );
+        final int doneReps = _doneRepsForWorkout(
+          workout: workout,
+          actual: actual,
+        );
+        aggregate['plannedSets'] =
+            (aggregate['plannedSets'] as int) + workout.sets;
+        aggregate['plannedReps'] =
+            (aggregate['plannedReps'] as int) + workout.totalReps;
+        aggregate['doneSets'] = (aggregate['doneSets'] as int) + doneSets;
+        aggregate['doneReps'] = (aggregate['doneReps'] as int) + doneReps;
+      } else if (workout is TabataConfig) {
+        final int doneRounds = _doneRoundsForWorkout(
+          workout: workout,
+          actual: actual,
+        );
+        aggregate['plannedRounds'] =
+            (aggregate['plannedRounds'] as int) + workout.rounds;
+        aggregate['doneRounds'] = (aggregate['doneRounds'] as int) + doneRounds;
+      } else if (workout is TimedConfig) {
+        final int doneTimedSeconds = _doneTimedSecondsForWorkout(
+          workout: workout,
+          actual: actual,
+        );
+        aggregate['plannedTimedSeconds'] =
+            (aggregate['plannedTimedSeconds'] as int) + workout.duration;
+        aggregate['doneTimedSeconds'] =
+            (aggregate['doneTimedSeconds'] as int) + doneTimedSeconds;
+      }
+    }
+    final List<Map<String, dynamic>> exerciseSummaries =
+        exerciseAggregateById.values.toList()
+          ..sort(
+            (a, b) => (a['exerciseId'] as String).compareTo(
+              b['exerciseId'] as String,
+            ),
+          );
+    final int totalPlannedReps = exerciseSummaries.fold<int>(
+      0,
+      (sum, exercise) => sum + (exercise['plannedReps'] as int),
+    );
+    final int totalDoneReps = exerciseSummaries.fold<int>(
+      0,
+      (sum, exercise) => sum + (exercise['doneReps'] as int),
+    );
+    final int totalDoneWorkSeconds = exerciseSummaries.fold<int>(
+      0,
+      (sum, exercise) => sum + (exercise['doneWorkSeconds'] as int),
+    );
+
+    final int plannedWorkoutDurationSeconds = widget.session.workouts
+        .fold<int>(0, (sum, workout) => sum + _durationForWorkout(workout));
+    final int plannedWorkSeconds = widget.session.workouts.fold<int>(
+      0,
+      (sum, workout) => sum + _plannedWorkDurationForWorkout(workout),
+    );
+    final int exerciseCount = widget.session.exerciseCount;
+    final int transitionSeconds = exerciseCount * widget.session.transitionTime;
+    final int interExerciseRestSeconds = exerciseCount > 1
+        ? (exerciseCount - 1) * widget.session.restBetweenExercises
+        : 0;
+
+    try {
+      await ref.read(firestoreServiceProvider).saveWorkoutHistory(
+        userId: userId,
+        sessionId: widget.session.id,
+        completedAt: completedAtUtc,
+        duration: durationSeconds,
+        metadata: <String, dynamic>{
+          'sessionName': widget.session.name,
+          'description': widget.session.description,
+          'exerciseCount': exerciseCount,
+          'difficulty': widget.session.difficulty.name,
+          'workoutTypes': widget.session.workouts
+              .map((WorkoutConfig workout) => workout.type.name)
+              .toSet()
+              .toList(),
+          'isCustomSession': widget.session.isCustom,
+          'startedAt': startedAtUtc.toIso8601String(),
+          'completedAtLocal': completedAt.toIso8601String(),
+          'dateKey': _dateKey(completedAt),
+          'weekKey': _weekKey(completedAt),
+          'monthKey': _monthKey(completedAt),
+          'timezoneOffsetMinutes': completedAt.timeZoneOffset.inMinutes,
+          'plannedDurationSeconds': widget.session.estimatedDuration,
+          'plannedWorkoutDurationSeconds': plannedWorkoutDurationSeconds,
+          'plannedWorkSeconds': plannedWorkSeconds,
+          'totalPlannedReps': totalPlannedReps,
+          'totalDoneReps': totalDoneReps,
+          'totalDoneWorkSeconds': totalDoneWorkSeconds,
+          'plannedTransitionSeconds': transitionSeconds,
+          'plannedInterExerciseRestSeconds': interExerciseRestSeconds,
+          'actualMetricsAvailable': _hasAnyActualMetrics,
+          'calories': null,
+          'heartRateAvg': null,
+          'heartRateMax': null,
+          'exerciseSummaries': exerciseSummaries,
+          'workouts': workoutPlans,
+        },
+      );
+      _workoutHistorySaved = true;
+    } catch (_) {
+      // Keep workout completion UX smooth if history write fails.
+    }
   }
 
   String _resolveLocalizedValue(BuildContext context, String rawValue) {
@@ -806,6 +1462,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     final AppLocalizations? localizations = AppLocalizations.of(context);
     final String currentLabel =
         localizations?.workout_current_label ?? 'Current';
+    final _ExerciseActualMetrics? actualMetrics = _actualMetricsAt(
+      _currentExerciseIndex,
+    );
+    final bool hasActualMetrics = actualMetrics?.hasAnyInput ?? false;
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xs),
@@ -875,6 +1539,45 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              icon: Icon(
+                hasActualMetrics
+                    ? Icons.check_circle_rounded
+                    : Icons.edit_note_rounded,
+              ),
+              label: Text(
+                hasActualMetrics
+                    ? (isFrench ? 'Données réelles enregistrées' : 'Actuals saved')
+                    : (isFrench ? 'Saisir les données réelles' : 'Log actuals'),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: hasActualMetrics
+                    ? AppColors.success
+                    : AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.xs,
+                ),
+              ),
+              onPressed: () async {
+                if (_isRunning) {
+                  _pauseTimer();
+                }
+                await _openActualMetricsSheet(
+                  workout: step.config,
+                  index: _currentExerciseIndex,
+                  exerciseName: _exerciseName(
+                    context,
+                    step,
+                    _currentExerciseIndex,
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -1051,6 +1754,66 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         ],
       ),
     );
+  }
+}
+
+class _ActualInputField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final TextInputType keyboardType;
+
+  const _ActualInputField({
+    required this.controller,
+    required this.label,
+    required this.keyboardType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadii.md),
+        ),
+        isDense: true,
+      ),
+    );
+  }
+}
+
+class _ExerciseActualMetrics {
+  final int? doneSets;
+  final int? doneReps;
+  final double? doneWeight;
+  final String? doneWeightUnit;
+  final int? doneRounds;
+  final int? doneTimedSeconds;
+  final int? doneDurationSeconds;
+  final int? doneWorkSeconds;
+
+  const _ExerciseActualMetrics({
+    this.doneSets,
+    this.doneReps,
+    this.doneWeight,
+    this.doneWeightUnit,
+    this.doneRounds,
+    this.doneTimedSeconds,
+    this.doneDurationSeconds,
+    this.doneWorkSeconds,
+  });
+
+  bool get hasAnyInput {
+    return doneSets != null ||
+        doneReps != null ||
+        doneWeight != null ||
+        (doneWeightUnit?.trim().isNotEmpty ?? false) ||
+        doneRounds != null ||
+        doneTimedSeconds != null ||
+        doneDurationSeconds != null ||
+        doneWorkSeconds != null;
   }
 }
 

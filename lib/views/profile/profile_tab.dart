@@ -11,6 +11,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/views/profile/stats_graph_screen.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
 
@@ -97,6 +98,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     );
   }
 
+  void _openStatsGraph() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const StatsGraphScreen(),
+      ),
+    );
+  }
+
   String _emailToName(String? email) {
     if (email == null || email.isEmpty) return 'Athlete';
     final local = email.split('@').first;
@@ -161,43 +170,64 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(<Widget>[
-                    // ── Streak calendar ──────────────────────────────
+                    // ── Combined streak + account block ──────────────
                     _ProfileSection(
-                      title: isFrench ? 'Série' : 'Streak',
-                      child: _StreakCalendar(isFrench: isFrench),
-                    ),
-
-                    const SizedBox(height: AppSpacing.md),
-
-                    // ── Account menu ─────────────────────────────────
-                    _ProfileSection(
-                      title: isFrench ? 'Compte' : 'Account',
-                      child: _MenuList(
-                        items: <_MenuItem>[
-                          _MenuItem(
-                            icon: Icons.edit_rounded,
-                            label: isFrench
-                                ? 'Modifier le profil'
-                                : 'Edit profile',
-                            onTap: () => _showComingSoon(isFrench),
+                      title: isFrench ? 'Série & Compte' : 'Streak & Account',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          _SectionSubheader(
+                            label: isFrench ? 'Série' : 'Streak',
                           ),
-                          _MenuItem(
-                            icon: Icons.people_rounded,
-                            label: isFrench ? 'Amis' : 'Friends',
-                            onTap: () => _showComingSoon(isFrench),
+                          _StreakCalendar(isFrench: isFrench),
+                          Divider(
+                            height: 1,
+                            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
                           ),
-                          _MenuItem(
-                            icon: Icons.settings_rounded,
-                            label: isFrench ? 'Paramètres' : 'Settings',
-                            onTap: () => _showComingSoon(isFrench),
+                          Padding(
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            child: _StatsGraphButton(
+                              label: isFrench
+                                  ? 'Statistiques & Graphiques'
+                                  : 'Stats & Graph',
+                              onTap: _openStatsGraph,
+                            ),
                           ),
-                          _MenuItem(
-                            icon: Icons.lock_outline_rounded,
-                            label: isFrench
-                                ? 'Confidentialité'
-                                : 'Privacy',
-                            onTap: () => _showComingSoon(isFrench),
-                            isLast: true,
+                          Divider(
+                            height: 1,
+                            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+                          ),
+                          _SectionSubheader(
+                            label: isFrench ? 'Compte' : 'Account',
+                          ),
+                          _MenuList(
+                            items: <_MenuItem>[
+                              _MenuItem(
+                                icon: Icons.edit_rounded,
+                                label: isFrench
+                                    ? 'Modifier le profil'
+                                    : 'Edit profile',
+                                onTap: () => _showComingSoon(isFrench),
+                              ),
+                              _MenuItem(
+                                icon: Icons.people_rounded,
+                                label: isFrench ? 'Amis' : 'Friends',
+                                onTap: () => _showComingSoon(isFrench),
+                              ),
+                              _MenuItem(
+                                icon: Icons.settings_rounded,
+                                label: isFrench ? 'Paramètres' : 'Settings',
+                                onTap: () => _showComingSoon(isFrench),
+                              ),
+                              _MenuItem(
+                                icon: Icons.lock_outline_rounded,
+                                label: isFrench
+                                    ? 'Confidentialité'
+                                    : 'Privacy',
+                                onTap: () => _showComingSoon(isFrench),
+                                isLast: true,
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -661,6 +691,101 @@ class _ProfileSection extends StatelessWidget {
           ),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class _SectionSubheader extends StatelessWidget {
+  final String label;
+
+  const _SectionSubheader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.sm,
+        AppSpacing.md,
+        AppSpacing.xxs,
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          color: AppColors.textSecondary.withValues(alpha: 0.6),
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _StatsGraphButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _StatsGraphButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: <Color>[AppColors.primaryDarker, AppColors.primary],
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.22),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm + 2,
+            ),
+            child: Row(
+              children: <Widget>[
+                const Icon(
+                  Icons.insights_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'AppFontMedium',
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
