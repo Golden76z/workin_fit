@@ -21,7 +21,11 @@ class ExerciseListScreen extends ConsumerStatefulWidget {
   ConsumerState<ExerciseListScreen> createState() => _ExerciseListScreenState();
 }
 
-class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
+class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
+    with AutomaticKeepAliveClientMixin<ExerciseListScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   static final AppLocalizationsEn _en = AppLocalizationsEn();
   static final AppLocalizationsFr _fr = AppLocalizationsFr();
 
@@ -36,22 +40,19 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final bool isFrench =
         Localizations.localeOf(context).languageCode.toLowerCase().startsWith(
               'fr',
             );
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
-    const Color appBarSurfaceColor = AppChrome.topSurface;
-    const Color filterSurfaceColor = Colors.transparent;
-    final Color searchFieldColor = AppColors.surface.withValues(alpha: 0.95);
-    final Color chipBackgroundColor =
-        AppColors.frostedCyan.withValues(alpha: 0.64);
-    final Color chipSelectedColor =
-        AppColors.background.withValues(alpha: 0.88);
+    final Color searchFieldColor = Colors.white.withValues(alpha: 0.15);
+    final Color chipBackgroundColor = Colors.white.withValues(alpha: 0.15);
+    final Color chipSelectedColor = Colors.white.withValues(alpha: 0.92);
 
     return AppSystemOverlayRegion(
-      style: AppChrome.topSurfaceOverlay,
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         body: SafeArea(
@@ -67,17 +68,31 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                 slivers: <Widget>[
                   SliverAppBar(
                     pinned: true,
-                    backgroundColor: appBarSurfaceColor,
+                    backgroundColor: Colors.transparent,
                     surfaceTintColor: Colors.transparent,
+                    elevation: 0,
                     automaticallyImplyLeading: false,
-                    toolbarHeight: 0,
+                    toolbarHeight: 36,
+                    flexibleSpace: Container(
+                      color: AppColors.navBarSurface,
+                    ),
+                    title: Text(
+                      isFrench ? 'Liste des exercices' : 'Exercise list',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'AppFontMedium',
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
                     bottom: PreferredSize(
                       preferredSize: const Size.fromHeight(116),
                       child: Container(
-                        color: filterSurfaceColor,
+                        color: Colors.transparent,
                         padding: const EdgeInsets.fromLTRB(
                           0,
-                          AppSpacing.xs,
+                          0,
                           0,
                           AppSpacing.sm,
                         ),
@@ -91,11 +106,18 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                                 controller: _searchController,
                                 textInputAction: TextInputAction.search,
                                 onChanged: (_) => setState(() {}),
+                                style: const TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
                                   hintText: isFrench
-                                      ? 'Rechercher un exercice (ex: plank / planche)'
-                                      : 'Search an exercise (e.g. plank / planche)',
-                                  prefixIcon: const Icon(Icons.search_rounded),
+                                      ? 'Rechercher un exercice...'
+                                      : 'Search an exercise...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.55),
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.search_rounded,
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                  ),
                                   suffixIcon: _searchController.text
                                           .trim()
                                           .isEmpty
@@ -105,35 +127,40 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                                             _searchController.clear();
                                             setState(() {});
                                           },
-                                          icon: const Icon(Icons.close_rounded),
+                                          icon: Icon(
+                                            Icons.close_rounded,
+                                            color: Colors.white
+                                                .withValues(alpha: 0.8),
+                                          ),
                                         ),
                                   filled: true,
                                   fillColor: searchFieldColor,
                                   contentPadding: const EdgeInsets.symmetric(
-                                    vertical: AppSpacing.xs,
+                                    vertical: 5,
                                     horizontal: AppSpacing.sm,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.xl),
+                                        BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
-                                      color: AppColors.background
-                                          .withValues(alpha: 0.4),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.3),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.xl),
+                                        BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
-                                      color: AppColors.background
-                                          .withValues(alpha: 0.4),
+                                      color:
+                                          Colors.white.withValues(alpha: 0.3),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.xl),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.background,
+                                        BorderRadius.circular(AppRadii.lg),
+                                    borderSide: BorderSide(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.75),
                                       width: 1.4,
                                     ),
                                   ),
@@ -159,8 +186,8 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen> {
                                       backgroundColor: chipBackgroundColor,
                                       selectedColor: chipSelectedColor,
                                       side: BorderSide(
-                                        color: AppColors.background
-                                            .withValues(alpha: 0.28),
+                                        color: Colors.white
+                                            .withValues(alpha: 0.3),
                                       ),
                                       labelStyle: const TextStyle(
                                         color: AppColors.primaryAbyss,

@@ -36,15 +36,19 @@ class FirestoreService {
       await _firestore
           .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .set({
-        'username': username,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+          .set(
+        {
+          'username': username,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
     } catch (e) {
-      print('Error creating/updating user profile: $e');
-      rethrow;
+      throw FirestoreException(
+        'Unexpected error creating/updating user profile: $e',
+      );
     }
   }
 
@@ -59,7 +63,7 @@ class FirestoreService {
       if (!doc.exists) return null;
       return doc.data();
     } catch (e) {
-      print('Error fetching user profile: $e');
+      // Keep profile loading resilient in UI if profile doc is missing/unreachable.
       return null;
     }
   }
@@ -143,13 +147,15 @@ class FirestoreService {
         .collection(FirebaseConstants.exercisesCollection)
         .orderBy('name')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return Exercise.fromJson(data);
-            })
-            .toList())
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) {
+                final data = doc.data();
+                data['id'] = doc.id;
+                return Exercise.fromJson(data);
+              })
+              .toList(),
+        )
         .handleError((error) {
           throw FirestoreException(
             'Error streaming exercises: $error',
@@ -276,13 +282,15 @@ class FirestoreService {
         .collection(FirebaseConstants.sessionsCollection)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return Session.fromFirestore(data);
-            })
-            .toList())
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) {
+                final data = doc.data();
+                data['id'] = doc.id;
+                return Session.fromFirestore(data);
+              })
+              .toList(),
+        )
         .handleError((error) {
           throw FirestoreException(
             'Error streaming sessions: $error',
@@ -304,8 +312,7 @@ class FirestoreService {
           .map((doc) => Session.fromFirestore(doc.data()))
           .toList();
     } catch (e) {
-      print('Error fetching preset sessions: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching preset sessions: $e');
     }
   }
 
@@ -407,37 +414,35 @@ class FirestoreService {
             data['id'] = doc.id;
             return Program.fromFirestore(data);
           });
-      
-      // Listen to both streams and return whichever has data
-      // Prefer preset programs, fallback to user programs
-      final controller = StreamController<Program?>.broadcast();
-      StreamSubscription<Program?>? presetSub;
-      StreamSubscription<Program?>? userSub;
-      
-      presetSub = presetStream.listen(
-        (program) {
-          if (program != null) {
-            controller.add(program);
-          }
-        },
-        onError: controller.addError,
-      );
-      
-      userSub = userStream.listen(
-        (program) {
-          if (program != null) {
-            controller.add(program);
-          }
-        },
-        onError: controller.addError,
-      );
-      
-      controller.onCancel = () {
-        presetSub?.cancel();
-        userSub?.cancel();
-      };
-      
-      return controller.stream.handleError((error) {
+
+      // Listen to both streams and forward whichever has data.
+      return Stream<Program?>.multi((controller) {
+        StreamSubscription<Program?>? presetSub;
+        StreamSubscription<Program?>? userSub;
+
+        presetSub = presetStream.listen(
+          (program) {
+            if (program != null) {
+              controller.add(program);
+            }
+          },
+          onError: controller.addError,
+        );
+
+        userSub = userStream.listen(
+          (program) {
+            if (program != null) {
+              controller.add(program);
+            }
+          },
+          onError: controller.addError,
+        );
+
+        controller.onCancel = () async {
+          await presetSub?.cancel();
+          await userSub?.cancel();
+        };
+      }).handleError((error) {
         throw FirestoreException(
           'Error subscribing to program: $error',
         );
@@ -536,6 +541,102 @@ class FirestoreService {
   }
 
   // ===== WORKOUT HISTORY =====
+
+  /// Get user's completed workout history (most recent first)
+  Future<List<Map<String, dynamic>>> getWorkoutHistory({
+    required String userId,
+    int limit = 180,
+  }) async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.workoutHistoryCollection)
+          .orderBy('completedAt', descending: true)
+          .limit(limit)
+          .get();
+
+      return snapshot.docs.map((doc) {
+        final Map<String, dynamic> data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch workout history: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException(
+        'Unexpected error fetching workout history: $e',
+      );
+    }
+  }
+
+  /// Get monthly aggregate counters for all exercises
+  Future<List<Map<String, dynamic>>> getMonthlyExerciseAggregates({
+    required String userId,
+    required String monthKey,
+    int limit = 2000,
+  }) async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.exerciseMonthlyCollection)
+          .doc(monthKey)
+          .collection(FirebaseConstants.exercisesCollection)
+          .orderBy('doneReps', descending: true)
+          .limit(limit)
+          .get();
+
+      return snapshot.docs.map((doc) {
+        final Map<String, dynamic> data = doc.data();
+        data['id'] = doc.id;
+        return data;
+      }).toList();
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch monthly exercise aggregates: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException(
+        'Unexpected error fetching monthly exercise aggregates: $e',
+      );
+    }
+  }
+
+  /// Get month-level aggregate summary.
+  Future<Map<String, dynamic>?> getMonthlyWorkoutSummary({
+    required String userId,
+    required String monthKey,
+  }) async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.exerciseMonthlyCollection)
+          .doc(monthKey)
+          .get();
+
+      if (!doc.exists) {
+        return null;
+      }
+      final Map<String, dynamic> data = doc.data()!;
+      data['id'] = doc.id;
+      return data;
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch monthly workout summary: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException(
+        'Unexpected error fetching monthly workout summary: $e',
+      );
+    }
+  }
   
   /// Save completed workout
   Future<void> saveWorkoutHistory({
@@ -546,19 +647,188 @@ class FirestoreService {
     Map<String, dynamic>? metadata,
   }) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('workout_history')
-          .add({
+      final Map<String, dynamic> safeMetadata = metadata ?? <String, dynamic>{};
+      final DateTime completedAtUtc = completedAt.toUtc();
+      final String completedAtIso = completedAtUtc.toIso8601String();
+      final String monthKey = _resolveMonthKey(
+        completedAt: completedAt,
+        metadata: safeMetadata,
+      );
+      final DateTime monthDate = _parseMonthKey(monthKey);
+
+      final DocumentReference<Map<String, dynamic>> userDocRef = _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId);
+      final DocumentReference<Map<String, dynamic>> historyDocRef = userDocRef
+          .collection(FirebaseConstants.workoutHistoryCollection)
+          .doc();
+      final DocumentReference<Map<String, dynamic>> monthDocRef = userDocRef
+          .collection(FirebaseConstants.exerciseMonthlyCollection)
+          .doc(monthKey);
+
+      final WriteBatch batch = _firestore.batch();
+
+      batch.set(historyDocRef, <String, dynamic>{
         'sessionId': sessionId,
-        'completedAt': completedAt.toIso8601String(),
+        'completedAt': completedAtIso,
+        'completedAtEpochMs': completedAtUtc.millisecondsSinceEpoch,
         'duration': duration,
-        'metadata': metadata ?? {},
+        'metadata': safeMetadata,
+        'monthKey': monthKey,
+        'createdAt': FieldValue.serverTimestamp(),
       });
+
+      batch.set(
+        monthDocRef,
+        <String, dynamic>{
+          'monthKey': monthKey,
+          'year': monthDate.year,
+          'month': monthDate.month,
+          'totalWorkouts': FieldValue.increment(1),
+          'totalDurationSeconds': FieldValue.increment(duration),
+          'totalPlannedReps': FieldValue.increment(
+            _asInt(safeMetadata['totalPlannedReps']),
+          ),
+          'totalDoneReps': FieldValue.increment(
+            _asInt(safeMetadata['totalDoneReps']),
+          ),
+          'totalPlannedWorkSeconds': FieldValue.increment(
+            _asInt(safeMetadata['plannedWorkSeconds']),
+          ),
+          'totalDoneWorkSeconds': FieldValue.increment(
+            _asInt(safeMetadata['totalDoneWorkSeconds']),
+          ),
+          'lastWorkoutAt': completedAtIso,
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+
+      final List<Map<String, dynamic>> exerciseSummaries = _toMapList(
+        safeMetadata['exerciseSummaries'],
+      );
+      for (final Map<String, dynamic> exerciseSummary in exerciseSummaries) {
+        final String exerciseId = (exerciseSummary['exerciseId'] as String? ?? '')
+            .trim();
+        if (exerciseId.isEmpty) {
+          continue;
+        }
+
+        final DocumentReference<Map<String, dynamic>> exerciseDocRef = monthDocRef
+            .collection(FirebaseConstants.exercisesCollection)
+            .doc(exerciseId);
+
+        batch.set(
+          exerciseDocRef,
+          <String, dynamic>{
+            'exerciseId': exerciseId,
+            'monthKey': monthKey,
+            'workoutCount': FieldValue.increment(
+              _asInt(exerciseSummary['workoutCount']),
+            ),
+            'plannedDurationSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['plannedDurationSeconds']),
+            ),
+            'plannedWorkSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['plannedWorkSeconds']),
+            ),
+            'plannedSets': FieldValue.increment(
+              _asInt(exerciseSummary['plannedSets']),
+            ),
+            'plannedReps': FieldValue.increment(
+              _asInt(exerciseSummary['plannedReps']),
+            ),
+            'plannedRounds': FieldValue.increment(
+              _asInt(exerciseSummary['plannedRounds']),
+            ),
+            'plannedTimedSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['plannedTimedSeconds']),
+            ),
+            'doneDurationSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['doneDurationSeconds']),
+            ),
+            'doneWorkSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['doneWorkSeconds']),
+            ),
+            'doneSets': FieldValue.increment(
+              _asInt(exerciseSummary['doneSets']),
+            ),
+            'doneReps': FieldValue.increment(
+              _asInt(exerciseSummary['doneReps']),
+            ),
+            'doneRounds': FieldValue.increment(
+              _asInt(exerciseSummary['doneRounds']),
+            ),
+            'doneTimedSeconds': FieldValue.increment(
+              _asInt(exerciseSummary['doneTimedSeconds']),
+            ),
+            'lastWorkoutAt': completedAtIso,
+            'updatedAt': FieldValue.serverTimestamp(),
+          },
+          SetOptions(merge: true),
+        );
+      }
+
+      await batch.commit();
     } catch (e) {
-      print('Error saving workout history: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error saving workout history: $e');
     }
+  }
+
+  String _resolveMonthKey({
+    required DateTime completedAt,
+    required Map<String, dynamic> metadata,
+  }) {
+    final dynamic rawMonthKey = metadata['monthKey'];
+    if (rawMonthKey is String &&
+        RegExp(r'^\d{4}-(0[1-9]|1[0-2])$').hasMatch(rawMonthKey)) {
+      return rawMonthKey;
+    }
+    final DateTime localDate = completedAt.toLocal();
+    final String month = localDate.month.toString().padLeft(2, '0');
+    return '${localDate.year}-$month';
+  }
+
+  DateTime _parseMonthKey(String monthKey) {
+    final List<String> parts = monthKey.split('-');
+    if (parts.length != 2) {
+      final DateTime now = DateTime.now();
+      return DateTime(now.year, now.month);
+    }
+    final int? year = int.tryParse(parts[0]);
+    final int? month = int.tryParse(parts[1]);
+    if (year == null || month == null || month < 1 || month > 12) {
+      final DateTime now = DateTime.now();
+      return DateTime(now.year, now.month);
+    }
+    return DateTime(year, month);
+  }
+
+  int _asInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+    if (value is num) {
+      return value.round();
+    }
+    if (value is String) {
+      return int.tryParse(value) ?? 0;
+    }
+    return 0;
+  }
+
+  List<Map<String, dynamic>> _toMapList(dynamic rawValue) {
+    if (rawValue is! List<dynamic>) {
+      return <Map<String, dynamic>>[];
+    }
+
+    return rawValue
+        .whereType<Map<dynamic, dynamic>>()
+        .map((Map<dynamic, dynamic> rawMap) {
+          return rawMap.map(
+            (key, value) => MapEntry(key.toString(), value),
+          );
+        })
+        .toList();
   }
 }

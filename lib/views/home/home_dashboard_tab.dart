@@ -14,13 +14,18 @@ class HomeDashboardTab extends ConsumerStatefulWidget {
   ConsumerState<HomeDashboardTab> createState() => _HomeDashboardTabState();
 }
 
-class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab> {
+class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
+    with AutomaticKeepAliveClientMixin<HomeDashboardTab> {
+  @override
+  bool get wantKeepAlive => true;
+
   Future<void> _onRefresh() async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final user = ref.watch(currentUserProvider);
     final bool isFrench = Localizations.localeOf(context)
         .languageCode
@@ -34,7 +39,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab> {
     final String greeting = _greeting(isFrench: isFrench);
 
     return AppSystemOverlayRegion(
-      style: AppChrome.topSurfaceOverlay,
+      style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         body: RefreshIndicator(
@@ -202,24 +207,13 @@ class _HomeBannerSliver extends StatelessWidget {
       child: ClipPath(
         clipper: _WaveClipper(),
         child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                AppColors.primaryDarker,
-                AppColors.primary,
-                AppColors.primaryLight,
-              ],
-              stops: <double>[0.0, 0.55, 1.0],
-            ),
-          ),
+          color: AppColors.navBarSurface,
           child: Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.lg,
               topPadding + AppSpacing.md,
               AppSpacing.lg,
-              AppSpacing.xxxl + AppSpacing.lg,
+              AppSpacing.xl + AppSpacing.sm,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
