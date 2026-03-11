@@ -19,6 +19,7 @@ const double _kAvatarRadius = 52.0;
 const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
 const double _kBannerHeight = 130.0;
+const double _kProfileBlockRadius = AppRadii.lg;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -38,7 +39,11 @@ class ProfileTab extends ConsumerStatefulWidget {
   ConsumerState<ProfileTab> createState() => _ProfileTabState();
 }
 
-class _ProfileTabState extends ConsumerState<ProfileTab> {
+class _ProfileTabState extends ConsumerState<ProfileTab>
+    with AutomaticKeepAliveClientMixin<ProfileTab> {
+  @override
+  bool get wantKeepAlive => true;
+
   bool _uploadingImage = false;
 
   Future<void> _pickAndUploadImage() async {
@@ -119,6 +124,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final user = ref.watch(currentUserProvider);
     final profileAsync = ref.watch(_userProfileProvider);
     final bool isFrench = Localizations.localeOf(context)
@@ -288,21 +294,10 @@ class _ProfileHeaderSliver extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Gradient banner
+              // Top banner
               Container(
                 height: _kBannerHeight + topPadding,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      AppColors.primaryDarker,
-                      AppColors.primary,
-                      AppColors.primaryLight,
-                    ],
-                    stops: <double>[0.0, 0.55, 1.0],
-                  ),
-                ),
+                color: AppColors.navBarSurface,
               ),
 
               // White info section
@@ -653,7 +648,7 @@ class _ProfileSection extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.xl),
+        borderRadius: BorderRadius.circular(_kProfileBlockRadius),
         border: Border.all(
           color: AppColors.babyBlueIce.withValues(alpha: 0.5),
         ),
@@ -1013,8 +1008,8 @@ class _MenuList extends StatelessWidget {
               onTap: item.onTap,
               borderRadius: item.isLast
                   ? const BorderRadius.only(
-                      bottomLeft: Radius.circular(AppRadii.xl),
-                      bottomRight: Radius.circular(AppRadii.xl),
+                      bottomLeft: Radius.circular(_kProfileBlockRadius),
+                      bottomRight: Radius.circular(_kProfileBlockRadius),
                     )
                   : BorderRadius.zero,
               child: Padding(
@@ -1081,7 +1076,7 @@ class _LogoutButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.xl),
+        borderRadius: BorderRadius.circular(_kProfileBlockRadius),
         border: Border.all(color: AppColors.errorSoft.withValues(alpha: 0.4)),
         boxShadow: <BoxShadow>[
           BoxShadow(
@@ -1093,7 +1088,7 @@ class _LogoutButton extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadii.xl),
+        borderRadius: BorderRadius.circular(_kProfileBlockRadius),
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,

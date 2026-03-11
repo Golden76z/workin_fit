@@ -36,15 +36,19 @@ class FirestoreService {
       await _firestore
           .collection(FirebaseConstants.usersCollection)
           .doc(userId)
-          .set({
-        'username': username,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+          .set(
+        {
+          'username': username,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
     } catch (e) {
-      print('Error creating/updating user profile: $e');
-      rethrow;
+      throw FirestoreException(
+        'Unexpected error creating/updating user profile: $e',
+      );
     }
   }
 
@@ -59,7 +63,7 @@ class FirestoreService {
       if (!doc.exists) return null;
       return doc.data();
     } catch (e) {
-      print('Error fetching user profile: $e');
+      // Keep profile loading resilient in UI if profile doc is missing/unreachable.
       return null;
     }
   }
@@ -143,13 +147,15 @@ class FirestoreService {
         .collection(FirebaseConstants.exercisesCollection)
         .orderBy('name')
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return Exercise.fromJson(data);
-            })
-            .toList())
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) {
+                final data = doc.data();
+                data['id'] = doc.id;
+                return Exercise.fromJson(data);
+              })
+              .toList(),
+        )
         .handleError((error) {
           throw FirestoreException(
             'Error streaming exercises: $error',
@@ -276,13 +282,15 @@ class FirestoreService {
         .collection(FirebaseConstants.sessionsCollection)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) {
-              final data = doc.data();
-              data['id'] = doc.id;
-              return Session.fromFirestore(data);
-            })
-            .toList())
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) {
+                final data = doc.data();
+                data['id'] = doc.id;
+                return Session.fromFirestore(data);
+              })
+              .toList(),
+        )
         .handleError((error) {
           throw FirestoreException(
             'Error streaming sessions: $error',
@@ -304,8 +312,7 @@ class FirestoreService {
           .map((doc) => Session.fromFirestore(doc.data()))
           .toList();
     } catch (e) {
-      print('Error fetching preset sessions: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error fetching preset sessions: $e');
     }
   }
 
@@ -407,37 +414,35 @@ class FirestoreService {
             data['id'] = doc.id;
             return Program.fromFirestore(data);
           });
-      
-      // Listen to both streams and return whichever has data
-      // Prefer preset programs, fallback to user programs
-      final controller = StreamController<Program?>.broadcast();
-      StreamSubscription<Program?>? presetSub;
-      StreamSubscription<Program?>? userSub;
-      
-      presetSub = presetStream.listen(
-        (program) {
-          if (program != null) {
-            controller.add(program);
-          }
-        },
-        onError: controller.addError,
-      );
-      
-      userSub = userStream.listen(
-        (program) {
-          if (program != null) {
-            controller.add(program);
-          }
-        },
-        onError: controller.addError,
-      );
-      
-      controller.onCancel = () {
-        presetSub?.cancel();
-        userSub?.cancel();
-      };
-      
-      return controller.stream.handleError((error) {
+
+      // Listen to both streams and forward whichever has data.
+      return Stream<Program?>.multi((controller) {
+        StreamSubscription<Program?>? presetSub;
+        StreamSubscription<Program?>? userSub;
+
+        presetSub = presetStream.listen(
+          (program) {
+            if (program != null) {
+              controller.add(program);
+            }
+          },
+          onError: controller.addError,
+        );
+
+        userSub = userStream.listen(
+          (program) {
+            if (program != null) {
+              controller.add(program);
+            }
+          },
+          onError: controller.addError,
+        );
+
+        controller.onCancel = () async {
+          await presetSub?.cancel();
+          await userSub?.cancel();
+        };
+      }).handleError((error) {
         throw FirestoreException(
           'Error subscribing to program: $error',
         );
@@ -766,8 +771,7 @@ class FirestoreService {
 
       await batch.commit();
     } catch (e) {
-      print('Error saving workout history: $e');
-      rethrow;
+      throw FirestoreException('Unexpected error saving workout history: $e');
     }
   }
 

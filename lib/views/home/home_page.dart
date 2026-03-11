@@ -5,6 +5,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
+import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
 import 'package:workin_fit/views/profile/profile_tab.dart';
 
@@ -16,44 +17,41 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  int _selectedTabIndex = 0;
+  late final ValueNotifier<int> _tabIndex;
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _selectedTabIndex);
+    _tabIndex = ValueNotifier<int>(0);
+    _pageController = PageController();
+    // Pre-warm the exercises data so the first swipe to that tab is lag-free
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ref.read(exercisesProvider);
+    });
   }
 
   @override
   void dispose() {
+    _tabIndex.dispose();
     _pageController.dispose();
     super.dispose();
   }
 
   void _onTabSelected(int index) {
-    if (index == _selectedTabIndex) {
-      return;
-    }
-
-    setState(() {
-      _selectedTabIndex = index;
-    });
-
+    if (index == _tabIndex.value) return;
+    _tabIndex.value = index;
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOutCubic,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeInOutCubic,
     );
   }
 
   void _onPageChanged(int index) {
-    if (index == _selectedTabIndex) {
-      return;
+    if (index != _tabIndex.value) {
+      _tabIndex.value = index;
     }
-    setState(() {
-      _selectedTabIndex = index;
-    });
   }
 
   @override
@@ -84,11 +82,17 @@ class _HomePageState extends ConsumerState<HomePage> {
         body: PageView(
           controller: _pageController,
           onPageChanged: _onPageChanged,
+          physics: const ClampingScrollPhysics(),
           children: tabs,
         ),
-        bottomNavigationBar: _FloatingBottomBar(
-          selectedIndex: _selectedTabIndex,
-          onTabSelected: _onTabSelected,
+        bottomNavigationBar: ValueListenableBuilder<int>(
+          valueListenable: _tabIndex,
+          builder: (BuildContext context, int index, Widget? _) {
+            return _FloatingBottomBar(
+              selectedIndex: index,
+              onTabSelected: _onTabSelected,
+            );
+          },
         ),
       ),
     );
