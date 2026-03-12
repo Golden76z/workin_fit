@@ -87,32 +87,46 @@ class SetsConfig extends WorkoutConfig {
 class TabataConfig extends WorkoutConfig {
   @HiveField(2)
   final int workTime;
-  
+
   @HiveField(3)
   final int restTime;
-  
+
   @HiveField(4)
   final int rounds;
+
+  @HiveField(5)
+  final int sets;
+
+  @HiveField(6)
+  final int restBetweenSets;
 
   TabataConfig({
     required super.exerciseId,
     required this.workTime,
     required this.restTime,
     required this.rounds,
+    this.sets = 1,
+    this.restBetweenSets = 60,
   }) : super(type: WorkoutType.tabata);
 
-  /// Total work time in seconds
+  /// Total work time per set in seconds
   int get totalWorkTime => workTime * rounds;
-  
-  /// Total rest time in seconds
-  int get totalRestTime => restTime * rounds;
-  
-  /// Total duration in seconds
-  int get totalDuration => totalWorkTime + totalRestTime;
 
-  factory TabataConfig.fromJson(Map<String, dynamic> json) => 
+  /// Total rest time per set in seconds
+  int get totalRestTime => restTime * rounds;
+
+  /// Duration of a single set in seconds
+  int get singleSetDuration => totalWorkTime + totalRestTime;
+
+  /// Total duration in seconds (all sets + rest between sets)
+  int get totalDuration {
+    if (sets <= 1) return singleSetDuration;
+    return (singleSetDuration * sets) + ((sets - 1) * restBetweenSets);
+  }
+
+  factory TabataConfig.fromJson(Map<String, dynamic> json) =>
       _$TabataConfigFromJson(json);
-  
+
   @override
   Map<String, dynamic> toJson() => _$TabataConfigToJson(this);
 }

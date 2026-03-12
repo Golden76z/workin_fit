@@ -109,19 +109,25 @@ class TabataConfigAdapter extends TypeAdapter<TabataConfig> {
       workTime: fields[2] as int,
       restTime: fields[3] as int,
       rounds: fields[4] as int,
+      sets: fields[5] as int? ?? 1,
+      restBetweenSets: fields[6] as int? ?? 60,
     );
   }
 
   @override
   void write(BinaryWriter writer, TabataConfig obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(2)
       ..write(obj.workTime)
       ..writeByte(3)
       ..write(obj.restTime)
       ..writeByte(4)
       ..write(obj.rounds)
+      ..writeByte(5)
+      ..write(obj.sets)
+      ..writeByte(6)
+      ..write(obj.restBetweenSets)
       ..writeByte(0)
       ..write(obj.type)
       ..writeByte(1)
@@ -224,6 +230,8 @@ TabataConfig _$TabataConfigFromJson(Map<String, dynamic> json) => TabataConfig(
       workTime: (json['workTime'] as num).toInt(),
       restTime: (json['restTime'] as num).toInt(),
       rounds: (json['rounds'] as num).toInt(),
+      sets: (json['sets'] as num?)?.toInt() ?? 1,
+      restBetweenSets: (json['restBetweenSets'] as num?)?.toInt() ?? 60,
     );
 
 Map<String, dynamic> _$TabataConfigToJson(TabataConfig instance) =>
@@ -232,6 +240,8 @@ Map<String, dynamic> _$TabataConfigToJson(TabataConfig instance) =>
       'workTime': instance.workTime,
       'restTime': instance.restTime,
       'rounds': instance.rounds,
+      'sets': instance.sets,
+      'restBetweenSets': instance.restBetweenSets,
     };
 
 TimedConfig _$TimedConfigFromJson(Map<String, dynamic> json) => TimedConfig(
