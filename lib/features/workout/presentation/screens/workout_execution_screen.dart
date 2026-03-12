@@ -69,6 +69,11 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   final Stopwatch _setStopwatch = Stopwatch();
   Timer? _setTickTimer;
 
+  // Tabata-specific state
+  int _tabataCurrentRound = 0;
+  int _tabataCurrentSet = 0;
+  bool _tabataIsWork = true;
+
   int get _totalExercises => widget.session.workouts.length;
 
   WorkoutConfig? get _currentWorkout {
@@ -102,11 +107,20 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           final int rest = workout.restBetweenSets;
           return rest > 0 ? rest : 60;
         }
+        if (workout is TabataConfig) {
+          final int rest = workout.restBetweenSets;
+          return rest > 0 ? rest : 60;
+        }
         return 60;
       case _WorkoutPhase.exercise:
         final WorkoutConfig? workout = _currentWorkout;
         if (workout == null) {
           return 0;
+        }
+        if (workout is TabataConfig) {
+          final int duration =
+              _tabataIsWork ? workout.workTime : workout.restTime;
+          return duration > 0 ? duration : 1;
         }
         return _durationForWorkout(workout);
       case _WorkoutPhase.exerciseRest:
@@ -179,7 +193,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return workout.duration;
     }
     if (workout is TabataConfig) {
-      return workout.totalWorkTime;
+      return workout.totalWorkTime * workout.sets;
     }
     if (workout is SetsConfig) {
       return workout.estimatedWorkDuration;
@@ -279,7 +293,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     required TabataConfig workout,
     required _ExerciseActualMetrics? actual,
   }) {
-    final int value = actual?.doneRounds ?? workout.rounds;
+    final int value = actual?.doneRounds ?? (workout.rounds * workout.sets);
     return value < 0 ? 0 : value;
   }
 
@@ -348,9 +362,11 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         actual: actual,
       );
       data.addAll(<String, dynamic>{
+        'sets': workout.sets,
         'rounds': workout.rounds,
         'workTime': workout.workTime,
         'restTime': workout.restTime,
+        'restBetweenSets': workout.restBetweenSets,
         'doneRounds': doneRounds,
         'actualRounds': actual?.doneRounds,
       });
@@ -726,20 +742,40 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         } else {
           setState(() {
             _phase = _WorkoutPhase.exercise;
+            if (workout is TabataConfig) {
+              _tabataCurrentRound = 0;
+              _tabataCurrentSet = 0;
+              _tabataIsWork = true;
+            }
           });
           _startCurrentPhase();
         }
         break;
 
       case _WorkoutPhase.exercise:
-        _advanceToNextExerciseOrFinish();
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is TabataConfig) {
+          _onTabataIntervalCompleted(workout);
+        } else {
+          _advanceToNextExerciseOrFinish();
+        }
         break;
 
       case _WorkoutPhase.setRest:
-        setState(() {
-          _phase = _WorkoutPhase.setActive;
-          _isRunning = false;
-        });
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is TabataConfig) {
+          // Resume Tabata after rest between sets
+          setState(() {
+            _phase = _WorkoutPhase.exercise;
+            _tabataIsWork = true;
+          });
+          _startCurrentPhase();
+        } else {
+          setState(() {
+            _phase = _WorkoutPhase.setActive;
+            _isRunning = false;
+          });
+        }
         break;
 
       case _WorkoutPhase.exerciseRest:
@@ -747,6 +783,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           _currentExerciseIndex += 1;
           _phase = _WorkoutPhase.getReady;
           _currentSet = 0;
+          _tabataCurrentRound = 0;
+          _tabataCurrentSet = 0;
+          _tabataIsWork = true;
         });
         _startCurrentPhase();
         break;
@@ -790,6 +829,45 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     }
   }
 
+  void _onTabataIntervalCompleted(TabataConfig workout) {
+    if (!mounted) return;
+    SystemSound.play(SystemSoundType.alert);
+
+    if (_tabataIsWork) {
+      // Work interval done → start rest interval for this round
+      setState(() {
+        _tabataIsWork = false;
+      });
+      _startCurrentPhase();
+    } else {
+      // Rest interval done → advance round or set
+      final bool isLastRound = _tabataCurrentRound + 1 >= workout.rounds;
+      if (!isLastRound) {
+        setState(() {
+          _tabataCurrentRound += 1;
+          _tabataIsWork = true;
+        });
+        _startCurrentPhase();
+      } else {
+        final bool isLastSet = _tabataCurrentSet + 1 >= workout.sets;
+        if (!isLastSet) {
+          // More sets remaining → rest between sets
+          setState(() {
+            _tabataCurrentSet += 1;
+            _tabataCurrentRound = 0;
+            _tabataIsWork = true;
+            _phase = _WorkoutPhase.setRest;
+          });
+          _startCurrentPhase();
+        } else {
+          // All sets done → sync metrics then next exercise or finish
+          _syncTabataRoundsToActualMetrics(workout);
+          _advanceToNextExerciseOrFinish();
+        }
+      }
+    }
+  }
+
   void _skipRest() {
     if (!mounted) return;
     _timerController.pause();
@@ -809,6 +887,23 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       });
       _startCurrentPhase();
     }
+  }
+
+  void _syncTabataRoundsToActualMetrics(TabataConfig workout) {
+    final int completedRounds =
+        _tabataCurrentSet * workout.rounds + _tabataCurrentRound + 1;
+    final _ExerciseActualMetrics? existing =
+        _actualMetricsByIndex[_currentExerciseIndex];
+    _actualMetricsByIndex[_currentExerciseIndex] = _ExerciseActualMetrics(
+      doneRounds: completedRounds,
+      doneSets: existing?.doneSets,
+      doneReps: existing?.doneReps,
+      doneWeight: existing?.doneWeight,
+      doneWeightUnit: existing?.doneWeightUnit,
+      doneTimedSeconds: existing?.doneTimedSeconds,
+      doneDurationSeconds: existing?.doneDurationSeconds,
+      doneWorkSeconds: existing?.doneWorkSeconds,
+    );
   }
 
   void _syncCompletedSetsToActualMetrics() {
@@ -1054,8 +1149,17 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         }
         return 'Set';
       case _WorkoutPhase.setRest:
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is TabataConfig) {
+          return 'Set Rest · $_tabataCurrentSet/${workout.sets}';
+        }
         return 'Rest';
       case _WorkoutPhase.exercise:
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is TabataConfig) {
+          final String phase = _tabataIsWork ? 'WORK' : 'REST';
+          return '$phase · ${_tabataCurrentRound + 1}/${workout.rounds}';
+        }
         return localizations?.workout_phase_exercise ?? 'Exercise';
       case _WorkoutPhase.exerciseRest:
         return 'Exercise Rest';
@@ -1076,8 +1180,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return 'Timed • ${_formatDuration(workout.duration)}';
     }
     if (workout is TabataConfig) {
-      return '${workout.rounds} rounds • ${workout.workTime}s / '
-          '${workout.restTime}s';
+      final String setInfo =
+          workout.sets > 1 ? ' · ${workout.sets} sets' : '';
+      return '${workout.rounds} rounds · ${workout.workTime}s/${workout.restTime}s$setInfo';
     }
     if (workout is SetsConfig) {
       return '${workout.sets} x ${workout.reps} reps';
@@ -1509,12 +1614,17 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return _buildSetActiveCircle(diameter: diameter);
     }
 
-    final Color fillColor =
-        (_phase == _WorkoutPhase.setRest ||
-                _phase == _WorkoutPhase.exerciseRest ||
-                _phase == _WorkoutPhase.getReady)
-            ? AppColors.warningSoft
-            : AppColors.primaryLight;
+    final Color fillColor;
+    if (_phase == _WorkoutPhase.setRest ||
+        _phase == _WorkoutPhase.exerciseRest ||
+        _phase == _WorkoutPhase.getReady) {
+      fillColor = AppColors.warningSoft;
+    } else if (_phase == _WorkoutPhase.exercise &&
+        _currentWorkout is TabataConfig) {
+      fillColor = _tabataIsWork ? AppColors.success : AppColors.errorSoft;
+    } else {
+      fillColor = AppColors.primaryLight;
+    }
 
     return Stack(
       alignment: Alignment.center,
@@ -1761,6 +1871,44 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     );
   }
 
+  Widget _buildRoundDots({
+    required int totalRounds,
+    required int completedRounds,
+    required int currentRound,
+    required bool isWork,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalRounds, (int index) {
+        final bool isDone = index < completedRounds;
+        final bool isCurrent = index == currentRound;
+        Color dotColor;
+        if (isDone) {
+          dotColor = AppColors.success;
+        } else if (isCurrent) {
+          dotColor = isWork ? AppColors.success : AppColors.errorSoft;
+        } else {
+          dotColor = AppColors.primaryLight.withValues(alpha: 0.35);
+        }
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: isCurrent ? 14 : 10,
+          height: isCurrent ? 14 : 10,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: dotColor,
+            border: isCurrent
+                ? Border.all(
+                    color: isWork ? AppColors.success : AppColors.errorSoft,
+                    width: 2,
+                  )
+                : null,
+          ),
+        );
+      }),
+    );
+  }
+
   Widget _buildRestPanelContent({
     required BuildContext context,
     required _WorkoutStep currentStep,
@@ -1956,7 +2104,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           const SizedBox(height: AppSpacing.xs),
           if ((_phase == _WorkoutPhase.setActive ||
                   _phase == _WorkoutPhase.setRest) &&
-              step.config is SetsConfig)
+              step.config is SetsConfig) ...[
             _buildSetDots(
               totalSets: (step.config as SetsConfig).sets,
               completedSets:
@@ -1965,10 +2113,18 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
               currentSetIndex:
                   _phase == _WorkoutPhase.setActive ? _currentSet : null,
             ),
-          if ((_phase == _WorkoutPhase.setActive ||
-                  _phase == _WorkoutPhase.setRest) &&
-              step.config is SetsConfig)
             const SizedBox(height: AppSpacing.xs),
+          ],
+          if (_phase == _WorkoutPhase.exercise &&
+              step.config is TabataConfig) ...[
+            _buildRoundDots(
+              totalRounds: (step.config as TabataConfig).rounds,
+              completedRounds: _tabataCurrentRound,
+              currentRound: _tabataCurrentRound,
+              isWork: _tabataIsWork,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+          ],
           if (_phase == _WorkoutPhase.setActive)
             SizedBox(
               width: double.infinity,
@@ -2076,7 +2232,19 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return 'Timed - ${_formatDurationDot(workout.duration)}s';
     }
     if (workout is TabataConfig) {
-      return 'Tabata - ${_formatDurationDot(workout.totalDuration)}s';
+      if (_phase == _WorkoutPhase.exercise) {
+        final String intervalLabel = _tabataIsWork ? 'Work' : 'Rest';
+        final String setInfo = workout.sets > 1
+            ? ' · Set ${_tabataCurrentSet + 1}/${workout.sets}'
+            : '';
+        return '$intervalLabel · Round ${_tabataCurrentRound + 1}/${workout.rounds}$setInfo';
+      }
+      if (_phase == _WorkoutPhase.setRest) {
+        return 'Set Rest · Up next: Set ${_tabataCurrentSet + 1}/${workout.sets}';
+      }
+      final String setInfo =
+          workout.sets > 1 ? ' · ${workout.sets} sets' : '';
+      return 'Tabata · ${workout.rounds} rounds$setInfo';
     }
     if (workout is SetsConfig) {
       return 'Sets - ${_formatDurationDot(workout.estimatedTotalTime)}s';
