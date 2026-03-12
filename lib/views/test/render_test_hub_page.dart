@@ -109,6 +109,16 @@ class RenderTestHubPage extends StatelessWidget {
               ),
             ),
           ),
+          _PreviewButton(
+            label: '🏋️ Sets workout test (4×10 + 3×12 + Tabata)',
+            onTap: () => _pushPage(
+              context,
+              WorkoutExecutionScreen(
+                session: _seededSetsTestSession(),
+                seededExercises: _seededExercises(),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -148,6 +158,37 @@ Session _seededWorkoutSession() {
     difficulty: DifficultyLevel.beginner,
     transitionTime: 5,
     restBetweenExercises: 30,
+  );
+}
+
+Session _seededSetsTestSession() {
+  return Session(
+    id: 'seed-sets-test-session',
+    name: 'Sets Test Session',
+    workouts: [
+      SetsConfig(
+        exerciseId: 'seed_push_ups',
+        sets: 4,
+        reps: 10,
+        restBetweenSets: 8,
+        weight: 0,
+      ),
+      SetsConfig(
+        exerciseId: 'seed_squat',
+        sets: 3,
+        reps: 12,
+        restBetweenSets: 10,
+      ),
+      TabataConfig(
+        exerciseId: 'seed_plank',
+        workTime: 20,
+        restTime: 10,
+        rounds: 4,
+      ),
+    ],
+    difficulty: DifficultyLevel.beginner,
+    transitionTime: 5,
+    restBetweenExercises: 15,
   );
 }
 

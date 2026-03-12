@@ -12,6 +12,7 @@ import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
+import 'package:workin_fit/views/test/render_test_hub_page.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
 
@@ -107,6 +108,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const StatsGraphScreen(),
+      ),
+    );
+  }
+
+  void _openTestHub() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const RenderTestHubPage(),
       ),
     );
   }
@@ -240,6 +249,11 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                     ),
 
                     const SizedBox(height: AppSpacing.md),
+
+                    // ── Dev test hub ─────────────────────────────────
+                    _TestHubButton(onTap: _openTestHub),
+
+                    const SizedBox(height: AppSpacing.sm),
 
                     // ── Logout ───────────────────────────────────────
                     _LogoutButton(
@@ -1127,3 +1141,63 @@ class _LogoutButton extends StatelessWidget {
     );
   }
 }
+
+class _TestHubButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _TestHubButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(
+            color: AppColors.primaryLight.withValues(alpha: 0.35),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.science_rounded,
+                color: AppColors.primary,
+                size: 17,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            const Expanded(
+              child: Text(
+                'Dev — Test Hub',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textTertiary,
+              size: 18,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

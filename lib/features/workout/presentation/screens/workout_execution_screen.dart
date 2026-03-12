@@ -1,5 +1,7 @@
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'dart:async';
 import 'dart:ui';
+
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +17,10 @@ import 'package:workin_fit/providers/workout_providers.dart';
 
 enum _WorkoutPhase {
   getReady,
+  setActive,
+  setRest,
   exercise,
+  exerciseRest,
   finished,
 }
 
@@ -57,6 +62,12 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   bool _workoutHistorySaved = false;
   final Map<int, _ExerciseActualMetrics> _actualMetricsByIndex =
       <int, _ExerciseActualMetrics>{};
+  int _currentSet = 0;
+  final Map<int, List<int?>> _completedSetsRepsPerExercise =
+      <int, List<int?>>{};
+  final Map<int, List<int>> _setElapsedSeconds = <int, List<int>>{};
+  final Stopwatch _setStopwatch = Stopwatch();
+  Timer? _setTickTimer;
 
   int get _totalExercises => widget.session.workouts.length;
 
@@ -83,12 +94,24 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           return transitionTime;
         }
         return 5;
+      case _WorkoutPhase.setActive:
+        return 0;
+      case _WorkoutPhase.setRest:
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is SetsConfig) {
+          final int rest = workout.restBetweenSets;
+          return rest > 0 ? rest : 60;
+        }
+        return 60;
       case _WorkoutPhase.exercise:
         final WorkoutConfig? workout = _currentWorkout;
         if (workout == null) {
           return 0;
         }
         return _durationForWorkout(workout);
+      case _WorkoutPhase.exerciseRest:
+        final int rest = widget.session.restBetweenExercises;
+        return rest > 0 ? rest : 120;
       case _WorkoutPhase.finished:
         return 0;
     }
@@ -102,8 +125,26 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   @override
   void dispose() {
+    _setTickTimer?.cancel();
+    _setStopwatch.stop();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _startSetTicker() {
+    _setStopwatch
+      ..reset()
+      ..start();
+    _setTickTimer?.cancel();
+    _setTickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  void _stopSetTicker() {
+    _setStopwatch.stop();
+    _setTickTimer?.cancel();
+    _setTickTimer = null;
   }
 
   @override
@@ -299,6 +340,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         'actualReps': actual?.doneReps,
         'actualWeight': actual?.doneWeight,
         'actualWeightUnit': actual?.doneWeightUnit,
+        'setElapsedSeconds': _setElapsedSeconds[index] ?? <int>[],
       });
     } else if (workout is TabataConfig) {
       final int doneRounds = _doneRoundsForWorkout(
@@ -602,6 +644,11 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return;
     }
 
+    if (_phase == _WorkoutPhase.setActive) {
+      _onSetCompleted();
+      return;
+    }
+
     if (!_hasStarted) {
       setState(() {
         _hasStarted = true;
@@ -619,6 +666,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   }
 
   void _startCurrentPhase() {
+    if (_phase == _WorkoutPhase.setActive) {
+      _startSetTicker();
+      setState(() {
+        _isRunning = false;
+      });
+      return;
+    }
+
     final int duration = _phaseDuration;
     if (duration <= 0) {
       _onPhaseCompleted();
@@ -659,28 +714,121 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
     SystemSound.play(SystemSoundType.alert);
 
-    if (_phase == _WorkoutPhase.getReady) {
+    switch (_phase) {
+      case _WorkoutPhase.getReady:
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is SetsConfig) {
+          setState(() {
+            _phase = _WorkoutPhase.setActive;
+            _currentSet = 0;
+            _isRunning = false;
+          });
+        } else {
+          setState(() {
+            _phase = _WorkoutPhase.exercise;
+          });
+          _startCurrentPhase();
+        }
+        break;
+
+      case _WorkoutPhase.exercise:
+        _advanceToNextExerciseOrFinish();
+        break;
+
+      case _WorkoutPhase.setRest:
+        setState(() {
+          _phase = _WorkoutPhase.setActive;
+          _isRunning = false;
+        });
+        break;
+
+      case _WorkoutPhase.exerciseRest:
+        setState(() {
+          _currentExerciseIndex += 1;
+          _phase = _WorkoutPhase.getReady;
+          _currentSet = 0;
+        });
+        _startCurrentPhase();
+        break;
+
+      case _WorkoutPhase.setActive:
+      case _WorkoutPhase.finished:
+        break;
+    }
+  }
+
+  void _onSetCompleted() {
+    if (!mounted) return;
+    final WorkoutConfig? workout = _currentWorkout;
+    if (workout is! SetsConfig) return;
+
+    _stopSetTicker();
+    final int elapsedSeconds = _setStopwatch.elapsed.inSeconds;
+    _setElapsedSeconds
+        .putIfAbsent(_currentExerciseIndex, () => <int>[])
+        .add(elapsedSeconds);
+
+    SystemSound.play(SystemSoundType.alert);
+
+    final List<int?> completedSets = _completedSetsRepsPerExercise.putIfAbsent(
+      _currentExerciseIndex,
+      () => <int?>[],
+    );
+    completedSets.add(null);
+
+    final bool isLastSet = _currentSet + 1 >= workout.sets;
+
+    if (isLastSet) {
+      _syncCompletedSetsToActualMetrics();
+      _advanceToNextExerciseOrFinish();
+    } else {
       setState(() {
-        _phase = _WorkoutPhase.exercise;
+        _currentSet += 1;
+        _phase = _WorkoutPhase.setRest;
       });
       _startCurrentPhase();
-      return;
     }
+  }
 
+  void _skipRest() {
+    if (!mounted) return;
+    _timerController.pause();
+    _onPhaseCompleted();
+  }
+
+  void _advanceToNextExerciseOrFinish() {
     if (_currentExerciseIndex + 1 >= _totalExercises) {
       setState(() {
         _phase = _WorkoutPhase.finished;
         _isRunning = false;
       });
       _saveWorkoutHistoryIfNeeded();
-      return;
+    } else {
+      setState(() {
+        _phase = _WorkoutPhase.exerciseRest;
+      });
+      _startCurrentPhase();
     }
+  }
 
-    setState(() {
-      _currentExerciseIndex += 1;
-      _phase = _WorkoutPhase.getReady;
-    });
-    _startCurrentPhase();
+  void _syncCompletedSetsToActualMetrics() {
+    final WorkoutConfig? workout = _currentWorkout;
+    if (workout is! SetsConfig) return;
+    final int completedSets =
+        _completedSetsRepsPerExercise[_currentExerciseIndex]?.length ??
+        workout.sets;
+    final _ExerciseActualMetrics? existing =
+        _actualMetricsByIndex[_currentExerciseIndex];
+    _actualMetricsByIndex[_currentExerciseIndex] = _ExerciseActualMetrics(
+      doneSets: completedSets,
+      doneReps: existing?.doneReps ?? (completedSets * workout.reps),
+      doneWeight: existing?.doneWeight ?? workout.weight,
+      doneWeightUnit: existing?.doneWeightUnit ?? workout.weightUnit,
+      doneRounds: existing?.doneRounds,
+      doneTimedSeconds: existing?.doneTimedSeconds,
+      doneDurationSeconds: existing?.doneDurationSeconds,
+      doneWorkSeconds: existing?.doneWorkSeconds,
+    );
   }
 
   Future<void> _saveWorkoutHistoryIfNeeded() async {
@@ -899,8 +1047,18 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     switch (_phase) {
       case _WorkoutPhase.getReady:
         return localizations?.workout_phase_get_ready ?? 'Get ready';
+      case _WorkoutPhase.setActive:
+        final WorkoutConfig? workout = _currentWorkout;
+        if (workout is SetsConfig) {
+          return 'Set ${_currentSet + 1} of ${workout.sets}';
+        }
+        return 'Set';
+      case _WorkoutPhase.setRest:
+        return 'Rest';
       case _WorkoutPhase.exercise:
         return localizations?.workout_phase_exercise ?? 'Exercise';
+      case _WorkoutPhase.exerciseRest:
+        return 'Exercise Rest';
       case _WorkoutPhase.finished:
         return localizations?.workout_phase_finished ?? 'Workout complete';
     }
@@ -1148,6 +1306,13 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     required _WorkoutStep currentStep,
     required _WorkoutStep? nextStep,
   }) {
+    if (_phase == _WorkoutPhase.exerciseRest) {
+      return _buildRestPanelContent(
+        context: context,
+        currentStep: currentStep,
+        nextStep: nextStep,
+      );
+    }
     return ClipRect(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1340,6 +1505,17 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       );
     }
 
+    if (_phase == _WorkoutPhase.setActive) {
+      return _buildSetActiveCircle(diameter: diameter);
+    }
+
+    final Color fillColor =
+        (_phase == _WorkoutPhase.setRest ||
+                _phase == _WorkoutPhase.exerciseRest ||
+                _phase == _WorkoutPhase.getReady)
+            ? AppColors.warningSoft
+            : AppColors.primaryLight;
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -1354,9 +1530,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           width: diameter,
           height: diameter,
           ringColor: AppColors.primaryAbyss.withValues(alpha: 0.45),
-          fillColor: _phase == _WorkoutPhase.getReady
-              ? AppColors.warningSoft
-              : AppColors.primaryLight,
+          fillColor: fillColor,
           backgroundColor: AppColors.primaryPastel.withValues(alpha: 0.48),
           strokeWidth: AppSizes.workoutTimerStroke,
           strokeCap: StrokeCap.round,
@@ -1418,7 +1592,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             ),
           ),
         ),
-        if (_hasStarted && !_isRunning)
+        if (_hasStarted && !_isRunning && _phase != _WorkoutPhase.setActive)
           IgnorePointer(
             child: Container(
               width: diameter * 0.36,
@@ -1451,11 +1625,238 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   String _timerHintLabel() {
     final AppLocalizations? localizations = AppLocalizations.of(context);
+    if (_phase == _WorkoutPhase.setRest || _phase == _WorkoutPhase.exerciseRest) {
+      return _isRunning ? 'Tap to pause' : 'Tap to resume';
+    }
     return _isRunning
         ? (localizations?.workout_hint_tap_pause ?? 'Tap timer to pause')
         : (_hasStarted
             ? (localizations?.workout_hint_tap_resume ?? 'Tap timer to resume')
             : (localizations?.workout_hint_tap_start ?? 'Tap timer to start'));
+  }
+
+  Widget _buildSetActiveCircle({required double diameter}) {
+    final WorkoutConfig? workout = _currentWorkout;
+    final int totalSets = workout is SetsConfig ? workout.sets : 1;
+    final int reps = workout is SetsConfig ? workout.reps : 0;
+    final double? weight = workout is SetsConfig ? workout.weight : null;
+    final String? weightUnit = workout is SetsConfig ? workout.weightUnit : null;
+
+    return Container(
+      width: diameter,
+      height: diameter,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.primaryAbyss.withValues(alpha: 0.35),
+        border: Border.all(
+          color: AppColors.primaryLight.withValues(alpha: 0.55),
+          width: AppSizes.workoutTimerStroke,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'SET',
+            style: TextStyle(
+              color: AppColors.background.withValues(alpha: 0.75),
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 2,
+            ),
+          ),
+          Text(
+            '${_currentSet + 1}',
+            style: const TextStyle(
+              color: AppColors.background,
+              fontSize: 72,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'AppFontMedium',
+              height: 0.9,
+            ),
+          ),
+          Text(
+            'of $totalSets',
+            style: TextStyle(
+              color: AppColors.background.withValues(alpha: 0.7),
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight.withValues(alpha: 0.25),
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+              border: Border.all(
+                color: AppColors.primaryLight.withValues(alpha: 0.4),
+              ),
+            ),
+            child: Text(
+              weight != null
+                  ? '$reps reps · $weight${weightUnit ?? ''}'
+                  : '$reps reps',
+              style: const TextStyle(
+                color: AppColors.background,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            _formatDuration(_setStopwatch.elapsed.inSeconds),
+            style: TextStyle(
+              color: AppColors.background.withValues(alpha: 0.6),
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'AppFontMedium',
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          _buildTimerSeparator(),
+          const SizedBox(height: AppSpacing.xxs),
+          const Text(
+            'Tap to complete set',
+            style: TextStyle(
+              color: AppColors.darkTextPrimary,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSetDots({
+    required int totalSets,
+    required int completedSets,
+    int? currentSetIndex,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalSets, (int index) {
+        final bool isDone = index < completedSets;
+        final bool isCurrent =
+            currentSetIndex != null && index == currentSetIndex;
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: isCurrent ? 14 : 10,
+          height: isCurrent ? 14 : 10,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isDone
+                ? AppColors.success
+                : (isCurrent
+                    ? AppColors.primary
+                    : AppColors.primaryLight.withValues(alpha: 0.35)),
+            border: isCurrent
+                ? Border.all(color: AppColors.primary, width: 2)
+                : null,
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildRestPanelContent({
+    required BuildContext context,
+    required _WorkoutStep currentStep,
+    required _WorkoutStep? nextStep,
+  }) {
+    final String nextName = nextStep != null
+        ? _resolveLocalizedValue(
+            context,
+            nextStep.exercise?.name ?? 'Next exercise',
+          )
+        : 'Last exercise done!';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.warning.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            border: Border.all(
+              color: AppColors.warning.withValues(alpha: 0.35),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: AppColors.warning.withValues(alpha: 0.18),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.hourglass_bottom_rounded,
+                  color: AppColors.warning,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Rest before next exercise',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'AppFontMedium',
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Up next: $nextName',
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            icon: const Icon(Icons.skip_next_rounded),
+            label: const Text(
+              'Skip Rest',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.warning,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+            ),
+            onPressed: _skipRest,
+          ),
+        ),
+        if (nextStep != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          _buildNextExercisePreviewTransition(
+            context: context,
+            nextStep: nextStep,
+          ),
+        ],
+      ],
+    );
   }
 
   Widget _buildCurrentExerciseCard(BuildContext context, _WorkoutStep step) {
@@ -1498,7 +1899,18 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
-                  _workoutSummarySecondary(step.config),
+                  _phase == _WorkoutPhase.setActive && step.config is SetsConfig
+                      ? () {
+                          final SetsConfig c = step.config as SetsConfig;
+                          return 'Set ${_currentSet + 1} of ${c.sets} · ${c.reps} reps'
+                              '${c.weight != null ? ' · ${c.weight}${c.weightUnit ?? ''}' : ''}';
+                        }()
+                      : _phase == _WorkoutPhase.setRest && step.config is SetsConfig
+                          ? () {
+                              final SetsConfig c = step.config as SetsConfig;
+                              return 'Rest · Up next: Set ${_currentSet + 1} of ${c.sets} · ${c.reps} reps';
+                            }()
+                          : _workoutSummarySecondary(step.config),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.textSecondary,
@@ -1542,44 +1954,103 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              icon: Icon(
-                hasActualMetrics
-                    ? Icons.check_circle_rounded
-                    : Icons.edit_note_rounded,
-              ),
-              label: Text(
-                hasActualMetrics
-                    ? (isFrench ? 'Données réelles enregistrées' : 'Actuals saved')
-                    : (isFrench ? 'Saisir les données réelles' : 'Log actuals'),
-              ),
-              style: FilledButton.styleFrom(
-                backgroundColor: hasActualMetrics
-                    ? AppColors.success
-                    : AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacing.xs,
-                ),
-              ),
-              onPressed: () async {
-                if (_isRunning) {
-                  _pauseTimer();
-                }
-                await _openActualMetricsSheet(
-                  workout: step.config,
-                  index: _currentExerciseIndex,
-                  exerciseName: _exerciseName(
-                    context,
-                    step,
-                    _currentExerciseIndex,
-                  ),
-                );
-              },
+          if ((_phase == _WorkoutPhase.setActive ||
+                  _phase == _WorkoutPhase.setRest) &&
+              step.config is SetsConfig)
+            _buildSetDots(
+              totalSets: (step.config as SetsConfig).sets,
+              completedSets:
+                  _completedSetsRepsPerExercise[_currentExerciseIndex]?.length ??
+                  0,
+              currentSetIndex:
+                  _phase == _WorkoutPhase.setActive ? _currentSet : null,
             ),
-          ),
+          if ((_phase == _WorkoutPhase.setActive ||
+                  _phase == _WorkoutPhase.setRest) &&
+              step.config is SetsConfig)
+            const SizedBox(height: AppSpacing.xs),
+          if (_phase == _WorkoutPhase.setActive)
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                icon: const Icon(Icons.check_circle_outline_rounded, size: 22),
+                label: Text(
+                  isFrench ? 'Série terminée ✓' : 'Set Done ✓',
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'AppFontMedium',
+                  ),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.sm,
+                  ),
+                ),
+                onPressed: _onSetCompleted,
+              ),
+            )
+          else if (_phase == _WorkoutPhase.setRest)
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                icon: const Icon(Icons.skip_next_rounded),
+                label: Text(
+                  isFrench ? 'Passer le repos' : 'Skip Rest',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.warning,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+                ),
+                onPressed: _skipRest,
+              ),
+            )
+          else
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                icon: Icon(
+                  hasActualMetrics
+                      ? Icons.check_circle_rounded
+                      : Icons.edit_note_rounded,
+                ),
+                label: Text(
+                  hasActualMetrics
+                      ? (isFrench ? 'Données réelles enregistrées' : 'Actuals saved')
+                      : (isFrench ? 'Saisir les données réelles' : 'Log actuals'),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: hasActualMetrics
+                      ? AppColors.success
+                      : AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.xs,
+                  ),
+                ),
+                onPressed: () async {
+                  if (_isRunning) {
+                    _pauseTimer();
+                  }
+                  await _openActualMetricsSheet(
+                    workout: step.config,
+                    index: _currentExerciseIndex,
+                    exerciseName: _exerciseName(
+                      context,
+                      step,
+                      _currentExerciseIndex,
+                    ),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
