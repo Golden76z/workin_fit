@@ -67,7 +67,6 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       <int, List<int?>>{};
   final Map<int, List<int>> _setElapsedSeconds = <int, List<int>>{};
   final Stopwatch _setStopwatch = Stopwatch();
-  Timer? _setTickTimer;
 
   // Tabata-specific state
   int _tabataCurrentRound = 0;
@@ -100,7 +99,11 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         }
         return 5;
       case _WorkoutPhase.setActive:
-        return 0;
+        final WorkoutConfig? setWorkout = _currentWorkout;
+        if (setWorkout is SetsConfig) {
+          return (setWorkout.reps * 4).clamp(30, 600);
+        }
+        return 60;
       case _WorkoutPhase.setRest:
         final WorkoutConfig? workout = _currentWorkout;
         if (workout is SetsConfig) {
@@ -139,7 +142,6 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   @override
   void dispose() {
-    _setTickTimer?.cancel();
     _setStopwatch.stop();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -149,16 +151,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     _setStopwatch
       ..reset()
       ..start();
-    _setTickTimer?.cancel();
-    _setTickTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
   }
 
   void _stopSetTicker() {
     _setStopwatch.stop();
-    _setTickTimer?.cancel();
-    _setTickTimer = null;
   }
 
   @override
@@ -660,11 +656,6 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return;
     }
 
-    if (_phase == _WorkoutPhase.setActive) {
-      _onSetCompleted();
-      return;
-    }
-
     if (!_hasStarted) {
       setState(() {
         _hasStarted = true;
@@ -684,8 +675,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   void _startCurrentPhase() {
     if (_phase == _WorkoutPhase.setActive) {
       _startSetTicker();
+      final int duration = _phaseDuration;
       setState(() {
-        _isRunning = false;
+        _isRunning = true;
+        _timerVersion += 1;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _phase != _WorkoutPhase.setActive) return;
+        _timerController.restart(duration: duration);
       });
       return;
     }
@@ -711,6 +708,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   void _pauseTimer() {
     _timerController.pause();
+    if (_phase == _WorkoutPhase.setActive) _setStopwatch.stop();
     setState(() {
       _isRunning = false;
     });
@@ -718,6 +716,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   void _resumeTimer() {
     _timerController.resume();
+    if (_phase == _WorkoutPhase.setActive) _setStopwatch.start();
     setState(() {
       _isRunning = true;
     });
@@ -728,7 +727,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return;
     }
 
-    SystemSound.play(SystemSoundType.alert);
+    // Don't sound when a set's count-up target is reached — the set is not done yet.
+    if (_phase != _WorkoutPhase.setActive) {
+      SystemSound.play(SystemSoundType.alert);
+    }
 
     switch (_phase) {
       case _WorkoutPhase.getReady:
@@ -737,8 +739,8 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           setState(() {
             _phase = _WorkoutPhase.setActive;
             _currentSet = 0;
-            _isRunning = false;
           });
+          _startCurrentPhase();
         } else {
           setState(() {
             _phase = _WorkoutPhase.exercise;
@@ -773,8 +775,8 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         } else {
           setState(() {
             _phase = _WorkoutPhase.setActive;
-            _isRunning = false;
           });
+          _startCurrentPhase();
         }
         break;
 
@@ -914,6 +916,20 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         workout.sets;
     final _ExerciseActualMetrics? existing =
         _actualMetricsByIndex[_currentExerciseIndex];
+
+    // Sum actual measured set durations if available (overrides formula estimate).
+    final List<int>? setTimes = _setElapsedSeconds[_currentExerciseIndex];
+    final int? measuredWorkSeconds =
+        (setTimes != null && setTimes.isNotEmpty)
+            ? setTimes.fold<int>(0, (sum, t) => sum + t)
+            : null;
+    final int restSeconds = completedSets > 1
+        ? (completedSets - 1) * workout.restBetweenSets
+        : 0;
+    final int? measuredDurationSeconds = measuredWorkSeconds != null
+        ? measuredWorkSeconds + restSeconds
+        : null;
+
     _actualMetricsByIndex[_currentExerciseIndex] = _ExerciseActualMetrics(
       doneSets: completedSets,
       doneReps: existing?.doneReps ?? (completedSets * workout.reps),
@@ -921,8 +937,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       doneWeightUnit: existing?.doneWeightUnit ?? workout.weightUnit,
       doneRounds: existing?.doneRounds,
       doneTimedSeconds: existing?.doneTimedSeconds,
-      doneDurationSeconds: existing?.doneDurationSeconds,
-      doneWorkSeconds: existing?.doneWorkSeconds,
+      doneDurationSeconds:
+          existing?.doneDurationSeconds ?? measuredDurationSeconds,
+      doneWorkSeconds: existing?.doneWorkSeconds ?? measuredWorkSeconds,
     );
   }
 
@@ -1264,6 +1281,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                         bottom: 0,
                         child: _buildLowerGlassSection(
                           context: context,
+                          steps: steps,
                           currentStep: currentStep,
                           nextStep: nextStep,
                         ),
@@ -1371,6 +1389,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   Widget _buildLowerGlassSection({
     required BuildContext context,
+    required List<_WorkoutStep> steps,
     required _WorkoutStep currentStep,
     required _WorkoutStep? nextStep,
   }) {
@@ -1397,6 +1416,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           child: SingleChildScrollView(
             child: _buildExerciseCardsTransition(
               context: context,
+              steps: steps,
               currentStep: currentStep,
               nextStep: nextStep,
             ),
@@ -1408,9 +1428,13 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   Widget _buildExerciseCardsTransition({
     required BuildContext context,
+    required List<_WorkoutStep> steps,
     required _WorkoutStep currentStep,
     required _WorkoutStep? nextStep,
   }) {
+    if (_phase == _WorkoutPhase.finished) {
+      return _buildFinishedSummary(context: context, steps: steps);
+    }
     if (_phase == _WorkoutPhase.exerciseRest) {
       return _buildRestPanelContent(
         context: context,
@@ -1434,6 +1458,275 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         ],
       ),
     );
+  }
+
+  Widget _buildFinishedSummary({
+    required BuildContext context,
+    required List<_WorkoutStep> steps,
+  }) {
+    final DateTime endTime = DateTime.now();
+    final int totalSeconds = _workoutStartedAt != null
+        ? endTime.difference(_workoutStartedAt!).inSeconds
+        : widget.session.estimatedDuration;
+
+    // Aggregate totals for the header stats row
+    int totalReps = 0;
+    int totalRounds = 0;
+    int totalWorkSeconds = 0;
+    for (int i = 0; i < steps.length; i++) {
+      final WorkoutConfig config = steps[i].config;
+      final _ExerciseActualMetrics? actual = _actualMetricsAt(i);
+      if (config is SetsConfig) {
+        totalReps += actual?.doneReps ?? config.totalReps;
+        totalWorkSeconds += actual?.doneWorkSeconds ?? config.estimatedWorkDuration;
+      } else if (config is TabataConfig) {
+        final int rounds = actual?.doneRounds ?? (config.rounds * config.sets);
+        totalRounds += rounds;
+        totalWorkSeconds += rounds * config.workTime;
+      } else if (config is TimedConfig) {
+        totalWorkSeconds += actual?.doneTimedSeconds ?? config.duration;
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // ── Hero header ──────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.success.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            border: Border.all(
+              color: AppColors.success.withValues(alpha: 0.35),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Trophy + title row
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.emoji_events_rounded,
+                    color: AppColors.success,
+                    size: 22,
+                  ),
+                  SizedBox(width: AppSpacing.xs),
+                  Text(
+                    'Workout complete!',
+                    style: TextStyle(
+                      color: AppColors.success,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'AppFontMedium',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              // Stats chips row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildStatChip(
+                    icon: Icons.timer_outlined,
+                    value: _formatDuration(totalSeconds),
+                    label: 'Total',
+                  ),
+                  _buildStatChipDivider(),
+                  _buildStatChip(
+                    icon: Icons.fitness_center_rounded,
+                    value: '${steps.length}',
+                    label: 'Exercises',
+                  ),
+                  if (totalReps > 0) ...[
+                    _buildStatChipDivider(),
+                    _buildStatChip(
+                      icon: Icons.repeat_rounded,
+                      value: '$totalReps',
+                      label: 'Reps',
+                    ),
+                  ],
+                  if (totalRounds > 0 && totalReps == 0) ...[
+                    _buildStatChipDivider(),
+                    _buildStatChip(
+                      icon: Icons.loop_rounded,
+                      value: '$totalRounds',
+                      label: 'Rounds',
+                    ),
+                  ],
+                  _buildStatChipDivider(),
+                  _buildStatChip(
+                    icon: Icons.bolt_rounded,
+                    value: _formatDuration(totalWorkSeconds),
+                    label: 'Work',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+
+        // ── Per-exercise breakdown ────────────────────────────────
+        ...steps.asMap().entries.map((entry) {
+          final int i = entry.key;
+          final _WorkoutStep step = entry.value;
+          final _ExerciseActualMetrics? actual = _actualMetricsAt(i);
+          final String name = _exerciseName(context, step, i);
+          final (_FinishedExerciseStats stats) = _finishedExerciseStats(step.config, actual);
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs + 2,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.background.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(AppRadii.sm),
+              ),
+              child: Row(
+                children: [
+                  // Left: type badge stacked above number
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildWorkoutTypeBadge(step.config),
+                    ],
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  // Middle: name + detail
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'AppFontMedium',
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          stats.detail,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Right: duration
+                  if (stats.duration.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryLight.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        stats.duration,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'AppFontMedium',
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildStatChip({
+    required IconData icon,
+    required String value,
+    required String label,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: AppColors.success, size: 16),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'AppFontMedium',
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatChipDivider() {
+    return Container(
+      width: 1,
+      height: 32,
+      color: AppColors.success.withValues(alpha: 0.25),
+    );
+  }
+
+  _FinishedExerciseStats _finishedExerciseStats(
+    WorkoutConfig config,
+    _ExerciseActualMetrics? actual,
+  ) {
+    if (config is SetsConfig) {
+      final int sets = actual?.doneSets ?? config.sets;
+      final int reps = actual?.doneReps ?? config.totalReps;
+      final int? workSec = actual?.doneWorkSeconds;
+      final double? weight = actual?.doneWeight ?? config.weight;
+      String detail = '$sets sets · $reps reps';
+      if (weight != null && weight > 0) {
+        final String unit = actual?.doneWeightUnit ?? config.weightUnit ?? 'kg';
+        detail += ' · ${weight.toStringAsFixed(weight.truncateToDouble() == weight ? 0 : 1)}$unit';
+      }
+      final String duration =
+          workSec != null ? _formatDuration(workSec) : '';
+      return _FinishedExerciseStats(detail: detail, duration: duration);
+    }
+    if (config is TabataConfig) {
+      final int rounds = actual?.doneRounds ?? (config.rounds * config.sets);
+      final int workSec = rounds * config.workTime;
+      final String detail = '$rounds rounds · ${config.workTime}s work / ${config.restTime}s rest';
+      return _FinishedExerciseStats(
+        detail: detail,
+        duration: _formatDuration(workSec),
+      );
+    }
+    if (config is TimedConfig) {
+      final int secs = actual?.doneTimedSeconds ?? config.duration;
+      return _FinishedExerciseStats(detail: 'Timed hold', duration: _formatDuration(secs));
+    }
+    return const _FinishedExerciseStats(detail: '', duration: '');
   }
 
   Widget _buildCurrentExerciseCardTransition({
@@ -1610,21 +1903,21 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       );
     }
 
-    if (_phase == _WorkoutPhase.setActive) {
-      return _buildSetActiveCircle(diameter: diameter);
-    }
-
     final Color fillColor;
     if (_phase == _WorkoutPhase.setRest ||
         _phase == _WorkoutPhase.exerciseRest ||
         _phase == _WorkoutPhase.getReady) {
       fillColor = AppColors.warningSoft;
+    } else if (_phase == _WorkoutPhase.setActive) {
+      fillColor = AppColors.primaryLight;
     } else if (_phase == _WorkoutPhase.exercise &&
         _currentWorkout is TabataConfig) {
       fillColor = _tabataIsWork ? AppColors.success : AppColors.errorSoft;
     } else {
       fillColor = AppColors.primaryLight;
     }
+
+    final bool isCountUp = _phase == _WorkoutPhase.setActive;
 
     return Stack(
       alignment: Alignment.center,
@@ -1651,8 +1944,8 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             fontFamily: 'AppFontMedium',
           ),
           textFormat: CountdownTextFormat.MM_SS,
-          isReverse: true,
-          isReverseAnimation: true,
+          isReverse: !isCountUp,
+          isReverseAnimation: !isCountUp,
           isTimerTextShown: true,
           autoStart: false,
           onComplete: _onPhaseCompleted,
@@ -1702,7 +1995,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             ),
           ),
         ),
-        if (_hasStarted && !_isRunning && _phase != _WorkoutPhase.setActive)
+        if (_hasStarted && !_isRunning && _phase != _WorkoutPhase.finished)
           IgnorePointer(
             child: Container(
               width: diameter * 0.36,
@@ -1735,6 +2028,17 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
 
   String _timerHintLabel() {
     final AppLocalizations? localizations = AppLocalizations.of(context);
+    if (_phase == _WorkoutPhase.setActive) {
+      final WorkoutConfig? w = _currentWorkout;
+      if (w is SetsConfig) {
+        final double? weight = w.weight;
+        if (weight != null && weight > 0) {
+          return '${w.reps} reps · ${weight.toStringAsFixed(weight.truncateToDouble() == weight ? 0 : 1)}${w.weightUnit ?? 'kg'}';
+        }
+        return '${w.reps} reps';
+      }
+      return 'Tap to pause';
+    }
     if (_phase == _WorkoutPhase.setRest || _phase == _WorkoutPhase.exerciseRest) {
       return _isRunning ? 'Tap to pause' : 'Tap to resume';
     }
@@ -1743,101 +2047,6 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         : (_hasStarted
             ? (localizations?.workout_hint_tap_resume ?? 'Tap timer to resume')
             : (localizations?.workout_hint_tap_start ?? 'Tap timer to start'));
-  }
-
-  Widget _buildSetActiveCircle({required double diameter}) {
-    final WorkoutConfig? workout = _currentWorkout;
-    final int totalSets = workout is SetsConfig ? workout.sets : 1;
-    final int reps = workout is SetsConfig ? workout.reps : 0;
-    final double? weight = workout is SetsConfig ? workout.weight : null;
-    final String? weightUnit = workout is SetsConfig ? workout.weightUnit : null;
-
-    return Container(
-      width: diameter,
-      height: diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.primaryAbyss.withValues(alpha: 0.35),
-        border: Border.all(
-          color: AppColors.primaryLight.withValues(alpha: 0.55),
-          width: AppSizes.workoutTimerStroke,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'SET',
-            style: TextStyle(
-              color: AppColors.background.withValues(alpha: 0.75),
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 2,
-            ),
-          ),
-          Text(
-            '${_currentSet + 1}',
-            style: const TextStyle(
-              color: AppColors.background,
-              fontSize: 72,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'AppFontMedium',
-              height: 0.9,
-            ),
-          ),
-          Text(
-            'of $totalSets',
-            style: TextStyle(
-              color: AppColors.background.withValues(alpha: 0.7),
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-            decoration: BoxDecoration(
-              color: AppColors.primaryLight.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(AppRadii.lg),
-              border: Border.all(
-                color: AppColors.primaryLight.withValues(alpha: 0.4),
-              ),
-            ),
-            child: Text(
-              weight != null
-                  ? '$reps reps · $weight${weightUnit ?? ''}'
-                  : '$reps reps',
-              style: const TextStyle(
-                color: AppColors.background,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            _formatDuration(_setStopwatch.elapsed.inSeconds),
-            style: TextStyle(
-              color: AppColors.background.withValues(alpha: 0.6),
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'AppFontMedium',
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          _buildTimerSeparator(),
-          const SizedBox(height: AppSpacing.xxs),
-          const Text(
-            'Tap to complete set',
-            style: TextStyle(
-              color: AppColors.darkTextPrimary,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildSetDots({
@@ -2033,6 +2242,13 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             width: double.infinity,
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildWorkoutTypeBadge(step.config),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xxs),
                 Text(
                   '$currentLabel - ${_exerciseName(context, step, _currentExerciseIndex)}',
                   textAlign: TextAlign.center,
@@ -2227,6 +2443,47 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         'Keep your core engaged and move with control.';
   }
 
+  /// Returns a short label like "3 sets", "Tabata 8 rounds", or "Timed 30s".
+  String _workoutTypeLabel(WorkoutConfig workout) {
+    if (workout is SetsConfig) {
+      return '${workout.sets} sets';
+    }
+    if (workout is TabataConfig) {
+      return 'Tabata ${workout.rounds} rounds';
+    }
+    if (workout is TimedConfig) {
+      return 'Timed ${workout.duration}s';
+    }
+    return 'Workout';
+  }
+
+  Color _workoutTypeBadgeColor(WorkoutConfig workout) {
+    if (workout is TabataConfig) return AppColors.warning;
+    if (workout is TimedConfig) return AppColors.success;
+    return AppColors.primary; // SetsConfig
+  }
+
+  Widget _buildWorkoutTypeBadge(WorkoutConfig workout) {
+    final Color color = _workoutTypeBadgeColor(workout);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.55), width: 1),
+      ),
+      child: Text(
+        _workoutTypeLabel(workout),
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
   String _workoutSummarySecondary(WorkoutConfig workout) {
     if (workout is TimedConfig) {
       return 'Timed - ${_formatDurationDot(workout.duration)}s';
@@ -2353,13 +2610,19 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  localizations?.workout_next_label ?? 'Next exercise',
-                  style: const TextStyle(
-                    color: AppColors.textTertiary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      localizations?.workout_next_label ?? 'Next exercise',
+                      style: const TextStyle(
+                        color: AppColors.textTertiary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    _buildWorkoutTypeBadge(nextStep.config),
+                  ],
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
@@ -2421,6 +2684,13 @@ class _ActualInputField extends StatelessWidget {
       ),
     );
   }
+}
+
+class _FinishedExerciseStats {
+  final String detail;
+  final String duration;
+
+  const _FinishedExerciseStats({required this.detail, required this.duration});
 }
 
 class _ExerciseActualMetrics {
