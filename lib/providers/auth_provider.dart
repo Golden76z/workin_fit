@@ -2,4 +2,5 @@
 /// 
 /// New code should import:
 /// `package:workin_fit/features/auth/domain/auth_provider.dart`
+library;
 export 'package:workin_fit/features/auth/domain/auth_provider.dart';

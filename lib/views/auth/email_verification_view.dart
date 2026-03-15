@@ -200,7 +200,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -211,7 +211,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_sent_to,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 16,
                   ),
@@ -231,7 +231,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_instructions,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14,
                   ),

@@ -7,6 +7,7 @@ import 'package:workin_fit/features/workout/presentation/screens/exercise_list_s
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
+import 'package:workin_fit/views/home/sessions_tab.dart';
 import 'package:workin_fit/views/profile/profile_tab.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -64,10 +65,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final List<Widget> tabs = <Widget>[
       const HomeDashboardTab(),
       const ExerciseListScreen(),
-      _PlaceholderTab(
-        title: localizations.home_tab_programs,
-        subtitle: localizations.home_placeholder_coming_soon,
-      ),
+      const SessionsTab(),
       _PlaceholderTab(
         title: isFrench ? 'Social' : 'Social',
         subtitle: localizations.home_placeholder_coming_soon,

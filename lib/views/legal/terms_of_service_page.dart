@@ -43,7 +43,7 @@ class TermsOfServicePage extends StatelessWidget {
                   final dateText = localizations.terms_of_service_last_updated(formattedDate);
                   return Text(
                     dateText,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                     ),
@@ -97,7 +97,7 @@ class TermsOfServicePage extends StatelessWidget {
               const SizedBox(height: 32),
               Text(
                 localizations.terms_of_service_contact,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 14,
                   fontStyle: FontStyle.italic,

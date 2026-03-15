@@ -19,7 +19,7 @@ void main() async {
   final buffer = StringBuffer();
   buffer.writeln('// GENERATED FILE - DO NOT EDIT MANUALLY');
   buffer.writeln(
-      '// Generated from: data/exercises/generate_localization_helper.dart');
+      '// Generated from: data/exercises/generate_localization_helper.dart',);
   buffer.writeln('');
   buffer.writeln('import \'package:workin_fit/l10n/app_localizations.dart\';');
   buffer.writeln('');
@@ -27,7 +27,7 @@ void main() async {
   buffer.writeln('class ExerciseLocalizationHelper {');
   buffer.writeln('  /// Get localized string by key');
   buffer.writeln(
-      '  static String? getString(AppLocalizations localizations, String key) {');
+      '  static String? getString(AppLocalizations localizations, String key) {',);
   buffer.writeln('    switch (key) {');
 
   // Generate switch cases for all exercise keys
@@ -44,7 +44,7 @@ void main() async {
     if (exercise['beginnerTips'] != null) {
       buffer.writeln('      case \'$tipsKey\':');
       buffer.writeln(
-          '        return localizations.exercise_${id}_beginner_tips;');
+          '        return localizations.exercise_${id}_beginner_tips;',);
     }
   }
 

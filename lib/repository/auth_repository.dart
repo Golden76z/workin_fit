@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../core/errors/auth_exception.dart';
+import 'package:workin_fit/core/errors/auth_exception.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
@@ -169,7 +169,7 @@ class AuthRepository {
       );
 
       // Create OAuth credential
-      final oauthCredential = OAuthProvider("apple.com").credential(
+      final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
@@ -195,7 +195,7 @@ class AuthRepository {
   /// Sign in with GitHub
   Future<UserCredential> signInWithGitHub() async {
     try {
-      GithubAuthProvider githubProvider = GithubAuthProvider();
+      final GithubAuthProvider githubProvider = GithubAuthProvider();
 
       // Sign in with popup (web) or redirect (mobile)
       return await _firebaseAuth.signInWithProvider(githubProvider);

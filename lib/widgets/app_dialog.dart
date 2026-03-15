@@ -17,8 +17,7 @@ class AppDialog extends StatelessWidget {
   final double? borderRadius;
 
   const AppDialog({
-    super.key,
-    required this.title,
+    required this.title, super.key,
     this.content,
     this.contentWidget,
     this.icon,
