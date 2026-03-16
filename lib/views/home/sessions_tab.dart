@@ -12,8 +12,11 @@ import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
 
-/// 3rd tab: current program banner + Sessions / Programs sub-tabs.
+/// 3rd tab — sticky header (title + optional active program) + Sessions /
+/// Programs sub-tabs. Uses a plain Column so the inner lists are the only
+/// scroll views, eliminating the NestedScrollView "phantom scroll" issue.
 class SessionsTab extends ConsumerStatefulWidget {
   const SessionsTab({super.key});
 
@@ -60,348 +63,132 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
         .startsWith('fr');
 
     final bool onProgramsTab = _tabController.index == 1;
+    final activeProgramId = ref.watch(activeProgramIdProvider);
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
-        body: SafeArea(
-          top: false,
-          bottom: false,
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              // ── App bar ──
-              SliverAppBar(
-                pinned: true,
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                elevation: 0,
-                automaticallyImplyLeading: false,
-                toolbarHeight: 36,
-                flexibleSpace: Container(color: AppColors.navBarSurface),
-                title: Text(
-                  isFrench ? 'Entraînements' : 'Workouts',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'AppFontMedium',
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.history_rounded,
-                      color: Colors.white,
-                    ),
-                    tooltip: isFrench ? 'Historique' : 'History',
-                    onPressed: () => Navigator.of(context).push(
-                      SessionHistoryScreen.route(),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_rounded, color: Colors.white),
-                    tooltip: onProgramsTab
-                        ? (isFrench ? 'Créer un programme' : 'New program')
-                        : (isFrench ? 'Créer une session' : 'New session'),
-                    onPressed: onProgramsTab
-                        ? _openProgramBuilder
-                        : _openSessionBuilder,
-                  ),
-                ],
-              ),
-              // ── Active program banner (if any) ──
-              _ActiveProgramBannerSliver(isFrench: isFrench),
-              // ── Pinned tab bar ──
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.white,
-                    unselectedLabelColor:
-                        Colors.white.withValues(alpha: 0.55),
-                    indicatorColor: Colors.white,
-                    indicatorWeight: 2.5,
-                    labelStyle: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                      fontFamily: 'AppFontMedium',
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
-                    tabs: [
-                      Tab(
-                        text: isFrench ? 'Sessions' : 'Sessions',
-                        icon: const Icon(
-                          Icons.fitness_center_rounded,
-                          size: 18,
-                        ),
-                        iconMargin: const EdgeInsets.only(bottom: 2),
-                      ),
-                      Tab(
-                        text: isFrench ? 'Programmes' : 'Programs',
-                        icon: const Icon(
-                          Icons.calendar_month_rounded,
-                          size: 18,
-                        ),
-                        iconMargin: const EdgeInsets.only(bottom: 2),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                _SessionsListView(
-                  isFrench: isFrench,
-                  onCreateTap: _openSessionBuilder,
-                ),
-                _ProgramsListView(isFrench: isFrench),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Active program banner (sliver wrapper)
-// ---------------------------------------------------------------------------
-
-class _ActiveProgramBannerSliver extends ConsumerWidget {
-  final bool isFrench;
-
-  const _ActiveProgramBannerSliver({required this.isFrench});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeProgramId = ref.watch(activeProgramIdProvider);
-    if (activeProgramId == null) return const SliverToBoxAdapter(child: SizedBox.shrink());
-
-    final programAsync = ref.watch(programByIdProvider(activeProgramId));
-
-    return programAsync.when(
-      data: (program) {
-        if (program == null) {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
-        }
-        return SliverToBoxAdapter(
-          child: _ActiveProgramCard(program: program, isFrench: isFrench),
-        );
-      },
-      loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-      error: (_, __) => const SliverToBoxAdapter(child: SizedBox.shrink()),
-    );
-  }
-}
-
-class _ActiveProgramCard extends ConsumerWidget {
-  final Program program;
-  final bool isFrench;
-
-  const _ActiveProgramCard({required this.program, required this.isFrench});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sessionsAsync = ref.watch(userSessionsProvider);
-    final completedIds = ref.watch(completedTodaySessionIdsProvider);
-
-    return Container(
-      margin: const EdgeInsets.fromLTRB(
-        AppSpacing.xs,
-        AppSpacing.xs,
-        AppSpacing.xs,
-        0,
-      ),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF3340B8), Color(0xFF5465FF)],
-        ),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.35),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header row
-          Row(
-            children: [
-              const Icon(
-                Icons.bolt_rounded,
-                color: Colors.white,
-                size: 18,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                isFrench ? 'Programme actif' : 'Active Program',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () => ref
-                    .read(activeProgramIdProvider.notifier)
-                    .state = null,
-                child: Icon(
-                  Icons.close_rounded,
-                  color: Colors.white.withValues(alpha: 0.7),
-                  size: 18,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            program.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'AppFontMedium',
-              letterSpacing: -0.3,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          // Sessions progress row
-          sessionsAsync.when(
-            data: (allSessions) {
-              final sessionMap = {for (final s in allSessions) s.id: s};
-              final sessions = program.sessionIds
-                  .map((id) => sessionMap[id])
-                  .whereType<Session>()
-                  .toList();
-
-              if (sessions.isEmpty) return const SizedBox.shrink();
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
+          children: [
+            // ── Top section: status bar + title bar + active program ──────
+            ColoredBox(
+              color: AppChrome.topSurface,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    isFrench ? 'Sessions' : 'Sessions',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+                  // Status-bar height spacer
+                  SizedBox(height: MediaQuery.paddingOf(context).top),
+                  // Title bar
+                  SizedBox(
+                    height: kToolbarHeight,
                     child: Row(
-                      children: sessions.asMap().entries.map((entry) {
-                        final isDone =
-                            completedIds.contains(entry.value.id);
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: _SessionChip(
-                            session: entry.value,
-                            index: entry.key,
-                            isDone: isDone,
-                            isFrench: isFrench,
-                            onTap: () => Navigator.of(context).push(
-                              SessionDetailScreen.route(
-                                session: entry.value,
-                              ),
+                      children: [
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Text(
+                            isFrench ? 'Entraînements' : 'Workouts',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'AppFontMedium',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.history_rounded,
+                            color: Colors.white,
+                          ),
+                          tooltip: isFrench ? 'Historique' : 'History',
+                          onPressed: () => Navigator.of(context).push(
+                            SessionHistoryScreen.route(),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.add_rounded, color: Colors.white),
+                          tooltip: onProgramsTab
+                              ? (isFrench ? 'Créer un programme' : 'New program')
+                              : (isFrench ? 'Créer une session' : 'New session'),
+                          onPressed: onProgramsTab
+                              ? _openProgramBuilder
+                              : _openSessionBuilder,
+                        ),
+                      ],
                     ),
                   ),
+                  // Active program row (only when a program is running)
+                  if (activeProgramId != null) ...[
+                    Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.10),
+                    ),
+                    _ActiveProgramInline(
+                      activeProgramId: activeProgramId,
+                      isFrench: isFrench,
+                    ),
+                  ],
+                  // Separator between header block and tab bar
+                  Container(
+                    height: 1,
+                    color: Colors.white.withValues(alpha: 0.12),
+                  ),
                 ],
-              );
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SessionChip extends StatelessWidget {
-  final Session session;
-  final int index;
-  final bool isDone;
-  final bool isFrench;
-  final VoidCallback onTap;
-
-  const _SessionChip({
-    required this.session,
-    required this.index,
-    required this.isDone,
-    required this.isFrench,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: isDone
-              ? Colors.white.withValues(alpha: 0.15)
-              : Colors.white.withValues(alpha: 0.22),
-          borderRadius: BorderRadius.circular(AppRadii.lg),
-          border: Border.all(
-            color: isDone
-                ? Colors.white.withValues(alpha: 0.2)
-                : Colors.white.withValues(alpha: 0.45),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isDone)
-              const Icon(Icons.check_rounded, color: Colors.white, size: 12)
-            else
-              Text(
-                '${index + 1}',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: isDone ? 0.6 : 1.0),
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                ),
               ),
-            const SizedBox(width: 4),
-            Text(
-              session.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: isDone ? 0.5 : 0.9),
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                decoration: isDone ? TextDecoration.lineThrough : null,
-                decorationColor: Colors.white.withValues(alpha: 0.5),
+            ),
+
+            // ── Tab bar ──────────────────────────────────────────────────
+            ColoredBox(
+              color: AppChrome.topSurface,
+              child: TabBar(
+                controller: _tabController,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white.withValues(alpha: 0.55),
+                indicatorColor: Colors.white,
+                indicatorWeight: 2.5,
+                dividerColor: Colors.transparent,
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                  fontFamily: 'AppFontMedium',
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+                tabs: [
+                  Tab(
+                    text: isFrench ? 'Sessions' : 'Sessions',
+                    icon: const Icon(Icons.fitness_center_rounded, size: 18),
+                    iconMargin: const EdgeInsets.only(bottom: 2),
+                  ),
+                  Tab(
+                    text: isFrench ? 'Programmes' : 'Programs',
+                    icon: const Icon(Icons.calendar_month_rounded, size: 18),
+                    iconMargin: const EdgeInsets.only(bottom: 2),
+                  ),
+                ],
+              ),
+            ),
+
+            // Separator between tab bar and content
+            Container(
+              height: 1,
+              color: Colors.white.withValues(alpha: 0.12),
+            ),
+
+            // ── Content ──────────────────────────────────────────────────
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _SessionsListView(
+                    isFrench: isFrench,
+                    onCreateTap: _openSessionBuilder,
+                  ),
+                  _ProgramsListView(isFrench: isFrench),
+                ],
               ),
             ),
           ],
@@ -412,34 +199,224 @@ class _SessionChip extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Tab bar delegate (pins the TabBar)
+// Active program inline banner (embedded in the top section)
 // ---------------------------------------------------------------------------
 
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
+class _ActiveProgramInline extends ConsumerWidget {
+  final String activeProgramId;
+  final bool isFrench;
 
-  _TabBarDelegate(this.tabBar);
+  const _ActiveProgramInline({
+    required this.activeProgramId,
+    required this.isFrench,
+  });
 
   @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final programAsync = ref.watch(programByIdProvider(activeProgramId));
+    final startDate = ref.watch(activeProgramStartProvider);
 
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return ColoredBox(
-      color: AppColors.navBarSurface,
-      child: tabBar,
+    return programAsync.maybeWhen(
+      data: (program) {
+        if (program == null) return const SizedBox.shrink();
+
+        // Compute progress
+        int? currentDay;
+        int? currentWeek;
+        double? progress;
+        final totalDays = program.totalDays;
+
+        if (startDate != null && totalDays > 0) {
+          final elapsed = DateTime.now().difference(startDate).inDays;
+          currentDay = (elapsed + 1).clamp(1, totalDays);
+          currentWeek =
+              ((elapsed / 7).floor() + 1).clamp(1, program.durationWeeks);
+          progress = (currentDay / totalDays).clamp(0.0, 1.0);
+        }
+
+        final hasProgress = currentDay != null;
+
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            10,
+            AppSpacing.xs,
+            10,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Bolt icon — aligned with the label row
+              Padding(
+                padding: const EdgeInsets.only(top: 1),
+                child: Icon(
+                  Icons.bolt_rounded,
+                  color: Colors.white.withValues(alpha: 0.70),
+                  size: 15,
+                ),
+              ),
+              const SizedBox(width: 7),
+              // Info column
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Row 1: label + action buttons
+                    Row(
+                      children: [
+                        Text(
+                          isFrench ? 'Programme actif' : 'Active program',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.50),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const Spacer(),
+                        // Navigate to detail
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).push(
+                            ProgramDetailScreen.route(program: program),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                              vertical: 2,
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: Colors.white.withValues(alpha: 0.50),
+                              size: 12,
+                            ),
+                          ),
+                        ),
+                        // Stop button
+                        GestureDetector(
+                          onTap: () async {
+                            final confirmed = await AppDialog.showConfirm(
+                              context: context,
+                              title: isFrench
+                                  ? 'Arrêter le programme ?'
+                                  : 'Stop program?',
+                              confirmLabel:
+                                  isFrench ? 'Arrêter' : 'Stop',
+                              cancelLabel:
+                                  isFrench ? 'Annuler' : 'Cancel',
+                              message: isFrench
+                                  ? 'Voulez-vous arrêter ce programme ?'
+                                  : 'Do you want to stop this program?',
+                              icon: Icons.stop_circle_outlined,
+                              iconColor: AppColors.error,
+                              destructive: true,
+                            );
+                            if (confirmed == true) {
+                              ref
+                                  .read(activeProgramIdProvider.notifier)
+                                  .state = null;
+                              ref
+                                  .read(activeProgramStartProvider.notifier)
+                                  .state = null;
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                              vertical: 2,
+                            ),
+                            child: Icon(
+                              Icons.close_rounded,
+                              color: Colors.white.withValues(alpha: 0.55),
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    // Row 2: program name
+                    Text(
+                      program.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'AppFontMedium',
+                      ),
+                    ),
+                    if (hasProgress) ...[
+                      const SizedBox(height: 6),
+                      // Row 3: week/day label + percent
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.flag_rounded,
+                            size: 11,
+                            color: Colors.white.withValues(alpha: 0.55),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            isFrench
+                                ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
+                                : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.60),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            '${(progress! * 100).round()}%',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.70),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      // Row 4: progress bar
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 3,
+                          backgroundColor:
+                              Colors.white.withValues(alpha: 0.15),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 3),
+                      // Show static stats when no start date
+                      Text(
+                        isFrench
+                            ? '${program.durationWeeks} semaines  •  ${program.daysPerWeek} j/sem'
+                            : '${program.durationWeeks} weeks  •  ${program.daysPerWeek} days/wk',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.50),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      orElse: () => const SizedBox.shrink(),
     );
   }
-
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) =>
-      tabBar != oldDelegate.tabBar;
 }
 
 // ---------------------------------------------------------------------------
@@ -466,31 +443,17 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
   }
 
   Future<void> _confirmDelete(Session session) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await AppDialog.showConfirm(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          widget.isFrench ? 'Supprimer la session ?' : 'Delete session?',
-        ),
-        content: Text(
-          widget.isFrench
-              ? 'Cette action est irréversible.'
-              : 'This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(widget.isFrench ? 'Annuler' : 'Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(
-              widget.isFrench ? 'Supprimer' : 'Delete',
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
+      title: widget.isFrench ? 'Supprimer la session ?' : 'Delete session?',
+      confirmLabel: widget.isFrench ? 'Supprimer' : 'Delete',
+      cancelLabel: widget.isFrench ? 'Annuler' : 'Cancel',
+      message: widget.isFrench
+          ? 'Cette action est irréversible.'
+          : 'This cannot be undone.',
+      icon: Icons.delete_outline_rounded,
+      iconColor: AppColors.error,
+      destructive: true,
     );
     if (confirmed != true || !mounted) return;
     try {
@@ -519,6 +482,7 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
             );
           }
           return ListView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xs,
               AppSpacing.md,
@@ -542,8 +506,7 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
             },
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
@@ -597,6 +560,7 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
             return _EmptyProgramsState(isFrench: widget.isFrench);
           }
           return ListView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xs,
               AppSpacing.md,
@@ -621,8 +585,7 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
             },
           );
         },
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
@@ -694,10 +657,9 @@ class _SessionCard extends StatelessWidget {
         padding: const EdgeInsets.only(right: AppSpacing.lg),
         decoration: BoxDecoration(
           color: AppColors.error.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(AppRadii.md),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
-        child:
-            const Icon(Icons.delete_outline_rounded, color: AppColors.error),
+        child: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
       ),
       confirmDismiss: (_) async {
         onDelete();
@@ -706,12 +668,12 @@ class _SessionCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(AppRadii.md),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           onTap: onTap,
           onLongPress: onDelete,
           child: Ink(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadii.md),
+              borderRadius: BorderRadius.circular(AppRadii.sm),
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -737,7 +699,7 @@ class _SessionCard extends StatelessWidget {
                     height: 52,
                     decoration: BoxDecoration(
                       color: AppColors.primaryPastel.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(AppRadii.md),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: const Icon(
                       Icons.fitness_center_rounded,
@@ -761,19 +723,6 @@ class _SessionCard extends StatelessWidget {
                             fontFamily: 'AppFontMedium',
                           ),
                         ),
-                        if (session.description != null &&
-                            session.description!.isNotEmpty) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            session.description!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
                         const SizedBox(height: 6),
                         Row(
                           children: [
@@ -857,6 +806,17 @@ class _ProgramCard extends StatelessWidget {
     }
   }
 
+  String _difficultyLabel(DifficultyLevel d) {
+    switch (d) {
+      case DifficultyLevel.beginner:
+        return isFrench ? 'Débutant' : 'Beginner';
+      case DifficultyLevel.intermediate:
+        return isFrench ? 'Intermédiaire' : 'Intermediate';
+      case DifficultyLevel.advanced:
+        return isFrench ? 'Avancé' : 'Advanced';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = _difficultyColor(program.difficulty);
@@ -864,11 +824,11 @@ class _ProgramCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.md),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadii.md),
+            borderRadius: BorderRadius.circular(AppRadii.sm),
             gradient: isActive
                 ? const LinearGradient(
                     begin: Alignment.topLeft,
@@ -887,8 +847,9 @@ class _ProgramCard extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: (isActive ? AppColors.primary : AppColors.primaryLight)
-                    .withValues(alpha: isActive ? 0.3 : 0.18),
+                color:
+                    (isActive ? AppColors.primary : AppColors.primaryLight)
+                        .withValues(alpha: isActive ? 0.3 : 0.18),
                 blurRadius: 12,
                 offset: const Offset(0, 5),
               ),
@@ -898,7 +859,6 @@ class _ProgramCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Row(
               children: [
-                // Icon
                 Container(
                   width: 52,
                   height: 52,
@@ -906,7 +866,7 @@ class _ProgramCard extends StatelessWidget {
                     color: isActive
                         ? Colors.white.withValues(alpha: 0.18)
                         : AppColors.primaryPastel.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(AppRadii.md),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: Icon(
                     Icons.calendar_month_rounded,
@@ -959,20 +919,6 @@ class _ProgramCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (program.description.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          program.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: isActive
-                                ? Colors.white.withValues(alpha: 0.75)
-                                : AppColors.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
                       const SizedBox(height: 6),
                       Row(
                         children: [
@@ -1004,7 +950,7 @@ class _ProgramCard extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                _difficultyLabel(program.difficulty, isFrench),
+                                _difficultyLabel(program.difficulty),
                                 style: TextStyle(
                                   color: color,
                                   fontSize: 10,
@@ -1029,17 +975,6 @@ class _ProgramCard extends StatelessWidget {
       ),
     );
   }
-
-  String _difficultyLabel(DifficultyLevel d, bool isFrench) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Débutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermédiaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avancé' : 'Advanced';
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1059,9 +994,7 @@ class _MetaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = light
-        ? Colors.white.withValues(alpha: 0.7)
-        : AppColors.textTertiary;
+    final color = light ? Colors.white.withValues(alpha: 0.7) : AppColors.textTertiary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1092,65 +1025,67 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        height: MediaQuery.sizeOf(context).height * 0.6,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.playlist_add_rounded,
-                size: 56,
-                color: AppColors.primaryLight.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                isFrench
-                    ? 'Aucune session personnalisée'
-                    : 'No custom sessions yet',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'AppFontMedium',
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: constraints.maxHeight,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.playlist_add_rounded,
+                  size: 56,
+                  color: AppColors.primaryLight.withValues(alpha: 0.7),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                isFrench
-                    ? 'Créez votre première session pour commencer.'
-                    : 'Create your first session to get started.',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              FilledButton.icon(
-                onPressed: onCreateTap,
-                icon: const Icon(Icons.add_rounded),
-                label: Text(
-                  isFrench ? 'Créer une session' : 'Create a session',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: 14,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadii.lg),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  isFrench
+                      ? 'Aucune session personnalisée'
+                      : 'No custom sessions yet',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'AppFontMedium',
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  isFrench
+                      ? 'Créez votre première session pour commencer.'
+                      : 'Create your first session to get started.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                FilledButton.icon(
+                  onPressed: onCreateTap,
+                  icon: const Icon(Icons.add_rounded),
+                  label: Text(
+                    isFrench ? 'Créer une session' : 'Create a session',
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: 14,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1165,44 +1100,46 @@ class _EmptyProgramsState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        height: MediaQuery.sizeOf(context).height * 0.6,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.calendar_month_rounded,
-                size: 56,
-                color: AppColors.primaryLight.withValues(alpha: 0.7),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                isFrench ? 'Aucun programme' : 'No programs yet',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'AppFontMedium',
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: constraints.maxHeight,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.calendar_month_rounded,
+                  size: 56,
+                  color: AppColors.primaryLight.withValues(alpha: 0.7),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                isFrench
-                    ? 'Les programmes vous permettent d\'organiser vos sessions sur plusieurs semaines.'
-                    : 'Programs let you organize your sessions across multiple weeks.',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                  height: 1.5,
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  isFrench ? 'Aucun programme' : 'No programs yet',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'AppFontMedium',
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  isFrench
+                      ? 'Les programmes vous permettent d\'organiser vos sessions sur plusieurs semaines.'
+                      : 'Programs let you organize your sessions across multiple weeks.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

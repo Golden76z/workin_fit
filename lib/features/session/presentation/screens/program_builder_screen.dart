@@ -13,13 +13,26 @@ import 'package:workin_fit/providers/workout_providers.dart';
 /// Maximum custom programs a user can have.
 const int kMaxCustomPrograms = 10;
 
+/// Sentinel value stored in a slot to mark it as an explicit rest day.
+const String kRestDaySlot = '__rest__';
+
 class ProgramBuilderScreen extends ConsumerStatefulWidget {
-  const ProgramBuilderScreen({super.key});
+  /// If non-null the builder opens in edit mode for this program.
+  final Program? editProgram;
+
+  const ProgramBuilderScreen({this.editProgram, super.key});
 
   static Route<void> route() {
     return MaterialPageRoute<void>(
       fullscreenDialog: true,
       builder: (_) => const ProgramBuilderScreen(),
+    );
+  }
+
+  static Route<void> editRoute({required Program program}) {
+    return MaterialPageRoute<void>(
+      fullscreenDialog: true,
+      builder: (_) => ProgramBuilderScreen(editProgram: program),
     );
   }
 
@@ -48,6 +61,33 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
   bool _isSaving = false;
 
   @override
+  void initState() {
+    super.initState();
+    final p = widget.editProgram;
+    if (p != null) {
+      _nameController.text = p.name;
+      _descController.text = p.description;
+      _difficulty = p.difficulty;
+      _durationWeeks = p.durationWeeks;
+      _goals.addAll(p.goals);
+      // Reconstruct training days: use first daysPerWeek weekdays (Mon=0…)
+      _trainingDays = {for (var i = 0; i < p.daysPerWeek; i++) i};
+      _slots = List.filled(p.durationWeeks * 7, null);
+      // Fill sessions sequentially into training day slots
+      final sortedDays = _trainingDays.toList()..sort();
+      int sessionIdx = 0;
+      for (int w = 0; w < p.durationWeeks; w++) {
+        for (final day in sortedDays) {
+          if (sessionIdx < p.sessionIds.length) {
+            _slots[w * 7 + day] = p.sessionIds[sessionIdx];
+            sessionIdx++;
+          }
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _descController.dispose();
@@ -59,7 +99,8 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
   // Helpers
   // ---------------------------------------------------------------------------
 
-  int get _assignedCount => _slots.whereType<String>().length;
+  int get _assignedCount =>
+      _slots.where((s) => s != null && s != kRestDaySlot).length;
 
   Color _difficultyColor(DifficultyLevel d) {
     switch (d) {
@@ -121,21 +162,14 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
     bool isFrench,
     List<Session> allSessions,
   ) async {
-    if (allSessions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isFrench
-                ? 'Créez d\'abord des sessions dans l\'onglet Sessions.'
-                : 'Create some sessions in the Sessions tab first.',
-          ),
-        ),
-      );
-      return;
-    }
-    final picked = await showModalBottomSheet<Session>(
+    // Dismiss keyboard and clear focus so it doesn't restore on sheet close
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    final picked = await showModalBottomSheet<Object>(
       context: context,
       isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _SessionPickerSheet(
         sessions: allSessions,
@@ -143,9 +177,15 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
         currentSessionId: _slots[slotIndex],
       ),
     );
+    // Prevent focus restoration to any text field after sheet close
+    FocusManager.instance.primaryFocus?.unfocus();
     if (picked == null || !mounted) return;
     HapticFeedback.selectionClick();
-    setState(() => _slots[slotIndex] = picked.id);
+    if (picked == kRestDaySlot) {
+      setState(() => _slots[slotIndex] = kRestDaySlot);
+    } else if (picked is Session) {
+      setState(() => _slots[slotIndex] = picked.id);
+    }
   }
 
   void _clearSlot(int slotIndex) {
@@ -201,28 +241,34 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
       return;
     }
 
-    final existing = await ref.read(programsProvider.future);
-    if (!mounted) return;
-    final customCount = existing.where((p) => p.isCustom).length;
-    if (customCount >= kMaxCustomPrograms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            isFrench
-                ? 'Limite de $kMaxCustomPrograms programmes atteinte.'
-                : 'You have reached the limit of $kMaxCustomPrograms custom programs.',
+    // Only check custom program limit when creating a new program
+    if (widget.editProgram == null) {
+      final existing = await ref.read(programsProvider.future);
+      if (!mounted) return;
+      final customCount = existing.where((p) => p.isCustom).length;
+      if (customCount >= kMaxCustomPrograms) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isFrench
+                  ? 'Limite de $kMaxCustomPrograms programmes atteinte.'
+                  : 'You have reached the limit of $kMaxCustomPrograms custom programs.',
+            ),
           ),
-        ),
-      );
-      return;
+        );
+        return;
+      }
     }
 
     setState(() => _isSaving = true);
     try {
       final userId = ref.read(currentUserIdProvider);
-      final sessionIds = _slots.whereType<String>().toList();
+      final sessionIds = _slots
+          .whereType<String>()
+          .where((s) => s != kRestDaySlot)
+          .toList();
       final program = Program(
-        id: const Uuid().v4(),
+        id: widget.editProgram?.id ?? const Uuid().v4(),
         name: name,
         description: _descController.text.trim(),
         sessionIds: sessionIds,
@@ -232,8 +278,13 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
         daysPerWeek: _trainingDays.length,
         isCustom: true,
         userId: userId,
+        createdAt: widget.editProgram?.createdAt,
       );
-      await ref.read(programActionsProvider).createProgram(program);
+      if (widget.editProgram != null) {
+        await ref.read(programActionsProvider).updateProgram(program);
+      } else {
+        await ref.read(programActionsProvider).createProgram(program);
+      }
       if (!mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
@@ -286,7 +337,9 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: Text(
-                isFrench ? 'Nouveau programme' : 'New Program',
+                widget.editProgram != null
+                    ? (isFrench ? 'Modifier le programme' : 'Edit Program')
+                    : (isFrench ? 'Nouveau programme' : 'New Program'),
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'AppFontMedium',
@@ -326,9 +379,9 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.md,
+                  AppSpacing.xs,
+                  AppSpacing.sm,
+                  AppSpacing.xs,
                   0,
                 ),
                 child: Column(
@@ -372,7 +425,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.xs),
 
                     // Card 2: Configuration
                     _BuilderSectionCard(
@@ -444,7 +497,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                                 : 'Duration (weeks)',
                             value: _durationWeeks,
                             min: 1,
-                            max: 52,
+                            max: 12,
                             onChanged: _onDurationWeeksChanged,
                           ),
                           const SizedBox(height: AppSpacing.md),
@@ -462,7 +515,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.xs),
 
                     // Card 3: Goals
                     _BuilderSectionCard(
@@ -491,6 +544,13 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                           ),
                           if (_goals.isNotEmpty) ...[
                             const SizedBox(height: AppSpacing.xs),
+                            Divider(
+                              height: 1,
+                              thickness: 1,
+                              color:
+                                  AppColors.primaryPastel.withValues(alpha: 0.4),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
                             Wrap(
                               spacing: AppSpacing.xs,
                               runSpacing: AppSpacing.xs,
@@ -509,7 +569,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.sm),
 
                     // Schedule header
                     Row(
@@ -554,21 +614,23 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
             // ── Week/day grid ─────────────────────────────────────────────
             SliverPadding(
               padding: EdgeInsets.fromLTRB(
-                AppSpacing.md,
+                AppSpacing.xs,
                 0,
-                AppSpacing.md,
+                AppSpacing.xs,
                 MediaQuery.paddingOf(context).bottom + 96,
               ),
               sliver: SliverList.builder(
                 itemCount: _durationWeeks,
                 itemBuilder: (context, weekIndex) {
                   final weekAssigned = List.generate(7, (d) {
-                    return _slots[weekIndex * 7 + d] != null;
+                    final s = _slots[weekIndex * 7 + d];
+                    return s != null && s != kRestDaySlot;
                   }).where((v) => v).length;
 
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                     child: _WeekCard(
+                      key: ValueKey(weekIndex),
                       weekIndex: weekIndex,
                       trainingDays: _trainingDays,
                       slots: _slots,
@@ -639,7 +701,7 @@ class _BuilderSectionCard extends StatelessWidget {
       elevation: 2,
       shadowColor: AppColors.primary.withValues(alpha: 0.10),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(AppRadii.md)),
+        borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -648,13 +710,13 @@ class _BuilderSectionCard extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
             ),
             color: AppChrome.topSurface,
             child: Row(
               children: [
-                Icon(icon, size: 17, color: Colors.white),
+                Icon(icon, size: 16, color: Colors.white),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   title,
@@ -669,7 +731,12 @@ class _BuilderSectionCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.sm,
+              AppSpacing.sm,
+              AppSpacing.sm,
+              AppSpacing.sm,
+            ),
             child: child,
           ),
         ],
@@ -682,7 +749,7 @@ class _BuilderSectionCard extends StatelessWidget {
 // Week card
 // ---------------------------------------------------------------------------
 
-class _WeekCard extends StatelessWidget {
+class _WeekCard extends StatefulWidget {
   final int weekIndex;
   final Set<int> trainingDays;
   final List<String?> slots;
@@ -701,7 +768,15 @@ class _WeekCard extends StatelessWidget {
     required this.assignedCount,
     required this.onPickSession,
     required this.onClearSlot,
+    super.key,
   });
+
+  @override
+  State<_WeekCard> createState() => _WeekCardState();
+}
+
+class _WeekCardState extends State<_WeekCard> {
+  bool _expanded = true;
 
   @override
   Widget build(BuildContext context) {
@@ -710,76 +785,100 @@ class _WeekCard extends StatelessWidget {
       elevation: 2,
       shadowColor: AppColors.primary.withValues(alpha: 0.08),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(AppRadii.md)),
+        borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Week header — flat blue band matching _BuilderSectionCard
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            color: AppChrome.topSurface,
-            child: Row(
-              children: [
-                Text(
-                  isFrench
-                      ? 'Semaine ${weekIndex + 1}'
-                      : 'Week ${weekIndex + 1}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'AppFontMedium',
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(AppRadii.sm),
-                  ),
-                  child: Text(
-                    '$assignedCount / ${trainingDays.length}',
+          // Week header — tappable to expand/collapse
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              color: AppChrome.topSurface,
+              child: Row(
+                children: [
+                  Text(
+                    widget.isFrench
+                        ? 'Semaine ${widget.weekIndex + 1}'
+                        : 'Week ${widget.weekIndex + 1}',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'AppFontMedium',
+                      letterSpacing: 0.2,
                     ),
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                    ),
+                    child: Text(
+                      '${widget.assignedCount} / ${widget.trainingDays.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  AnimatedRotation(
+                    turns: _expanded ? 0 : -0.25,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(
+                      Icons.expand_more_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          // Day rows — all 7 days of the week
-          Column(
-            children: List.generate(7, (dayOfWeek) {
-              final slotIndex = weekIndex * 7 + dayOfWeek;
-              final sessionId = slots[slotIndex];
-              final session =
-                  sessionId != null ? sessionMap[sessionId] : null;
-              final isTraining = trainingDays.contains(dayOfWeek);
+          // Day rows — collapsible
+          AnimatedSize(
+            alignment: Alignment.topCenter,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            child: _expanded
+                ? Column(
+                    children: List.generate(7, (dayOfWeek) {
+                      final slotIndex = widget.weekIndex * 7 + dayOfWeek;
+                      final sessionId = widget.slots[slotIndex];
+                      final session = sessionId != null
+                          ? widget.sessionMap[sessionId]
+                          : null;
+                      final isTraining =
+                          widget.trainingDays.contains(dayOfWeek);
 
-              return _DaySlotRow(
-                dayOfWeek: dayOfWeek,
-                session: session,
-                sessionId: sessionId,
-                isTrainingDay: isTraining,
-                isFrench: isFrench,
-                isLast: dayOfWeek == 6,
-                onTap: () => onPickSession(dayOfWeek),
-                onClear: sessionId != null
-                    ? () => onClearSlot(dayOfWeek)
-                    : null,
-              );
-            }),
+                      return _DaySlotRow(
+                        dayOfWeek: dayOfWeek,
+                        session: session,
+                        sessionId: sessionId,
+                        isTrainingDay: isTraining,
+                        isFrench: widget.isFrench,
+                        isLast: dayOfWeek == 6,
+                        onTap: () => widget.onPickSession(dayOfWeek),
+                        onClear: sessionId != null
+                            ? () => widget.onClearSlot(dayOfWeek)
+                            : null,
+                      );
+                    }),
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -818,23 +917,25 @@ class _DaySlotRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dayLabel = isFrench ? _dayNamesFr[dayOfWeek] : _dayNames[dayOfWeek];
-    final assigned = sessionId != null;
-    final isRest = !isTrainingDay && !assigned;
+    final isExplicitRest = sessionId == kRestDaySlot;
+    final assigned = sessionId != null && !isExplicitRest;
+    final isRest = !isTrainingDay && !assigned && !isExplicitRest;
+    final isRestDisplay = isRest || isExplicitRest;
 
     // Colors based on state
     final Color badgeBg = assigned
         ? AppColors.primary.withValues(alpha: 0.12)
-        : isTrainingDay
+        : (isTrainingDay && !isExplicitRest)
             ? AppColors.primary.withValues(alpha: 0.06)
             : AppColors.surfaceVariant;
     final Color badgeBorder = assigned
         ? AppColors.primary.withValues(alpha: 0.3)
-        : isTrainingDay
+        : (isTrainingDay && !isExplicitRest)
             ? AppColors.primary.withValues(alpha: 0.18)
             : AppColors.primaryPastel.withValues(alpha: 0.2);
     final Color badgeText = assigned
         ? AppColors.primary
-        : isTrainingDay
+        : (isTrainingDay && !isExplicitRest)
             ? AppColors.primaryLight
             : AppColors.textSecondary.withValues(alpha: 0.5);
 
@@ -875,7 +976,7 @@ class _DaySlotRow extends StatelessWidget {
 
                 // Content
                 Expanded(
-                  child: isRest
+                  child: isRestDisplay
                       ? Text(
                           isFrench ? 'Repos' : 'Rest',
                           style: TextStyle(
@@ -969,7 +1070,7 @@ class _DaySlotRow extends StatelessWidget {
                       ),
                     ),
                   )
-                else if (!isRest)
+                else if (!isRestDisplay)
                   const Icon(
                     Icons.add_rounded,
                     color: AppColors.primary,
@@ -991,7 +1092,7 @@ class _DaySlotRow extends StatelessWidget {
             thickness: 1,
             indent: AppSpacing.sm,
             endIndent: AppSpacing.sm,
-            color: isRest
+            color: isRestDisplay
                 ? AppColors.primaryPastel.withValues(alpha: 0.12)
                 : AppColors.primaryPastel.withValues(alpha: 0.3),
           ),
@@ -1037,37 +1138,28 @@ class _WeekdaySelector extends StatelessWidget {
                 onTap: () => onToggle(i),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  height: 40,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: selected
-                        ? AppColors.primary
+                        ? AppColors.primary.withValues(alpha: 0.13)
                         : AppColors.surfaceVariant,
-                    borderRadius: BorderRadius.circular(AppRadii.sm),
+                    borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: selected
-                          ? AppColors.primary
+                          ? AppColors.primary.withValues(alpha: 0.6)
                           : AppColors.primaryPastel.withValues(alpha: 0.5),
-                      width: selected ? 0 : 1,
+                      width: 1,
                     ),
-                    boxShadow: selected
-                        ? [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                        : null,
                   ),
                   child: Center(
                     child: Text(
                       labels[i],
                       style: TextStyle(
                         color: selected
-                            ? Colors.white
+                            ? AppColors.primaryDark
                             : AppColors.textSecondary,
                         fontSize: 12,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -1100,8 +1192,28 @@ class _SessionPickerSheet extends StatefulWidget {
   State<_SessionPickerSheet> createState() => _SessionPickerSheetState();
 }
 
-class _SessionPickerSheetState extends State<_SessionPickerSheet> {
+class _SessionPickerSheetState extends State<_SessionPickerSheet>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
   String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Default to "My sessions" tab if the user has sessions, otherwise "Popular"
+    final initialTab = widget.sessions.isNotEmpty ? 0 : 1;
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: initialTab,
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1116,8 +1228,8 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet> {
             .toList();
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.4,
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (context, controller) {
         return Container(
@@ -1141,13 +1253,14 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet> {
                   ),
                 ),
               ),
-              // Title
+
+              // Title + tab bar
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.md,
-                  AppSpacing.xs,
+                  AppSpacing.xxs,
                   AppSpacing.md,
-                  AppSpacing.sm,
+                  AppSpacing.xxs,
                 ),
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -1162,152 +1275,347 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet> {
                   ),
                 ),
               ),
-              // Search
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
+              TabBar(
+                controller: _tabController,
+                labelColor: AppColors.primary,
+                unselectedLabelColor: AppColors.textSecondary,
+                indicatorColor: AppColors.primary,
+                indicatorWeight: 2,
+                dividerColor: AppColors.primaryPastel.withValues(alpha: 0.3),
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                  fontFamily: 'AppFontMedium',
                 ),
-                child: TextField(
-                  autofocus: false,
-                  onChanged: (v) => setState(() => _query = v),
-                  decoration: InputDecoration(
-                    hintText: widget.isFrench ? 'Rechercher…' : 'Search…',
-                    hintStyle: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 14,
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: AppColors.textSecondary,
-                      size: 20,
-                    ),
-                    filled: true,
-                    fillColor: AppColors.surface,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
-                      borderSide: BorderSide.none,
-                    ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+                tabs: [
+                  Tab(
+                    text:
+                        widget.isFrench ? 'Mes sessions' : 'My sessions',
                   ),
-                ),
+                  Tab(
+                    text: widget.isFrench ? 'Populaires' : 'Popular',
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSpacing.sm),
-              // List
+
+              const SizedBox(height: AppSpacing.xs),
+
+              // Tab content
               Expanded(
-                child: filtered.isEmpty
-                    ? Center(
-                        child: Text(
-                          widget.isFrench
-                              ? 'Aucune session trouvée.'
-                              : 'No sessions found.',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 14,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // ── Tab 0: My sessions ──────────────────────────────
+                    Column(
+                      children: [
+                        // Rest day option
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.sm,
+                            0,
+                            AppSpacing.sm,
+                            AppSpacing.xxs,
                           ),
-                        ),
-                      )
-                    : ListView.builder(
-                        controller: controller,
-                        padding: EdgeInsets.fromLTRB(
-                          AppSpacing.md,
-                          0,
-                          AppSpacing.md,
-                          MediaQuery.paddingOf(context).bottom + AppSpacing.md,
-                        ),
-                        itemCount: filtered.length,
-                        itemBuilder: (context, index) {
-                          final session = filtered[index];
-                          final isCurrent =
-                              session.id == widget.currentSessionId;
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSpacing.xs,
-                            ),
-                            child: Material(
-                              color: isCurrent
-                                  ? AppColors.primary.withValues(alpha: 0.08)
-                                  : AppColors.surface,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadii.sm),
-                              child: InkWell(
-                                borderRadius:
-                                    BorderRadius.circular(AppRadii.sm),
-                                onTap: () =>
-                                    Navigator.of(context).pop(session),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacing.md,
-                                    vertical: AppSpacing.sm,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 36,
-                                        height: 36,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(AppRadii.sm),
-                                        ),
-                                        child: const Icon(
-                                          Icons.fitness_center_rounded,
-                                          color: AppColors.primary,
-                                          size: 18,
+                          child: Material(
+                            color: widget.currentSessionId == kRestDaySlot
+                                ? AppColors.success.withValues(alpha: 0.08)
+                                : AppColors.surface,
+                            borderRadius: BorderRadius.circular(AppRadii.sm),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(AppRadii.sm),
+                              onTap: () =>
+                                  Navigator.of(context).pop(kRestDaySlot),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.xs,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 34,
+                                      height: 34,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.success
+                                            .withValues(alpha: 0.12),
+                                        borderRadius:
+                                            BorderRadius.circular(AppRadii.sm),
+                                      ),
+                                      child: const Icon(
+                                        Icons.bedtime_outlined,
+                                        color: AppColors.success,
+                                        size: 17,
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    Expanded(
+                                      child: Text(
+                                        widget.isFrench ? 'Repos' : 'Rest day',
+                                        style: const TextStyle(
+                                          color: AppColors.textPrimary,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      const SizedBox(width: AppSpacing.sm),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              session.name,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                color: AppColors.textPrimary,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            Text(
-                                              session.durationDisplay,
-                                              style: const TextStyle(
-                                                color: AppColors.textTertiary,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      if (isCurrent)
-                                        const Icon(
-                                          Icons.check_circle_rounded,
-                                          color: AppColors.primary,
-                                          size: 20,
-                                        )
-                                      else
-                                        const Icon(
-                                          Icons.add_rounded,
-                                          color: AppColors.primary,
-                                          size: 20,
-                                        ),
-                                    ],
-                                  ),
+                                    ),
+                                    Icon(
+                                      widget.currentSessionId == kRestDaySlot
+                                          ? Icons.check_circle_rounded
+                                          : Icons.bedtime_outlined,
+                                      color: AppColors.success,
+                                      size: 20,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        ),
+                        if (widget.sessions.isNotEmpty)
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            indent: AppSpacing.sm,
+                            endIndent: AppSpacing.sm,
+                            color: AppColors.primaryPastel
+                                .withValues(alpha: 0.25),
+                          ),
+                        if (widget.sessions.isNotEmpty)
+                          const SizedBox(height: AppSpacing.xs),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.sm,
+                          ),
+                          child: TextField(
+                            autofocus: false,
+                            onChanged: (v) => setState(() => _query = v),
+                            decoration: InputDecoration(
+                              hintText:
+                                  widget.isFrench ? 'Rechercher…' : 'Search…',
+                              hintStyle: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13,
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.search_rounded,
+                                color: AppColors.textSecondary,
+                                size: 18,
+                              ),
+                              filled: true,
+                              fillColor: AppColors.surface,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 8),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppRadii.sm),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Expanded(
+                          child: filtered.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    widget.isFrench
+                                        ? widget.sessions.isEmpty
+                                            ? 'Aucune session créée.'
+                                            : 'Aucun résultat.'
+                                        : widget.sessions.isEmpty
+                                            ? 'No sessions created yet.'
+                                            : 'No results.',
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  controller: controller,
+                                  padding: EdgeInsets.fromLTRB(
+                                    AppSpacing.sm,
+                                    0,
+                                    AppSpacing.sm,
+                                    MediaQuery.paddingOf(context).bottom +
+                                        AppSpacing.md,
+                                  ),
+                                  itemCount: filtered.length,
+                                  itemBuilder: (context, index) =>
+                                      _SessionPickerTile(
+                                    session: filtered[index],
+                                    isCurrent: filtered[index].id ==
+                                        widget.currentSessionId,
+                                    onTap: () => Navigator.of(context)
+                                        .pop(filtered[index]),
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+
+                    // ── Tab 1: Popular sessions ──────────────────────────
+                    _PopularSessionsTab(
+                      isFrench: widget.isFrench,
+                      scrollController: controller,
+                      currentSessionId: widget.currentSessionId,
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Session picker tile (shared between tabs)
+// ---------------------------------------------------------------------------
+
+class _SessionPickerTile extends StatelessWidget {
+  final Session session;
+  final bool isCurrent;
+  final VoidCallback onTap;
+
+  const _SessionPickerTile({
+    required this.session,
+    required this.isCurrent,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
+      child: Material(
+        color: isCurrent
+            ? AppColors.primary.withValues(alpha: 0.08)
+            : AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
+                  ),
+                  child: const Icon(
+                    Icons.fitness_center_rounded,
+                    color: AppColors.primary,
+                    size: 17,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        session.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        session.durationDisplay,
+                        style: const TextStyle(
+                          color: AppColors.textTertiary,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  isCurrent
+                      ? Icons.check_circle_rounded
+                      : Icons.add_rounded,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Popular sessions tab placeholder
+// ---------------------------------------------------------------------------
+
+class _PopularSessionsTab extends StatelessWidget {
+  final bool isFrench;
+  final ScrollController scrollController;
+  final String? currentSessionId;
+
+  const _PopularSessionsTab({
+    required this.isFrench,
+    required this.scrollController,
+    this.currentSessionId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.explore_rounded,
+              size: 48,
+              color: AppColors.primaryLight.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              isFrench ? 'Sessions populaires' : 'Popular sessions',
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'AppFontMedium',
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxs),
+            Text(
+              isFrench
+                  ? 'Bientôt disponible — parcourez des sessions\ncréées par la communauté.'
+                  : 'Coming soon — browse sessions\ncreated by the community.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1513,7 +1821,7 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _InputField extends StatelessWidget {
+class _InputField extends StatefulWidget {
   final TextEditingController controller;
   final String hint;
   final int maxLength;
@@ -1529,27 +1837,68 @@ class _InputField extends StatelessWidget {
   });
 
   @override
+  State<_InputField> createState() => _InputFieldState();
+}
+
+class _InputFieldState extends State<_InputField> {
+  int _length = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _length = widget.controller.text.length;
+    widget.controller.addListener(_onChanged);
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() => _length = widget.controller.text.length);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      maxLength: maxLength,
-      maxLines: maxLines,
-      onSubmitted: onSubmitted,
-      textInputAction:
-          onSubmitted != null ? TextInputAction.done : TextInputAction.newline,
-      style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
+    final isMultiline = widget.maxLines > 1;
+    final counterColor = _length >= widget.maxLength
+        ? AppColors.error
+        : AppColors.textSecondary.withValues(alpha: 0.55);
+
+    final field = TextField(
+      controller: widget.controller,
+      maxLength: widget.maxLength,
+      maxLines: widget.maxLines,
+      onSubmitted: widget.onSubmitted,
+      textInputAction: widget.onSubmitted != null
+          ? TextInputAction.done
+          : TextInputAction.newline,
+      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
-        hintText: hint,
+        hintText: widget.hint,
         hintStyle:
-            const TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        counterStyle:
-            const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+            const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+        counterText: '',
         filled: true,
         fillColor: AppColors.surfaceVariant,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
+        contentPadding: EdgeInsets.fromLTRB(
+          AppSpacing.sm,
+          AppSpacing.xs,
+          isMultiline ? AppSpacing.sm : AppSpacing.xxs,
+          isMultiline ? 22 : AppSpacing.xs,
         ),
+        suffix: isMultiline
+            ? null
+            : Text(
+                '$_length/${widget.maxLength}',
+                style: TextStyle(
+                  color: counterColor,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
           borderSide:
@@ -1565,6 +1914,29 @@ class _InputField extends StatelessWidget {
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
+    );
+
+    if (!isMultiline) return field;
+
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        field,
+        Positioned(
+          bottom: 6,
+          right: AppSpacing.sm,
+          child: IgnorePointer(
+            child: Text(
+              '$_length/${widget.maxLength}',
+              style: TextStyle(
+                color: counterColor,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

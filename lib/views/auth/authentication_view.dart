@@ -39,7 +39,6 @@ class _AuthenticationViewState extends State<AuthenticationView>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -54,7 +53,7 @@ class _AuthenticationViewState extends State<AuthenticationView>
               style: const TextStyle(
                 color: Colors.white,
                 fontFamily: 'AppFont',
-                fontSize: 44,
+                fontSize: 30,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -68,14 +67,18 @@ class _AuthenticationViewState extends State<AuthenticationView>
             child: TabBar(
               controller: _tabController,
               labelColor: Colors.white,
-              unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
+              unselectedLabelColor: Colors.white.withValues(alpha: 0.65),
               indicatorColor: Colors.white,
               indicatorWeight: 3,
-              labelStyle: theme.textTheme.titleLarge?.copyWith(
-                // fontWeight: FontWeight.bold,
+              labelStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
                 fontFamily: 'AppFontMedium',
               ),
-              unselectedLabelStyle: theme.textTheme.titleLarge?.copyWith(
+              unselectedLabelStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
                 fontFamily: 'AppFontMedium',
               ),
               tabs: [

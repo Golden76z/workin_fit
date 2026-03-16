@@ -292,6 +292,9 @@ class ProgramActions {
 /// ID of the program the user has set as active (in-memory, resets on restart)
 final activeProgramIdProvider = StateProvider<String?>((ref) => null);
 
+/// When the active program was started (in-memory, resets on restart)
+final activeProgramStartProvider = StateProvider<DateTime?>((ref) => null);
+
 /// Session IDs the user has started today (in-memory, resets on restart)
 final completedTodaySessionIdsProvider =
     StateProvider<Set<String>>((ref) => const {});

@@ -106,14 +106,23 @@ class _EmailVerificationViewState
 
       final localizations = AppLocalizations.of(context)!;
 
-      AppDialog.show(
+      showDialog<void>(
         context: context,
-        title: localizations.email_verification_resend_title,
-        content: localizations.email_verification_resend_content(
-          _userEmail ?? '',
+        builder: (_) => AppDialog(
+          title: localizations.email_verification_resend_title,
+          message: localizations.email_verification_resend_content(
+            _userEmail ?? '',
+          ),
+          icon: Icons.email_outlined,
+          iconColor: AppColors.primary,
+          actions: [
+            AppDialogAction<void>(
+              label: localizations.email_verification_resend_button,
+              returnValue: null,
+              style: AppDialogActionStyle.primary,
+            ),
+          ],
         ),
-        icon: Icons.email_outlined,
-        primaryButtonLabel: localizations.email_verification_resend_button,
       );
     } catch (e) {
       if (mounted) {

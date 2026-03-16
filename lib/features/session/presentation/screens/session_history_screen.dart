@@ -5,6 +5,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/session_history_entry.dart';
 import 'package:workin_fit/providers/session_history_provider.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
 
 class SessionHistoryScreen extends ConsumerWidget {
   const SessionHistoryScreen({super.key});
@@ -229,31 +230,17 @@ class SessionHistoryScreen extends ConsumerWidget {
     WidgetRef ref,
     bool isFrench,
   ) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await AppDialog.showConfirm(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(
-          isFrench ? 'Effacer l\'historique ?' : 'Clear history?',
-        ),
-        content: Text(
-          isFrench
-              ? 'Cette action est irréversible.'
-              : 'This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(isFrench ? 'Annuler' : 'Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(
-              isFrench ? 'Effacer' : 'Clear',
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
+      title: isFrench ? 'Effacer l\'historique ?' : 'Clear history?',
+      confirmLabel: isFrench ? 'Effacer' : 'Clear',
+      cancelLabel: isFrench ? 'Annuler' : 'Cancel',
+      message: isFrench
+          ? 'Cette action est irréversible.'
+          : 'This cannot be undone.',
+      icon: Icons.delete_sweep_rounded,
+      iconColor: AppColors.error,
+      destructive: true,
     );
     if (confirmed != true) return;
     await ref.read(sessionHistoryActionsProvider).clearHistory();
