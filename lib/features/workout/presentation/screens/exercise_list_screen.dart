@@ -118,21 +118,20 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                     Icons.search_rounded,
                                     color: Colors.white.withValues(alpha: 0.7),
                                   ),
-                                  suffixIcon: _searchController.text
-                                          .trim()
-                                          .isEmpty
-                                      ? null
-                                      : IconButton(
-                                          onPressed: () {
-                                            _searchController.clear();
-                                            setState(() {});
-                                          },
-                                          icon: Icon(
-                                            Icons.close_rounded,
-                                            color: Colors.white
-                                                .withValues(alpha: 0.8),
-                                          ),
-                                        ),
+                                  suffixIcon:
+                                      _searchController.text.trim().isEmpty
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () {
+                                                _searchController.clear();
+                                                setState(() {});
+                                              },
+                                              icon: Icon(
+                                                Icons.close_rounded,
+                                                color: Colors.white
+                                                    .withValues(alpha: 0.8),
+                                              ),
+                                            ),
                                   filled: true,
                                   fillColor: searchFieldColor,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -186,8 +185,8 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       backgroundColor: chipBackgroundColor,
                                       selectedColor: chipSelectedColor,
                                       side: BorderSide(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.3),
+                                        color:
+                                            Colors.white.withValues(alpha: 0.3),
                                       ),
                                       labelStyle: const TextStyle(
                                         color: AppColors.primaryAbyss,
@@ -606,14 +605,18 @@ class _ExerciseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double cardRadius = 8;
+    const double mediaRadius = 6;
+    const double pillRadius = 8;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.md),
+        borderRadius: BorderRadius.circular(cardRadius),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadii.md),
+            borderRadius: BorderRadius.circular(cardRadius),
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -633,107 +636,139 @@ class _ExerciseCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xxs),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadii.sm),
-                  child: Stack(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 102,
-                        height: 102,
-                        child: _ExerciseWaveFilter(
-                          velocity: shaderVelocity,
-                          child: _ExerciseImage(
-                            imageUrl: exercise.imageTutorialUrl,
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 6),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.xs,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: difficultyColor.withValues(alpha: 0.24),
-                              borderRadius: BorderRadius.circular(AppRadii.md),
-                              border: Border.all(
-                                color: difficultyColor.withValues(alpha: 0.5),
-                              ),
-                            ),
-                            child: Text(
-                              difficultyLabel,
-                              style: TextStyle(
-                                color: difficultyColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double cardWidth = constraints.maxWidth.isFinite
+                  ? constraints.maxWidth
+                  : MediaQuery.sizeOf(context).width;
+              final double mediaWidth =
+                  (cardWidth * 0.36).clamp(118.0, 156.0).toDouble();
+              final double mediaHeight = mediaWidth * 0.64;
+
+              return Padding(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'AppFontMedium',
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'AppFontMedium',
+                        const SizedBox(width: AppSpacing.xs),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xs,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: difficultyColor.withValues(
+                              alpha: 0.18,
+                            ),
+                            borderRadius: BorderRadius.circular(
+                              pillRadius,
+                            ),
+                            border: Border.all(
+                              color: difficultyColor.withValues(
+                                alpha: 0.45,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            difficultyLabel,
+                            style: TextStyle(
+                              color: difficultyColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      height: 1,
+                      color: AppColors.primaryLight.withValues(alpha: 0.32),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    SizedBox(
+                      height: mediaHeight,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(mediaRadius),
+                            child: SizedBox(
+                              width: mediaWidth,
+                              height: mediaHeight,
+                              child: _ExerciseImage(
+                                imageUrl: exercise.imageTutorialUrl,
+                                shaderVelocity: shaderVelocity,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Container(
+                            width: 1,
+                            height: mediaHeight,
+                            color: AppColors.primaryLight.withValues(
+                              alpha: 0.32,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                if (muscleSummary
+                                    .trim()
+                                    .isNotEmpty) ...<Widget>[
+                                  Text(
+                                    muscleSummary,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: AppColors.textTertiary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs),
+                                ],
+                                Expanded(
+                                  child: Text(
+                                    description,
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 13,
+                                      height: 1.28,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        muscleSummary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.textTertiary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        description,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 13,
-                          height: 1.25,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: AppSpacing.xxs),
-                const Padding(
-                  padding: EdgeInsets.only(top: AppSpacing.xs),
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -793,8 +828,12 @@ class _ExerciseWaveFilterState extends State<_ExerciseWaveFilter> {
 
 class _ExerciseImage extends StatelessWidget {
   final String imageUrl;
+  final Offset shaderVelocity;
 
-  const _ExerciseImage({required this.imageUrl});
+  const _ExerciseImage({
+    required this.imageUrl,
+    required this.shaderVelocity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -804,18 +843,27 @@ class _ExerciseImage extends StatelessWidget {
       return const _MissingExerciseImage();
     }
 
-    if (trimmed.startsWith('assets/')) {
-      return Image.asset(
-        trimmed,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => const _MissingExerciseImage(),
-      );
-    }
+    final Widget image = trimmed.startsWith('assets/')
+        ? Image.asset(
+            trimmed,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+          )
+        : Image.network(
+            trimmed,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+          );
 
-    return Image.network(
-      trimmed,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => const _MissingExerciseImage(),
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        const _MissingExerciseImage(),
+        _ExerciseWaveFilter(
+          velocity: shaderVelocity,
+          child: image,
+        ),
+      ],
     );
   }
 }
@@ -825,13 +873,23 @@ class _MissingExerciseImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.primaryAbyss,
-      alignment: Alignment.center,
-      child: const Icon(
-        Icons.fitness_center_rounded,
-        color: AppColors.background,
-        size: 34,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            AppColors.surface.withValues(alpha: 0.96),
+            AppColors.background.withValues(alpha: 0.92),
+          ],
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.primaryLight.withValues(alpha: 0.18),
+          ),
+        ),
       ),
     );
   }
