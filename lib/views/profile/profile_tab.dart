@@ -9,6 +9,7 @@ import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
+import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
@@ -157,6 +158,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
         body: RefreshIndicator(
           onRefresh: () async {
             ref.invalidate(_userProfileProvider);
+            ref.invalidate(streakDataProvider);
             await Future<void>.delayed(const Duration(milliseconds: 600));
           },
           color: AppColors.primary,
@@ -804,122 +806,127 @@ class _StatsGraphButton extends StatelessWidget {
 // Streak calendar — shows last 7 days
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _StreakCalendar extends StatelessWidget {
+class _StreakCalendar extends ConsumerWidget {
   final bool isFrench;
 
   const _StreakCalendar({required this.isFrench});
 
-  static const int _currentStreak = 7;
-  static const int _bestStreak = 21;
-  static const List<bool> _lastSevenDays = <bool>[
-    true,
-    true,
-    true,
-    false,
-    true,
-    true,
-    true,
-  ];
-
   @override
-  Widget build(BuildContext context) {
-    final DateTime today = DateTime.now();
-    final List<DateTime> days = List<DateTime>.generate(
-      7,
-      (int i) => today.subtract(Duration(days: 6 - i)),
-    );
-    final List<String> letters = isFrench
-        ? <String>['L', 'M', 'M', 'J', 'V', 'S', 'D']
-        : <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streakAsync = ref.watch(streakDataProvider);
 
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        children: <Widget>[
-          // Big streak number
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+    return streakAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (data) {
+        final int currentStreak = (data['currentStreak'] as int?) ?? 0;
+        final int bestStreak = (data['bestStreak'] as int?) ?? 0;
+        final List<bool> lastSevenDays =
+            (data['lastSevenDays'] as List?)?.cast<bool>() ??
+                List<bool>.filled(7, false);
+
+        final DateTime today = DateTime.now();
+        final List<DateTime> days = List<DateTime>.generate(
+          7,
+          (int i) => today.subtract(Duration(days: 6 - i)),
+        );
+        final List<String> letters = isFrench
+            ? <String>['L', 'M', 'M', 'J', 'V', 'S', 'D']
+            : <String>['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
             children: <Widget>[
-              const Icon(
-                Icons.local_fire_department_rounded,
-                color: AppColors.warning,
-                size: 32,
+              // Big streak number
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: <Widget>[
+                  const Icon(
+                    Icons.local_fire_department_rounded,
+                    color: AppColors.warning,
+                    size: 32,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '$currentStreak',
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontFamily: 'AppFontMedium',
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900,
+                      height: 1,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    isFrench ? 'jours' : 'days',
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 6),
-              const Text(
-                '$_currentStreak',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontFamily: 'AppFontMedium',
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900,
-                  height: 1,
+
+              const SizedBox(height: AppSpacing.md),
+
+              // Day bubbles
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List<Widget>.generate(7, (int i) {
+                  return _DayBubble(
+                    letter: letters[(days[i].weekday - 1) % 7],
+                    worked: lastSevenDays[i],
+                    isToday: i == 6,
+                  );
+                }),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              // Best streak badge
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xxs + 2,
                 ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                isFrench ? 'jours' : 'days',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                decoration: BoxDecoration(
+                  color: AppColors.babyBlueIce.withValues(alpha: 0.25),
+                  borderRadius: BorderRadius.circular(AppRadii.lg),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Icon(
+                      Icons.emoji_events_rounded,
+                      color: AppColors.cornflowerBlue,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      isFrench
+                          ? 'Meilleur : $bestStreak jours'
+                          : 'Best: $bestStreak days',
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Day bubbles
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List<Widget>.generate(7, (int i) {
-              return _DayBubble(
-                letter: letters[(days[i].weekday - 1) % 7],
-                worked: _lastSevenDays[i],
-                isToday: i == 6,
-              );
-            }),
-          ),
-
-          const SizedBox(height: AppSpacing.md),
-
-          // Best streak badge
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xxs + 2,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.babyBlueIce.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(AppRadii.lg),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(
-                  Icons.emoji_events_rounded,
-                  color: AppColors.cornflowerBlue,
-                  size: 14,
-                ),
-                const SizedBox(width: 5),
-                Text(
-                  isFrench
-                      ? 'Meilleur : $_bestStreak jours'
-                      : 'Best: $_bestStreak days',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

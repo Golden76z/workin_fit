@@ -5,6 +5,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 
 class HomeDashboardTab extends ConsumerStatefulWidget {
@@ -252,31 +253,38 @@ class _HomeBannerSliver extends StatelessWidget {
 }
 
 
-class _BannerStatsRow extends StatelessWidget {
+class _BannerStatsRow extends ConsumerWidget {
   final bool isFrench;
   const _BannerStatsRow({required this.isFrench});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final streakAsync = ref.watch(streakDataProvider);
+    final int currentStreak = streakAsync.when(
+      data: (d) => (d['currentStreak'] as int?) ?? 0,
+      loading: () => 0,
+      error: (_, __) => 0,
+    );
+
     return Row(
       children: <Widget>[
         _StatPill(
           icon: Icons.local_fire_department_rounded,
-          value: '7',
+          value: '$currentStreak',
           label: isFrench ? 'jours' : 'day streak',
           color: AppColors.warning,
         ),
         const SizedBox(width: AppSpacing.xs),
         _StatPill(
           icon: Icons.fitness_center_rounded,
-          value: '3',
+          value: '—',
           label: isFrench ? 'cette semaine' : 'this week',
           color: AppColors.frostedCyan,
         ),
         const SizedBox(width: AppSpacing.xs),
         _StatPill(
           icon: Icons.emoji_events_rounded,
-          value: '12',
+          value: '—',
           label: isFrench ? 'succès' : 'trophies',
           color: AppColors.babyBlueIce,
         ),
