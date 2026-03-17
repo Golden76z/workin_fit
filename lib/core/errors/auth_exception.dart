@@ -75,6 +75,6 @@ class AuthErrorHandler {
     }
     
     // Return more detailed error for debugging
-    return 'Google Sign-In failed: ${message.length > 100 ? message.substring(0, 100) + "..." : message}';
+    return 'Google Sign-In failed: ${message.length > 100 ? "${message.substring(0, 100)}..." : message}';
   }
 }

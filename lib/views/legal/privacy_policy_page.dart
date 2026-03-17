@@ -42,7 +42,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                   final dateText = localizations.privacy_policy_last_updated(formattedDate);
                   return Text(
                     dateText,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
                     ),
@@ -96,7 +96,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               const SizedBox(height: 32),
               Text(
                 localizations.privacy_policy_contact,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 14,
                   fontStyle: FontStyle.italic,

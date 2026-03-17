@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../core/errors/auth_exception.dart';
+import 'package:workin_fit/core/errors/auth_exception.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
@@ -11,20 +11,21 @@ class AuthRepository {
     FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
   })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn(
-          scopes: ['email', 'profile'],
-        );
+        _googleSignIn = googleSignIn ??
+            GoogleSignIn(
+              scopes: ['email', 'profile'],
+            );
 
   // ===== AUTH STATE STREAM =====
-  
+
   /// Stream of auth state changes (logged in/out)
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-  
+
   /// Get current user
   User? get currentUser => _firebaseAuth.currentUser;
 
   // ===== EMAIL/PASSWORD AUTH =====
-  
+
   /// Register with email and password
   Future<UserCredential> registerWithEmailPassword({
     required String email,
@@ -54,13 +55,16 @@ class AuthRepository {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
     }
   }
-  
+
   /// Sign in with email and password
   Future<UserCredential> signInWithEmailPassword({
     required String email,
@@ -83,7 +87,10 @@ class AuthRepository {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
@@ -120,22 +127,25 @@ class AuthRepository {
       return await _firebaseAuth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       // Log the actual error for debugging
-      print('FirebaseAuthException: ${e.code} - ${e.message}');
+      // print('FirebaseAuthException: ${e.code} - ${e.message}');
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
-    } catch (e, stackTrace) {
+    } catch (e, _) {
       if (e is AuthException) rethrow;
-      
+
       // Log the actual error for debugging
-      print('Google Sign-In Error: $e');
-      print('Stack trace: $stackTrace');
-      
+      // print('Google Sign-In Error: $e');
+      // print('Stack trace: $stackTrace');
+
       // Handle PlatformException (common on Android for SHA-1 issues)
       if (e.toString().contains('PlatformException')) {
-        if (e.toString().contains('sign_in_failed') || 
+        if (e.toString().contains('sign_in_failed') ||
             e.toString().contains('SIGN_IN_FAILED')) {
           throw AuthException(
             'Google Sign-In failed. Please check:\n'
@@ -147,7 +157,7 @@ class AuthRepository {
           );
         }
       }
-      
+
       throw AuthException(
         AuthErrorHandler.handleGoogleSignInException(e),
         originalException: e,
@@ -169,7 +179,7 @@ class AuthRepository {
       );
 
       // Create OAuth credential
-      final oauthCredential = OAuthProvider("apple.com").credential(
+      final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
@@ -178,7 +188,10 @@ class AuthRepository {
       return await _firebaseAuth.signInWithCredential(oauthCredential);
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
@@ -195,13 +208,16 @@ class AuthRepository {
   /// Sign in with GitHub
   Future<UserCredential> signInWithGitHub() async {
     try {
-      GithubAuthProvider githubProvider = GithubAuthProvider();
+      final GithubAuthProvider githubProvider = GithubAuthProvider();
 
       // Sign in with popup (web) or redirect (mobile)
       return await _firebaseAuth.signInWithProvider(githubProvider);
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
@@ -220,7 +236,10 @@ class AuthRepository {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
@@ -228,7 +247,7 @@ class AuthRepository {
   }
 
   // ===== EMAIL VERIFICATION =====
-  
+
   Future<void> sendEmailVerification() async {
     try {
       await _firebaseAuth.currentUser?.sendEmailVerification(
@@ -245,21 +264,24 @@ class AuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       throw AuthException(
-        AuthErrorHandler.handleFirebaseAuthException(e.code, message: e.message),
+        AuthErrorHandler.handleFirebaseAuthException(
+          e.code,
+          message: e.message,
+        ),
         code: e.code,
         originalException: e,
       );
     }
   }
-  
+
   Future<void> reloadUser() async {
     await _firebaseAuth.currentUser?.reload();
   }
-  
+
   bool get isEmailVerified => _firebaseAuth.currentUser?.emailVerified ?? false;
 
   // ===== SIGN OUT =====
-  
+
   Future<void> signOut() async {
     await Future.wait([
       _firebaseAuth.signOut(),

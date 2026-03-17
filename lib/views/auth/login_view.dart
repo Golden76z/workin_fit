@@ -8,6 +8,7 @@ import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
 import 'package:workin_fit/widgets/button.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -159,86 +160,35 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
     final email = _emailController.text.trim();
 
-    showDialog(
+    final confirmed = await AppDialog.showConfirm(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.xl),
-        ),
-        title: Row(
-          children: [
-            const Icon(Icons.lock_reset, color: AppColors.accent, size: 28),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              localizations.auth_login_forgot_dialog_title,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        content: Text(
-          localizations.auth_login_forgot_dialog_content(email),
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 15,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              localizations.auth_login_forgot_dialog_cancel,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await ref
-                    .read(authActionsProvider)
-                    .sendPasswordResetEmail(email);
-                if (mounted) {
-                  _showSnackBar(
-                    message: localizations.auth_login_forgot_dialog_success,
-                    backgroundColor: AppColors.successSoft,
-                  );
-                }
-              } catch (e) {
-                if (mounted) {
-                  final errorMessage = e is AuthException
-                      ? mapAuthErrorToMessage(context, e)
-                      : localizations.error_auth_generic;
-                  _showSnackBar(
-                    message: errorMessage,
-                    backgroundColor: AppColors.errorSoft,
-                  );
-                }
-              }
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: AppColors.accent,
-              foregroundColor: AppColors.textPrimary,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.xl,
-                vertical: AppSpacing.sm,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadii.sm),
-              ),
-            ),
-            child: Text(
-              localizations.auth_login_forgot_dialog_send,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
+      title: localizations.auth_login_forgot_dialog_title,
+      confirmLabel: localizations.auth_login_forgot_dialog_send,
+      cancelLabel: localizations.auth_login_forgot_dialog_cancel,
+      message: localizations.auth_login_forgot_dialog_content(email),
+      icon: Icons.lock_reset_rounded,
+      iconColor: AppColors.primary,
     );
+    if (confirmed != true || !mounted) return;
+    try {
+      await ref.read(authActionsProvider).sendPasswordResetEmail(email);
+      if (mounted) {
+        _showSnackBar(
+          message: localizations.auth_login_forgot_dialog_success,
+          backgroundColor: AppColors.successSoft,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        final errorMessage = e is AuthException
+            ? mapAuthErrorToMessage(context, e)
+            : localizations.error_auth_generic;
+        _showSnackBar(
+          message: errorMessage,
+          backgroundColor: AppColors.errorSoft,
+        );
+      }
+    }
   }
 
   @override

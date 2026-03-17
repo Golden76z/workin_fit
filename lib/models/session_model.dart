@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'tabata_config_model.dart';
-import 'workout_set_model.dart';
+import 'package:workin_fit/models/tabata_config_model.dart';
+import 'package:workin_fit/models/workout_set_model.dart';
 
 part 'session_model.g.dart';
 

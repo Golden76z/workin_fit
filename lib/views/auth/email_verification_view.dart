@@ -106,14 +106,23 @@ class _EmailVerificationViewState
 
       final localizations = AppLocalizations.of(context)!;
 
-      AppDialog.show(
+      showDialog<void>(
         context: context,
-        title: localizations.email_verification_resend_title,
-        content: localizations.email_verification_resend_content(
-          _userEmail ?? '',
+        builder: (_) => AppDialog(
+          title: localizations.email_verification_resend_title,
+          message: localizations.email_verification_resend_content(
+            _userEmail ?? '',
+          ),
+          icon: Icons.email_outlined,
+          iconColor: AppColors.primary,
+          actions: [
+            AppDialogAction<void>(
+              label: localizations.email_verification_resend_button,
+              returnValue: null,
+              style: AppDialogActionStyle.primary,
+            ),
+          ],
         ),
-        icon: Icons.email_outlined,
-        primaryButtonLabel: localizations.email_verification_resend_button,
       );
     } catch (e) {
       if (mounted) {
@@ -200,7 +209,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -211,7 +220,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_sent_to,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 16,
                   ),
@@ -231,7 +240,7 @@ class _EmailVerificationViewState
                 Text(
                   AppLocalizations.of(context)!.email_verification_instructions,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 14,
                   ),
