@@ -299,6 +299,23 @@ final activeProgramStartProvider = StateProvider<DateTime?>((ref) => null);
 final completedTodaySessionIdsProvider =
     StateProvider<Set<String>>((ref) => const {});
 
+// ===== STREAK =====
+
+/// Streak data derived from the user's workout history.
+/// Returns a map with keys: currentStreak, bestStreak, lastSevenDays.
+final streakDataProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+  final String? userId = ref.watch(currentUserIdProvider);
+  if (userId == null) {
+    return <String, dynamic>{
+      'currentStreak': 0,
+      'bestStreak': 0,
+      'lastSevenDays': List<bool>.filled(7, false),
+    };
+  }
+  final FirestoreService firestoreService = ref.watch(firestoreServiceProvider);
+  return firestoreService.getStreakData(userId: userId);
+});
+
 // ===== SYNC OPERATIONS =====
 
 /// Sync pending changes provider

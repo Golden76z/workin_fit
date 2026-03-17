@@ -775,6 +775,78 @@ class FirestoreService {
     }
   }
 
+  // ===== STREAK =====
+
+  /// Compute streak data from the user's workout history.
+  ///
+  /// Returns a map with:
+  ///   - `currentStreak` (int)  – consecutive days ending today or yesterday
+  ///   - `bestStreak`    (int)  – longest streak found in history
+  ///   - `lastSevenDays` (List<bool>) – whether the user worked out each of the
+  ///                                     last 7 days (index 0 = 6 days ago, 6 = today)
+  Future<Map<String, dynamic>> getStreakData({required String userId}) async {
+    final List<Map<String, dynamic>> history = await getWorkoutHistory(
+      userId: userId,
+      limit: 365,
+    );
+
+    // Collect unique local calendar days that had at least one workout.
+    final Set<String> workoutDays = <String>{};
+    for (final Map<String, dynamic> entry in history) {
+      final String? raw = entry['completedAt'] as String?;
+      if (raw == null) continue;
+      final DateTime? dt = DateTime.tryParse(raw)?.toLocal();
+      if (dt == null) continue;
+      workoutDays.add(_toDateKey(dt));
+    }
+
+    final DateTime today = DateTime.now();
+
+    // ── Current streak ────────────────────────────────────────────────────────
+    // Walk backwards from today (or yesterday if the user hasn't worked out yet
+    // today) and count consecutive days.
+    int currentStreak = 0;
+    DateTime check = workoutDays.contains(_toDateKey(today))
+        ? today
+        : today.subtract(const Duration(days: 1));
+    while (workoutDays.contains(_toDateKey(check))) {
+      currentStreak++;
+      check = check.subtract(const Duration(days: 1));
+    }
+
+    // ── Best streak ───────────────────────────────────────────────────────────
+    int bestStreak = currentStreak;
+    if (workoutDays.length > 1) {
+      final List<String> sorted = workoutDays.toList()..sort();
+      int run = 1;
+      for (int i = 1; i < sorted.length; i++) {
+        final DateTime prev = DateTime.parse(sorted[i - 1]);
+        final DateTime curr = DateTime.parse(sorted[i]);
+        if (curr.difference(prev).inDays == 1) {
+          run++;
+          if (run > bestStreak) bestStreak = run;
+        } else {
+          run = 1;
+        }
+      }
+    }
+
+    // ── Last 7 days ───────────────────────────────────────────────────────────
+    final List<bool> lastSevenDays = List<bool>.generate(7, (int i) {
+      final DateTime day = today.subtract(Duration(days: 6 - i));
+      return workoutDays.contains(_toDateKey(day));
+    });
+
+    return <String, dynamic>{
+      'currentStreak': currentStreak,
+      'bestStreak': bestStreak,
+      'lastSevenDays': lastSevenDays,
+    };
+  }
+
+  String _toDateKey(DateTime dt) =>
+      '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+
   String _resolveMonthKey({
     required DateTime completedAt,
     required Map<String, dynamic> metadata,

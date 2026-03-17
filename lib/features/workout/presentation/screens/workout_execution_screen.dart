@@ -1125,6 +1125,8 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         },
       );
       _workoutHistorySaved = true;
+      // Refresh streak so profile & home banner reflect the new workout day.
+      ref.invalidate(streakDataProvider);
     } catch (_) {
       // Keep workout completion UX smooth if history write fails.
     }
