@@ -13,6 +13,7 @@ import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
+import 'package:workin_fit/views/social/friends_screen.dart';
 import 'package:workin_fit/views/test/render_test_hub_page.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
@@ -101,6 +102,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
         backgroundColor: AppColors.primaryDark,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _openFriends() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const FriendsScreen(),
       ),
     );
   }
@@ -229,7 +238,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                               _MenuItem(
                                 icon: Icons.people_rounded,
                                 label: isFrench ? 'Amis' : 'Friends',
-                                onTap: () => _showComingSoon(isFrench),
+                                onTap: _openFriends,
                               ),
                               _MenuItem(
                                 icon: Icons.settings_rounded,
