@@ -39,6 +39,7 @@ class FirestoreService {
           .set(
         {
           'username': username,
+          'usernameSearch': username.toLowerCase(),
           'email': email,
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
