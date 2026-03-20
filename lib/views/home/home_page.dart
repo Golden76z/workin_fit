@@ -9,6 +9,7 @@ import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
 import 'package:workin_fit/views/home/sessions_tab.dart';
 import 'package:workin_fit/views/profile/profile_tab.dart';
+import 'package:workin_fit/views/social/social_tab.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -57,19 +58,11 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations localizations = AppLocalizations.of(context)!;
-    final bool isFrench = Localizations.localeOf(context)
-        .languageCode
-        .toLowerCase()
-        .startsWith('fr');
     final List<Widget> tabs = <Widget>[
       const HomeDashboardTab(),
       const ExerciseListScreen(),
       const SessionsTab(),
-      _PlaceholderTab(
-        title: isFrench ? 'Social' : 'Social',
-        subtitle: localizations.home_placeholder_coming_soon,
-      ),
+      const SocialTab(),
       const ProfileTab(),
     ];
 
@@ -290,55 +283,4 @@ class _NavItem extends StatelessWidget {
   }
 }
 
-class _PlaceholderTab extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _PlaceholderTab({
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceVariant,
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.construction_rounded,
-                  size: 42,
-                  color: AppColors.primaryLight.withValues(alpha: 0.8),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'AppFontMedium',
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
