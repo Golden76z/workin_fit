@@ -13,6 +13,8 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization_helper.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/models/achievement.dart';
+import 'package:workin_fit/providers/achievement_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 
 enum _WorkoutPhase {
@@ -60,6 +62,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   bool _isRunning = false;
   DateTime? _workoutStartedAt;
   bool _workoutHistorySaved = false;
+  List<Achievement> _newlyUnlockedAchievements = [];
   final Map<int, _ExerciseActualMetrics> _actualMetricsByIndex =
       <int, _ExerciseActualMetrics>{};
   int _currentSet = 0;
@@ -1127,6 +1130,19 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       _workoutHistorySaved = true;
       // Refresh streak so profile & home banner reflect the new workout day.
       ref.invalidate(streakDataProvider);
+
+      // Check for newly unlocked achievements.
+      try {
+        final unlocked = await ref
+            .read(achievementServiceProvider)
+            .checkAndUnlock(userId);
+        if (unlocked.isNotEmpty && mounted) {
+          setState(() => _newlyUnlockedAchievements = unlocked);
+          ref.invalidate(achievementsProvider);
+        }
+      } catch (_) {
+        // Achievement check failures must never break the completion flow.
+      }
     } catch (_) {
       // Keep workout completion UX smooth if history write fails.
     }
@@ -1570,6 +1586,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
+
+        // ── Achievement unlocks ───────────────────────────────────
+        if (_newlyUnlockedAchievements.isNotEmpty)
+          _AchievementUnlockBanner(achievements: _newlyUnlockedAchievements),
 
         // ── Per-exercise breakdown ────────────────────────────────
         ...steps.asMap().entries.map((entry) {
@@ -2751,6 +2771,105 @@ class _MissingExerciseImage extends StatelessWidget {
           size: 44,
           color: AppColors.textTertiary,
         ),
+      ),
+    );
+  }
+}
+
+// ─── Achievement unlock banner ────────────────────────────────────────────────
+
+class _AchievementUnlockBanner extends StatelessWidget {
+  final List<Achievement> achievements;
+
+  const _AchievementUnlockBanner({required this.achievements});
+
+  String _trophyEmoji(AchievementRank rank) {
+    switch (rank) {
+      case AchievementRank.bronze:
+        return '🥉';
+      case AchievementRank.silver:
+        return '🥈';
+      case AchievementRank.gold:
+        return '🥇';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFD700), Color(0xFFFFB300)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFFD700).withValues(alpha: 0.35),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Text('🏆', style: TextStyle(fontSize: 18)),
+              SizedBox(width: AppSpacing.xs),
+              Text(
+                'Trophies Unlocked!',
+                style: TextStyle(
+                  color: Color(0xFF5C3D00),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xxs,
+            children: achievements
+                .map(
+                  (a) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xxs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(AppRadii.xl),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _trophyEmoji(a.definition.rank),
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          a.definition.title,
+                          style: const TextStyle(
+                            color: Color(0xFF5C3D00),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }

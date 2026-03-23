@@ -13,6 +13,7 @@ import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
+import 'package:workin_fit/views/achievements/achievements_page.dart';
 import 'package:workin_fit/views/social/friends_screen.dart';
 import 'package:workin_fit/views/test/render_test_hub_page.dart';
 
@@ -110,6 +111,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const FriendsScreen(),
+      ),
+    );
+  }
+
+  void _openAchievements() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const AchievementsPage(),
       ),
     );
   }
@@ -228,6 +237,11 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                           ),
                           _MenuList(
                             items: <_MenuItem>[
+                              _MenuItem(
+                                icon: Icons.emoji_events_rounded,
+                                label: isFrench ? 'Trophées' : 'Trophies',
+                                onTap: _openAchievements,
+                              ),
                               _MenuItem(
                                 icon: Icons.edit_rounded,
                                 label: isFrench
