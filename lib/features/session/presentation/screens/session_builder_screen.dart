@@ -13,6 +13,7 @@ import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 /// Maximum custom sessions a user can have (free tier limit).
 const int kMaxCustomSessions = 30;
@@ -377,7 +378,7 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: selected
-                                              ? color.withValues(alpha: 0.18)
+                                              ? color.withValues(alpha: AppOpacity.muted)
                                               : AppColors.surfaceVariant,
                                           borderRadius: BorderRadius.circular(
                                             AppRadii.sm,
@@ -386,7 +387,7 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                                             color: selected
                                                 ? color
                                                 : AppColors.primaryPastel
-                                                    .withValues(alpha: 0.5),
+                                                    .withValues(alpha: AppOpacity.half),
                                             width: selected ? 1.6 : 1,
                                           ),
                                         ),
@@ -434,10 +435,10 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                               data: SliderTheme.of(context).copyWith(
                                 activeTrackColor: AppColors.primary,
                                 inactiveTrackColor:
-                                    AppColors.primaryPastel.withValues(alpha: 0.4),
+                                    AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
                                 thumbColor: AppColors.primary,
                                 overlayColor:
-                                    AppColors.primary.withValues(alpha: 0.15),
+                                    AppColors.primary.withValues(alpha: AppOpacity.light),
                                 trackHeight: 3,
                               ),
                               child: Slider(
@@ -674,13 +675,13 @@ class _InputField extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
           borderSide: BorderSide(
-            color: AppColors.primaryPastel.withValues(alpha: 0.5),
+            color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
           borderSide: BorderSide(
-            color: AppColors.primaryPastel.withValues(alpha: 0.5),
+            color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -798,7 +799,7 @@ class _ExerciseEntryTile extends StatelessWidget {
                 // Remove
                 IconButton(
                   icon: const Icon(Icons.remove_circle_outline_rounded),
-                  color: AppColors.error.withValues(alpha: 0.7),
+                  color: AppColors.error.withValues(alpha: AppOpacity.prominent),
                   iconSize: 22,
                   onPressed: onRemove,
                 ),
@@ -820,10 +821,10 @@ class _TypeBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.primaryPastel.withValues(alpha: 0.5),
+        color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
         borderRadius: BorderRadius.circular(4),
         border: Border.all(
-          color: AppColors.primaryLight.withValues(alpha: 0.4),
+          color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm),
         ),
       ),
       child: Text(
@@ -882,7 +883,7 @@ class _SectionCard extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.10),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(AppRadii.md)),
       ),

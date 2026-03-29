@@ -1,73 +1,99 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Brand Palette — indigo-blue scale from deep to pale
-  static const Color electricSapphire = Color(0xFF5465FF); // deep electric blue
-  static const Color cornflowerBlue = Color(0xFF788BFF);   // medium blue-purple
-  static const Color babyBlueIce = Color(0xFF9BB1FF);      // soft blue
-  static const Color pearlBlue = Color(0xFFBFD7FF);        // pale blue
-  static const Color frostedCyan = Color(0xFFE2FDFF);      // near-white ice blue
+  // ── Brand scale — light → deep (no color-name labels) ────────────────────
+  static const Color brand50  = Color(0xFFFFECB3); // lightest tint
+  static const Color brand100 = Color(0xFFFFD54F); // light
+  static const Color brand200 = Color(0xFFFFBE0B); // main accent
+  static const Color brand300 = Color(0xFFFF9F1C); // secondary
+  static const Color brand400 = Color(0xFFFF6B35); // deeper
+  static const Color brand500 = Color(0xFFE85D04); // deep
+  static const Color brand600 = Color(0xFFBF4000); // darkest
 
-  // Light Theme Palette
-  static const Color lightPrimary = electricSapphire;
-  static const Color lightPrimaryDark = Color(0xFF4252E6);
-  static const Color lightPrimaryDarker = Color(0xFF3340B8);
-  static const Color lightPrimaryDarkest = Color(0xFF252F8A);
-  static const Color lightPrimaryAbyss = Color(0xFF171E57);
-  static const Color lightPrimaryLight = cornflowerBlue;
-  static const Color lightPrimaryPastel = pearlBlue;
-  static const Color lightAccent = babyBlueIce;
-  static const Color lightAccentLight = pearlBlue;
-  static const Color lightBackground = frostedCyan;
-  static const Color lightSurface = Color(0xFFFDFEFF);
-  static const Color lightSurfaceVariant = Color(0xFFF1FAFF);
-  static const Color lightTextPrimary = Color(0xFF1D275E);
-  static const Color lightTextSecondary = Color(0xFF4D5FAF);
-  static const Color lightTextTertiary = cornflowerBlue;
+  // ── Neutral scale — near-black → near-white (no color-name labels) ────────
+  static const Color neutral0   = Color(0xFF111111); // page background
+  static const Color neutral100 = Color(0xFF1C1C1C); // card surface
+  static const Color neutral200 = Color(0xFF242424); // surface variant
+  static const Color neutral300 = Color(0xFF2E2E2E); // elevated / borders
+  static const Color neutral400 = Color(0xFF5A5A5A); // tertiary / disabled
+  static const Color neutral500 = Color(0xFFAAAAAA); // secondary text
+  static const Color neutral600 = Color(0xFFF0F0F0); // primary text
 
-  // Dark Theme Palette (kept for future theme toggle)
-  static const Color darkPrimary = cornflowerBlue;
-  static const Color darkPrimaryDark = electricSapphire;
-  static const Color darkPrimaryDarker = Color(0xFF4252E6);
-  static const Color darkPrimaryDarkest = Color(0xFF3340B8);
-  static const Color darkPrimaryAbyss = Color(0xFF151C4F);
-  static const Color darkPrimaryLight = babyBlueIce;
-  static const Color darkPrimaryPastel = pearlBlue;
-  static const Color darkAccent = babyBlueIce;
-  static const Color darkAccentLight = pearlBlue;
-  static const Color darkBackground = Color(0xFF0D1233);
-  static const Color darkSurface = Color(0xFF141B42);
-  static const Color darkSurfaceVariant = Color(0xFF1C2557);
-  static const Color darkTextPrimary = frostedCyan;
-  static const Color darkTextSecondary = pearlBlue;
-  static const Color darkTextTertiary = cornflowerBlue;
+  // ── Backward-compatible brand aliases ─────────────────────────────────────
+  // Old blue-scale names repointed to equivalent visual roles in the new
+  // palette. All existing call sites compile without changes.
+  static const Color electricSapphire = brand200;
+  static const Color cornflowerBlue   = brand300;
+  static const Color babyBlueIce      = neutral300;
+  static const Color pearlBlue        = neutral200;
+  static const Color frostedCyan      = neutral600;
 
-  // Active Palette (currently light mode)
-  static const Color primary = lightPrimary;
-  static const Color primaryDark = lightPrimaryDark;
-  static const Color primaryDarker = lightPrimaryDarker;
-  static const Color primaryDarkest = lightPrimaryDarkest;
-  static const Color primaryAbyss = lightPrimaryAbyss;
-  static const Color primaryLight = lightPrimaryLight;
-  static const Color primaryPastel = lightPrimaryPastel;
-  static const Color accent = lightAccent;
-  static const Color accentLight = lightAccentLight;
-  static const Color background = lightBackground;
-  static const Color surface = lightSurface;
-  static const Color surfaceVariant = lightSurfaceVariant;
-  static const Color textPrimary = lightTextPrimary;
-  static const Color textSecondary = lightTextSecondary;
-  static const Color textTertiary = lightTextTertiary;
+  // ── Light Theme Palette ───────────────────────────────────────────────────
+  static const Color lightPrimary        = brand200;
+  static const Color lightPrimaryDark    = brand300;
+  static const Color lightPrimaryDarker  = brand400;
+  static const Color lightPrimaryDarkest = brand500;
+  static const Color lightPrimaryAbyss   = brand600;
+  static const Color lightPrimaryLight   = brand100;
+  static const Color lightPrimaryPastel  = brand50;
+  static const Color lightAccent         = brand300;
+  static const Color lightAccentLight    = Color(0xFFFFCC80);
+  static const Color lightBackground     = neutral0;
+  static const Color lightSurface        = neutral100;
+  static const Color lightSurfaceVariant = neutral200;
+  static const Color lightTextPrimary    = neutral600;
+  static const Color lightTextSecondary  = neutral500;
+  static const Color lightTextTertiary   = neutral400;
 
-  // Semantic Colors
-  static const Color success = Color(0xFF4CAF50);
-  static const Color successSoft = Color(0xFF81C784); // lighter green
-  static const Color error = Color(0xFFF44336);
-  static const Color errorSoft = Color(0xFFE57373); // lighter red
-  static const Color warning = Color(0xFFFF9800);
-  static const Color warningSoft = Color(0xFFFFB74D); // lighter orange
-  static const Color info = Color(0xFF2196F3);
+  // ── Dark Theme Palette ────────────────────────────────────────────────────
+  static const Color darkPrimary        = brand200;
+  static const Color darkPrimaryDark    = brand300;
+  static const Color darkPrimaryDarker  = brand400;
+  static const Color darkPrimaryDarkest = brand500;
+  static const Color darkPrimaryAbyss   = brand600;
+  static const Color darkPrimaryLight   = brand100;
+  static const Color darkPrimaryPastel  = brand50;
+  static const Color darkAccent         = brand300;
+  static const Color darkAccentLight    = Color(0xFFFFCC80);
+  static const Color darkBackground     = neutral0;
+  static const Color darkSurface        = neutral100;
+  static const Color darkSurfaceVariant = neutral200;
+  static const Color darkTextPrimary    = neutral600;
+  static const Color darkTextSecondary  = neutral500;
+  static const Color darkTextTertiary   = neutral400;
 
-  // Navigation surfaces — primary blue at 70 % opacity, matches top chrome tone.
-  static const Color navBarSurface = Color(0xB35465FF);
+  // ── Active Palette ────────────────────────────────────────────────────────
+  static const Color primary         = brand200;
+  static const Color primaryDark     = brand300;
+  static const Color primaryDarker   = brand400;
+  static const Color primaryDarkest  = brand500;
+  static const Color primaryAbyss    = brand600;
+  static const Color primaryLight    = brand100;
+  static const Color primaryPastel   = brand50;
+  static const Color accent          = brand300;
+  static const Color accentLight     = Color(0xFFFFCC80);
+  static const Color background      = neutral0;
+  static const Color surface         = neutral100;
+  static const Color surfaceVariant  = neutral200;
+  static const Color textPrimary     = neutral600;
+  static const Color textSecondary   = neutral500;
+  static const Color textTertiary    = neutral400;
+
+  // ── Semantic Colors ───────────────────────────────────────────────────────
+  static const Color success     = Color(0xFF4CAF50);
+  static const Color successSoft = Color(0xFF81C784);
+  static const Color error       = Color(0xFFF44336);
+  static const Color errorSoft   = Color(0xFFE57373);
+  static const Color warning     = brand200;
+  static const Color warningSoft = brand100;
+  static const Color info        = Color(0xFF29B6F6);
+
+  // ── Navigation surface ────────────────────────────────────────────────────
+  // neutral100 at ~91 % opacity so page content subtly bleeds on scroll.
+  static const Color navBarSurface = Color(0xE81C1C1C);
+
+  // Keep old non-brand colour names referenced in a couple of places
+  static const Color nearBlack  = neutral0;
+  static const Color steelGray  = neutral300;
+  static const Color snowWhite  = neutral600;
 }

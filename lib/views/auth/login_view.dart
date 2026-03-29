@@ -10,6 +10,7 @@ import 'package:workin_fit/views/home/home_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
 import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -303,7 +304,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                     children: [
                       Expanded(
                         child: Divider(
-                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
                           thickness: 1,
                         ),
                       ),
@@ -314,7 +315,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         child: Text(
                           localizations.auth_login_or_text,
                           style: TextStyle(
-                            color: AppColors.textPrimary.withValues(alpha: 0.5),
+                            color: AppColors.textPrimary.withValues(alpha: AppOpacity.half),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -322,7 +323,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
                       ),
                       Expanded(
                         child: Divider(
-                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
                           thickness: 1,
                         ),
                       ),
@@ -363,7 +364,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.textPrimary,
         side: BorderSide(
-          color: AppColors.textPrimary.withValues(alpha: 0.2),
+          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
           width: 1.5,
         ),
         padding: const EdgeInsets.symmetric(

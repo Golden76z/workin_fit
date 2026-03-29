@@ -13,6 +13,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/exercise_localization_helper.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class ExerciseListScreen extends ConsumerStatefulWidget {
   const ExerciseListScreen({super.key});
@@ -47,9 +48,9 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
             );
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
-    final Color searchFieldColor = Colors.white.withValues(alpha: 0.15);
-    final Color chipBackgroundColor = Colors.white.withValues(alpha: 0.15);
-    final Color chipSelectedColor = Colors.white.withValues(alpha: 0.92);
+    const Color searchFieldColor = AppColors.neutral300;
+    const Color chipBackgroundColor = AppColors.neutral300;
+    const Color chipSelectedColor = AppColors.primary;
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
@@ -112,11 +113,11 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       ? 'Rechercher un exercice...'
                                       : 'Search an exercise...',
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.55),
+                                    color: Colors.white.withValues(alpha: AppOpacity.over),
                                   ),
                                   prefixIcon: Icon(
                                     Icons.search_rounded,
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    color: Colors.white.withValues(alpha: AppOpacity.prominent),
                                   ),
                                   suffixIcon:
                                       _searchController.text.trim().isEmpty
@@ -129,7 +130,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                               icon: Icon(
                                                 Icons.close_rounded,
                                                 color: Colors.white
-                                                    .withValues(alpha: 0.8),
+                                                    .withValues(alpha: AppOpacity.bold),
                                               ),
                                             ),
                                   filled: true,
@@ -143,7 +144,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                          Colors.white.withValues(alpha: AppOpacity.mild),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
@@ -151,7 +152,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                          Colors.white.withValues(alpha: AppOpacity.mild),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -159,7 +160,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.75),
+                                          Colors.white.withValues(alpha: AppOpacity.strong),
                                       width: 1.4,
                                     ),
                                   ),
@@ -186,10 +187,10 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       selectedColor: chipSelectedColor,
                                       side: BorderSide(
                                         color:
-                                            Colors.white.withValues(alpha: 0.3),
+                                            Colors.white.withValues(alpha: AppOpacity.mild),
                                       ),
                                       labelStyle: const TextStyle(
-                                        color: AppColors.primaryAbyss,
+                                        color: AppColors.textPrimary,
                                         fontWeight: FontWeight.w600,
                                       ),
                                       onSelected: (_) {
@@ -209,10 +210,10 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         selectedColor: chipSelectedColor,
                                         side: BorderSide(
                                           color: AppColors.background
-                                              .withValues(alpha: 0.28),
+                                              .withValues(alpha: AppOpacity.thin),
                                         ),
                                         labelStyle: const TextStyle(
-                                          color: AppColors.primaryAbyss,
+                                          color: AppColors.textPrimary,
                                           fontWeight: FontWeight.w600,
                                         ),
                                         label: Text(
@@ -617,20 +618,13 @@ class _ExerciseCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(cardRadius),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                Color(0xFFD7E5FF),
-                Color(0xFFE4EEFF),
-              ],
-            ),
+            color: AppColors.surface,
             border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.45),
+              color: AppColors.primaryLight.withValues(alpha: AppOpacity.dim),
             ),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: 0.2),
+                color: AppColors.primaryLight.withValues(alpha: AppOpacity.soft),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),
@@ -887,7 +881,7 @@ class _MissingExerciseImage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: AppColors.primaryLight.withValues(alpha: 0.18),
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.muted),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/achievement.dart';
 import 'package:workin_fit/providers/achievement_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class AchievementsPage extends ConsumerWidget {
   const AchievementsPage({super.key});
@@ -50,13 +51,13 @@ class AchievementsPage extends ConsumerWidget {
                 Icon(
                   Icons.wifi_off_rounded,
                   size: 48,
-                  color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Could not load achievements',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: 0.8),
+                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
@@ -123,7 +124,7 @@ class _SummaryBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.xl),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: AppColors.primary.withValues(alpha: AppOpacity.mild),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -151,7 +152,7 @@ class _SummaryBanner extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: pct,
                     minHeight: 6,
-                    backgroundColor: Colors.white.withValues(alpha: 0.25),
+                    backgroundColor: Colors.white.withValues(alpha: AppOpacity.medium),
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
@@ -160,7 +161,7 @@ class _SummaryBanner extends StatelessWidget {
                 Text(
                   '${(pct * 100).round()}% complete',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Colors.white.withValues(alpha: AppOpacity.bold),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -257,7 +258,7 @@ class _CategorySection extends StatelessWidget {
                   Text(
                     _categorySubtitle,
                     style: TextStyle(
-                      color: AppColors.textSecondary.withValues(alpha: 0.7),
+                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -312,7 +313,7 @@ class _ProgressBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: pct,
               minHeight: 5,
-              backgroundColor: AppColors.babyBlueIce.withValues(alpha: 0.3),
+              backgroundColor: AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
               valueColor:
                   const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
@@ -321,7 +322,7 @@ class _ProgressBar extends StatelessWidget {
           Text(
             '$current / $target',
             style: TextStyle(
-              color: AppColors.textSecondary.withValues(alpha: 0.6),
+              color: AppColors.textSecondary.withValues(alpha: AppOpacity.visible),
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
@@ -384,14 +385,14 @@ class _TrophyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
           color: unlocked
-              ? rankColor.withValues(alpha: 0.6)
-              : AppColors.babyBlueIce.withValues(alpha: 0.3),
+              ? rankColor.withValues(alpha: AppOpacity.visible)
+              : AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
           width: unlocked ? 2 : 1,
         ),
         boxShadow: unlocked
             ? [
                 BoxShadow(
-                  color: rankColor.withValues(alpha: 0.2),
+                  color: rankColor.withValues(alpha: AppOpacity.soft),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -422,7 +423,7 @@ class _TrophyCard extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.babyBlueIce.withValues(alpha: 0.15),
+                      color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.light),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -434,8 +435,8 @@ class _TrophyCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: unlocked
-                    ? rankColor.withValues(alpha: 0.15)
-                    : AppColors.babyBlueIce.withValues(alpha: 0.2),
+                    ? rankColor.withValues(alpha: AppOpacity.light)
+                    : AppColors.babyBlueIce.withValues(alpha: AppOpacity.soft),
                 borderRadius: BorderRadius.circular(AppRadii.sm),
               ),
               child: Text(
@@ -443,7 +444,7 @@ class _TrophyCard extends StatelessWidget {
                 style: TextStyle(
                   color: unlocked
                       ? rankColor
-                      : AppColors.textSecondary.withValues(alpha: 0.5),
+                      : AppColors.textSecondary.withValues(alpha: AppOpacity.half),
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                 ),
@@ -459,7 +460,7 @@ class _TrophyCard extends StatelessWidget {
               style: TextStyle(
                 color: unlocked
                     ? AppColors.textPrimary
-                    : AppColors.textSecondary.withValues(alpha: 0.5),
+                    : AppColors.textSecondary.withValues(alpha: AppOpacity.half),
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 height: 1.2,

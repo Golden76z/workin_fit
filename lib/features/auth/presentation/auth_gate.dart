@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
+import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/views/auth/email_verification_view.dart';
 import 'package:workin_fit/views/home/home_page.dart';
-import 'package:workin_fit/views/welcome/welcome_page.dart';
 
 /// Top-level auth guard widget that routes users based on Firebase auth state.
 ///
@@ -20,7 +20,7 @@ class AuthGate extends ConsumerWidget {
     return authState.when(
       data: (user) {
         if (user == null) {
-          return const WelcomePage();
+          return const AuthenticationView();
         }
 
         if (!user.emailVerified) {
@@ -34,7 +34,7 @@ class AuthGate extends ConsumerWidget {
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (_, __) => const WelcomePage(),
+      error: (_, __) => const AuthenticationView(),
     );
   }
 }

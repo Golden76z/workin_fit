@@ -9,6 +9,7 @@ import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 /// Maximum custom programs a user can have.
 const int kMaxCustomPrograms = 10;
@@ -458,7 +459,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: selected
-                                            ? color.withValues(alpha: 0.18)
+                                            ? color.withValues(alpha: AppOpacity.muted)
                                             : AppColors.surfaceVariant,
                                         borderRadius:
                                             BorderRadius.circular(AppRadii.sm),
@@ -466,7 +467,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                                           color: selected
                                               ? color
                                               : AppColors.primaryPastel
-                                                  .withValues(alpha: 0.5),
+                                                  .withValues(alpha: AppOpacity.half),
                                           width: selected ? 1.6 : 1,
                                         ),
                                       ),
@@ -548,7 +549,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                               height: 1,
                               thickness: 1,
                               color:
-                                  AppColors.primaryPastel.withValues(alpha: 0.4),
+                                  AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             Wrap(
@@ -699,7 +700,7 @@ class _BuilderSectionCard extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.10),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
@@ -783,7 +784,7 @@ class _WeekCardState extends State<_WeekCard> {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.08),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.faint),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
@@ -822,7 +823,7 @@ class _WeekCardState extends State<_WeekCard> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Colors.white.withValues(alpha: AppOpacity.soft),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Text(
@@ -924,20 +925,20 @@ class _DaySlotRow extends StatelessWidget {
 
     // Colors based on state
     final Color badgeBg = assigned
-        ? AppColors.primary.withValues(alpha: 0.12)
+        ? AppColors.primary.withValues(alpha: AppOpacity.subtle)
         : (isTrainingDay && !isExplicitRest)
-            ? AppColors.primary.withValues(alpha: 0.06)
+            ? AppColors.primary.withValues(alpha: AppOpacity.trace)
             : AppColors.surfaceVariant;
     final Color badgeBorder = assigned
-        ? AppColors.primary.withValues(alpha: 0.3)
+        ? AppColors.primary.withValues(alpha: AppOpacity.mild)
         : (isTrainingDay && !isExplicitRest)
-            ? AppColors.primary.withValues(alpha: 0.18)
-            : AppColors.primaryPastel.withValues(alpha: 0.2);
+            ? AppColors.primary.withValues(alpha: AppOpacity.muted)
+            : AppColors.primaryPastel.withValues(alpha: AppOpacity.soft);
     final Color badgeText = assigned
         ? AppColors.primary
         : (isTrainingDay && !isExplicitRest)
             ? AppColors.primaryLight
-            : AppColors.textSecondary.withValues(alpha: 0.5);
+            : AppColors.textSecondary.withValues(alpha: AppOpacity.half);
 
     return Column(
       children: [
@@ -981,7 +982,7 @@ class _DaySlotRow extends StatelessWidget {
                           isFrench ? 'Repos' : 'Rest',
                           style: TextStyle(
                             color: AppColors.textSecondary
-                                .withValues(alpha: 0.45),
+                                .withValues(alpha: AppOpacity.dim),
                             fontSize: 12,
                             fontStyle: FontStyle.italic,
                           ),
@@ -1015,7 +1016,7 @@ class _DaySlotRow extends StatelessWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: AppColors.warning
-                                              .withValues(alpha: 0.15),
+                                              .withValues(alpha: AppOpacity.light),
                                           borderRadius:
                                               BorderRadius.circular(AppRadii.sm),
                                         ),
@@ -1060,7 +1061,7 @@ class _DaySlotRow extends StatelessWidget {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: AppColors.error.withValues(alpha: 0.08),
+                        color: AppColors.error.withValues(alpha: AppOpacity.faint),
                         borderRadius: BorderRadius.circular(AppRadii.sm),
                       ),
                       child: const Icon(
@@ -1093,8 +1094,8 @@ class _DaySlotRow extends StatelessWidget {
             indent: AppSpacing.sm,
             endIndent: AppSpacing.sm,
             color: isRestDisplay
-                ? AppColors.primaryPastel.withValues(alpha: 0.12)
-                : AppColors.primaryPastel.withValues(alpha: 0.3),
+                ? AppColors.primaryPastel.withValues(alpha: AppOpacity.subtle)
+                : AppColors.primaryPastel.withValues(alpha: AppOpacity.mild),
           ),
       ],
     );
@@ -1146,8 +1147,8 @@ class _WeekdaySelector extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: selected
-                          ? AppColors.primary.withValues(alpha: 0.6)
-                          : AppColors.primaryPastel.withValues(alpha: 0.5),
+                          ? AppColors.primary.withValues(alpha: AppOpacity.visible)
+                          : AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
                       width: 1,
                     ),
                   ),
@@ -1248,7 +1249,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondary.withValues(alpha: 0.4),
+                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -1281,7 +1282,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                 unselectedLabelColor: AppColors.textSecondary,
                 indicatorColor: AppColors.primary,
                 indicatorWeight: 2,
-                dividerColor: AppColors.primaryPastel.withValues(alpha: 0.3),
+                dividerColor: AppColors.primaryPastel.withValues(alpha: AppOpacity.mild),
                 labelStyle: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
@@ -1322,7 +1323,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                           ),
                           child: Material(
                             color: widget.currentSessionId == kRestDaySlot
-                                ? AppColors.success.withValues(alpha: 0.08)
+                                ? AppColors.success.withValues(alpha: AppOpacity.faint)
                                 : AppColors.surface,
                             borderRadius: BorderRadius.circular(AppRadii.sm),
                             child: InkWell(
@@ -1341,7 +1342,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                                       height: 34,
                                       decoration: BoxDecoration(
                                         color: AppColors.success
-                                            .withValues(alpha: 0.12),
+                                            .withValues(alpha: AppOpacity.subtle),
                                         borderRadius:
                                             BorderRadius.circular(AppRadii.sm),
                                       ),
@@ -1382,7 +1383,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                             indent: AppSpacing.sm,
                             endIndent: AppSpacing.sm,
                             color: AppColors.primaryPastel
-                                .withValues(alpha: 0.25),
+                                .withValues(alpha: AppOpacity.medium),
                           ),
                         if (widget.sessions.isNotEmpty)
                           const SizedBox(height: AppSpacing.xs),
@@ -1496,7 +1497,7 @@ class _SessionPickerTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
       child: Material(
         color: isCurrent
-            ? AppColors.primary.withValues(alpha: 0.08)
+            ? AppColors.primary.withValues(alpha: AppOpacity.faint)
             : AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.sm),
         child: InkWell(
@@ -1513,7 +1514,7 @@ class _SessionPickerTile extends StatelessWidget {
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: AppColors.primary.withValues(alpha: AppOpacity.whisper),
                     borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: const Icon(
@@ -1589,7 +1590,7 @@ class _PopularSessionsTab extends StatelessWidget {
             Icon(
               Icons.explore_rounded,
               size: 48,
-              color: AppColors.primaryLight.withValues(alpha: 0.5),
+              color: AppColors.primaryLight.withValues(alpha: AppOpacity.half),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
@@ -1650,7 +1651,7 @@ class _StepperField extends StatelessWidget {
         color: AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadii.sm),
         border: Border.all(
-          color: AppColors.primaryPastel.withValues(alpha: 0.5),
+          color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
         ),
       ),
       child: Column(
@@ -1713,7 +1714,7 @@ class _StepButton extends StatelessWidget {
         height: 30,
         decoration: BoxDecoration(
           color: enabled
-              ? AppColors.primary.withValues(alpha: 0.12)
+              ? AppColors.primary.withValues(alpha: AppOpacity.subtle)
               : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
@@ -1743,9 +1744,9 @@ class _GoalChip extends StatelessWidget {
       padding:
           const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 5),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.1),
+        color: AppColors.primary.withValues(alpha: AppOpacity.whisper),
         borderRadius: BorderRadius.circular(AppRadii.sm),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: AppOpacity.mild)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1865,7 +1866,7 @@ class _InputFieldState extends State<_InputField> {
     final isMultiline = widget.maxLines > 1;
     final counterColor = _length >= widget.maxLength
         ? AppColors.error
-        : AppColors.textSecondary.withValues(alpha: 0.55);
+        : AppColors.textSecondary.withValues(alpha: AppOpacity.over);
 
     final field = TextField(
       controller: widget.controller,
@@ -1902,12 +1903,12 @@ class _InputFieldState extends State<_InputField> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
           borderSide:
-              BorderSide(color: AppColors.primaryPastel.withValues(alpha: 0.5)),
+              BorderSide(color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
           borderSide:
-              BorderSide(color: AppColors.primaryPastel.withValues(alpha: 0.5)),
+              BorderSide(color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),

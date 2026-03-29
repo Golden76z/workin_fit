@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class AppTextInput extends StatelessWidget {
   final String hint;
@@ -60,7 +61,7 @@ class AppTextInput extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(
-            color: AppColors.textSecondary.withValues(alpha: 0.5),
+            color: AppColors.textSecondary.withValues(alpha: AppOpacity.half),
           ),
           filled: true,
           fillColor: AppColors.surfaceVariant,

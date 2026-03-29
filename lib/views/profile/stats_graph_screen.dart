@@ -10,6 +10,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class StatsGraphScreen extends ConsumerStatefulWidget {
   const StatsGraphScreen({super.key});
@@ -355,7 +356,7 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,7 +416,7 @@ class _RepsGraphCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +472,7 @@ class _RepsGraphCard extends StatelessWidget {
                         value: fraction,
                         minHeight: 9,
                         backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.12),
+                            AppColors.primary.withValues(alpha: AppOpacity.subtle),
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           AppColors.primary,
                         ),
@@ -511,7 +512,7 @@ class _ExerciseRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Row(
         children: <Widget>[
@@ -572,7 +573,7 @@ class _ErrorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.errorSoft.withValues(alpha: 0.5)),
+        border: Border.all(color: AppColors.errorSoft.withValues(alpha: AppOpacity.half)),
       ),
       child: Text(
         message,
@@ -598,7 +599,7 @@ class _EmptyCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Text(
         label,

@@ -13,6 +13,7 @@ import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/models/session_history_entry.dart';
 import 'package:workin_fit/providers/session_history_provider.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class SessionDetailScreen extends ConsumerWidget {
   final Session session;
@@ -126,12 +127,12 @@ class SessionDetailScreen extends ConsumerWidget {
                               vertical: AppSpacing.sm,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.success.withValues(alpha: 0.12),
+                              color: AppColors.success.withValues(alpha: AppOpacity.subtle),
                               borderRadius:
                                   BorderRadius.circular(AppRadii.md),
                               border: Border.all(
                                 color:
-                                    AppColors.success.withValues(alpha: 0.4),
+                                    AppColors.success.withValues(alpha: AppOpacity.firm),
                               ),
                             ),
                             child: Row(
@@ -240,7 +241,7 @@ class SessionDetailScreen extends ConsumerWidget {
                               ? AppColors.success
                               : AppColors.primary,
                           disabledBackgroundColor: AppColors.success
-                              .withValues(alpha: 0.7),
+                              .withValues(alpha: AppOpacity.prominent),
                           disabledForegroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius:
@@ -428,11 +429,11 @@ class _ExerciseRow extends StatelessWidget {
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadii.md),
             border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.25),
+              color: AppColors.primaryLight.withValues(alpha: AppOpacity.medium),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: 0.08),
+                color: AppColors.primaryLight.withValues(alpha: AppOpacity.faint),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -451,7 +452,7 @@ class _ExerciseRow extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     color:
-                        AppColors.primaryPastel.withValues(alpha: 0.4),
+                        AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
                     borderRadius: BorderRadius.circular(AppRadii.md),
                   ),
                   child: const Icon(

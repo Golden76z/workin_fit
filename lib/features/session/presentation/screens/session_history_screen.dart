@@ -6,6 +6,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/session_history_entry.dart';
 import 'package:workin_fit/providers/session_history_provider.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class SessionHistoryScreen extends ConsumerWidget {
   const SessionHistoryScreen({super.key});
@@ -313,11 +314,11 @@ class _HistoryCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
         border: Border.all(
-          color: AppColors.primaryLight.withValues(alpha: 0.25),
+          color: AppColors.primaryLight.withValues(alpha: AppOpacity.medium),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryLight.withValues(alpha: 0.08),
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.faint),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -335,7 +336,7 @@ class _HistoryCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.success.withValues(alpha: 0.12),
+                color: AppColors.success.withValues(alpha: AppOpacity.subtle),
                 borderRadius: BorderRadius.circular(AppRadii.md),
               ),
               child: const Icon(
@@ -418,7 +419,7 @@ class _EmptyState extends StatelessWidget {
           Icon(
             Icons.history_rounded,
             size: 56,
-            color: AppColors.primaryLight.withValues(alpha: 0.6),
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.visible),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(

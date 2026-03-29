@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 // ---------------------------------------------------------------------------
 // Action type
@@ -121,16 +122,16 @@ class AppDialog extends StatelessWidget {
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.primaryPastel.withValues(alpha: 0.45),
+            color: AppColors.primaryPastel.withValues(alpha: AppOpacity.dim),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.10),
+              color: AppColors.primary.withValues(alpha: AppOpacity.whisper),
               blurRadius: 32,
               offset: const Offset(0, 8),
             ),
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: Colors.black.withValues(alpha: AppOpacity.trace),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -149,7 +150,7 @@ class AppDialog extends StatelessWidget {
                   height: 58,
                   decoration: BoxDecoration(
                     color: (iconColor ?? AppColors.primary)
-                        .withValues(alpha: 0.10),
+                        .withValues(alpha: AppOpacity.whisper),
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: (iconColor ?? AppColors.primary)
@@ -273,7 +274,7 @@ class _ActionButton extends StatelessWidget {
         return FilledButton(
           onPressed: () => Navigator.of(context).pop(action.returnValue),
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.error.withValues(alpha: 0.10),
+            backgroundColor: AppColors.error.withValues(alpha: AppOpacity.whisper),
             foregroundColor: AppColors.error,
             padding: const EdgeInsets.symmetric(vertical: 13),
             shape: RoundedRectangleBorder(
@@ -295,7 +296,7 @@ class _ActionButton extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
             side: BorderSide(
-              color: AppColors.primary.withValues(alpha: 0.45),
+              color: AppColors.primary.withValues(alpha: AppOpacity.dim),
             ),
             padding: const EdgeInsets.symmetric(vertical: 13),
             shape: RoundedRectangleBorder(
@@ -317,7 +318,7 @@ class _ActionButton extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.textSecondary,
             side: BorderSide(
-              color: AppColors.primaryPastel.withValues(alpha: 0.55),
+              color: AppColors.primaryPastel.withValues(alpha: AppOpacity.over),
             ),
             padding: const EdgeInsets.symmetric(vertical: 13),
             shape: RoundedRectangleBorder(

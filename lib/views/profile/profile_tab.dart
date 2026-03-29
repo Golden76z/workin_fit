@@ -9,13 +9,17 @@ import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
-import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/providers/workout_providers.dart' hide firestoreServiceProvider;
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
-import 'package:workin_fit/views/profile/stats_graph_screen.dart';
+import 'package:workin_fit/models/friend.dart';
+import 'package:workin_fit/models/friend_request.dart';
+import 'package:workin_fit/providers/friend_providers.dart';
 import 'package:workin_fit/views/achievements/achievements_page.dart';
-import 'package:workin_fit/views/social/friends_screen.dart';
-import 'package:workin_fit/views/test/render_test_hub_page.dart';
+import 'package:workin_fit/views/profile/stats_graph_screen.dart';
+import 'package:workin_fit/views/social/friend_search_screen.dart';
+import 'package:workin_fit/views/welcome/choose_language.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
 
@@ -107,10 +111,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     );
   }
 
-  void _openFriends() {
+  void _openLanguage() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => const FriendsScreen(),
+        builder: (_) => const LanguageSelectionScreen(),
       ),
     );
   }
@@ -127,14 +131,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const StatsGraphScreen(),
-      ),
-    );
-  }
-
-  void _openTestHub() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const RenderTestHubPage(),
       ),
     );
   }
@@ -171,126 +167,134 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
-      child: Scaffold(
-        backgroundColor: AppColors.surfaceVariant,
-        body: RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(_userProfileProvider);
-            ref.invalidate(streakDataProvider);
-            await Future<void>.delayed(const Duration(milliseconds: 600));
-          },
-          color: AppColors.primary,
-          backgroundColor: AppColors.surface,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: <Widget>[
-              // ─── Banner + header info ─────────────────────────────
-              _ProfileHeaderSliver(
-                username: username,
-                email: user?.email,
-                photoUrl: user?.photoURL,
-                uploadingImage: _uploadingImage,
-                isFrench: isFrench,
-                onEditAvatar: _pickAndUploadImage,
-                onEditProfile: () => _showComingSoon(isFrench),
-              ),
-
-              // ─── Body sections ────────────────────────────────────
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  0,
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          backgroundColor: AppColors.surfaceVariant,
+          body: NestedScrollView(
+            headerSliverBuilder: (BuildContext ctx, bool innerBoxIsScrolled) {
+              return <Widget>[
+                // ─── Banner + header info ──────────────────────────
+                _ProfileHeaderSliver(
+                  username: username,
+                  email: user?.email,
+                  photoUrl: user?.photoURL,
+                  uploadingImage: _uploadingImage,
+                  isFrench: isFrench,
+                  onEditAvatar: _pickAndUploadImage,
+                  onEditProfile: () => _showComingSoon(isFrench),
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(<Widget>[
-                    // ── Combined streak + account block ──────────────
-                    _ProfileSection(
-                      title: isFrench ? 'Série & Compte' : 'Streak & Account',
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          _SectionSubheader(
-                            label: isFrench ? 'Série' : 'Streak',
-                          ),
-                          _StreakCalendar(isFrench: isFrench),
-                          Divider(
-                            height: 1,
-                            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            child: _StatsGraphButton(
-                              label: isFrench
-                                  ? 'Statistiques & Graphiques'
-                                  : 'Stats & Graph',
-                              onTap: _openStatsGraph,
+                // ─── Sticky tab bar ────────────────────────────────
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _ProfileTabBarDelegate(isFrench: isFrench),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: <Widget>[
+                // ─── Tab 0: Profile ────────────────────────────────
+                RefreshIndicator(
+                  onRefresh: () async {
+                    ref.invalidate(_userProfileProvider);
+                    ref.invalidate(streakDataProvider);
+                    await Future<void>.delayed(
+                      const Duration(milliseconds: 600),
+                    );
+                  },
+                  color: AppColors.primary,
+                  backgroundColor: AppColors.surface,
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      0,
+                    ),
+                    children: <Widget>[
+                      _ProfileSection(
+                        title: isFrench ? 'Série & Compte' : 'Streak & Account',
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            _SectionSubheader(
+                              label: isFrench ? 'Série' : 'Streak',
                             ),
-                          ),
-                          Divider(
-                            height: 1,
-                            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
-                          ),
-                          _SectionSubheader(
-                            label: isFrench ? 'Compte' : 'Account',
-                          ),
-                          _MenuList(
-                            items: <_MenuItem>[
-                              _MenuItem(
-                                icon: Icons.emoji_events_rounded,
-                                label: isFrench ? 'Trophées' : 'Trophies',
-                                onTap: _openAchievements,
-                              ),
-                              _MenuItem(
-                                icon: Icons.edit_rounded,
+                            _StreakCalendar(isFrench: isFrench),
+                            Divider(
+                              height: 1,
+                              color: AppColors.babyBlueIce
+                                  .withValues(alpha: AppOpacity.visible),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: _StatsGraphButton(
                                 label: isFrench
-                                    ? 'Modifier le profil'
-                                    : 'Edit profile',
-                                onTap: () => _showComingSoon(isFrench),
+                                    ? 'Statistiques & Graphiques'
+                                    : 'Stats & Graph',
+                                onTap: _openStatsGraph,
                               ),
-                              _MenuItem(
-                                icon: Icons.people_rounded,
-                                label: isFrench ? 'Amis' : 'Friends',
-                                onTap: _openFriends,
-                              ),
-                              _MenuItem(
-                                icon: Icons.settings_rounded,
-                                label: isFrench ? 'Paramètres' : 'Settings',
-                                onTap: () => _showComingSoon(isFrench),
-                              ),
-                              _MenuItem(
-                                icon: Icons.lock_outline_rounded,
-                                label: isFrench
-                                    ? 'Confidentialité'
-                                    : 'Privacy',
-                                onTap: () => _showComingSoon(isFrench),
-                                isLast: true,
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Divider(
+                              height: 1,
+                              color: AppColors.babyBlueIce
+                                  .withValues(alpha: AppOpacity.visible),
+                            ),
+                            _SectionSubheader(
+                              label: isFrench ? 'Compte' : 'Account',
+                            ),
+                            _MenuList(
+                              items: <_MenuItem>[
+                                _MenuItem(
+                                  icon: Icons.emoji_events_rounded,
+                                  label: isFrench ? 'Trophées' : 'Trophies',
+                                  onTap: _openAchievements,
+                                ),
+                                _MenuItem(
+                                  icon: Icons.edit_rounded,
+                                  label: isFrench
+                                      ? 'Modifier le profil'
+                                      : 'Edit profile',
+                                  onTap: () => _showComingSoon(isFrench),
+                                ),
+                                _MenuItem(
+                                  icon: Icons.language_rounded,
+                                  label: isFrench ? 'Langue' : 'Language',
+                                  onTap: _openLanguage,
+                                ),
+                                _MenuItem(
+                                  icon: Icons.settings_rounded,
+                                  label:
+                                      isFrench ? 'Paramètres' : 'Settings',
+                                  onTap: () => _showComingSoon(isFrench),
+                                ),
+                                _MenuItem(
+                                  icon: Icons.lock_outline_rounded,
+                                  label: isFrench
+                                      ? 'Confidentialité'
+                                      : 'Privacy',
+                                  onTap: () => _showComingSoon(isFrench),
+                                  isLast: true,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.md),
-
-                    // ── Dev test hub ─────────────────────────────────
-                    _TestHubButton(onTap: _openTestHub),
-
-                    const SizedBox(height: AppSpacing.sm),
-
-                    // ── Logout ───────────────────────────────────────
-                    _LogoutButton(
-                      label: isFrench ? 'Se déconnecter' : 'Log out',
-                      onTap: _logout,
-                    ),
-
-                    const SizedBox(height: 104),
-                  ]),
+                      const SizedBox(height: AppSpacing.md),
+                      _LogoutButton(
+                        label: isFrench ? 'Se déconnecter' : 'Log out',
+                        onTap: _logout,
+                      ),
+                      const SizedBox(height: 104),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+
+                // ─── Tab 1: Friends ────────────────────────────────
+                _FriendsTabContent(isFrench: isFrench),
+              ],
+            ),
           ),
         ),
       ),
@@ -372,10 +376,10 @@ class _ProfileHeaderSliver extends StatelessWidget {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
+                          color: AppColors.primary.withValues(alpha: AppOpacity.faint),
                           borderRadius: BorderRadius.circular(AppRadii.lg),
                           border: Border.all(
-                            color: AppColors.primary.withValues(alpha: 0.18),
+                            color: AppColors.primary.withValues(alpha: AppOpacity.muted),
                           ),
                         ),
                         child: Row(
@@ -385,7 +389,7 @@ class _ProfileHeaderSliver extends StatelessWidget {
                               Icons.mail_outline_rounded,
                               size: 12,
                               color: AppColors.textSecondary
-                                  .withValues(alpha: 0.7),
+                                  .withValues(alpha: AppOpacity.prominent),
                             ),
                             const SizedBox(width: 5),
                             Text(
@@ -459,7 +463,7 @@ class _InlineStats extends StatelessWidget {
             ),
           ),
           VerticalDivider(
-            color: AppColors.babyBlueIce.withValues(alpha: 0.8),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.bold),
             thickness: 1,
             width: 1,
           ),
@@ -470,7 +474,7 @@ class _InlineStats extends StatelessWidget {
             ),
           ),
           VerticalDivider(
-            color: AppColors.babyBlueIce.withValues(alpha: 0.8),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.bold),
             thickness: 1,
             width: 1,
           ),
@@ -544,7 +548,7 @@ class _EditProfileButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.md),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.28),
+            color: AppColors.primary.withValues(alpha: AppOpacity.thin),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -618,7 +622,7 @@ class _AvatarWidget extends StatelessWidget {
                 ? Icon(
                     Icons.person_rounded,
                     size: _kAvatarRadius * 0.85,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: Colors.white.withValues(alpha: AppOpacity.prominent),
                   )
                 : null,
           ),
@@ -629,7 +633,7 @@ class _AvatarWidget extends StatelessWidget {
               height: _kAvatarRadius * 2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.black.withValues(alpha: 0.45),
+                color: Colors.black.withValues(alpha: AppOpacity.dim),
               ),
               child: const Center(
                 child: SizedBox(
@@ -689,11 +693,11 @@ class _ProfileSection extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(_kProfileBlockRadius),
         border: Border.all(
-          color: AppColors.babyBlueIce.withValues(alpha: 0.5),
+          color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.05),
+            color: AppColors.primary.withValues(alpha: AppOpacity.hairline),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -712,7 +716,7 @@ class _ProfileSection extends StatelessWidget {
             child: Text(
               title.toUpperCase(),
               style: TextStyle(
-                color: AppColors.textSecondary.withValues(alpha: 0.7),
+                color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
@@ -721,7 +725,7 @@ class _ProfileSection extends StatelessWidget {
           ),
           Divider(
             height: 1,
-            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
           ),
           child,
         ],
@@ -747,7 +751,7 @@ class _SectionSubheader extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: TextStyle(
-          color: AppColors.textSecondary.withValues(alpha: 0.6),
+          color: AppColors.textSecondary.withValues(alpha: AppOpacity.visible),
           fontSize: 10,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0,
@@ -921,7 +925,7 @@ class _StreakCalendar extends ConsumerWidget {
                   vertical: AppSpacing.xxs + 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.babyBlueIce.withValues(alpha: 0.25),
+                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.medium),
                   borderRadius: BorderRadius.circular(AppRadii.lg),
                 ),
                 child: Row(
@@ -974,7 +978,7 @@ class _DayBubble extends StatelessWidget {
           style: TextStyle(
             color: isToday
                 ? AppColors.primaryDark
-                : AppColors.textSecondary.withValues(alpha: 0.5),
+                : AppColors.textSecondary.withValues(alpha: AppOpacity.half),
             fontSize: 10,
             fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
           ),
@@ -987,14 +991,14 @@ class _DayBubble extends StatelessWidget {
             shape: BoxShape.circle,
             color: worked
                 ? AppColors.primary
-                : AppColors.babyBlueIce.withValues(alpha: 0.35),
+                : AppColors.babyBlueIce.withValues(alpha: AppOpacity.moderate),
             border: isToday
                 ? Border.all(color: AppColors.primaryDark, width: 2)
                 : null,
             boxShadow: worked
                 ? <BoxShadow>[
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: AppOpacity.mild),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -1009,7 +1013,7 @@ class _DayBubble extends StatelessWidget {
                     height: 6,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.textSecondary.withValues(alpha: 0.3),
+                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.mild),
                     ),
                   ),
           ),
@@ -1067,7 +1071,7 @@ class _MenuList extends StatelessWidget {
                       width: 34,
                       height: 34,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.08),
+                        color: AppColors.primary.withValues(alpha: AppOpacity.faint),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(item.icon, color: AppColors.primary, size: 17),
@@ -1085,7 +1089,7 @@ class _MenuList extends StatelessWidget {
                     ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: AppColors.textSecondary.withValues(alpha: 0.4),
+                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
                       size: 20,
                     ),
                   ],
@@ -1096,11 +1100,656 @@ class _MenuList extends StatelessWidget {
               Divider(
                 height: 1,
                 indent: AppSpacing.md + 34 + AppSpacing.sm,
-                color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+                color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
               ),
           ],
         );
       }).toList(),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Profile tab bar delegate — pinned below the header
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final bool isFrench;
+
+  const _ProfileTabBarDelegate({required this.isFrench});
+
+  @override
+  double get minExtent => 48;
+
+  @override
+  double get maxExtent => 48;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Container(
+      color: AppColors.surface,
+      child: TabBar(
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.textSecondary,
+        indicatorColor: AppColors.primary,
+        indicatorWeight: 2,
+        dividerColor: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 14,
+          fontFamily: 'AppFontMedium',
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+        ),
+        tabs: <Tab>[
+          Tab(text: isFrench ? 'Profil' : 'Profile'),
+          Tab(text: isFrench ? 'Amis' : 'Friends'),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_ProfileTabBarDelegate oldDelegate) =>
+      oldDelegate.isFrench != isFrench;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Friends tab content — add button + requests + friends list
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FriendsTabContent extends ConsumerWidget {
+  final bool isFrench;
+
+  const _FriendsTabContent({required this.isFrench});
+
+  void _openSearch(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const FriendSearchScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final friendsAsync = ref.watch(friendsStreamProvider);
+    final requestsAsync = ref.watch(incomingRequestsProvider);
+
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(friendsStreamProvider);
+        ref.invalidate(incomingRequestsProvider);
+        await Future<void>.delayed(const Duration(milliseconds: 600));
+      },
+      color: AppColors.primary,
+      backgroundColor: AppColors.surface,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.md,
+          AppSpacing.md,
+          104,
+        ),
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: <Widget>[
+          // ── Add friends button ──────────────────────────────────
+          _AddFriendsButton(
+            label: isFrench ? 'Trouver des amis' : 'Find Friends',
+            onTap: () => _openSearch(context),
+          ),
+
+          const SizedBox(height: AppSpacing.md),
+
+          // ── Requests section (shown only when pending > 0) ──────
+          requestsAsync.when(
+            loading: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+            data: (requests) {
+              if (requests.isEmpty) return const SizedBox.shrink();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _FriendsSectionHeader(
+                    label: isFrench
+                        ? 'Demandes (${requests.length})'
+                        : 'Requests (${requests.length})',
+                  ),
+                  _FriendsSectionCard(
+                    children: requests.map((r) {
+                      return _RequestRow(
+                        request: r,
+                        onAccept: () => _accept(context, ref, r),
+                        onReject: () => _reject(context, ref, r),
+                        isLast: r == requests.last,
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+              );
+            },
+          ),
+
+          // ── Friends list ────────────────────────────────────────
+          friendsAsync.when(
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(AppSpacing.xl),
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            ),
+            error: (_, __) => Center(
+              child: Text(
+                isFrench
+                    ? 'Impossible de charger les amis'
+                    : 'Failed to load friends',
+                style: TextStyle(
+                  color:
+                      AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                ),
+              ),
+            ),
+            data: (friends) {
+              if (friends.isEmpty) {
+                return _FriendsEmptyState(
+                  isFrench: isFrench,
+                  onSearch: () => _openSearch(context),
+                );
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _FriendsSectionHeader(
+                    label: isFrench
+                        ? 'Amis (${friends.length})'
+                        : 'Friends (${friends.length})',
+                  ),
+                  _FriendsSectionCard(
+                    children: friends.map((f) {
+                      return _FriendRow(
+                        friend: f,
+                        onRemove: () => _confirmRemove(context, ref, f),
+                        isLast: f == friends.last,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _accept(
+    BuildContext context,
+    WidgetRef ref,
+    FriendRequest request,
+  ) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+    try {
+      final profile =
+          await ref.read(firestoreServiceProvider).getUserProfile(user.uid);
+      final myUsername = profile?['username'] as String? ??
+          user.displayName ??
+          user.email?.split('@').first ??
+          'User';
+      await ref.read(friendServiceProvider).acceptFriendRequest(
+            requestId: request.id,
+            fromUserId: request.fromUserId,
+            fromUsername: request.fromUsername,
+            toUserId: request.toUserId,
+            toUsername: myUsername,
+            fromPhotoUrl: request.fromPhotoUrl,
+            toPhotoUrl: user.photoURL,
+          );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'You and ${request.fromUsername} are now friends!',
+            ),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to accept request.')),
+        );
+      }
+    }
+  }
+
+  Future<void> _reject(
+    BuildContext context,
+    WidgetRef ref,
+    FriendRequest request,
+  ) async {
+    try {
+      await ref
+          .read(friendServiceProvider)
+          .rejectFriendRequest(requestId: request.id);
+    } catch (_) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to decline request.')),
+        );
+      }
+    }
+  }
+
+  void _confirmRemove(BuildContext context, WidgetRef ref, Friend friend) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(isFrench ? 'Retirer un ami' : 'Remove friend'),
+        content: Text(
+          isFrench
+              ? 'Retirer ${friend.username} de vos amis ?'
+              : 'Remove ${friend.username} from your friends?',
+        ),
+        actions: <TextButton>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(isFrench ? 'Annuler' : 'Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final user = ref.read(currentUserProvider);
+              if (user == null) return;
+              try {
+                await ref.read(friendServiceProvider).removeFriend(
+                      userId: user.uid,
+                      friendId: friend.userId,
+                    );
+              } catch (_) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Failed to remove friend.'),
+                    ),
+                  );
+                }
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(isFrench ? 'Retirer' : 'Remove'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Friends tab helper widgets ───────────────────────────────────────────────
+
+class _AddFriendsButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _AddFriendsButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm + 2,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: AppOpacity.muted),
+          ),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: AppOpacity.hairline),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.person_add_rounded,
+                color: AppColors.primary,
+                size: 17,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
+              size: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FriendsSectionHeader extends StatelessWidget {
+  final String label;
+
+  const _FriendsSectionHeader({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: AppSpacing.xs,
+        bottom: AppSpacing.xs,
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          color: AppColors.textSecondary.withValues(alpha: AppOpacity.visible),
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+}
+
+class _FriendsSectionCard extends StatelessWidget {
+  final List<Widget> children;
+
+  const _FriendsSectionCard({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        border: Border.all(
+          color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+        ),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: AppOpacity.hairline),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+}
+
+class _FriendRow extends StatelessWidget {
+  final Friend friend;
+  final VoidCallback onRemove;
+  final bool isLast;
+
+  const _FriendRow({
+    required this.friend,
+    required this.onRemove,
+    required this.isLast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.xxs,
+          ),
+          leading: _FriendAvatar(
+            photoUrl: friend.photoUrl,
+            username: friend.username,
+          ),
+          title: Text(
+            friend.username,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.person_remove_rounded,
+              color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
+              size: 20,
+            ),
+            onPressed: onRemove,
+            tooltip: 'Remove friend',
+          ),
+        ),
+        if (!isLast)
+          Divider(
+            height: 1,
+            indent: AppSpacing.md + 44 + AppSpacing.sm,
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+          ),
+      ],
+    );
+  }
+}
+
+class _RequestRow extends StatelessWidget {
+  final FriendRequest request;
+  final VoidCallback onAccept;
+  final VoidCallback onReject;
+  final bool isLast;
+
+  const _RequestRow({
+    required this.request,
+    required this.onAccept,
+    required this.onReject,
+    required this.isLast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: <Widget>[
+              _FriendAvatar(
+                photoUrl: request.fromPhotoUrl,
+                username: request.fromUsername,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      request.fromUsername,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      'wants to be your friend',
+                      style: TextStyle(
+                        color: AppColors.textSecondary
+                            .withValues(alpha: AppOpacity.prominent),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              _FriendActionButton(
+                icon: Icons.check_rounded,
+                color: AppColors.success,
+                onTap: onAccept,
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              _FriendActionButton(
+                icon: Icons.close_rounded,
+                color: AppColors.error,
+                onTap: onReject,
+              ),
+            ],
+          ),
+        ),
+        if (!isLast)
+          Divider(
+            height: 1,
+            indent: AppSpacing.md + 44 + AppSpacing.sm,
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+          ),
+      ],
+    );
+  }
+}
+
+class _FriendAvatar extends StatelessWidget {
+  final String? photoUrl;
+  final String username;
+
+  const _FriendAvatar({required this.username, this.photoUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 22,
+      backgroundColor: AppColors.primaryDarker,
+      backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
+          ? CachedNetworkImageProvider(photoUrl!) as ImageProvider
+          : null,
+      child: photoUrl == null || photoUrl!.isEmpty
+          ? Text(
+              username.isNotEmpty ? username[0].toUpperCase() : '?',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            )
+          : null,
+    );
+  }
+}
+
+class _FriendActionButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _FriendActionButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: AppOpacity.whisper),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color, size: 18),
+      ),
+    );
+  }
+}
+
+class _FriendsEmptyState extends StatelessWidget {
+  final bool isFrench;
+  final VoidCallback onSearch;
+
+  const _FriendsEmptyState({required this.isFrench, required this.onSearch});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(
+              Icons.group_rounded,
+              size: 64,
+              color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              isFrench ? 'Pas encore d\'amis' : 'No friends yet',
+              style: TextStyle(
+                color:
+                    AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            TextButton.icon(
+              onPressed: onSearch,
+              icon: const Icon(Icons.person_add_rounded),
+              label: Text(isFrench ? 'Trouver des amis' : 'Find Friends'),
+              style: TextButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xl,
+                  vertical: AppSpacing.sm,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadii.xl),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1121,7 +1770,7 @@ class _LogoutButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(_kProfileBlockRadius),
-        border: Border.all(color: AppColors.errorSoft.withValues(alpha: 0.4)),
+        border: Border.all(color: AppColors.errorSoft.withValues(alpha: AppOpacity.firm)),
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: AppColors.error.withValues(alpha: 0.04),
@@ -1144,7 +1793,7 @@ class _LogoutButton extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.08),
+                  color: AppColors.error.withValues(alpha: AppOpacity.faint),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -1166,65 +1815,6 @@ class _LogoutButton extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TestHubButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _TestHubButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          border: Border.all(
-            color: AppColors.primaryLight.withValues(alpha: 0.35),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.10),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.science_rounded,
-                color: AppColors.primary,
-                size: 17,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            const Expanded(
-              child: Text(
-                'Dev — Test Hub',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textTertiary,
-              size: 18,
-            ),
-          ],
         ),
       ),
     );

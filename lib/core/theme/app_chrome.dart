@@ -10,8 +10,9 @@ import 'package:workin_fit/core/theme/colors.dart';
 class AppChrome {
   const AppChrome._();
 
-  // Top app/status bar surface — primary blue at 70 % opacity.
-  static const Color topSurface = Color(0xB35465FF);
+  // Top app/status bar surface — near-black to match the dark theme.
+  // Kept as a const hex literal because withValues() is not a const expression.
+  static const Color topSurface = Color(0xFF111111);
 
   // Bottom app navigation surface.
   static const Color bottomSurface = AppColors.navBarSurface;
@@ -22,8 +23,8 @@ class AppChrome {
     statusBarIconBrightness: Brightness.light,
     statusBarBrightness: Brightness.dark,
     systemStatusBarContrastEnforced: false,
-    systemNavigationBarColor: AppColors.primary,
-    systemNavigationBarDividerColor: AppColors.primary,
+    systemNavigationBarColor: AppColors.nearBlack,
+    systemNavigationBarDividerColor: AppColors.nearBlack,
     systemNavigationBarIconBrightness: Brightness.light,
     systemNavigationBarContrastEnforced: false,
   );

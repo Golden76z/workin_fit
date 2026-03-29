@@ -5,6 +5,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 import 'package:workin_fit/providers/friend_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class FriendSearchScreen extends ConsumerStatefulWidget {
   const FriendSearchScreen({super.key});
@@ -142,7 +143,7 @@ class _FriendSearchScreenState extends ConsumerState<FriendSearchScreen> {
                         separatorBuilder: (_, __) => Divider(
                           height: 1,
                           indent: AppSpacing.md + 44 + AppSpacing.sm,
-                          color: AppColors.babyBlueIce.withValues(alpha: 0.5),
+                          color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
                         ),
                         itemBuilder: (context, i) {
                           final r = _results[i];
@@ -193,7 +194,7 @@ class _SearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search by username…',
           hintStyle: TextStyle(
-            color: AppColors.textSecondary.withValues(alpha: 0.5),
+            color: AppColors.textSecondary.withValues(alpha: AppOpacity.half),
             fontSize: 15,
           ),
           prefixIcon: const Icon(
@@ -205,7 +206,7 @@ class _SearchBar extends StatelessWidget {
               ? IconButton(
                   icon: Icon(
                     Icons.clear_rounded,
-                    color: AppColors.textSecondary.withValues(alpha: 0.5),
+                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.half),
                     size: 18,
                   ),
                   onPressed: () {
@@ -295,7 +296,7 @@ class _ActionButton extends StatelessWidget {
           vertical: AppSpacing.xxs + 2,
         ),
         decoration: BoxDecoration(
-          color: AppColors.success.withValues(alpha: 0.1),
+          color: AppColors.success.withValues(alpha: AppOpacity.whisper),
           borderRadius: BorderRadius.circular(AppRadii.xl),
         ),
         child: Row(
@@ -304,13 +305,13 @@ class _ActionButton extends StatelessWidget {
             Icon(
               Icons.check_rounded,
               size: 14,
-              color: AppColors.success.withValues(alpha: 0.8),
+              color: AppColors.success.withValues(alpha: AppOpacity.bold),
             ),
             const SizedBox(width: 4),
             Text(
               'Friends',
               style: TextStyle(
-                color: AppColors.success.withValues(alpha: 0.8),
+                color: AppColors.success.withValues(alpha: AppOpacity.bold),
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -324,7 +325,7 @@ class _ActionButton extends StatelessWidget {
       return TextButton(
         onPressed: onCancel,
         style: TextButton.styleFrom(
-          backgroundColor: AppColors.babyBlueIce.withValues(alpha: 0.3),
+          backgroundColor: AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
           foregroundColor: AppColors.textSecondary,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.sm,
@@ -350,7 +351,7 @@ class _ActionButton extends StatelessWidget {
           vertical: AppSpacing.xxs + 2,
         ),
         decoration: BoxDecoration(
-          color: AppColors.warning.withValues(alpha: 0.1),
+          color: AppColors.warning.withValues(alpha: AppOpacity.whisper),
           borderRadius: BorderRadius.circular(AppRadii.xl),
         ),
         child: Text(
@@ -432,13 +433,13 @@ class _EmptyHint extends StatelessWidget {
           Icon(
             Icons.person_search_rounded,
             size: 64,
-            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             'Search by username',
             style: TextStyle(
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
+              color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
@@ -458,7 +459,7 @@ class _NoResults extends StatelessWidget {
       child: Text(
         'No users found',
         style: TextStyle(
-          color: AppColors.textSecondary.withValues(alpha: 0.7),
+          color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
           fontSize: 15,
         ),
       ),

@@ -10,6 +10,7 @@ import 'package:workin_fit/models/exercise_localization_helper.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/l10n/app_localizations_en.dart';
 import 'package:workin_fit/l10n/app_localizations_fr.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 /// Full-screen exercise picker used by the session builder.
 /// Pops with the chosen [Exercise], or null if the user cancelled.
@@ -56,8 +57,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
 
-    final Color searchFieldColor = Colors.white.withValues(alpha: 0.15);
-    final Color chipBg = Colors.white.withValues(alpha: 0.15);
+    final Color searchFieldColor = Colors.white.withValues(alpha: AppOpacity.light);
+    final Color chipBg = Colors.white.withValues(alpha: AppOpacity.light);
     final Color chipSelected = Colors.white.withValues(alpha: 0.92);
 
     return AppSystemOverlayRegion(
@@ -121,11 +122,11 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                       ? 'Rechercher...'
                                       : 'Search exercise...',
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.55),
+                                    color: Colors.white.withValues(alpha: AppOpacity.over),
                                   ),
                                   prefixIcon: Icon(
                                     Icons.search_rounded,
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    color: Colors.white.withValues(alpha: AppOpacity.prominent),
                                   ),
                                   suffixIcon:
                                       _searchController.text.trim().isEmpty
@@ -138,7 +139,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                               icon: Icon(
                                                 Icons.close_rounded,
                                                 color: Colors.white
-                                                    .withValues(alpha: 0.8),
+                                                    .withValues(alpha: AppOpacity.bold),
                                               ),
                                             ),
                                   filled: true,
@@ -152,7 +153,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                          Colors.white.withValues(alpha: AppOpacity.mild),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
@@ -160,7 +161,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                          Colors.white.withValues(alpha: AppOpacity.mild),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -168,7 +169,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.75),
+                                          Colors.white.withValues(alpha: AppOpacity.strong),
                                       width: 1.4,
                                     ),
                                   ),
@@ -193,7 +194,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                       selectedColor: chipSelected,
                                       side: BorderSide(
                                         color:
-                                            Colors.white.withValues(alpha: 0.3),
+                                            Colors.white.withValues(alpha: AppOpacity.mild),
                                       ),
                                       labelStyle: const TextStyle(
                                         color: AppColors.primaryAbyss,
@@ -212,7 +213,7 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         selectedColor: chipSelected,
                                         side: BorderSide(
                                           color: AppColors.background
-                                              .withValues(alpha: 0.28),
+                                              .withValues(alpha: AppOpacity.thin),
                                         ),
                                         labelStyle: const TextStyle(
                                           color: AppColors.primaryAbyss,
@@ -488,11 +489,11 @@ class _PickerExerciseCard extends StatelessWidget {
               colors: [Color(0xFFD7E5FF), Color(0xFFE4EEFF)],
             ),
             border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.45),
+              color: AppColors.primaryLight.withValues(alpha: AppOpacity.dim),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: 0.2),
+                color: AppColors.primaryLight.withValues(alpha: AppOpacity.soft),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),
@@ -544,10 +545,10 @@ class _PickerExerciseCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 2,),
                         decoration: BoxDecoration(
-                          color: difficultyColor.withValues(alpha: 0.15),
+                          color: difficultyColor.withValues(alpha: AppOpacity.light),
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(
-                            color: difficultyColor.withValues(alpha: 0.4),
+                            color: difficultyColor.withValues(alpha: AppOpacity.firm),
                           ),
                         ),
                         child: Text(

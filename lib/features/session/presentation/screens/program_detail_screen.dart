@@ -10,6 +10,7 @@ import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class ProgramDetailScreen extends ConsumerStatefulWidget {
   final Program program;
@@ -676,7 +677,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.08),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.faint),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(AppRadii.sm)),
       ),
@@ -694,7 +695,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                 vertical: AppSpacing.sm,
               ),
               color: widget.isPastWeek
-                  ? AppColors.primaryDarker.withValues(alpha: 0.55)
+                  ? AppColors.primaryDarker.withValues(alpha: AppOpacity.over)
                   : AppChrome.topSurface,
               child: Row(
                 children: [
@@ -722,7 +723,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                         color: Colors.white.withValues(alpha: 0.22),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.35),
+                          color: Colors.white.withValues(alpha: AppOpacity.moderate),
                         ),
                       ),
                       child: Text(
@@ -741,7 +742,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                     Icon(
                       Icons.check_circle_rounded,
                       size: 14,
-                      color: Colors.white.withValues(alpha: 0.55),
+                      color: Colors.white.withValues(alpha: AppOpacity.over),
                     ),
                   ],
                   const Spacer(),
@@ -749,7 +750,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 2,),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Colors.white.withValues(alpha: AppOpacity.soft),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Text(
@@ -770,7 +771,7 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                     child: Icon(
                       Icons.expand_more_rounded,
                       color: widget.isPastWeek
-                          ? Colors.white.withValues(alpha: 0.55)
+                          ? Colors.white.withValues(alpha: AppOpacity.over)
                           : Colors.white,
                       size: 18,
                     ),
@@ -856,32 +857,32 @@ class _DayDetailRow extends StatelessWidget {
 
     if (isToday && isDone) {
       rowBg = AppColors.success.withValues(alpha: 0.07);
-      badgeBg = AppColors.success.withValues(alpha: 0.15);
-      badgeBorder = AppColors.success.withValues(alpha: 0.40);
+      badgeBg = AppColors.success.withValues(alpha: AppOpacity.light);
+      badgeBorder = AppColors.success.withValues(alpha: AppOpacity.firm);
       nameColor = AppColors.textPrimary;
     } else if (isToday) {
-      rowBg = AppColors.primary.withValues(alpha: 0.05);
-      badgeBg = AppColors.primary.withValues(alpha: 0.12);
-      badgeBorder = AppColors.primary.withValues(alpha: 0.50);
+      rowBg = AppColors.primary.withValues(alpha: AppOpacity.hairline);
+      badgeBg = AppColors.primary.withValues(alpha: AppOpacity.subtle);
+      badgeBorder = AppColors.primary.withValues(alpha: AppOpacity.half);
       nameColor = AppColors.textPrimary;
     } else if (isDone) {
       rowBg = AppColors.success.withValues(alpha: 0.04);
-      badgeBg = AppColors.success.withValues(alpha: 0.12);
-      badgeBorder = AppColors.success.withValues(alpha: 0.35);
+      badgeBg = AppColors.success.withValues(alpha: AppOpacity.subtle);
+      badgeBorder = AppColors.success.withValues(alpha: AppOpacity.moderate);
       nameColor = AppColors.textSecondary;
     } else if (isPastDay) {
-      rowBg = AppColors.surfaceVariant.withValues(alpha: 0.6);
-      badgeBg = AppColors.primaryPastel.withValues(alpha: 0.15);
-      badgeBorder = AppColors.primaryPastel.withValues(alpha: 0.12);
-      nameColor = AppColors.textSecondary.withValues(alpha: 0.50);
+      rowBg = AppColors.surfaceVariant.withValues(alpha: AppOpacity.visible);
+      badgeBg = AppColors.primaryPastel.withValues(alpha: AppOpacity.light);
+      badgeBorder = AppColors.primaryPastel.withValues(alpha: AppOpacity.subtle);
+      nameColor = AppColors.textSecondary.withValues(alpha: AppOpacity.half);
     } else {
       rowBg = Colors.transparent;
       badgeBg = hasSession
-          ? AppColors.primary.withValues(alpha: 0.10)
+          ? AppColors.primary.withValues(alpha: AppOpacity.whisper)
           : AppColors.surfaceVariant;
       badgeBorder = hasSession
-          ? AppColors.primary.withValues(alpha: 0.25)
-          : AppColors.primaryPastel.withValues(alpha: 0.20);
+          ? AppColors.primary.withValues(alpha: AppOpacity.medium)
+          : AppColors.primaryPastel.withValues(alpha: AppOpacity.soft);
       nameColor = AppColors.textPrimary;
     }
 
@@ -918,7 +919,7 @@ class _DayDetailRow extends StatelessWidget {
                               ? Icon(
                                   Icons.remove_rounded,
                                   color: AppColors.textTertiary
-                                      .withValues(alpha: 0.3),
+                                      .withValues(alpha: AppOpacity.mild),
                                   size: 14,
                                 )
                               : Text(
@@ -928,11 +929,11 @@ class _DayDetailRow extends StatelessWidget {
                                   style: TextStyle(
                                     color: isPastDay
                                         ? AppColors.textSecondary
-                                            .withValues(alpha: 0.40)
+                                            .withValues(alpha: AppOpacity.firm)
                                         : hasSession
                                             ? AppColors.primary
                                             : AppColors.textSecondary
-                                                .withValues(alpha: 0.4),
+                                                .withValues(alpha: AppOpacity.firm),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -1003,7 +1004,7 @@ class _DayDetailRow extends StatelessWidget {
                                     size: 11,
                                     color: isPastDay && !isDone
                                         ? AppColors.textTertiary
-                                            .withValues(alpha: 0.40)
+                                            .withValues(alpha: AppOpacity.firm)
                                         : AppColors.textTertiary,
                                   ),
                                   const SizedBox(width: 3),
@@ -1012,7 +1013,7 @@ class _DayDetailRow extends StatelessWidget {
                                     style: TextStyle(
                                       color: isPastDay && !isDone
                                           ? AppColors.textTertiary
-                                              .withValues(alpha: 0.40)
+                                              .withValues(alpha: AppOpacity.firm)
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -1024,7 +1025,7 @@ class _DayDetailRow extends StatelessWidget {
                                     size: 11,
                                     color: isPastDay && !isDone
                                         ? AppColors.textTertiary
-                                            .withValues(alpha: 0.40)
+                                            .withValues(alpha: AppOpacity.firm)
                                         : AppColors.textTertiary,
                                   ),
                                   const SizedBox(width: 3),
@@ -1033,7 +1034,7 @@ class _DayDetailRow extends StatelessWidget {
                                     style: TextStyle(
                                       color: isPastDay && !isDone
                                           ? AppColors.textTertiary
-                                              .withValues(alpha: 0.40)
+                                              .withValues(alpha: AppOpacity.firm)
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,

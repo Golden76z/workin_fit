@@ -8,6 +8,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
   final Exercise exercise;
@@ -358,7 +359,7 @@ class _SectionCard extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.10),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadii.md),
       ),
@@ -569,10 +570,10 @@ class _MuscleChip extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primary.withValues(alpha: AppOpacity.faint),
         borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.35),
+          color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
         ),
       ),
       child: Text(

@@ -14,6 +14,7 @@ import 'package:workin_fit/views/legal/privacy_policy_page.dart';
 import 'package:workin_fit/views/legal/terms_of_service_page.dart';
 import 'package:workin_fit/widgets/auth_text_field.dart';
 import 'package:workin_fit/widgets/button.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -284,7 +285,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     children: [
                       Expanded(
                         child: Divider(
-                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
                           thickness: 1,
                         ),
                       ),
@@ -296,7 +297,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           localizations.auth_page_register_or_text
                               .toUpperCase(),
                           style: TextStyle(
-                            color: AppColors.textPrimary.withValues(alpha: 0.5),
+                            color: AppColors.textPrimary.withValues(alpha: AppOpacity.half),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -304,7 +305,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                       Expanded(
                         child: Divider(
-                          color: AppColors.textPrimary.withValues(alpha: 0.2),
+                          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
                           thickness: 1,
                         ),
                       ),
@@ -341,7 +342,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       textAlign: TextAlign.center,
       text: TextSpan(
         style: TextStyle(
-          color: AppColors.textPrimary.withValues(alpha: 0.6),
+          color: AppColors.textPrimary.withValues(alpha: AppOpacity.visible),
           fontSize: 12,
         ),
         children: [
@@ -396,7 +397,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.textPrimary,
         side: BorderSide(
-          color: AppColors.textPrimary.withValues(alpha: 0.2),
+          color: AppColors.textPrimary.withValues(alpha: AppOpacity.soft),
           width: 1.5,
         ),
         padding: const EdgeInsets.symmetric(

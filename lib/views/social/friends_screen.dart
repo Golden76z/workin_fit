@@ -8,6 +8,7 @@ import 'package:workin_fit/models/friend.dart';
 import 'package:workin_fit/models/friend_request.dart';
 import 'package:workin_fit/providers/friend_providers.dart';
 import 'package:workin_fit/views/social/friend_search_screen.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class FriendsScreen extends ConsumerWidget {
   const FriendsScreen({super.key});
@@ -125,7 +126,7 @@ class _FriendsTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: Text(
           'Failed to load friends',
-          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.7)),
+          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent)),
         ),
       ),
       data: (friends) {
@@ -144,7 +145,7 @@ class _FriendsTab extends ConsumerWidget {
           separatorBuilder: (_, __) => Divider(
             height: 1,
             indent: AppSpacing.md + 44 + AppSpacing.sm,
-            color: AppColors.babyBlueIce.withValues(alpha: 0.5),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
           ),
           itemBuilder: (context, i) => _FriendTile(
             friend: friends[i],
@@ -218,7 +219,7 @@ class _FriendTile extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(
           Icons.person_remove_rounded,
-          color: AppColors.textSecondary.withValues(alpha: 0.4),
+          color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
           size: 20,
         ),
         onPressed: onRemove,
@@ -244,7 +245,7 @@ class _RequestsTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: Text(
           'Failed to load requests',
-          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: 0.7)),
+          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent)),
         ),
       ),
       data: (requests) {
@@ -256,13 +257,13 @@ class _RequestsTab extends ConsumerWidget {
                 Icon(
                   Icons.mark_email_read_rounded,
                   size: 64,
-                  color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'No pending requests',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: 0.7),
+                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -277,7 +278,7 @@ class _RequestsTab extends ConsumerWidget {
           separatorBuilder: (_, __) => Divider(
             height: 1,
             indent: AppSpacing.md + 44 + AppSpacing.sm,
-            color: AppColors.babyBlueIce.withValues(alpha: 0.5),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
           ),
           itemBuilder: (context, i) => _RequestTile(
             request: requests[i],
@@ -390,7 +391,7 @@ class _RequestTile extends StatelessWidget {
                 Text(
                   'wants to be your friend',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: 0.7),
+                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
                     fontSize: 12,
                   ),
                 ),
@@ -441,7 +442,7 @@ class _IconActionButton extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: AppOpacity.whisper),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 18),
@@ -497,13 +498,13 @@ class _EmptyFriends extends StatelessWidget {
           Icon(
             Icons.group_rounded,
             size: 64,
-            color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             'No friends yet',
             style: TextStyle(
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
+              color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

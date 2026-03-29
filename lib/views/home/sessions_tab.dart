@@ -13,6 +13,7 @@ import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 /// 3rd tab — sticky header (title + optional active program) + Sessions /
 /// Programs sub-tabs. Uses a plain Column so the inner lists are the only
@@ -122,7 +123,7 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
                   if (activeProgramId != null) ...[
                     Container(
                       height: 1,
-                      color: Colors.white.withValues(alpha: 0.10),
+                      color: Colors.white.withValues(alpha: AppOpacity.whisper),
                     ),
                     _ActiveProgramInline(
                       activeProgramId: activeProgramId,
@@ -132,7 +133,7 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
                   // Separator between header block and tab bar
                   Container(
                     height: 1,
-                    color: Colors.white.withValues(alpha: 0.12),
+                    color: Colors.white.withValues(alpha: AppOpacity.subtle),
                   ),
                 ],
               ),
@@ -144,7 +145,7 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
               child: TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,
-                unselectedLabelColor: Colors.white.withValues(alpha: 0.55),
+                unselectedLabelColor: Colors.white.withValues(alpha: AppOpacity.over),
                 indicatorColor: Colors.white,
                 indicatorWeight: 2.5,
                 dividerColor: Colors.transparent,
@@ -175,7 +176,7 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
             // Separator between tab bar and content
             Container(
               height: 1,
-              color: Colors.white.withValues(alpha: 0.12),
+              color: Colors.white.withValues(alpha: AppOpacity.subtle),
             ),
 
             // ── Content ──────────────────────────────────────────────────
@@ -251,7 +252,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: 1),
                 child: Icon(
                   Icons.bolt_rounded,
-                  color: Colors.white.withValues(alpha: 0.70),
+                  color: Colors.white.withValues(alpha: AppOpacity.prominent),
                   size: 15,
                 ),
               ),
@@ -268,7 +269,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                         Text(
                           isFrench ? 'Programme actif' : 'Active program',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.50),
+                            color: Colors.white.withValues(alpha: AppOpacity.half),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.3,
@@ -287,7 +288,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: Colors.white.withValues(alpha: 0.50),
+                              color: Colors.white.withValues(alpha: AppOpacity.half),
                               size: 12,
                             ),
                           ),
@@ -327,7 +328,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.white.withValues(alpha: 0.55),
+                              color: Colors.white.withValues(alpha: AppOpacity.over),
                               size: 16,
                             ),
                           ),
@@ -355,7 +356,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                           Icon(
                             Icons.flag_rounded,
                             size: 11,
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: Colors.white.withValues(alpha: AppOpacity.over),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -363,7 +364,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                                 ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
                                 : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.60),
+                              color: Colors.white.withValues(alpha: AppOpacity.visible),
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
@@ -372,7 +373,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                           Text(
                             '${(progress! * 100).round()}%',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.70),
+                              color: Colors.white.withValues(alpha: AppOpacity.prominent),
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -387,7 +388,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                           value: progress,
                           minHeight: 3,
                           backgroundColor:
-                              Colors.white.withValues(alpha: 0.15),
+                              Colors.white.withValues(alpha: AppOpacity.light),
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             Colors.white,
                           ),
@@ -401,7 +402,7 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ? '${program.durationWeeks} semaines  •  ${program.daysPerWeek} j/sem'
                             : '${program.durationWeeks} weeks  •  ${program.daysPerWeek} days/wk',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.50),
+                          color: Colors.white.withValues(alpha: AppOpacity.half),
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -656,7 +657,7 @@ class _SessionCard extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.error.withValues(alpha: 0.15),
+          color: AppColors.error.withValues(alpha: AppOpacity.subtle),
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
         child: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
@@ -673,100 +674,115 @@ class _SessionCard extends StatelessWidget {
           onLongPress: onDelete,
           child: Ink(
             decoration: BoxDecoration(
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(AppRadii.sm),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFFD7E5FF), Color(0xFFE4EEFF)],
-              ),
               border: Border.all(
-                color: AppColors.primaryLight.withValues(alpha: 0.45),
+                color: AppColors.neutral300,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryLight.withValues(alpha: 0.18),
-                  blurRadius: 12,
-                  offset: const Offset(0, 5),
-                ),
-              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
+            child: IntrinsicHeight(
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Left accent bar
                   Container(
-                    width: 52,
-                    height: 52,
+                    width: 4,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryPastel.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
-                    ),
-                    child: const Icon(
-                      Icons.fitness_center_rounded,
-                      color: AppColors.primary,
-                      size: 26,
+                      color: color,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(AppRadii.sm),
+                        bottomLeft: Radius.circular(AppRadii.sm),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          session.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'AppFontMedium',
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                      child: Row(
+                        children: [
+                          // Icon block
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.neutral300,
+                              borderRadius: BorderRadius.circular(AppRadii.sm),
+                            ),
+                            child: const Icon(
+                              Icons.fitness_center_rounded,
+                              color: AppColors.primary,
+                              size: 24,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            _MetaChip(
-                              icon: Icons.fitness_center_rounded,
-                              label:
-                                  '${session.exerciseCount} ${isFrench ? 'exercices' : 'exercises'}',
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            _MetaChip(
-                              icon: Icons.timer_outlined,
-                              label: session.durationDisplay,
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: color.withValues(alpha: 0.4),
+                          const SizedBox(width: AppSpacing.sm),
+                          // Text block
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  session.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'AppFontMedium',
+                                  ),
                                 ),
-                              ),
-                              child: Text(
-                                _difficultyLabel(session.difficulty),
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
+                                const SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    _MetaChip(
+                                      icon: Icons.fitness_center_rounded,
+                                      label: '${session.exerciseCount} ${isFrench ? 'ex.' : 'ex.'}',
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    _MetaChip(
+                                      icon: Icons.timer_outlined,
+                                      label: session.durationDisplay,
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: color.withValues(alpha: AppOpacity.subtle),
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color: color.withValues(alpha: AppOpacity.half),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        _difficultyLabel(session.difficulty),
+                                        style: TextStyle(
+                                          color: color,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            color: AppColors.textTertiary,
+                            size: 18,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColors.primary,
-                    size: 20,
                   ),
                 ],
               ),
@@ -828,145 +844,147 @@ class _ProgramCard extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
+            color: isActive
+                ? AppColors.primary.withValues(alpha: AppOpacity.whisper)
+                : AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadii.sm),
-            gradient: isActive
-                ? const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF3340B8), Color(0xFF5465FF)],
-                  )
-                : const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFD7E5FF), Color(0xFFE4EEFF)],
-                  ),
             border: Border.all(
-              color: isActive
-                  ? AppColors.primary.withValues(alpha: 0.6)
-                  : AppColors.primaryLight.withValues(alpha: 0.45),
+              color: isActive ? AppColors.primary : AppColors.neutral300,
             ),
-            boxShadow: [
-              BoxShadow(
-                color:
-                    (isActive ? AppColors.primary : AppColors.primaryLight)
-                        .withValues(alpha: isActive ? 0.3 : 0.18),
-                blurRadius: 12,
-                offset: const Offset(0, 5),
-              ),
-            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+          child: IntrinsicHeight(
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Left accent bar — primary for active, difficulty color otherwise
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 4,
                   decoration: BoxDecoration(
-                    color: isActive
-                        ? Colors.white.withValues(alpha: 0.18)
-                        : AppColors.primaryPastel.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(AppRadii.sm),
-                  ),
-                  child: Icon(
-                    Icons.calendar_month_rounded,
-                    color: isActive ? Colors.white : AppColors.primary,
-                    size: 26,
+                    color: isActive ? AppColors.primary : color,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(AppRadii.sm),
+                      bottomLeft: Radius.circular(AppRadii.sm),
+                    ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          if (isActive) ...[
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                isFrench ? 'Actif' : 'Active',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.xs),
-                          ],
-                          Expanded(
-                            child: Text(
-                              program.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: isActive
-                                    ? Colors.white
-                                    : AppColors.textPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'AppFontMedium',
-                              ),
-                            ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    child: Row(
+                      children: [
+                        // Icon block
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? AppColors.primary.withValues(alpha: AppOpacity.mild)
+                                : AppColors.neutral300,
+                            borderRadius: BorderRadius.circular(AppRadii.sm),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          _MetaChip(
-                            icon: Icons.list_alt_rounded,
-                            label:
-                                '${program.totalSessions} ${isFrench ? 'sessions' : 'sessions'}',
-                            light: isActive,
+                          child: Icon(
+                            Icons.calendar_month_rounded,
+                            color: isActive ? AppColors.primary : AppColors.textSecondary,
+                            size: 24,
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          _MetaChip(
-                            icon: Icons.calendar_today_rounded,
-                            label:
-                                '${program.durationWeeks} ${isFrench ? 'sem.' : 'wks'}',
-                            light: isActive,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        // Text block
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  if (isActive) ...[
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary,
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        isFrench ? 'ACTIF' : 'ACTIVE',
+                                        style: const TextStyle(
+                                          color: AppColors.neutral0,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                  ],
+                                  Expanded(
+                                    child: Text(
+                                      program.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: 'AppFontMedium',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  _MetaChip(
+                                    icon: Icons.list_alt_rounded,
+                                    label: '${program.totalSessions} ${isFrench ? 'sessions' : 'sessions'}',
+                                  ),
+                                  const SizedBox(width: AppSpacing.xs),
+                                  _MetaChip(
+                                    icon: Icons.calendar_today_rounded,
+                                    label: '${program.durationWeeks} ${isFrench ? 'sem.' : 'wks'}',
+                                  ),
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: color.withValues(alpha: AppOpacity.subtle),
+                                      borderRadius: BorderRadius.circular(4),
+                                      border: Border.all(
+                                        color: color.withValues(alpha: AppOpacity.half),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      _difficultyLabel(program.difficulty),
+                                      style: TextStyle(
+                                        color: color,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          if (!isActive)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: color.withValues(alpha: 0.4),
-                                ),
-                              ),
-                              child: Text(
-                                _difficultyLabel(program.difficulty),
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        const Icon(
+                          Icons.chevron_right_rounded,
+                          color: AppColors.textTertiary,
+                          size: 18,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: isActive ? Colors.white : AppColors.primary,
-                  size: 20,
                 ),
               ],
             ),
@@ -984,17 +1002,15 @@ class _ProgramCard extends StatelessWidget {
 class _MetaChip extends StatelessWidget {
   final IconData icon;
   final String label;
-  final bool light;
 
   const _MetaChip({
     required this.icon,
     required this.label,
-    this.light = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = light ? Colors.white.withValues(alpha: 0.7) : AppColors.textTertiary;
+    const color = AppColors.textTertiary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1002,7 +1018,7 @@ class _MetaChip extends StatelessWidget {
         const SizedBox(width: 3),
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: color,
             fontSize: 11,
             fontWeight: FontWeight.w600,
@@ -1038,7 +1054,7 @@ class _EmptyState extends StatelessWidget {
                 Icon(
                   Icons.playlist_add_rounded,
                   size: 56,
-                  color: AppColors.primaryLight.withValues(alpha: 0.7),
+                  color: AppColors.primaryLight.withValues(alpha: AppOpacity.prominent),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
@@ -1113,7 +1129,7 @@ class _EmptyProgramsState extends StatelessWidget {
                 Icon(
                   Icons.calendar_month_rounded,
                   size: 56,
-                  color: AppColors.primaryLight.withValues(alpha: 0.7),
+                  color: AppColors.primaryLight.withValues(alpha: AppOpacity.prominent),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(

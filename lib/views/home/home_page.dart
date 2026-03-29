@@ -9,7 +9,8 @@ import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
 import 'package:workin_fit/views/home/sessions_tab.dart';
 import 'package:workin_fit/views/profile/profile_tab.dart';
-import 'package:workin_fit/views/social/social_tab.dart';
+import 'package:workin_fit/views/chat/chat_tab.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -42,12 +43,17 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   void _onTabSelected(int index) {
     if (index == _tabIndex.value) return;
+    final int distance = (index - _tabIndex.value).abs();
     _tabIndex.value = index;
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeInOutCubic,
-    );
+    if (distance == 1) {
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeInOutCubic,
+      );
+    } else {
+      _pageController.jumpToPage(index);
+    }
   }
 
   void _onPageChanged(int index) {
@@ -62,7 +68,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       const HomeDashboardTab(),
       const ExerciseListScreen(),
       const SessionsTab(),
-      const SocialTab(),
+      const ChatTab(),
       const ProfileTab(),
     ];
 
@@ -70,11 +76,78 @@ class _HomePageState extends ConsumerState<HomePage> {
       style: AppChrome.homeOverlay,
       child: Scaffold(
         extendBody: true,
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          physics: const ClampingScrollPhysics(),
-          children: tabs,
+        body: Stack(
+          children: <Widget>[
+            PageView(
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              physics: const ClampingScrollPhysics(),
+              children: tabs,
+            ),
+            // ── Page-seam indicator ──────────────────────────────────────
+            // A thin vertical line rendered at the exact boundary between
+            // two adjacent pages while a swipe is in progress. It fades in
+            // as the drag begins, peaks at mid-swipe, and fades out on
+            // landing — giving a clear visual split without cluttering the
+            // resting state.
+            AnimatedBuilder(
+              animation: _pageController,
+              builder: (BuildContext context, Widget? _) {
+                if (!_pageController.hasClients) {
+                  return const SizedBox.shrink();
+                }
+                double page;
+                try {
+                  page = _pageController.page ??
+                      _tabIndex.value.toDouble();
+                } catch (_) {
+                  return const SizedBox.shrink();
+                }
+                final double frac =
+                    page - page.truncateToDouble();
+                if (frac == 0.0) return const SizedBox.shrink();
+
+                final double screenWidth =
+                    MediaQuery.sizeOf(context).width;
+                final double seamX = (1.0 - frac) * screenWidth;
+                // Opacity peaks at 0.5 (halfway between pages)
+                final double opacity =
+                    (frac < 0.5 ? frac * 2 : (1.0 - frac) * 2) *
+                        0.45;
+
+                return Positioned(
+                  left: seamX - 1,
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: <Color>[
+                          AppColors.primary
+                              .withValues(alpha: 0),
+                          AppColors.primary
+                              .withValues(alpha: opacity),
+                          AppColors.primary
+                              .withValues(alpha: opacity),
+                          AppColors.primary
+                              .withValues(alpha: 0),
+                        ],
+                        stops: const <double>[
+                          0.0,
+                          0.12,
+                          0.88,
+                          1.0,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         bottomNavigationBar: ValueListenableBuilder<int>(
           valueListenable: _tabIndex,
@@ -132,7 +205,7 @@ class _FloatingBottomBar extends StatelessWidget {
               ),
               border: Border(
                 top: BorderSide(
-                  color: AppColors.background.withValues(alpha: 0.28),
+                  color: AppColors.background.withValues(alpha: AppOpacity.thin),
                 ),
               ),
               child: Row(
@@ -157,7 +230,7 @@ class _FloatingBottomBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.chat_bubble_outline_rounded,
-                      label: isFrench ? 'Social' : 'Social',
+                      label: 'Chat',
                       isSelected: selectedIndex == 3,
                       onTap: () => onTabSelected(3),
                     ),
@@ -187,19 +260,19 @@ class _FloatingBottomBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedIndex == 2
-                        ? AppColors.cornflowerBlue
-                        : AppColors.babyBlueIce,
+                        ? AppColors.primary
+                        : AppColors.neutral300,
                     border: Border.all(
-                      color: AppColors.background.withValues(alpha: 0.48),
-                      width: centerButtonBorderWidth,
+                      color: AppColors.neutral0,
+                      width: centerButtonBorderWidth.roundToDouble(),
                     ),
                   ),
                   child: Icon(
                     Icons.calendar_month_rounded,
-                    size: 30,
+                    size: 28,
                     color: selectedIndex == 2
-                        ? Colors.white
-                        : AppColors.primaryAbyss,
+                        ? AppColors.neutral0
+                        : AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -231,7 +304,7 @@ class _NavItem extends StatelessWidget {
         : AppColors.frostedCyan.withValues(alpha: 0.72);
     final Color textColor = isSelected
         ? Colors.white
-        : AppColors.frostedCyan.withValues(alpha: 0.75);
+        : AppColors.frostedCyan.withValues(alpha: AppOpacity.strong);
 
     // GestureDetector covers the full Expanded width for a large tap area,
     // while Material + InkWell clip the ripple to the pill bounds.
@@ -253,7 +326,7 @@ class _NavItem extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.15)
+                    ? Colors.white.withValues(alpha: AppOpacity.light)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(AppRadii.lg),
               ),
