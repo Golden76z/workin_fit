@@ -14,7 +14,11 @@ class ChatTab extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         appBar: AppBar(
-          backgroundColor: AppChrome.topSurface,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: AppChrome.topSurfaceOverlay,
+          flexibleSpace: const AppTopBarBackground(),
           elevation: 0,
           title: const Text(
             'Chat',
@@ -43,13 +47,15 @@ class ChatTab extends StatelessWidget {
                   width: 88,
                   height: 88,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                    color:
+                        AppColors.primary.withValues(alpha: AppOpacity.faint),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.chat_bubble_outline_rounded,
                     size: 42,
-                    color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
+                    color: AppColors.primary
+                        .withValues(alpha: AppOpacity.moderate),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -67,7 +73,8 @@ class ChatTab extends StatelessWidget {
                   'Share your workouts, sessions and achievements with friends — coming soon.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
+                    color: AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.bold),
                     fontSize: 14,
                     height: 1.5,
                   ),

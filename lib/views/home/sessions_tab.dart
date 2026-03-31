@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_builder_screen.dart';
@@ -19,7 +20,12 @@ import 'package:workin_fit/core/theme/app_opacity.dart';
 /// Programs sub-tabs. Uses a plain Column so the inner lists are the only
 /// scroll views, eliminating the NestedScrollView "phantom scroll" issue.
 class SessionsTab extends ConsumerStatefulWidget {
-  const SessionsTab({super.key});
+  final ValueChanged<int>? onEdgeSwipe;
+
+  const SessionsTab({
+    this.onEdgeSwipe,
+    super.key,
+  });
 
   @override
   ConsumerState<SessionsTab> createState() => _SessionsTabState();
@@ -28,6 +34,7 @@ class SessionsTab extends ConsumerStatefulWidget {
 class _SessionsTabState extends ConsumerState<SessionsTab>
     with AutomaticKeepAliveClientMixin<SessionsTab>, TickerProviderStateMixin {
   late final TabController _tabController;
+  bool _handledEdgeSwipe = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -55,6 +62,45 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
     if (mounted) ref.invalidate(programsProvider);
   }
 
+  bool _handleTabViewEdgeSwipe(ScrollNotification notification) {
+    if (widget.onEdgeSwipe == null ||
+        notification.metrics.axis != Axis.horizontal) {
+      return false;
+    }
+
+    if (notification is ScrollStartNotification &&
+        notification.dragDetails != null) {
+      _handledEdgeSwipe = false;
+      return false;
+    }
+
+    if (notification is ScrollEndNotification) {
+      _handledEdgeSwipe = false;
+      return false;
+    }
+
+    if (notification is OverscrollNotification &&
+        notification.dragDetails != null &&
+        !_handledEdgeSwipe) {
+      final bool atFirstTab = _tabController.index == 0;
+      final bool atLastTab = _tabController.index == _tabController.length - 1;
+
+      if (notification.overscroll < 0 && atFirstTab) {
+        _handledEdgeSwipe = true;
+        widget.onEdgeSwipe?.call(-1);
+        return true;
+      }
+
+      if (notification.overscroll > 0 && atLastTab) {
+        _handledEdgeSwipe = true;
+        widget.onEdgeSwipe?.call(1);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -75,63 +121,57 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
           padding: EdgeInsets.only(
             // paddingOf.bottom is inflated by the outer scaffold's extendBody
             // to include the nav bar height (58) + system safe area inset.
-            bottom: MediaQuery.paddingOf(context).bottom + 8,
+            bottom: MediaQuery.paddingOf(context).bottom - 8,
           ),
           child: FloatingActionButton(
             heroTag: 'sessions_fab',
             backgroundColor: AppColors.primary,
             foregroundColor: Colors.white,
             elevation: 4,
-            onPressed: onProgramsTab
-                ? _openProgramBuilder
-                : _openSessionBuilder,
+            onPressed:
+                onProgramsTab ? _openProgramBuilder : _openSessionBuilder,
             child: const Icon(Icons.add_rounded),
           ),
         ),
         body: Column(
           children: [
-                // ── Top section: status bar + title bar + active program ──────
-                ColoredBox(
-                  color: AppColors.navBarSurface,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Status-bar height spacer
-                      SizedBox(height: MediaQuery.paddingOf(context).top),
-                      // Title bar
-                      SizedBox(
-                        height: kToolbarHeight,
-                        child: Row(
-                          children: [
-                            // Spacer to balance the history button on the right
-                            const SizedBox(width: 48),
-                            Expanded(
-                              child: Text(
-                                isFrench ? 'Entraînements' : 'Workouts',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'AppFontMedium',
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: -0.3,
-                                ),
-                              ),
+            // ── Top section: status bar + title bar + active program ──────
+            AppTopBarBackground(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: MediaQuery.paddingOf(context).top),
+                  SizedBox(
+                    height: kToolbarHeight,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 48),
+                        Expanded(
+                          child: Text(
+                            isFrench ? 'Entraînements' : 'Workouts',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'AppFontMedium',
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.3,
                             ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.history_rounded,
-                                color: Colors.white,
-                              ),
-                              tooltip: isFrench ? 'Historique' : 'History',
-                              onPressed: () => Navigator.of(context).push(
-                                SessionHistoryScreen.route(),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                  // Active program row (only when a program is running)
+                        IconButton(
+                          icon: const Icon(
+                            Icons.history_rounded,
+                            color: Colors.white,
+                          ),
+                          tooltip: isFrench ? 'Historique' : 'History',
+                          onPressed: () => Navigator.of(context).push(
+                            SessionHistoryScreen.route(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   if (activeProgramId != null) ...[
                     Container(
                       height: 1,
@@ -142,7 +182,42 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
                       isFrench: isFrench,
                     ),
                   ],
-                  // Separator between header block and tab bar
+                  Container(
+                    height: 1,
+                    color: Colors.white.withValues(alpha: AppOpacity.subtle),
+                  ),
+                  TabBar(
+                    controller: _tabController,
+                    labelColor: Colors.white,
+                    unselectedLabelColor:
+                        Colors.white.withValues(alpha: AppOpacity.over),
+                    indicatorColor: Colors.white,
+                    indicatorWeight: 2.5,
+                    dividerColor: Colors.transparent,
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      fontFamily: 'AppFontMedium',
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                    tabs: [
+                      Tab(
+                        text: isFrench ? 'Sessions' : 'Sessions',
+                        icon:
+                            const Icon(Icons.fitness_center_rounded, size: 18),
+                        iconMargin: const EdgeInsets.only(bottom: 2),
+                      ),
+                      Tab(
+                        text: isFrench ? 'Programmes' : 'Programs',
+                        icon:
+                            const Icon(Icons.calendar_month_rounded, size: 18),
+                        iconMargin: const EdgeInsets.only(bottom: 2),
+                      ),
+                    ],
+                  ),
                   Container(
                     height: 1,
                     color: Colors.white.withValues(alpha: AppOpacity.subtle),
@@ -151,57 +226,20 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
               ),
             ),
 
-            // ── Tab bar ──────────────────────────────────────────────────
-            ColoredBox(
-              color: AppColors.navBarSurface,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white.withValues(alpha: AppOpacity.over),
-                indicatorColor: Colors.white,
-                indicatorWeight: 2.5,
-                dividerColor: Colors.transparent,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13,
-                  fontFamily: 'AppFontMedium',
-                ),
-                unselectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-                tabs: [
-                  Tab(
-                    text: isFrench ? 'Sessions' : 'Sessions',
-                    icon: const Icon(Icons.fitness_center_rounded, size: 18),
-                    iconMargin: const EdgeInsets.only(bottom: 2),
-                  ),
-                  Tab(
-                    text: isFrench ? 'Programmes' : 'Programs',
-                    icon: const Icon(Icons.calendar_month_rounded, size: 18),
-                    iconMargin: const EdgeInsets.only(bottom: 2),
-                  ),
-                ],
-              ),
-            ),
-
-            // Separator between tab bar and content
-            Container(
-              height: 1,
-              color: Colors.white.withValues(alpha: AppOpacity.subtle),
-            ),
-
             // ── Content ──────────────────────────────────────────────────
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _SessionsListView(
-                    isFrench: isFrench,
-                    onCreateTap: _openSessionBuilder,
-                  ),
-                  _ProgramsListView(isFrench: isFrench),
-                ],
+              child: NotificationListener<ScrollNotification>(
+                onNotification: _handleTabViewEdgeSwipe,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _SessionsListView(
+                      isFrench: isFrench,
+                      onCreateTap: _openSessionBuilder,
+                    ),
+                    _ProgramsListView(isFrench: isFrench),
+                  ],
+                ),
               ),
             ),
           ],
@@ -281,7 +319,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                         Text(
                           isFrench ? 'Programme actif' : 'Active program',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: AppOpacity.half),
+                            color:
+                                Colors.white.withValues(alpha: AppOpacity.half),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.3,
@@ -300,7 +339,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ),
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: Colors.white.withValues(alpha: AppOpacity.half),
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.half),
                               size: 12,
                             ),
                           ),
@@ -313,10 +353,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                               title: isFrench
                                   ? 'Arrêter le programme ?'
                                   : 'Stop program?',
-                              confirmLabel:
-                                  isFrench ? 'Arrêter' : 'Stop',
-                              cancelLabel:
-                                  isFrench ? 'Annuler' : 'Cancel',
+                              confirmLabel: isFrench ? 'Arrêter' : 'Stop',
+                              cancelLabel: isFrench ? 'Annuler' : 'Cancel',
                               message: isFrench
                                   ? 'Voulez-vous arrêter ce programme ?'
                                   : 'Do you want to stop this program?',
@@ -325,9 +363,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                               destructive: true,
                             );
                             if (confirmed == true) {
-                              ref
-                                  .read(activeProgramIdProvider.notifier)
-                                  .state = null;
+                              ref.read(activeProgramIdProvider.notifier).state =
+                                  null;
                               ref
                                   .read(activeProgramStartProvider.notifier)
                                   .state = null;
@@ -340,7 +377,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ),
                             child: Icon(
                               Icons.close_rounded,
-                              color: Colors.white.withValues(alpha: AppOpacity.over),
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.over),
                               size: 16,
                             ),
                           ),
@@ -368,7 +406,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                           Icon(
                             Icons.flag_rounded,
                             size: 11,
-                            color: Colors.white.withValues(alpha: AppOpacity.over),
+                            color:
+                                Colors.white.withValues(alpha: AppOpacity.over),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -376,7 +415,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                                 ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
                                 : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: AppOpacity.visible),
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.visible),
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
@@ -385,7 +425,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                           Text(
                             '${(progress! * 100).round()}%',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: AppOpacity.prominent),
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.prominent),
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                             ),
@@ -414,7 +455,8 @@ class _ActiveProgramInline extends ConsumerWidget {
                             ? '${program.durationWeeks} semaines  •  ${program.daysPerWeek} j/sem'
                             : '${program.durationWeeks} weeks  •  ${program.daysPerWeek} days/wk',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: AppOpacity.half),
+                          color:
+                              Colors.white.withValues(alpha: AppOpacity.half),
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -637,25 +679,7 @@ class _SessionCard extends StatelessWidget {
   });
 
   Color _difficultyColor(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return AppColors.success;
-      case DifficultyLevel.intermediate:
-        return AppColors.warning;
-      case DifficultyLevel.advanced:
-        return AppColors.error;
-    }
-  }
-
-  String _difficultyLabel(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Débutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermédiaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avancé' : 'Advanced';
-    }
+    return AppDifficultyTheme.paletteFor(d).accentColor;
   }
 
   @override
@@ -753,7 +777,8 @@ class _SessionCard extends StatelessWidget {
                                   children: [
                                     _MetaChip(
                                       icon: Icons.fitness_center_rounded,
-                                      label: '${session.exerciseCount} ${isFrench ? 'ex.' : 'ex.'}',
+                                      label:
+                                          '${session.exerciseCount} ${isFrench ? 'ex.' : 'ex.'}',
                                     ),
                                     const SizedBox(width: AppSpacing.xs),
                                     _MetaChip(
@@ -771,26 +796,23 @@ class _SessionCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Container(
+                              AppDifficultyBadge(
+                                difficulty: session.difficulty,
+                                isFrench: isFrench,
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 2,
+                                  horizontal: AppDifficultyTheme
+                                      .compactHorizontalPadding,
+                                  vertical:
+                                      AppDifficultyTheme.compactVerticalPadding,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: color.withValues(alpha: AppOpacity.subtle),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(
-                                    color: color.withValues(alpha: AppOpacity.half),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(
+                                    AppDifficultyTheme.compactRadius,
                                   ),
                                 ),
-                                child: Text(
-                                  _difficultyLabel(session.difficulty),
-                                  style: TextStyle(
-                                    color: color,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                                fontSize: AppDifficultyTheme.compactFontSize,
+                                backgroundAlpha: AppOpacity.subtle,
+                                borderAlpha: AppOpacity.half,
                               ),
                               const SizedBox(height: 4),
                               const Icon(
@@ -832,25 +854,7 @@ class _ProgramCard extends StatelessWidget {
   });
 
   Color _difficultyColor(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return AppColors.success;
-      case DifficultyLevel.intermediate:
-        return AppColors.warning;
-      case DifficultyLevel.advanced:
-        return AppColors.error;
-    }
-  }
-
-  String _difficultyLabel(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Débutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermédiaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avancé' : 'Advanced';
-    }
+    return AppDifficultyTheme.paletteFor(d).accentColor;
   }
 
   @override
@@ -902,13 +906,16 @@ class _ProgramCard extends StatelessWidget {
                           height: 56,
                           decoration: BoxDecoration(
                             color: isActive
-                                ? AppColors.primary.withValues(alpha: AppOpacity.mild)
+                                ? AppColors.primary
+                                    .withValues(alpha: AppOpacity.mild)
                                 : AppColors.neutral300,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Icon(
                             Icons.calendar_month_rounded,
-                            color: isActive ? AppColors.primary : AppColors.textSecondary,
+                            color: isActive
+                                ? AppColors.primary
+                                : AppColors.textSecondary,
                             size: 28,
                           ),
                         ),
@@ -963,12 +970,14 @@ class _ProgramCard extends StatelessWidget {
                                 children: [
                                   _MetaChip(
                                     icon: Icons.list_alt_rounded,
-                                    label: '${program.totalSessions} ${isFrench ? 'sessions' : 'sessions'}',
+                                    label:
+                                        '${program.totalSessions} ${isFrench ? 'sessions' : 'sessions'}',
                                   ),
                                   const SizedBox(width: AppSpacing.xs),
                                   _MetaChip(
                                     icon: Icons.calendar_today_rounded,
-                                    label: '${program.durationWeeks} ${isFrench ? 'sem.' : 'wks'}',
+                                    label:
+                                        '${program.durationWeeks} ${isFrench ? 'sem.' : 'wks'}',
                                   ),
                                 ],
                               ),
@@ -981,26 +990,23 @@ class _ProgramCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Container(
+                            AppDifficultyBadge(
+                              difficulty: program.difficulty,
+                              isFrench: isFrench,
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
+                                horizontal:
+                                    AppDifficultyTheme.compactHorizontalPadding,
+                                vertical:
+                                    AppDifficultyTheme.compactVerticalPadding,
                               ),
-                              decoration: BoxDecoration(
-                                color: color.withValues(alpha: AppOpacity.subtle),
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(
-                                  color: color.withValues(alpha: AppOpacity.half),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(
+                                  AppDifficultyTheme.compactRadius,
                                 ),
                               ),
-                              child: Text(
-                                _difficultyLabel(program.difficulty),
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
+                              fontSize: AppDifficultyTheme.compactFontSize,
+                              backgroundAlpha: AppOpacity.subtle,
+                              borderAlpha: AppOpacity.half,
                             ),
                             const SizedBox(height: 4),
                             const Icon(
@@ -1082,7 +1088,8 @@ class _EmptyState extends StatelessWidget {
                 Icon(
                   Icons.playlist_add_rounded,
                   size: 56,
-                  color: AppColors.primaryLight.withValues(alpha: AppOpacity.prominent),
+                  color: AppColors.primaryLight
+                      .withValues(alpha: AppOpacity.prominent),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
@@ -1157,7 +1164,8 @@ class _EmptyProgramsState extends StatelessWidget {
                 Icon(
                   Icons.calendar_month_rounded,
                   size: 56,
-                  color: AppColors.primaryLight.withValues(alpha: AppOpacity.prominent),
+                  color: AppColors.primaryLight
+                      .withValues(alpha: AppOpacity.prominent),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(

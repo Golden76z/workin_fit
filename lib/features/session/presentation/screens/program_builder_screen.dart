@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
@@ -102,28 +103,6 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
 
   int get _assignedCount =>
       _slots.where((s) => s != null && s != kRestDaySlot).length;
-
-  Color _difficultyColor(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return AppColors.success;
-      case DifficultyLevel.intermediate:
-        return AppColors.warning;
-      case DifficultyLevel.advanced:
-        return AppColors.error;
-    }
-  }
-
-  String _difficultyLabel(DifficultyLevel d, bool isFrench) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Débutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermédiaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avancé' : 'Advanced';
-    }
-  }
 
   // ---------------------------------------------------------------------------
   // Slot management
@@ -264,10 +243,8 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
     setState(() => _isSaving = true);
     try {
       final userId = ref.read(currentUserIdProvider);
-      final sessionIds = _slots
-          .whereType<String>()
-          .where((s) => s != kRestDaySlot)
-          .toList();
+      final sessionIds =
+          _slots.whereType<String>().where((s) => s != kRestDaySlot).toList();
       final program = Program(
         id: widget.editProgram?.id ?? const Uuid().v4(),
         name: name,
@@ -330,8 +307,10 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
             // ── App bar ──────────────────────────────────────────────────────
             SliverAppBar(
               pinned: true,
-              backgroundColor: AppChrome.topSurface,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
               leading: IconButton(
                 icon: const Icon(Icons.close_rounded),
@@ -396,9 +375,8 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _SectionLabel(
-                            text: isFrench
-                                ? 'Nom du programme'
-                                : 'Program name',
+                            text:
+                                isFrench ? 'Nom du programme' : 'Program name',
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           _InputField(
@@ -442,7 +420,8 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                           Row(
                             children: DifficultyLevel.values.map((d) {
                               final selected = _difficulty == d;
-                              final color = _difficultyColor(d);
+                              final AppDifficultyPalette palette =
+                                  AppDifficultyTheme.paletteFor(d);
                               return Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -459,24 +438,35 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: selected
-                                            ? color.withValues(alpha: AppOpacity.muted)
+                                            ? palette.backgroundColor(
+                                                alpha: AppDifficultyTheme
+                                                    .selectedSurfaceOpacity,
+                                              )
                                             : AppColors.surfaceVariant,
                                         borderRadius:
                                             BorderRadius.circular(AppRadii.sm),
                                         border: Border.all(
                                           color: selected
-                                              ? color
+                                              ? palette.accentColor
                                               : AppColors.primaryPastel
-                                                  .withValues(alpha: AppOpacity.half),
-                                          width: selected ? 1.6 : 1,
+                                                  .withValues(
+                                                      alpha: AppOpacity.half),
+                                          width: selected
+                                              ? AppDifficultyTheme
+                                                  .selectedBorderWidth
+                                              : AppDifficultyTheme
+                                                  .unselectedBorderWidth,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          _difficultyLabel(d, isFrench),
+                                          AppDifficultyTheme.label(
+                                            d,
+                                            isFrench: isFrench,
+                                          ),
                                           style: TextStyle(
                                             color: selected
-                                                ? color
+                                                ? palette.foregroundColor
                                                 : AppColors.textSecondary,
                                             fontSize: 12,
                                             fontWeight: selected
@@ -548,8 +538,8 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
                             Divider(
                               height: 1,
                               thickness: 1,
-                              color:
-                                  AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
+                              color: AppColors.primaryPastel
+                                  .withValues(alpha: AppOpacity.firm),
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             Wrap(
@@ -1015,10 +1005,10 @@ class _DaySlotRow extends StatelessWidget {
                                           vertical: 1,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: AppColors.warning
-                                              .withValues(alpha: AppOpacity.light),
-                                          borderRadius:
-                                              BorderRadius.circular(AppRadii.sm),
+                                          color: AppColors.warning.withValues(
+                                              alpha: AppOpacity.light),
+                                          borderRadius: BorderRadius.circular(
+                                              AppRadii.sm),
                                         ),
                                         child: const Text(
                                           'Extra',
@@ -1061,7 +1051,8 @@ class _DaySlotRow extends StatelessWidget {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: AppColors.error.withValues(alpha: AppOpacity.faint),
+                        color:
+                            AppColors.error.withValues(alpha: AppOpacity.faint),
                         borderRadius: BorderRadius.circular(AppRadii.sm),
                       ),
                       child: const Icon(
@@ -1147,8 +1138,10 @@ class _WeekdaySelector extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: selected
-                          ? AppColors.primary.withValues(alpha: AppOpacity.visible)
-                          : AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
+                          ? AppColors.primary
+                              .withValues(alpha: AppOpacity.visible)
+                          : AppColors.primaryPastel
+                              .withValues(alpha: AppOpacity.half),
                       width: 1,
                     ),
                   ),
@@ -1222,9 +1215,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
         ? widget.sessions
         : widget.sessions
             .where(
-              (s) => s.name
-                  .toLowerCase()
-                  .contains(_query.trim().toLowerCase()),
+              (s) => s.name.toLowerCase().contains(_query.trim().toLowerCase()),
             )
             .toList();
 
@@ -1249,7 +1240,8 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                   width: 36,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
+                    color: AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.firm),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -1282,7 +1274,8 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                 unselectedLabelColor: AppColors.textSecondary,
                 indicatorColor: AppColors.primary,
                 indicatorWeight: 2,
-                dividerColor: AppColors.primaryPastel.withValues(alpha: AppOpacity.mild),
+                dividerColor:
+                    AppColors.primaryPastel.withValues(alpha: AppOpacity.mild),
                 labelStyle: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
@@ -1294,8 +1287,7 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                 ),
                 tabs: [
                   Tab(
-                    text:
-                        widget.isFrench ? 'Mes sessions' : 'My sessions',
+                    text: widget.isFrench ? 'Mes sessions' : 'My sessions',
                   ),
                   Tab(
                     text: widget.isFrench ? 'Populaires' : 'Popular',
@@ -1323,7 +1315,8 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                           ),
                           child: Material(
                             color: widget.currentSessionId == kRestDaySlot
-                                ? AppColors.success.withValues(alpha: AppOpacity.faint)
+                                ? AppColors.success
+                                    .withValues(alpha: AppOpacity.faint)
                                 : AppColors.surface,
                             borderRadius: BorderRadius.circular(AppRadii.sm),
                             child: InkWell(
@@ -1341,8 +1334,8 @@ class _SessionPickerSheetState extends State<_SessionPickerSheet>
                                       width: 34,
                                       height: 34,
                                       decoration: BoxDecoration(
-                                        color: AppColors.success
-                                            .withValues(alpha: AppOpacity.subtle),
+                                        color: AppColors.success.withValues(
+                                            alpha: AppOpacity.subtle),
                                         borderRadius:
                                             BorderRadius.circular(AppRadii.sm),
                                       ),
@@ -1514,7 +1507,8 @@ class _SessionPickerTile extends StatelessWidget {
                   width: 34,
                   height: 34,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: AppOpacity.whisper),
+                    color:
+                        AppColors.primary.withValues(alpha: AppOpacity.whisper),
                     borderRadius: BorderRadius.circular(AppRadii.sm),
                   ),
                   child: const Icon(
@@ -1549,9 +1543,7 @@ class _SessionPickerTile extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  isCurrent
-                      ? Icons.check_circle_rounded
-                      : Icons.add_rounded,
+                  isCurrent ? Icons.check_circle_rounded : Icons.add_rounded,
                   color: AppColors.primary,
                   size: 20,
                 ),
@@ -1746,7 +1738,8 @@ class _GoalChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary.withValues(alpha: AppOpacity.whisper),
         borderRadius: BorderRadius.circular(AppRadii.sm),
-        border: Border.all(color: AppColors.primary.withValues(alpha: AppOpacity.mild)),
+        border: Border.all(
+            color: AppColors.primary.withValues(alpha: AppOpacity.mild)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1902,13 +1895,15 @@ class _InputFieldState extends State<_InputField> {
               ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
-          borderSide:
-              BorderSide(color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
+          borderSide: BorderSide(
+              color:
+                  AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
-          borderSide:
-              BorderSide(color: AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
+          borderSide: BorderSide(
+              color:
+                  AppColors.primaryPastel.withValues(alpha: AppOpacity.half)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -1951,9 +1946,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

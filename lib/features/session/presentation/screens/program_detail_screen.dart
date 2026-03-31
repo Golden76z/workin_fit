@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_builder_screen.dart';
@@ -158,8 +159,7 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
     int? activeDayInWeek;
     if (isActive && startDate != null) {
       final elapsed = DateTime.now().difference(startDate).inDays;
-      activeWeekIndex =
-          (elapsed ~/ 7).clamp(0, program.durationWeeks - 1);
+      activeWeekIndex = (elapsed ~/ 7).clamp(0, program.durationWeeks - 1);
       activeDayInWeek = elapsed % 7;
     }
 
@@ -173,8 +173,10 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
           slivers: [
             SliverAppBar(
               pinned: true,
-              backgroundColor: AppChrome.topSurface,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
               title: Text(
                 program.name,
@@ -312,9 +314,8 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
             sessionsAsync.when(
               data: (allSessions) {
                 final sessionMap = {for (final s in allSessions) s.id: s};
-                final sessions = program.sessionIds
-                    .map((id) => sessionMap[id])
-                    .toList();
+                final sessions =
+                    program.sessionIds.map((id) => sessionMap[id]).toList();
 
                 if (program.sessionIds.isEmpty) {
                   return SliverToBoxAdapter(
@@ -360,15 +361,13 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                     itemCount: weeks.length,
                     itemBuilder: (context, weekIndex) {
                       final week = weeks[weekIndex];
-                      final assigned =
-                          week.where((s) => s != null).length;
-                      final isCurrentWeek =
-                          activeWeekIndex == weekIndex;
+                      final assigned = week.where((s) => s != null).length;
+                      final isCurrentWeek = activeWeekIndex == weekIndex;
                       final isPastWeek = activeWeekIndex != null &&
                           weekIndex < activeWeekIndex;
                       // Expand only the current week when active
-                      final initialExpanded = activeWeekIndex == null ||
-                          isCurrentWeek;
+                      final initialExpanded =
+                          activeWeekIndex == null || isCurrentWeek;
                       return Padding(
                         padding: const EdgeInsets.only(
                           bottom: AppSpacing.md,
@@ -383,11 +382,9 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                           initialExpanded: initialExpanded,
                           isCurrentWeek: isCurrentWeek,
                           isPastWeek: isPastWeek,
-                          currentDayInWeek: isCurrentWeek
-                              ? activeDayInWeek
-                              : null,
-                          onTapSession: (session) =>
-                              Navigator.of(context).push(
+                          currentDayInWeek:
+                              isCurrentWeek ? activeDayInWeek : null,
+                          onTapSession: (session) => Navigator.of(context).push(
                             SessionDetailScreen.route(session: session),
                           ),
                         ),
@@ -440,9 +437,7 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                     ),
                     label: Text(
                       isActive
-                          ? (isFrench
-                              ? 'Arrêter le programme'
-                              : 'Stop Program')
+                          ? (isFrench ? 'Arrêter le programme' : 'Stop Program')
                           : (isFrench
                               ? 'Démarrer le programme'
                               : 'Start Program'),
@@ -523,8 +518,7 @@ class _StartDateDialog extends StatelessWidget {
             'Nov',
             'Dec',
           ];
-    final mondayLabel =
-        '${nextMonday.day} ${months[nextMonday.month]}';
+    final mondayLabel = '${nextMonday.day} ${months[nextMonday.month]}';
 
     return AppDialog(
       title: isFrench ? 'Quand commencer ?' : 'When to start?',
@@ -576,8 +570,7 @@ class _MetaRow extends StatelessWidget {
         ),
         _MetaChip(
           icon: Icons.calendar_today_rounded,
-          label:
-              '${program.durationWeeks} ${isFrench ? 'semaines' : 'weeks'}',
+          label: '${program.durationWeeks} ${isFrench ? 'semaines' : 'weeks'}',
         ),
         _MetaChip(
           icon: Icons.repeat_rounded,
@@ -718,12 +711,15 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                     const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 2,),
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.22),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: AppOpacity.moderate),
+                          color: Colors.white
+                              .withValues(alpha: AppOpacity.moderate),
                         ),
                       ),
                       child: Text(
@@ -748,7 +744,9 @@ class _WeekDetailCardState extends State<_WeekDetailCard> {
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2,),
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: AppOpacity.soft),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -873,7 +871,8 @@ class _DayDetailRow extends StatelessWidget {
     } else if (isPastDay) {
       rowBg = AppColors.surfaceVariant.withValues(alpha: AppOpacity.visible);
       badgeBg = AppColors.primaryPastel.withValues(alpha: AppOpacity.light);
-      badgeBorder = AppColors.primaryPastel.withValues(alpha: AppOpacity.subtle);
+      badgeBorder =
+          AppColors.primaryPastel.withValues(alpha: AppOpacity.subtle);
       nameColor = AppColors.textSecondary.withValues(alpha: AppOpacity.half);
     } else {
       rowBg = Colors.transparent;
@@ -933,7 +932,8 @@ class _DayDetailRow extends StatelessWidget {
                                         : hasSession
                                             ? AppColors.primary
                                             : AppColors.textSecondary
-                                                .withValues(alpha: AppOpacity.firm),
+                                                .withValues(
+                                                    alpha: AppOpacity.firm),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -970,19 +970,18 @@ class _DayDetailRow extends StatelessWidget {
                                     const SizedBox(width: 6),
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 2,),
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: isDone
                                             ? AppColors.success
                                             : AppColors.primary,
-                                        borderRadius:
-                                            BorderRadius.circular(6),
+                                        borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
                                         isDone
-                                            ? (isFrench
-                                                ? 'Auj. ✓'
-                                                : 'Today ✓')
+                                            ? (isFrench ? 'Auj. ✓' : 'Today ✓')
                                             : (isFrench
                                                 ? "Aujourd'hui"
                                                 : 'Today'),
@@ -1012,8 +1011,8 @@ class _DayDetailRow extends StatelessWidget {
                                     '${session!.exerciseCount} ${isFrench ? 'ex.' : 'ex.'}',
                                     style: TextStyle(
                                       color: isPastDay && !isDone
-                                          ? AppColors.textTertiary
-                                              .withValues(alpha: AppOpacity.firm)
+                                          ? AppColors.textTertiary.withValues(
+                                              alpha: AppOpacity.firm)
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -1033,8 +1032,8 @@ class _DayDetailRow extends StatelessWidget {
                                     session!.durationDisplay,
                                     style: TextStyle(
                                       color: isPastDay && !isDone
-                                          ? AppColors.textTertiary
-                                              .withValues(alpha: AppOpacity.firm)
+                                          ? AppColors.textTertiary.withValues(
+                                              alpha: AppOpacity.firm)
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -1069,9 +1068,8 @@ class _DayDetailRow extends StatelessWidget {
                   if (hasSession && !isPastDay)
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: isDone
-                          ? AppColors.textTertiary
-                          : AppColors.primary,
+                      color:
+                          isDone ? AppColors.textTertiary : AppColors.primary,
                       size: 18,
                     ),
                 ],
@@ -1109,38 +1107,9 @@ class _DifficultyBadge extends StatelessWidget {
         .languageCode
         .toLowerCase()
         .startsWith('fr');
-    final (String label, Color color) = switch (difficulty) {
-      DifficultyLevel.beginner => (
-          isFrench ? 'Débutant' : 'Beginner',
-          AppColors.success
-        ),
-      DifficultyLevel.intermediate => (
-          isFrench ? 'Intermédiaire' : 'Intermediate',
-          AppColors.warning
-        ),
-      DifficultyLevel.advanced => (
-          isFrench ? 'Avancé' : 'Advanced',
-          AppColors.error
-        ),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+    return AppDifficultyBadge(
+      difficulty: difficulty,
+      isFrench: isFrench,
     );
   }
 }
@@ -1184,9 +1153,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

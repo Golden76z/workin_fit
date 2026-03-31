@@ -76,11 +76,13 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                     pinned: true,
                     backgroundColor: Colors.transparent,
                     surfaceTintColor: Colors.transparent,
+                    systemOverlayStyle: AppChrome.topSurfaceOverlay,
                     elevation: 0,
                     toolbarHeight: 36,
-                    flexibleSpace: Container(color: AppColors.navBarSurface),
+                    flexibleSpace: const AppTopBarBackground(),
                     leading: IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.white),
+                      icon:
+                          const Icon(Icons.close_rounded, color: Colors.white),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                     title: Text(
@@ -97,7 +99,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                       preferredSize: const Size.fromHeight(116),
                       child: Container(
                         color: Colors.transparent,
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.sm),
+                        padding:
+                            const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.sm),
                         child: Column(
                           children: [
                             Padding(
@@ -122,18 +125,19 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                     Icons.search_rounded,
                                     color: AppColors.textSecondary,
                                   ),
-                                  suffixIcon: _searchController.text.trim().isEmpty
-                                      ? null
-                                      : IconButton(
-                                          onPressed: () {
-                                            _searchController.clear();
-                                            setState(() {});
-                                          },
-                                          icon: const Icon(
-                                            Icons.close_rounded,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                        ),
+                                  suffixIcon:
+                                      _searchController.text.trim().isEmpty
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () {
+                                                _searchController.clear();
+                                                setState(() {});
+                                              },
+                                              icon: const Icon(
+                                                Icons.close_rounded,
+                                                color: AppColors.textSecondary,
+                                              ),
+                                            ),
                                   filled: true,
                                   fillColor: AppColors.neutral300,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -141,13 +145,15 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                     horizontal: AppSpacing.sm,
                                   ),
                                   border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(AppRadii.lg),
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.lg),
                                     borderSide: const BorderSide(
                                       color: AppColors.neutral400,
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(AppRadii.lg),
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.lg),
                                     borderSide: BorderSide(
                                       color: AppColors.primaryPastel.withValues(
                                         alpha: AppOpacity.half,
@@ -155,7 +161,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(AppRadii.lg),
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.lg),
                                     borderSide: const BorderSide(
                                       color: AppColors.primary,
                                       width: 1.4,
@@ -186,7 +193,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                       side: BorderSide(
                                         color: _selectedMuscleGroup == null
                                             ? AppColors.primary
-                                            : AppColors.primaryPastel.withValues(
+                                            : AppColors.primaryPastel
+                                                .withValues(
                                                 alpha: AppOpacity.half,
                                               ),
                                       ),
@@ -213,7 +221,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         side: BorderSide(
                                           color: _selectedMuscleGroup == muscle
                                               ? AppColors.primary
-                                              : AppColors.primaryPastel.withValues(
+                                              : AppColors.primaryPastel
+                                                  .withValues(
                                                   alpha: AppOpacity.half,
                                                 ),
                                         ),
@@ -226,7 +235,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                                         label: Text(
                                           muscleGroupLabel(muscle, isFrench),
                                         ),
-                                        selected: _selectedMuscleGroup == muscle,
+                                        selected:
+                                            _selectedMuscleGroup == muscle,
                                         onSelected: (_) => setState(
                                           () => _selectedMuscleGroup =
                                               _selectedMuscleGroup == muscle
@@ -283,7 +293,8 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
                               widget.alreadyAddedIds.contains(exercise.id);
 
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
+                            padding:
+                                const EdgeInsets.only(bottom: AppSpacing.xxs),
                             child: _PickerExerciseCard(
                               exercise: exercise,
                               title: exercise.getLocalizedName(context),
@@ -337,9 +348,12 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
     }).toList(growable: false);
 
     filtered.sort((a, b) {
-      final dc = difficultyRank(a.difficulty).compareTo(difficultyRank(b.difficulty));
+      final dc =
+          difficultyRank(a.difficulty).compareTo(difficultyRank(b.difficulty));
       if (dc != 0) return dc;
-      return a.getLocalizedName(context).toLowerCase()
+      return a
+          .getLocalizedName(context)
+          .toLowerCase()
           .compareTo(b.getLocalizedName(context).toLowerCase());
     });
 
@@ -370,7 +384,9 @@ class _ExercisePickerScreenState extends ConsumerState<ExercisePickerScreen> {
       ...exercise.equipment,
     };
 
-    return tokens.map(exerciseNormalize).any((t) => t.contains(normalizedQuery));
+    return tokens
+        .map(exerciseNormalize)
+        .any((t) => t.contains(normalizedQuery));
   }
 
   String _emptyStateMessage({
@@ -513,7 +529,8 @@ class _PickerExerciseCard extends StatelessWidget {
                     border: Border.all(
                       color: alreadyAdded
                           ? AppColors.success.withValues(alpha: AppOpacity.half)
-                          : AppColors.primary.withValues(alpha: AppOpacity.mild),
+                          : AppColors.primary
+                              .withValues(alpha: AppOpacity.mild),
                     ),
                   ),
                   child: Icon(

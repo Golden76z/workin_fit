@@ -9,7 +9,8 @@ import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
-import 'package:workin_fit/providers/workout_providers.dart' hide firestoreServiceProvider;
+import 'package:workin_fit/providers/workout_providers.dart'
+    hide firestoreServiceProvider;
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/models/friend.dart';
@@ -26,7 +27,8 @@ import 'package:workin_fit/core/theme/app_opacity.dart';
 const double _kAvatarRadius = 52.0;
 const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
-const double _kBannerHeight = 130.0;
+// Banner ends exactly at the avatar centre (half the avatar is inside the banner).
+const double _kBannerHeight = _kAvatarTotalRadius;
 const double _kProfileBlockRadius = AppRadii.lg;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
@@ -41,7 +43,12 @@ final _userProfileProvider =
 // ─── Main tab ────────────────────────────────────────────────────────────────
 
 class ProfileTab extends ConsumerStatefulWidget {
-  const ProfileTab({super.key});
+  final ValueChanged<int>? onEdgeSwipe;
+
+  const ProfileTab({
+    this.onEdgeSwipe,
+    super.key,
+  });
 
   @override
   ConsumerState<ProfileTab> createState() => _ProfileTabState();
@@ -53,6 +60,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
   bool get wantKeepAlive => true;
 
   bool _uploadingImage = false;
+  bool _handledEdgeSwipe = false;
 
   Future<void> _pickAndUploadImage() async {
     final user = ref.read(currentUserProvider);
@@ -146,6 +154,48 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     return part[0].toUpperCase() + part.substring(1);
   }
 
+  bool _handleTabViewEdgeSwipe(
+    ScrollNotification notification,
+    TabController tabController,
+  ) {
+    if (widget.onEdgeSwipe == null ||
+        notification.metrics.axis != Axis.horizontal) {
+      return false;
+    }
+
+    if (notification is ScrollStartNotification &&
+        notification.dragDetails != null) {
+      _handledEdgeSwipe = false;
+      return false;
+    }
+
+    if (notification is ScrollEndNotification) {
+      _handledEdgeSwipe = false;
+      return false;
+    }
+
+    if (notification is OverscrollNotification &&
+        notification.dragDetails != null &&
+        !_handledEdgeSwipe) {
+      final bool atFirstTab = tabController.index == 0;
+      final bool atLastTab = tabController.index == tabController.length - 1;
+
+      if (notification.overscroll < 0 && atFirstTab) {
+        _handledEdgeSwipe = true;
+        widget.onEdgeSwipe?.call(-1);
+        return true;
+      }
+
+      if (notification.overscroll > 0 && atLastTab) {
+        _handledEdgeSwipe = true;
+        widget.onEdgeSwipe?.call(1);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -169,133 +219,155 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
       style: AppChrome.homeOverlay,
       child: DefaultTabController(
         length: 2,
-        child: Scaffold(
-          backgroundColor: AppColors.surfaceVariant,
-          body: NestedScrollView(
-            headerSliverBuilder: (BuildContext ctx, bool innerBoxIsScrolled) {
-              return <Widget>[
-                // ─── Banner + header info ──────────────────────────
-                _ProfileHeaderSliver(
-                  username: username,
-                  email: user?.email,
-                  photoUrl: user?.photoURL,
-                  uploadingImage: _uploadingImage,
-                  isFrench: isFrench,
-                  onEditAvatar: _pickAndUploadImage,
-                  onEditProfile: () => _showComingSoon(isFrench),
-                ),
-                // ─── Sticky tab bar ────────────────────────────────
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _ProfileTabBarDelegate(isFrench: isFrench),
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: <Widget>[
-                // ─── Tab 0: Profile ────────────────────────────────
-                RefreshIndicator(
-                  onRefresh: () async {
-                    ref.invalidate(_userProfileProvider);
-                    ref.invalidate(streakDataProvider);
-                    await Future<void>.delayed(
-                      const Duration(milliseconds: 600),
+        child: Builder(
+          builder: (BuildContext tabContext) {
+            final TabController tabController =
+                DefaultTabController.of(tabContext);
+
+            return Scaffold(
+              backgroundColor: AppColors.surfaceVariant,
+              body: NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext ctx, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    // ─── Banner + header info ──────────────────────────
+                    _ProfileHeaderSliver(
+                      username: username,
+                      email: user?.email,
+                      photoUrl: user?.photoURL,
+                      uploadingImage: _uploadingImage,
+                      isFrench: isFrench,
+                      onEditAvatar: _pickAndUploadImage,
+                      onEditProfile: () => _showComingSoon(isFrench),
+                    ),
+                    // ─── Sticky tab bar ────────────────────────────────
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _ProfileTabBarDelegate(isFrench: isFrench),
+                    ),
+                  ];
+                },
+                body: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification notification) {
+                    return _handleTabViewEdgeSwipe(
+                      notification,
+                      tabController,
                     );
                   },
-                  color: AppColors.primary,
-                  backgroundColor: AppColors.surface,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.md,
-                      0,
-                    ),
+                  child: TabBarView(
+                    controller: tabController,
                     children: <Widget>[
-                      _ProfileSection(
-                        title: isFrench ? 'Série & Compte' : 'Streak & Account',
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                      // ─── Tab 0: Profile ────────────────────────────────
+                      RefreshIndicator(
+                        onRefresh: () async {
+                          ref.invalidate(_userProfileProvider);
+                          ref.invalidate(streakDataProvider);
+                          await Future<void>.delayed(
+                            const Duration(milliseconds: 600),
+                          );
+                        },
+                        color: AppColors.primary,
+                        backgroundColor: AppColors.surface,
+                        child: ListView(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.md,
+                            AppSpacing.md,
+                            AppSpacing.md,
+                            0,
+                          ),
                           children: <Widget>[
-                            _SectionSubheader(
-                              label: isFrench ? 'Série' : 'Streak',
-                            ),
-                            _StreakCalendar(isFrench: isFrench),
-                            Divider(
-                              height: 1,
-                              color: AppColors.babyBlueIce
-                                  .withValues(alpha: AppOpacity.visible),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              child: _StatsGraphButton(
-                                label: isFrench
-                                    ? 'Statistiques & Graphiques'
-                                    : 'Stats & Graph',
-                                onTap: _openStatsGraph,
+                            _ProfileSection(
+                              title: isFrench
+                                  ? 'Série & Compte'
+                                  : 'Streak & Account',
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  _SectionSubheader(
+                                    label: isFrench ? 'Série' : 'Streak',
+                                  ),
+                                  _StreakCalendar(isFrench: isFrench),
+                                  Divider(
+                                    height: 1,
+                                    color: AppColors.babyBlueIce
+                                        .withValues(alpha: AppOpacity.visible),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.all(AppSpacing.md),
+                                    child: _StatsGraphButton(
+                                      label: isFrench
+                                          ? 'Statistiques & Graphiques'
+                                          : 'Stats & Graph',
+                                      onTap: _openStatsGraph,
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 1,
+                                    color: AppColors.babyBlueIce
+                                        .withValues(alpha: AppOpacity.visible),
+                                  ),
+                                  _SectionSubheader(
+                                    label: isFrench ? 'Compte' : 'Account',
+                                  ),
+                                  _MenuList(
+                                    items: <_MenuItem>[
+                                      _MenuItem(
+                                        icon: Icons.emoji_events_rounded,
+                                        label:
+                                            isFrench ? 'Trophées' : 'Trophies',
+                                        onTap: _openAchievements,
+                                      ),
+                                      _MenuItem(
+                                        icon: Icons.edit_rounded,
+                                        label: isFrench
+                                            ? 'Modifier le profil'
+                                            : 'Edit profile',
+                                        onTap: () => _showComingSoon(isFrench),
+                                      ),
+                                      _MenuItem(
+                                        icon: Icons.language_rounded,
+                                        label: isFrench ? 'Langue' : 'Language',
+                                        onTap: _openLanguage,
+                                      ),
+                                      _MenuItem(
+                                        icon: Icons.settings_rounded,
+                                        label: isFrench
+                                            ? 'Paramètres'
+                                            : 'Settings',
+                                        onTap: () => _showComingSoon(isFrench),
+                                      ),
+                                      _MenuItem(
+                                        icon: Icons.lock_outline_rounded,
+                                        label: isFrench
+                                            ? 'Confidentialité'
+                                            : 'Privacy',
+                                        onTap: () => _showComingSoon(isFrench),
+                                        isLast: true,
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            Divider(
-                              height: 1,
-                              color: AppColors.babyBlueIce
-                                  .withValues(alpha: AppOpacity.visible),
+                            const SizedBox(height: AppSpacing.md),
+                            _LogoutButton(
+                              label: isFrench ? 'Se déconnecter' : 'Log out',
+                              onTap: _logout,
                             ),
-                            _SectionSubheader(
-                              label: isFrench ? 'Compte' : 'Account',
-                            ),
-                            _MenuList(
-                              items: <_MenuItem>[
-                                _MenuItem(
-                                  icon: Icons.emoji_events_rounded,
-                                  label: isFrench ? 'Trophées' : 'Trophies',
-                                  onTap: _openAchievements,
-                                ),
-                                _MenuItem(
-                                  icon: Icons.edit_rounded,
-                                  label: isFrench
-                                      ? 'Modifier le profil'
-                                      : 'Edit profile',
-                                  onTap: () => _showComingSoon(isFrench),
-                                ),
-                                _MenuItem(
-                                  icon: Icons.language_rounded,
-                                  label: isFrench ? 'Langue' : 'Language',
-                                  onTap: _openLanguage,
-                                ),
-                                _MenuItem(
-                                  icon: Icons.settings_rounded,
-                                  label:
-                                      isFrench ? 'Paramètres' : 'Settings',
-                                  onTap: () => _showComingSoon(isFrench),
-                                ),
-                                _MenuItem(
-                                  icon: Icons.lock_outline_rounded,
-                                  label: isFrench
-                                      ? 'Confidentialité'
-                                      : 'Privacy',
-                                  onTap: () => _showComingSoon(isFrench),
-                                  isLast: true,
-                                ),
-                              ],
-                            ),
+                            const SizedBox(height: 104),
                           ],
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.md),
-                      _LogoutButton(
-                        label: isFrench ? 'Se déconnecter' : 'Log out',
-                        onTap: _logout,
-                      ),
-                      const SizedBox(height: 104),
+
+                      // ─── Tab 1: Friends ────────────────────────────────
+                      _FriendsTabContent(isFrench: isFrench),
                     ],
                   ),
                 ),
-
-                // ─── Tab 1: Friends ────────────────────────────────
-                _FriendsTabContent(isFrench: isFrench),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -337,10 +409,10 @@ class _ProfileHeaderSliver extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Top banner
-              Container(
+              // Top banner — gradient, reaches to the avatar centre line
+              SizedBox(
                 height: _kBannerHeight + topPadding,
-                color: AppColors.navBarSurface,
+                child: const AppTopBarBackground(),
               ),
 
               // White info section
@@ -376,10 +448,12 @@ class _ProfileHeaderSliver extends StatelessWidget {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                          color: AppColors.primary
+                              .withValues(alpha: AppOpacity.faint),
                           borderRadius: BorderRadius.circular(AppRadii.lg),
                           border: Border.all(
-                            color: AppColors.primary.withValues(alpha: AppOpacity.muted),
+                            color: AppColors.primary
+                                .withValues(alpha: AppOpacity.muted),
                           ),
                         ),
                         child: Row(
@@ -716,7 +790,8 @@ class _ProfileSection extends StatelessWidget {
             child: Text(
               title.toUpperCase(),
               style: TextStyle(
-                color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                color: AppColors.textSecondary
+                    .withValues(alpha: AppOpacity.prominent),
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
@@ -925,7 +1000,8 @@ class _StreakCalendar extends ConsumerWidget {
                   vertical: AppSpacing.xxs + 2,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.medium),
+                  color: AppColors.babyBlueIce
+                      .withValues(alpha: AppOpacity.medium),
                   borderRadius: BorderRadius.circular(AppRadii.lg),
                 ),
                 child: Row(
@@ -998,7 +1074,8 @@ class _DayBubble extends StatelessWidget {
             boxShadow: worked
                 ? <BoxShadow>[
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: AppOpacity.mild),
+                      color:
+                          AppColors.primary.withValues(alpha: AppOpacity.mild),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -1013,7 +1090,8 @@ class _DayBubble extends StatelessWidget {
                     height: 6,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.mild),
+                      color: AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.mild),
                     ),
                   ),
           ),
@@ -1071,10 +1149,12 @@ class _MenuList extends StatelessWidget {
                       width: 34,
                       height: 34,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                        color: AppColors.primary
+                            .withValues(alpha: AppOpacity.faint),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(item.icon, color: AppColors.primary, size: 17),
+                      child:
+                          Icon(item.icon, color: AppColors.primary, size: 17),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
@@ -1089,7 +1169,8 @@ class _MenuList extends StatelessWidget {
                     ),
                     Icon(
                       Icons.chevron_right_rounded,
-                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
+                      color: AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.firm),
                       size: 20,
                     ),
                   ],
@@ -1100,7 +1181,8 @@ class _MenuList extends StatelessWidget {
               Divider(
                 height: 1,
                 indent: AppSpacing.md + 34 + AppSpacing.sm,
-                color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+                color:
+                    AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
               ),
           ],
         );
@@ -1130,27 +1212,38 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return Container(
-      color: AppColors.surface,
-      child: TabBar(
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.textSecondary,
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 2,
-        dividerColor: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 14,
-          fontFamily: 'AppFontMedium',
+    return AppTopBarBackground(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.white.withValues(alpha: AppOpacity.trace),
+            ),
+            bottom: BorderSide(
+              color: Colors.white.withValues(alpha: AppOpacity.subtle),
+            ),
+          ),
         ),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
+        child: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white.withValues(alpha: AppOpacity.over),
+          indicatorColor: Colors.white,
+          indicatorWeight: 2,
+          dividerColor: Colors.transparent,
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            fontFamily: 'AppFontMedium',
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
+          tabs: <Tab>[
+            Tab(text: isFrench ? 'Profil' : 'Profile'),
+            Tab(text: isFrench ? 'Amis' : 'Friends'),
+          ],
         ),
-        tabs: <Tab>[
-          Tab(text: isFrench ? 'Profil' : 'Profile'),
-          Tab(text: isFrench ? 'Amis' : 'Friends'),
-        ],
       ),
     );
   }
@@ -1249,8 +1342,8 @@ class _FriendsTabContent extends ConsumerWidget {
                     ? 'Impossible de charger les amis'
                     : 'Failed to load friends',
                 style: TextStyle(
-                  color:
-                      AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                  color: AppColors.textSecondary
+                      .withValues(alpha: AppOpacity.prominent),
                 ),
               ),
             ),
@@ -1718,14 +1811,15 @@ class _FriendsEmptyState extends StatelessWidget {
             Icon(
               Icons.group_rounded,
               size: 64,
-              color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+              color:
+                  AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               isFrench ? 'Pas encore d\'amis' : 'No friends yet',
               style: TextStyle(
-                color:
-                    AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                color: AppColors.textSecondary
+                    .withValues(alpha: AppOpacity.prominent),
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -1770,7 +1864,9 @@ class _LogoutButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(_kProfileBlockRadius),
-        border: Border.all(color: AppColors.errorSoft.withValues(alpha: AppOpacity.firm)),
+        border: Border.all(
+          color: AppColors.errorSoft.withValues(alpha: AppOpacity.firm),
+        ),
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: AppColors.error.withValues(alpha: 0.04),
@@ -1820,4 +1916,3 @@ class _LogoutButton extends StatelessWidget {
     );
   }
 }
-

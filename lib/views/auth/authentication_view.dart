@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
-import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/views/auth/login_view.dart';
 import 'package:workin_fit/views/auth/register_view.dart';
@@ -45,6 +45,11 @@ class _AuthenticationViewState extends State<AuthenticationView>
       appBar: AppBar(
         // To hide the arrow back button on the screen (only keep the phone one)
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         title: Padding(
           padding: const EdgeInsets.only(top: AppSpacing.sm + 3),
           child: Center(
@@ -59,33 +64,29 @@ class _AuthenticationViewState extends State<AuthenticationView>
             ),
           ),
         ),
-        backgroundColor: AppColors.primary,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: Container(
-            color: AppColors.primary,
-            child: TabBar(
-              controller: _tabController,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white.withValues(alpha: 0.65),
-              indicatorColor: Colors.white,
-              indicatorWeight: 3,
-              labelStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'AppFontMedium',
-              ),
-              unselectedLabelStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontFamily: 'AppFontMedium',
-              ),
-              tabs: [
-                Tab(text: localizations.auth_tab_register),
-                Tab(text: localizations.auth_tab_login),
-              ],
+          child: TabBar(
+            controller: _tabController,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white.withValues(alpha: 0.65),
+            indicatorColor: Colors.white,
+            indicatorWeight: 3,
+            labelStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'AppFontMedium',
             ),
+            unselectedLabelStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontFamily: 'AppFontMedium',
+            ),
+            tabs: [
+              Tab(text: localizations.auth_tab_register),
+              Tab(text: localizations.auth_tab_login),
+            ],
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_detail_screen.dart';
@@ -70,8 +71,10 @@ class SessionDetailScreen extends ConsumerWidget {
               slivers: [
                 SliverAppBar(
                   pinned: true,
-                  backgroundColor: AppChrome.topSurface,
+                  backgroundColor: Colors.transparent,
                   surfaceTintColor: Colors.transparent,
+                  systemOverlayStyle: AppChrome.topSurfaceOverlay,
+                  flexibleSpace: const AppTopBarBackground(),
                   iconTheme: const IconThemeData(color: Colors.white),
                   title: Text(
                     session.name,
@@ -127,12 +130,12 @@ class SessionDetailScreen extends ConsumerWidget {
                               vertical: AppSpacing.sm,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.success.withValues(alpha: AppOpacity.subtle),
-                              borderRadius:
-                                  BorderRadius.circular(AppRadii.md),
+                              color: AppColors.success
+                                  .withValues(alpha: AppOpacity.subtle),
+                              borderRadius: BorderRadius.circular(AppRadii.md),
                               border: Border.all(
-                                color:
-                                    AppColors.success.withValues(alpha: AppOpacity.firm),
+                                color: AppColors.success
+                                    .withValues(alpha: AppOpacity.firm),
                               ),
                             ),
                             child: Row(
@@ -180,8 +183,7 @@ class SessionDetailScreen extends ConsumerWidget {
                       final workout = session.workouts[index];
                       final exercise = exerciseMap[workout.exerciseId];
                       return Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppSpacing.xs),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                         child: _ExerciseRow(
                           workout: workout,
                           exercise: exercise,
@@ -237,15 +239,13 @@ class SessionDetailScreen extends ConsumerWidget {
                         ),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: isDone
-                              ? AppColors.success
-                              : AppColors.primary,
+                          backgroundColor:
+                              isDone ? AppColors.success : AppColors.primary,
                           disabledBackgroundColor: AppColors.success
                               .withValues(alpha: AppOpacity.prominent),
                           disabledForegroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppRadii.lg),
+                            borderRadius: BorderRadius.circular(AppRadii.lg),
                           ),
                         ),
                       ),
@@ -282,28 +282,28 @@ class SessionDetailScreen extends ConsumerWidget {
 
     Navigator.of(context)
         .push(
-          MaterialPageRoute<void>(
-            builder: (_) => WorkoutExecutionScreen(
-              session: session,
-              seededExercises: seeded,
-            ),
-          ),
-        )
+      MaterialPageRoute<void>(
+        builder: (_) => WorkoutExecutionScreen(
+          session: session,
+          seededExercises: seeded,
+        ),
+      ),
+    )
         .then((_) {
-          // Mark session as done for today
-          ref
-              .read(completedTodaySessionIdsProvider.notifier)
-              .update((s) => {...s, session.id});
-          // Persist to history
-          ref.read(sessionHistoryActionsProvider).addEntry(
-                SessionHistoryEntry(
-                  sessionId: session.id,
-                  sessionName: session.name,
-                  durationDisplay: session.durationDisplay,
-                  completedAt: DateTime.now(),
-                ),
-              );
-        });
+      // Mark session as done for today
+      ref
+          .read(completedTodaySessionIdsProvider.notifier)
+          .update((s) => {...s, session.id});
+      // Persist to history
+      ref.read(sessionHistoryActionsProvider).addEntry(
+            SessionHistoryEntry(
+              sessionId: session.id,
+              sessionName: session.name,
+              durationDisplay: session.durationDisplay,
+              completedAt: DateTime.now(),
+            ),
+          );
+    });
   }
 }
 
@@ -429,11 +429,13 @@ class _ExerciseRow extends StatelessWidget {
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppRadii.md),
             border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: AppOpacity.medium),
+              color:
+                  AppColors.primaryLight.withValues(alpha: AppOpacity.medium),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: AppOpacity.faint),
+                color:
+                    AppColors.primaryLight.withValues(alpha: AppOpacity.faint),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -451,8 +453,8 @@ class _ExerciseRow extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color:
-                        AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
+                    color: AppColors.primaryPastel
+                        .withValues(alpha: AppOpacity.firm),
                     borderRadius: BorderRadius.circular(AppRadii.md),
                   ),
                   child: const Icon(
@@ -518,37 +520,11 @@ class _DifficultyBadge extends StatelessWidget {
         .languageCode
         .toLowerCase()
         .startsWith('fr');
-    final (String label, Color color) = switch (difficulty) {
-      DifficultyLevel.beginner => (
-          isFrench ? 'Débutant' : 'Beginner',
-          AppColors.success
-        ),
-      DifficultyLevel.intermediate => (
-          isFrench ? 'Intermédiaire' : 'Intermediate',
-          AppColors.warning
-        ),
-      DifficultyLevel.advanced => (
-          isFrench ? 'Avancé' : 'Advanced',
-          AppColors.error
-        ),
-    };
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(AppRadii.xl),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
+    return AppDifficultyBadge(
+      difficulty: difficulty,
+      isFrench: isFrench,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(AppDifficultyTheme.pillRadius),
       ),
     );
   }
@@ -593,9 +569,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

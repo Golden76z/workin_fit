@@ -71,14 +71,20 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
   }
 
+  void _handleNestedEdgeSwipe(int delta) {
+    final int targetIndex = (_tabIndex.value + delta).clamp(0, 4);
+    if (targetIndex == _tabIndex.value) return;
+    _onTabSelected(targetIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> tabs = <Widget>[
       const HomeDashboardTab(),
       const ExerciseListScreen(),
-      const SessionsTab(),
+      SessionsTab(onEdgeSwipe: _handleNestedEdgeSwipe),
       const ChatTab(),
-      const ProfileTab(),
+      ProfileTab(onEdgeSwipe: _handleNestedEdgeSwipe),
     ];
 
     return AppSystemOverlayRegion(
@@ -107,22 +113,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                 }
                 double page;
                 try {
-                  page = _pageController.page ??
-                      _tabIndex.value.toDouble();
+                  page = _pageController.page ?? _tabIndex.value.toDouble();
                 } catch (_) {
                   return const SizedBox.shrink();
                 }
-                final double frac =
-                    page - page.truncateToDouble();
+                final double frac = page - page.truncateToDouble();
                 if (frac == 0.0) return const SizedBox.shrink();
 
-                final double screenWidth =
-                    MediaQuery.sizeOf(context).width;
+                final double screenWidth = MediaQuery.sizeOf(context).width;
                 final double seamX = (1.0 - frac) * screenWidth;
                 // Opacity peaks at 0.5 (halfway between pages)
                 final double opacity =
-                    (frac < 0.5 ? frac * 2 : (1.0 - frac) * 2) *
-                        0.45;
+                    (frac < 0.5 ? frac * 2 : (1.0 - frac) * 2) * 0.45;
 
                 return Positioned(
                   left: seamX - 1,
@@ -135,14 +137,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: <Color>[
-                          AppColors.primary
-                              .withValues(alpha: 0),
-                          AppColors.primary
-                              .withValues(alpha: opacity),
-                          AppColors.primary
-                              .withValues(alpha: opacity),
-                          AppColors.primary
-                              .withValues(alpha: 0),
+                          AppColors.primary.withValues(alpha: 0),
+                          AppColors.primary.withValues(alpha: opacity),
+                          AppColors.primary.withValues(alpha: opacity),
+                          AppColors.primary.withValues(alpha: 0),
                         ],
                         stops: const <double>[
                           0.0,
@@ -188,11 +186,33 @@ class _FloatingBottomBar extends StatelessWidget {
         .languageCode
         .toLowerCase()
         .startsWith('fr');
+    final bool isCenterSelected = selectedIndex == 2;
     final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     const double navContentHeight = 58;
     const double centerButtonSize = 72;
     const double centerButtonLift = 6;
     const double centerButtonBorderWidth = 3.6;
+    final Color centerButtonColor = isCenterSelected
+        ? AppColors.navCenterButtonSelected
+        : AppColors.navCenterButtonUnselected;
+    final Color centerButtonBorderColor =
+        AppColors.navCenterButtonBorder.withValues(
+      alpha: isCenterSelected ? AppOpacity.moderate : AppOpacity.medium,
+    );
+    final Color centerButtonIconColor = isCenterSelected
+        ? AppColors.navCenterButtonIcon
+        : AppColors.navCenterButtonIcon.withValues(alpha: AppOpacity.bold);
+    final List<BoxShadow>? centerButtonShadow = isCenterSelected
+        ? <BoxShadow>[
+            BoxShadow(
+              color: AppColors.navCenterButtonShadow.withValues(
+                alpha: AppOpacity.medium,
+              ),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ]
+        : null;
 
     return SizedBox(
       height: navContentHeight + bottomInset,
@@ -214,7 +234,8 @@ class _FloatingBottomBar extends StatelessWidget {
               ),
               border: Border(
                 top: BorderSide(
-                  color: AppColors.background.withValues(alpha: AppOpacity.thin),
+                  color:
+                      AppColors.background.withValues(alpha: AppOpacity.thin),
                 ),
               ),
               child: Row(
@@ -268,20 +289,17 @@ class _FloatingBottomBar extends StatelessWidget {
                   height: centerButtonSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: selectedIndex == 2
-                        ? AppColors.primary
-                        : AppColors.neutral300,
+                    color: centerButtonColor,
                     border: Border.all(
-                      color: AppColors.neutral0,
-                      width: centerButtonBorderWidth.roundToDouble(),
+                      color: centerButtonBorderColor,
+                      width: centerButtonBorderWidth,
                     ),
+                    boxShadow: centerButtonShadow,
                   ),
                   child: Icon(
                     Icons.calendar_month_rounded,
                     size: 32,
-                    color: selectedIndex == 2
-                        ? AppColors.neutral0
-                        : AppColors.textSecondary,
+                    color: centerButtonIconColor,
                   ),
                 ),
               ),
@@ -308,6 +326,10 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double navItemPillWidth =
+        AppSpacing.xxxl + AppSpacing.lg + AppSpacing.xxs;
+    const double navItemPillHeight = AppSpacing.xxxl - AppSpacing.xxs;
+    final BorderRadius navItemRadius = BorderRadius.circular(AppRadii.sm);
     final Color iconColor = isSelected
         ? Colors.white
         : AppColors.frostedCyan.withValues(alpha: 0.72);
@@ -323,21 +345,23 @@ class _NavItem extends StatelessWidget {
       child: Center(
         child: Material(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: navItemRadius,
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onTap,
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 170),
+              width: navItemPillWidth,
+              height: navItemPillHeight,
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: 4,
+                horizontal: AppSpacing.xxs,
+                vertical: AppSpacing.xxs / 2,
               ),
               decoration: BoxDecoration(
                 color: isSelected
                     ? Colors.white.withValues(alpha: AppOpacity.light)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppRadii.lg),
+                borderRadius: navItemRadius,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -352,6 +376,7 @@ class _NavItem extends StatelessWidget {
                     style: TextStyle(
                       color: textColor,
                       fontSize: 10,
+                      height: 1,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -364,5 +389,3 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
-
-

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/exercise_picker_screen.dart';
@@ -35,7 +36,7 @@ class _CircuitEntry extends _BuilderEntry {
   String name;
   int rounds;
   int restBetweenExercises; // seconds
-  int restBetweenRounds;    // seconds
+  int restBetweenRounds; // seconds
   /// Each item: (exercise, config)
   List<(Exercise, WorkoutConfig)> exercises;
 
@@ -105,7 +106,8 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
 
   String _configSummary(WorkoutConfig cfg) {
     if (cfg is SetsConfig) return '${cfg.sets} × ${cfg.reps} reps';
-    if (cfg is TabataConfig) return '${cfg.rounds} rounds · ${cfg.workTime}s/${cfg.restTime}s';
+    if (cfg is TabataConfig)
+      return '${cfg.rounds} rounds · ${cfg.workTime}s/${cfg.restTime}s';
     if (cfg is TimedConfig) return _formatSeconds(cfg.duration);
     return '';
   }
@@ -117,21 +119,15 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
     return '';
   }
 
-  Color _difficultyColor(DifficultyLevel d) {
-    switch (d) {
-      case DifficultyLevel.beginner:    return AppColors.success;
-      case DifficultyLevel.intermediate: return AppColors.warning;
-      case DifficultyLevel.advanced:    return AppColors.error;
-    }
-  }
-
   int get _estimatedSeconds {
     int total = 0;
     for (final e in _entries) {
       if (e is _ExerciseEntry) {
         final cfg = e.config;
-        if (cfg is SetsConfig) total += cfg.estimatedTotalTime;
-        else if (cfg is TabataConfig) total += cfg.totalDuration;
+        if (cfg is SetsConfig)
+          total += cfg.estimatedTotalTime;
+        else if (cfg is TabataConfig)
+          total += cfg.totalDuration;
         else if (cfg is TimedConfig) total += cfg.totalDuration;
       } else if (e is _CircuitEntry) {
         total += e.toCircuitConfig().totalDuration;
@@ -154,16 +150,15 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
   // ---------------------------------------------------------------------------
 
   Future<void> _addExercise() async {
-    final alreadyAdded = _entries
-        .whereType<_ExerciseEntry>()
-        .map((e) => e.exercise.id)
-        .toSet();
+    final alreadyAdded =
+        _entries.whereType<_ExerciseEntry>().map((e) => e.exercise.id).toSet();
     final exercise = await Navigator.of(context).push<Exercise>(
       ExercisePickerScreen.route(alreadyAddedIds: alreadyAdded),
     );
     if (exercise == null || !mounted) return;
 
-    final defaultConfig = SetsConfig(exerciseId: exercise.id, sets: 3, reps: 10);
+    final defaultConfig =
+        SetsConfig(exerciseId: exercise.id, sets: 3, reps: 10);
     final config = await ExerciseConfigBottomSheet.show(
       context,
       exercise: exercise,
@@ -171,7 +166,8 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
     );
     if (!mounted || config == null) return;
 
-    setState(() => _entries.add(_ExerciseEntry(exercise: exercise, config: config)));
+    setState(
+        () => _entries.add(_ExerciseEntry(exercise: exercise, config: config)));
   }
 
   Future<void> _addCircuit() async {
@@ -291,8 +287,10 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
             // App bar
             SliverAppBar(
               pinned: true,
-              backgroundColor: AppChrome.topSurface,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
               leading: IconButton(
                 icon: const Icon(Icons.close_rounded),
@@ -354,7 +352,8 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _SectionLabel(
-                            text: isFrench ? 'Nom de la session' : 'Session name',
+                            text:
+                                isFrench ? 'Nom de la session' : 'Session name',
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           _InputField(
@@ -398,35 +397,52 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                           Row(
                             children: DifficultyLevel.values.map((d) {
                               final selected = _difficulty == d;
-                              final color = _difficultyColor(d);
+                              final AppDifficultyPalette palette =
+                                  AppDifficultyTheme.paletteFor(d);
                               return Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(right: AppSpacing.xs),
+                                  padding: const EdgeInsets.only(
+                                      right: AppSpacing.xs),
                                   child: GestureDetector(
-                                    onTap: () => setState(() => _difficulty = d),
+                                    onTap: () =>
+                                        setState(() => _difficulty = d),
                                     child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 160),
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
+                                      duration:
+                                          const Duration(milliseconds: 160),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
                                       decoration: BoxDecoration(
                                         color: selected
-                                            ? color.withValues(alpha: AppOpacity.muted)
+                                            ? palette.backgroundColor(
+                                                alpha: AppDifficultyTheme
+                                                    .selectedSurfaceOpacity,
+                                              )
                                             : AppColors.surfaceVariant,
-                                        borderRadius: BorderRadius.circular(AppRadii.sm),
+                                        borderRadius:
+                                            BorderRadius.circular(AppRadii.sm),
                                         border: Border.all(
                                           color: selected
-                                              ? color
-                                              : AppColors.primaryPastel.withValues(
+                                              ? palette.accentColor
+                                              : AppColors.primaryPastel
+                                                  .withValues(
                                                   alpha: AppOpacity.half,
                                                 ),
-                                          width: selected ? 1.6 : 1,
+                                          width: selected
+                                              ? AppDifficultyTheme
+                                                  .selectedBorderWidth
+                                              : AppDifficultyTheme
+                                                  .unselectedBorderWidth,
                                         ),
                                       ),
                                       child: Center(
                                         child: Text(
-                                          _difficultyLabel(d, isFrench),
+                                          AppDifficultyTheme.label(
+                                            d,
+                                            isFrench: isFrench,
+                                          ),
                                           style: TextStyle(
                                             color: selected
-                                                ? color
+                                                ? palette.foregroundColor
                                                 : AppColors.textSecondary,
                                             fontSize: 12,
                                             fontWeight: selected
@@ -464,7 +480,8 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               activeTrackColor: AppColors.primary,
-                              inactiveTrackColor: AppColors.primaryPastel.withValues(
+                              inactiveTrackColor:
+                                  AppColors.primaryPastel.withValues(
                                 alpha: AppOpacity.firm,
                               ),
                               thumbColor: AppColors.primary,
@@ -478,8 +495,8 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                               min: 15,
                               max: 300,
                               divisions: (300 - 15) ~/ 15,
-                              onChanged: (v) =>
-                                  setState(() => _restBetweenExercises = v.round()),
+                              onChanged: (v) => setState(
+                                  () => _restBetweenExercises = v.round()),
                             ),
                           ),
                         ],
@@ -663,17 +680,6 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
       ),
     );
   }
-
-  String _difficultyLabel(DifficultyLevel d, bool isFrench) {
-    switch (d) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Débutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermédiaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avancé' : 'Advanced';
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -730,7 +736,8 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
 
   String _configSummary(WorkoutConfig cfg) {
     if (cfg is SetsConfig) return '${cfg.sets} × ${cfg.reps} reps';
-    if (cfg is TabataConfig) return '${cfg.rounds} rounds · ${cfg.workTime}s/${cfg.restTime}s';
+    if (cfg is TabataConfig)
+      return '${cfg.rounds} rounds · ${cfg.workTime}s/${cfg.restTime}s';
     if (cfg is TimedConfig) return _fmt(cfg.duration);
     return '';
   }
@@ -749,7 +756,8 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
     );
     if (exercise == null || !mounted) return;
 
-    final defaultConfig = SetsConfig(exerciseId: exercise.id, sets: 1, reps: 10);
+    final defaultConfig =
+        SetsConfig(exerciseId: exercise.id, sets: 1, reps: 10);
     final config = await ExerciseConfigBottomSheet.show(
       context,
       exercise: exercise,
@@ -776,7 +784,8 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
     final name = _nameCtrl.text.trim();
     if (_exercises.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add at least one exercise to the circuit.')),
+        const SnackBar(
+            content: Text('Add at least one exercise to the circuit.')),
       );
       return;
     }
@@ -801,8 +810,10 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
-        backgroundColor: AppChrome.topSurface,
+        backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
           icon: const Icon(Icons.close_rounded),
@@ -998,10 +1009,12 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withValues(alpha: AppOpacity.faint),
+                        color: AppColors.warning
+                            .withValues(alpha: AppOpacity.faint),
                         borderRadius: BorderRadius.circular(AppRadii.sm),
                         border: Border.all(
-                          color: AppColors.warning.withValues(alpha: AppOpacity.light),
+                          color: AppColors.warning
+                              .withValues(alpha: AppOpacity.light),
                         ),
                       ),
                       child: Row(
@@ -1085,9 +1098,7 @@ class _CircuitEditorScreenState extends State<_CircuitEditorScreen> {
                 onPressed: _addExercise,
                 icon: const Icon(Icons.add_rounded),
                 label: Text(
-                  isFrench
-                      ? 'Ajouter au circuit'
-                      : 'Add to circuit',
+                  isFrench ? 'Ajouter au circuit' : 'Add to circuit',
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.warning,
@@ -1197,7 +1208,8 @@ class _CircuitEntryTile extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withValues(alpha: AppOpacity.light),
+                        color: AppColors.warning
+                            .withValues(alpha: AppOpacity.light),
                         borderRadius: BorderRadius.circular(AppRadii.xl),
                       ),
                       child: Text(
@@ -1211,7 +1223,8 @@ class _CircuitEntryTile extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.remove_circle_outline_rounded),
-                      color: AppColors.error.withValues(alpha: AppOpacity.prominent),
+                      color: AppColors.error
+                          .withValues(alpha: AppOpacity.prominent),
                       iconSize: 20,
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       constraints: const BoxConstraints(),
@@ -1236,14 +1249,17 @@ class _CircuitEntryTile extends StatelessWidget {
                       final (exercise, config) = pair;
                       final name = exercise.getLocalizedName(context);
                       String typeLabel = '';
-                      if (config is SetsConfig) typeLabel = 'Sets';
-                      else if (config is TabataConfig) typeLabel = 'Tabata';
+                      if (config is SetsConfig)
+                        typeLabel = 'Sets';
+                      else if (config is TabataConfig)
+                        typeLabel = 'Tabata';
                       else if (config is TimedConfig) typeLabel = 'Timed';
                       String summary = '';
                       if (config is SetsConfig) {
                         summary = '${config.sets} × ${config.reps} reps';
                       } else if (config is TabataConfig) {
-                        summary = '${config.rounds}r · ${config.workTime}s/${config.restTime}s';
+                        summary =
+                            '${config.rounds}r · ${config.workTime}s/${config.restTime}s';
                       } else if (config is TimedConfig) {
                         summary = formatSeconds(config.duration);
                       }
@@ -1466,7 +1482,8 @@ class _ExerciseEntryTile extends StatelessWidget {
                       const SizedBox(height: 3),
                       Row(
                         children: [
-                          _TypeBadge(label: configTypeLabel, color: accentColor),
+                          _TypeBadge(
+                              label: configTypeLabel, color: accentColor),
                           const SizedBox(width: AppSpacing.xs),
                           Expanded(
                             child: Text(
@@ -1486,7 +1503,8 @@ class _ExerciseEntryTile extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.remove_circle_outline_rounded),
-                  color: AppColors.error.withValues(alpha: AppOpacity.prominent),
+                  color:
+                      AppColors.error.withValues(alpha: AppOpacity.prominent),
                   iconSize: 22,
                   onPressed: onRemove,
                 ),
@@ -1630,13 +1648,11 @@ class _Btn extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: enabled
-              ? color
-              : color.withValues(alpha: AppOpacity.light),
+          color: enabled ? color : color.withValues(alpha: AppOpacity.light),
           borderRadius: BorderRadius.circular(AppRadii.md),
         ),
-        child: Icon(icon, size: 18,
-            color: enabled ? Colors.white : AppColors.textSecondary),
+        child: Icon(icon,
+            size: 18, color: enabled ? Colors.white : AppColors.textSecondary),
       ),
     );
   }
@@ -1712,9 +1728,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

@@ -2898,14 +2898,14 @@ class _AchievementUnlockBanner extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFD700), Color(0xFFFFB300)],
+          colors: [AppColors.gold, AppColors.goldDeep],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(AppRadii.md),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFFD700).withValues(alpha: AppOpacity.moderate),
+            color: AppColors.gold.withValues(alpha: AppOpacity.moderate),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -2921,7 +2921,7 @@ class _AchievementUnlockBanner extends StatelessWidget {
               Text(
                 'Trophies Unlocked!',
                 style: TextStyle(
-                  color: Color(0xFF5C3D00),
+                  color: AppColors.goldText,
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'AppFontMedium',
@@ -2955,7 +2955,7 @@ class _AchievementUnlockBanner extends StatelessWidget {
                         Text(
                           a.definition.title,
                           style: const TextStyle(
-                            color: Color(0xFF5C3D00),
+                            color: AppColors.goldText,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),

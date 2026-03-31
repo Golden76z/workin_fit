@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/core/errors/auth_exception.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
@@ -16,8 +17,7 @@ class EmailVerificationView extends ConsumerStatefulWidget {
       _EmailVerificationViewState();
 }
 
-class _EmailVerificationViewState
-    extends ConsumerState<EmailVerificationView> {
+class _EmailVerificationViewState extends ConsumerState<EmailVerificationView> {
   bool _isResending = false;
   bool _isChecking = false;
 
@@ -78,7 +78,7 @@ class _EmailVerificationViewState
         final errorMessage = e is AuthException
             ? e.message
             : e.toString().replaceAll('Exception: ', '');
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
@@ -129,7 +129,7 @@ class _EmailVerificationViewState
         final errorMessage = e is AuthException
             ? e.message
             : e.toString().replaceAll('Exception: ', '');
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
@@ -147,18 +147,21 @@ class _EmailVerificationViewState
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: AppColors.textPrimary,
+            color: Colors.white,
           ),
           onPressed: () {
             if (Navigator.of(context).canPop()) {
@@ -187,7 +190,8 @@ class _EmailVerificationViewState
                       color: AppColors.accent,
                     ),
               onPressed: _isChecking ? null : () => _checkVerification(),
-              tooltip: AppLocalizations.of(context)!.email_verification_check_tooltip,
+              tooltip: AppLocalizations.of(context)!
+                  .email_verification_check_tooltip,
             ),
           ),
         ],
@@ -248,13 +252,16 @@ class _EmailVerificationViewState
                 const SizedBox(height: 48),
                 AppButton(
                   label: _isChecking
-                      ? AppLocalizations.of(context)!.email_verification_button_checking
-                      : AppLocalizations.of(context)!.email_verification_button_verified,
+                      ? AppLocalizations.of(context)!
+                          .email_verification_button_checking
+                      : AppLocalizations.of(context)!
+                          .email_verification_button_verified,
                   onPressed: _isChecking ? null : () => _checkVerification(),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: _isResending ? null : () => _resendVerificationEmail(),
+                  onPressed:
+                      _isResending ? null : () => _resendVerificationEmail(),
                   child: _isResending
                       ? const SizedBox(
                           height: 20,
@@ -265,7 +272,8 @@ class _EmailVerificationViewState
                           ),
                         )
                       : Text(
-                          AppLocalizations.of(context)!.email_verification_resend,
+                          AppLocalizations.of(context)!
+                              .email_verification_resend,
                           style: const TextStyle(
                             color: AppColors.accent,
                             fontSize: 16,

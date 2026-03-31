@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/achievement.dart';
@@ -17,8 +18,11 @@ class AchievementsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         title: const Text(
           'Trophies',
           style: TextStyle(
@@ -51,13 +55,15 @@ class AchievementsPage extends ConsumerWidget {
                 Icon(
                   Icons.wifi_off_rounded,
                   size: 48,
-                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+                  color: AppColors.babyBlueIce
+                      .withValues(alpha: AppOpacity.visible),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Could not load achievements',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
+                    color: AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.bold),
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
                   ),
@@ -152,7 +158,8 @@ class _SummaryBanner extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: pct,
                     minHeight: 6,
-                    backgroundColor: Colors.white.withValues(alpha: AppOpacity.medium),
+                    backgroundColor:
+                        Colors.white.withValues(alpha: AppOpacity.medium),
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
@@ -218,7 +225,8 @@ class _CategorySection extends StatelessWidget {
   Widget build(BuildContext context) {
     // Sort: bronze → silver → gold
     final sorted = List<Achievement>.from(achievements)
-      ..sort((a, b) => a.definition.rank.index.compareTo(b.definition.rank.index));
+      ..sort(
+          (a, b) => a.definition.rank.index.compareTo(b.definition.rank.index));
 
     // Find the next locked achievement to highlight progress
     final nextLocked = sorted.where((a) => !a.isUnlocked).firstOrNull;
@@ -258,7 +266,8 @@ class _CategorySection extends StatelessWidget {
                   Text(
                     _categorySubtitle,
                     style: TextStyle(
-                      color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                      color: AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.prominent),
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -274,14 +283,16 @@ class _CategorySection extends StatelessWidget {
             const SizedBox(height: AppSpacing.xs),
             Row(
               children: sorted
-                  .map((a) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xxs,
-                          ),
-                          child: _TrophyCard(achievement: a),
+                  .map(
+                    (a) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xxs,
                         ),
-                      ),)
+                        child: _TrophyCard(achievement: a),
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ],
@@ -313,7 +324,8 @@ class _ProgressBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: pct,
               minHeight: 5,
-              backgroundColor: AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
+              backgroundColor:
+                  AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
               valueColor:
                   const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
@@ -322,7 +334,8 @@ class _ProgressBar extends StatelessWidget {
           Text(
             '$current / $target',
             style: TextStyle(
-              color: AppColors.textSecondary.withValues(alpha: AppOpacity.visible),
+              color:
+                  AppColors.textSecondary.withValues(alpha: AppOpacity.visible),
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
@@ -343,11 +356,11 @@ class _TrophyCard extends StatelessWidget {
   Color get _rankColor {
     switch (achievement.definition.rank) {
       case AchievementRank.bronze:
-        return const Color(0xFFCD7F32);
+        return AppColors.bronze;
       case AchievementRank.silver:
-        return const Color(0xFFA8A9AD);
+        return AppColors.silver;
       case AchievementRank.gold:
-        return const Color(0xFFFFD700);
+        return AppColors.gold;
     }
   }
 
@@ -423,7 +436,8 @@ class _TrophyCard extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.light),
+                      color: AppColors.babyBlueIce
+                          .withValues(alpha: AppOpacity.light),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -444,7 +458,8 @@ class _TrophyCard extends StatelessWidget {
                 style: TextStyle(
                   color: unlocked
                       ? rankColor
-                      : AppColors.textSecondary.withValues(alpha: AppOpacity.half),
+                      : AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.half),
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                 ),
@@ -460,7 +475,8 @@ class _TrophyCard extends StatelessWidget {
               style: TextStyle(
                 color: unlocked
                     ? AppColors.textPrimary
-                    : AppColors.textSecondary.withValues(alpha: AppOpacity.half),
+                    : AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.half),
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 height: 1.2,

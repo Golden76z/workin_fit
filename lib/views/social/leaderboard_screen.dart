@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/leaderboard_entry.dart';
@@ -47,8 +48,11 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen>
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         title: const Text(
           'Leaderboard',
           style: TextStyle(
@@ -116,13 +120,15 @@ class _LeaderboardTab extends ConsumerWidget {
               Icon(
                 Icons.wifi_off_rounded,
                 size: 48,
-                color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+                color:
+                    AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Could not load leaderboard',
                 style: TextStyle(
-                  color: AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
+                  color: AppColors.textSecondary
+                      .withValues(alpha: AppOpacity.bold),
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
@@ -199,7 +205,8 @@ class _LeaderboardTile extends StatelessWidget {
             : AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.xl),
         border: entry.isCurrentUser
-            ? Border.all(color: AppColors.primary.withValues(alpha: AppOpacity.moderate))
+            ? Border.all(
+                color: AppColors.primary.withValues(alpha: AppOpacity.moderate))
             : null,
         boxShadow: [
           BoxShadow(
@@ -222,7 +229,9 @@ class _LeaderboardTile extends StatelessWidget {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                entry.isCurrentUser ? '${entry.username} (you)' : entry.username,
+                entry.isCurrentUser
+                    ? '${entry.username} (you)'
+                    : entry.username,
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 15,
@@ -266,7 +275,8 @@ class _RankBadge extends StatelessWidget {
       child: Text(
         '#$rank',
         style: TextStyle(
-          color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+          color:
+              AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
           fontSize: 13,
           fontWeight: FontWeight.w700,
         ),
@@ -323,9 +333,8 @@ class _StickyMyRankBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final medal = entry.rank <= 3
-        ? ['🥇', '🥈', '🥉'][entry.rank - 1]
-        : '#${entry.rank}';
+    final medal =
+        entry.rank <= 3 ? ['🥇', '🥈', '🥉'][entry.rank - 1] : '#${entry.rank}';
     final suffix = type == LeaderboardType.streak ? 'day streak' : 'workouts';
     final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
 
@@ -465,7 +474,8 @@ class _EmptyLeaderboard extends StatelessWidget {
               'Add friends to see\nhow you compare!',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
+                color:
+                    AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 height: 1.5,

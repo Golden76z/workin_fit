@@ -56,8 +56,10 @@ class SessionHistoryScreen extends ConsumerWidget {
           slivers: [
             SliverAppBar(
               pinned: true,
-              backgroundColor: AppChrome.topSurface,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
               title: Text(
                 isFrench ? 'Historique' : 'History',
@@ -459,9 +461,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

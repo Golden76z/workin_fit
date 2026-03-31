@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 import 'package:workin_fit/providers/locale_provider.dart';
@@ -12,7 +13,11 @@ class LanguageSelectionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
       ),
       backgroundColor: AppColors.primary,
       body: Center(
@@ -20,15 +25,15 @@ class LanguageSelectionScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AppButton(
-              label: AppLocalizations.of(context)!.welcome_page_language_english,
+              label:
+                  AppLocalizations.of(context)!.welcome_page_language_english,
               onPressed: () {
                 ref.read(localeProvider.notifier).setLocale('en');
               },
             ),
-
             const SizedBox(height: 12),
             AppButton(
-              label: AppLocalizations.of(context)!.welcome_page_language_french, 
+              label: AppLocalizations.of(context)!.welcome_page_language_french,
               onPressed: () {
                 ref.read(localeProvider.notifier).setLocale('fr');
               },

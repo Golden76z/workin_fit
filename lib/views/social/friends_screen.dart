@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
@@ -16,16 +17,18 @@ class FriendsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final incomingAsync = ref.watch(incomingRequestsProvider);
-    final incomingCount =
-        incomingAsync.valueOrNull?.length ?? 0;
+    final incomingCount = incomingAsync.valueOrNull?.length ?? 0;
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: AppChrome.topSurfaceOverlay,
+          flexibleSpace: const AppTopBarBackground(),
           title: const Text(
             'Friends',
             style: TextStyle(
@@ -126,7 +129,9 @@ class _FriendsTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: Text(
           'Failed to load friends',
-          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent)),
+          style: TextStyle(
+              color: AppColors.textSecondary
+                  .withValues(alpha: AppOpacity.prominent)),
         ),
       ),
       data: (friends) {
@@ -245,7 +250,9 @@ class _RequestsTab extends ConsumerWidget {
       error: (e, _) => Center(
         child: Text(
           'Failed to load requests',
-          style: TextStyle(color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent)),
+          style: TextStyle(
+              color: AppColors.textSecondary
+                  .withValues(alpha: AppOpacity.prominent)),
         ),
       ),
       data: (requests) {
@@ -257,13 +264,15 @@ class _RequestsTab extends ConsumerWidget {
                 Icon(
                   Icons.mark_email_read_rounded,
                   size: 64,
-                  color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
+                  color: AppColors.babyBlueIce
+                      .withValues(alpha: AppOpacity.visible),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'No pending requests',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                    color: AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.prominent),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -298,9 +307,8 @@ class _RequestsTab extends ConsumerWidget {
     final user = ref.read(currentUserProvider);
     if (user == null) return;
     try {
-      final profile = await ref
-          .read(firestoreServiceProvider)
-          .getUserProfile(user.uid);
+      final profile =
+          await ref.read(firestoreServiceProvider).getUserProfile(user.uid);
       final myUsername = profile?['username'] as String? ??
           user.displayName ??
           user.email?.split('@').first ??
@@ -391,7 +399,8 @@ class _RequestTile extends StatelessWidget {
                 Text(
                   'wants to be your friend',
                   style: TextStyle(
-                    color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+                    color: AppColors.textSecondary
+                        .withValues(alpha: AppOpacity.prominent),
                     fontSize: 12,
                   ),
                 ),
@@ -504,7 +513,8 @@ class _EmptyFriends extends StatelessWidget {
           Text(
             'No friends yet',
             style: TextStyle(
-              color: AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
+              color: AppColors.textSecondary
+                  .withValues(alpha: AppOpacity.prominent),
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),

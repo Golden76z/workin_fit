@@ -79,8 +79,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                     // Warmup Selector
                     _SectionTitle(
                       title: isFrench ? 'Échauffement' : 'Warmup',
-                      subtitle:
-                          isFrench ? 'Commencez doucement' : 'Start easy',
+                      subtitle: isFrench ? 'Commencez doucement' : 'Start easy',
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _WarmupSelector(isFrench: isFrench),
@@ -208,94 +207,50 @@ class _HomeBannerSliver extends StatelessWidget {
     return SliverToBoxAdapter(
       child: ClipPath(
         clipper: _ArchClipper(),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                AppColors.primaryDark,
-                AppColors.primary,
-                AppColors.cornflowerBlue,
-              ],
-              stops: <double>[0.0, 0.5, 1.0],
+        child: AppTopBarBackground(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              topPadding + AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.lg + AppSpacing.md,
             ),
-          ),
-          child: Stack(
-            children: <Widget>[
-              // Decorative circles — depth/texture
-              Positioned(
-                right: -52,
-                top: topPadding - 16,
-                child: Container(
-                  width: 180,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: AppOpacity.trace),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Greeting
+                Text(
+                  '$greeting,',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: AppOpacity.bold),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2,
                   ),
                 ),
-              ),
-              Positioned(
-                left: -48,
-                bottom: 8,
-                child: Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.03),
+                const SizedBox(height: 2),
+                Text(
+                  displayName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'AppFontMedium',
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    height: 1.1,
                   ),
                 ),
-              ),
-              // Content
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  AppSpacing.lg,
-                  topPadding + AppSpacing.md,
-                  AppSpacing.lg,
-                  AppSpacing.lg + AppSpacing.md,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // Greeting
-                    Text(
-                      '$greeting,',
-                      style: TextStyle(
-                        color:
-                            Colors.white.withValues(alpha: AppOpacity.bold),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      displayName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'AppFontMedium',
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                        height: 1.1,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    // Stats row
-                    _BannerStatsRow(isFrench: isFrench),
-                  ],
-                ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.md),
+                // Stats row
+                _BannerStatsRow(isFrench: isFrench),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
 
 class _BannerStatsRow extends ConsumerWidget {
   final bool isFrench;
@@ -615,8 +570,8 @@ class _SessionOfTheDayCard extends StatelessWidget {
                           child: Text(
                             isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
                             style: TextStyle(
-                              color:
-                                  Colors.white.withValues(alpha: AppOpacity.high),
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.high),
                               fontSize: 9,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 1.2,
@@ -658,7 +613,8 @@ class _SessionOfTheDayCard extends StatelessWidget {
                           ? 'Circuit complet — force et cardio combinés'
                           : 'Full circuit — strength and cardio combined',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: AppOpacity.strong),
+                        color:
+                            Colors.white.withValues(alpha: AppOpacity.strong),
                         fontSize: 13,
                       ),
                     ),
@@ -708,7 +664,8 @@ class _SessionMetaChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: AppOpacity.light),
         borderRadius: BorderRadius.circular(AppRadii.sm),
-        border: Border.all(color: Colors.white.withValues(alpha: AppOpacity.soft)),
+        border:
+            Border.all(color: Colors.white.withValues(alpha: AppOpacity.soft)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -770,8 +727,8 @@ class _DailyChallengeCard extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: <Color>[
-                          Color(0xFFFF9800),
-                          Color(0xFFFFB74D),
+                          AppColors.warning,
+                          AppColors.warningSoft,
                         ],
                       ),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -877,7 +834,8 @@ class _DailyChallengeCard extends StatelessWidget {
                   ),
                   Container(
                     height: 4,
-                    color: AppColors.warning.withValues(alpha: AppOpacity.whisper),
+                    color:
+                        AppColors.warning.withValues(alpha: AppOpacity.whisper),
                     child: FractionallySizedBox(
                       widthFactor: 0.42,
                       alignment: Alignment.centerLeft,
@@ -885,8 +843,8 @@ class _DailyChallengeCard extends StatelessWidget {
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: <Color>[
-                              Color(0xFFFF9800),
-                              Color(0xFFFFB74D),
+                              AppColors.warning,
+                              AppColors.warningSoft,
                             ],
                           ),
                         ),
@@ -1342,7 +1300,8 @@ class _SessionCard extends StatelessWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight.withValues(alpha: AppOpacity.light),
+                      color: AppColors.primaryLight
+                          .withValues(alpha: AppOpacity.light),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Icon(
@@ -1358,10 +1317,12 @@ class _SessionCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: data.levelColor.withValues(alpha: AppOpacity.subtle),
+                      color:
+                          data.levelColor.withValues(alpha: AppOpacity.subtle),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                       border: Border.all(
-                        color: data.levelColor.withValues(alpha: AppOpacity.mild),
+                        color:
+                            data.levelColor.withValues(alpha: AppOpacity.mild),
                       ),
                     ),
                     child: Text(
@@ -1544,7 +1505,8 @@ class _LogoutButton extends StatelessWidget {
       label: Text(isFrench ? 'Se déconnecter' : 'Sign out'),
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.textSecondary,
-        side: BorderSide(color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm)),
+        side: BorderSide(
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm)),
         minimumSize: const Size(double.infinity, 44),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.sm),
