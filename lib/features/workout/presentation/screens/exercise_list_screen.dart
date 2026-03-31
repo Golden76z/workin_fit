@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_detail_screen.dart';
+import 'package:workin_fit/features/workout/presentation/utils/exercise_ui_helpers.dart';
 import 'package:workin_fit/l10n/app_localizations_en.dart';
 import 'package:workin_fit/l10n/app_localizations_fr.dart';
 import 'package:workin_fit/models/enums.dart';
@@ -41,15 +43,13 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final bool isFrench =
-        Localizations.localeOf(context).languageCode.toLowerCase().startsWith(
-              'fr',
-            );
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+    const Color selectedFilterCheckColor = AppColors.primaryDarkest;
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
-    final Color searchFieldColor = Colors.white.withValues(alpha: 0.15);
-    final Color chipBackgroundColor = Colors.white.withValues(alpha: 0.15);
-    final Color chipSelectedColor = Colors.white.withValues(alpha: 0.92);
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
@@ -70,12 +70,11 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                     pinned: true,
                     backgroundColor: Colors.transparent,
                     surfaceTintColor: Colors.transparent,
+                    systemOverlayStyle: AppChrome.topSurfaceOverlay,
                     elevation: 0,
                     automaticallyImplyLeading: false,
                     toolbarHeight: 36,
-                    flexibleSpace: Container(
-                      color: AppColors.navBarSurface,
-                    ),
+                    flexibleSpace: const AppTopBarBackground(),
                     title: Text(
                       isFrench ? 'Liste des exercices' : 'Exercise list',
                       style: const TextStyle(
@@ -90,76 +89,79 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                       preferredSize: const Size.fromHeight(116),
                       child: Container(
                         color: Colors.transparent,
-                        padding: const EdgeInsets.fromLTRB(
-                          0,
-                          0,
-                          0,
-                          AppSpacing.sm,
-                        ),
+                        padding:
+                            const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.sm),
                         child: Column(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: AppSpacing.md,
+                                horizontal: AppLayout.pageMargin,
                               ),
                               child: TextField(
                                 controller: _searchController,
                                 textInputAction: TextInputAction.search,
                                 onChanged: (_) => setState(() {}),
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(
+                                  color: AppColors.neutral0,
+                                ),
                                 decoration: InputDecoration(
                                   hintText: isFrench
                                       ? 'Rechercher un exercice...'
                                       : 'Search an exercise...',
-                                  hintStyle: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.55),
+                                  hintStyle: const TextStyle(
+                                    color: AppColors.neutral400,
                                   ),
-                                  prefixIcon: Icon(
+                                  prefixIcon: const Icon(
                                     Icons.search_rounded,
-                                    color: Colors.white.withValues(alpha: 0.7),
+                                    color: AppColors.neutral400,
                                   ),
-                                  suffixIcon:
-                                      _searchController.text.trim().isEmpty
-                                          ? null
-                                          : IconButton(
-                                              onPressed: () {
-                                                _searchController.clear();
-                                                setState(() {});
-                                              },
-                                              icon: Icon(
-                                                Icons.close_rounded,
-                                                color: Colors.white
-                                                    .withValues(alpha: 0.8),
-                                              ),
+                                  suffixIcon: _searchController.text
+                                          .trim()
+                                          .isEmpty
+                                      ? null
+                                      : IconButton(
+                                          onPressed: () {
+                                            _searchController.clear();
+                                            setState(() {});
+                                          },
+                                          icon: Icon(
+                                            Icons.close_rounded,
+                                            color:
+                                                AppColors.neutral0.withValues(
+                                              alpha: AppOpacity.bold,
                                             ),
+                                          ),
+                                        ),
                                   filled: true,
-                                  fillColor: searchFieldColor,
+                                  fillColor:
+                                      Colors.white.withValues(alpha: 0.9),
                                   contentPadding: const EdgeInsets.symmetric(
                                     vertical: 5,
                                     horizontal: AppSpacing.sm,
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.lg),
+                                        BorderRadius.circular(AppRadii.sm),
                                     borderSide: BorderSide(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                      color: Colors.white
+                                          .withValues(alpha: AppOpacity.mild),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.lg),
+                                        BorderRadius.circular(AppRadii.sm),
                                     borderSide: BorderSide(
                                       color:
-                                          Colors.white.withValues(alpha: 0.3),
+                                          Colors.white.withValues(alpha: 0.55),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.circular(AppRadii.lg),
+                                        BorderRadius.circular(AppRadii.sm),
                                     borderSide: BorderSide(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.75),
+                                      color: AppColors.primaryLight.withValues(
+                                        alpha: 0.95,
+                                      ),
                                       width: 1.4,
                                     ),
                                   ),
@@ -172,7 +174,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
-                                  const SizedBox(width: AppSpacing.md),
+                                  const SizedBox(width: AppLayout.pageMargin),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       right: AppSpacing.xs,
@@ -182,21 +184,34 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         isFrench ? 'Tout' : 'All muscles',
                                       ),
                                       selected: _selectedMuscleGroup == null,
-                                      backgroundColor: chipBackgroundColor,
-                                      selectedColor: chipSelectedColor,
-                                      side: BorderSide(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.3),
+                                      checkmarkColor: selectedFilterCheckColor,
+                                      backgroundColor:
+                                          Colors.white.withValues(alpha: 0.84),
+                                      selectedColor: AppColors.primaryPastel
+                                          .withValues(alpha: 0.96),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          AppRadii.sm,
+                                        ),
                                       ),
-                                      labelStyle: const TextStyle(
-                                        color: AppColors.primaryAbyss,
+                                      side: BorderSide(
+                                        color: _selectedMuscleGroup == null
+                                            ? AppColors.primaryLight.withValues(
+                                                alpha: 0.9,
+                                              )
+                                            : Colors.white.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                      ),
+                                      labelStyle: TextStyle(
+                                        color: _selectedMuscleGroup == null
+                                            ? AppColors.primaryDarkest
+                                            : AppColors.neutral0,
                                         fontWeight: FontWeight.w600,
                                       ),
-                                      onSelected: (_) {
-                                        setState(() {
-                                          _selectedMuscleGroup = null;
-                                        });
-                                      },
+                                      onSelected: (_) => setState(
+                                        () => _selectedMuscleGroup = null,
+                                      ),
                                     ),
                                   ),
                                   ...MuscleGroup.values.map(
@@ -205,36 +220,46 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         right: AppSpacing.xs,
                                       ),
                                       child: ChoiceChip(
-                                        backgroundColor: chipBackgroundColor,
-                                        selectedColor: chipSelectedColor,
-                                        side: BorderSide(
-                                          color: AppColors.background
-                                              .withValues(alpha: 0.28),
+                                        checkmarkColor:
+                                            selectedFilterCheckColor,
+                                        backgroundColor: Colors.white
+                                            .withValues(alpha: 0.84),
+                                        selectedColor: AppColors.primaryPastel
+                                            .withValues(alpha: 0.96),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            AppRadii.sm,
+                                          ),
                                         ),
-                                        labelStyle: const TextStyle(
-                                          color: AppColors.primaryAbyss,
+                                        side: BorderSide(
+                                          color: _selectedMuscleGroup == muscle
+                                              ? AppColors.primaryLight
+                                                  .withValues(alpha: 0.9)
+                                              : Colors.white.withValues(
+                                                  alpha: 0.5,
+                                                ),
+                                        ),
+                                        labelStyle: TextStyle(
+                                          color: _selectedMuscleGroup == muscle
+                                              ? AppColors.primaryDarkest
+                                              : AppColors.neutral0,
                                           fontWeight: FontWeight.w600,
                                         ),
                                         label: Text(
-                                          _muscleLabel(
-                                            muscle: muscle,
-                                            isFrench: isFrench,
-                                          ),
+                                          muscleGroupLabel(muscle, isFrench),
                                         ),
                                         selected:
                                             _selectedMuscleGroup == muscle,
-                                        onSelected: (_) {
-                                          setState(() {
-                                            _selectedMuscleGroup =
-                                                _selectedMuscleGroup == muscle
-                                                    ? null
-                                                    : muscle;
-                                          });
-                                        },
+                                        onSelected: (_) => setState(() {
+                                          _selectedMuscleGroup =
+                                              _selectedMuscleGroup == muscle
+                                                  ? null
+                                                  : muscle;
+                                        }),
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: AppSpacing.md),
+                                  const SizedBox(width: AppLayout.pageMargin),
                                 ],
                               ),
                             ),
@@ -267,49 +292,32 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                   else
                     SliverPadding(
                       padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.xs,
+                        AppLayout.pageMargin,
                         AppSpacing.md,
-                        AppSpacing.xs,
+                        AppLayout.pageMargin,
                         104,
                       ),
                       sliver: SliverList.builder(
                         itemCount: filtered.length,
                         itemBuilder: (BuildContext context, int index) {
                           final Exercise exercise = filtered[index];
-                          final String title =
-                              exercise.getLocalizedName(context);
-                          final String description =
-                              exercise.getLocalizedDescription(context);
-
                           return Padding(
                             padding:
-                                const EdgeInsets.only(bottom: AppSpacing.xs),
+                                const EdgeInsets.only(bottom: AppSpacing.xxs),
                             child: _ExerciseCard(
                               exercise: exercise,
-                              title: title,
-                              description: description,
+                              title: exercise.getLocalizedName(context),
+                              description:
+                                  exercise.getLocalizedDescription(context),
                               muscleSummary: exercise.muscleGroups
-                                  .map(
-                                    (MuscleGroup muscle) => _muscleLabel(
-                                      muscle: muscle,
-                                      isFrench: isFrench,
-                                    ),
-                                  )
+                                  .map((m) => muscleGroupLabel(m, isFrench))
                                   .join(', '),
-                              difficultyLabel: _difficultyLabel(
-                                exercise.difficulty,
-                                isFrench,
-                              ),
-                              difficultyColor:
-                                  _difficultyColor(exercise.difficulty),
+                              difficulty: exercise.difficulty,
+                              isFrench: isFrench,
                               shaderVelocity: velocity,
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  ExerciseDetailScreen.route(
-                                    exercise: exercise,
-                                  ),
-                                );
-                              },
+                              onTap: () => Navigator.of(context).push(
+                                ExerciseDetailScreen.route(exercise: exercise),
+                              ),
                             ),
                           );
                         },
@@ -327,10 +335,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                       ? 'Impossible de charger les exercices: $error'
                       : 'Failed to load exercises: $error',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.error,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: AppColors.error, fontSize: 14),
                 ),
               ),
             ),
@@ -345,32 +350,24 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     required List<Exercise> exercises,
   }) {
     final String query = _searchController.text.trim();
-
     final List<Exercise> filtered = exercises.where((Exercise exercise) {
       if (_selectedMuscleGroup != null &&
           !exercise.muscleGroups.contains(_selectedMuscleGroup)) {
         return false;
       }
-
-      if (query.isEmpty) {
-        return true;
-      }
-
+      if (query.isEmpty) return true;
       return _matchesSearch(context: context, exercise: exercise, query: query);
     }).toList(growable: false);
 
-    filtered.sort(
-      (Exercise a, Exercise b) {
-        final int difficultyCompare = _difficultyRank(a.difficulty)
-            .compareTo(_difficultyRank(b.difficulty));
-        if (difficultyCompare != 0) {
-          return difficultyCompare;
-        }
-        return a.getLocalizedName(context).toLowerCase().compareTo(
-              b.getLocalizedName(context).toLowerCase(),
-            );
-      },
-    );
+    filtered.sort((Exercise a, Exercise b) {
+      final int dc =
+          difficultyRank(a.difficulty).compareTo(difficultyRank(b.difficulty));
+      if (dc != 0) return dc;
+      return a
+          .getLocalizedName(context)
+          .toLowerCase()
+          .compareTo(b.getLocalizedName(context).toLowerCase());
+    });
 
     return filtered;
   }
@@ -380,17 +377,11 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     required Exercise exercise,
     required String query,
   }) {
-    final String normalizedQuery = _normalize(query);
-
-    final String localizedName = exercise.getLocalizedName(context);
-    final String localizedDescription =
-        exercise.getLocalizedDescription(context);
-
+    final String normalizedQuery = exerciseNormalize(query);
     final String enName =
         ExerciseLocalizationHelper.getName(_en, exercise.id) ?? exercise.name;
     final String frName =
         ExerciseLocalizationHelper.getName(_fr, exercise.id) ?? exercise.name;
-
     final String enDescription =
         ExerciseLocalizationHelper.getDescription(_en, exercise.id) ??
             exercise.description;
@@ -398,98 +389,28 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
         ExerciseLocalizationHelper.getDescription(_fr, exercise.id) ??
             exercise.description;
 
-    final Iterable<String> muscleTokens = exercise.muscleGroups.expand(
-      (MuscleGroup muscle) => <String>{
-        _muscleLabel(muscle: muscle, isFrench: false),
-        _muscleLabel(muscle: muscle, isFrench: true),
-        ..._muscleSearchAliases(muscle),
-      },
-    );
-
-    final Iterable<String> equipment = exercise.equipment;
-
-    final Iterable<String> searchableTokens = <String>{
-      localizedName,
-      localizedDescription,
+    final Iterable<String> tokens = <String>{
+      exercise.getLocalizedName(context),
+      exercise.getLocalizedDescription(context),
       exercise.name,
       exercise.description,
       enName,
       frName,
       enDescription,
       frDescription,
-      ...muscleTokens,
-      ...equipment,
+      ...exercise.muscleGroups.expand(
+        (m) => <String>{
+          muscleGroupLabel(m, false),
+          muscleGroupLabel(m, true),
+          ...muscleGroupAliases(m),
+        },
+      ),
+      ...exercise.equipment,
     };
 
-    return searchableTokens
-        .map(_normalize)
-        .any((String token) => token.contains(normalizedQuery));
-  }
-
-  Iterable<String> _muscleSearchAliases(MuscleGroup muscle) {
-    switch (muscle) {
-      case MuscleGroup.chest:
-        return const <String>{'pecs', 'pectoraux'};
-      case MuscleGroup.shoulders:
-        return const <String>{'delts', 'epaules'};
-      case MuscleGroup.triceps:
-        return const <String>{'triceps'};
-      case MuscleGroup.biceps:
-        return const <String>{'biceps'};
-      case MuscleGroup.back:
-        return const <String>{'dorsaux', 'dos'};
-      case MuscleGroup.forearms:
-        return const <String>{'avant bras', 'forearm'};
-      case MuscleGroup.quads:
-        return const <String>{'quadriceps', 'cuisses'};
-      case MuscleGroup.hamstrings:
-        return const <String>{'ischio', 'hamstrings'};
-      case MuscleGroup.calves:
-        return const <String>{'mollets', 'calves'};
-      case MuscleGroup.glutes:
-        return const <String>{'fessiers', 'glutes'};
-      case MuscleGroup.abs:
-        return const <String>{'abdos', 'abdominals'};
-      case MuscleGroup.obliques:
-        return const <String>{'obliques'};
-      case MuscleGroup.lowerBack:
-        return const <String>{'lombaires', 'lower back'};
-      case MuscleGroup.cardio:
-        return const <String>{'cardio'};
-    }
-  }
-
-  String _normalize(String value) {
-    String normalized = value.toLowerCase();
-
-    const Map<String, String> replacement = <String, String>{
-      '\u00E0': 'a',
-      '\u00E1': 'a',
-      '\u00E2': 'a',
-      '\u00E4': 'a',
-      '\u00E7': 'c',
-      '\u00E8': 'e',
-      '\u00E9': 'e',
-      '\u00EA': 'e',
-      '\u00EB': 'e',
-      '\u00EE': 'i',
-      '\u00EF': 'i',
-      '\u00F4': 'o',
-      '\u00F6': 'o',
-      '\u00F9': 'u',
-      '\u00FB': 'u',
-      '\u00FC': 'u',
-      '\u0153': 'oe',
-      "'": ' ',
-      '-': ' ',
-      '/': ' ',
-    };
-
-    replacement.forEach((String from, String to) {
-      normalized = normalized.replaceAll(from, to);
-    });
-
-    return normalized.replaceAll(RegExp(r'\s+'), ' ').trim();
+    return tokens
+        .map(exerciseNormalize)
+        .any((t) => t.contains(normalizedQuery));
   }
 
   String _emptyStateMessage({
@@ -502,93 +423,26 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
           ? 'Aucun exercice disponible. La collection Firebase "exercises" semble vide pour le moment.'
           : 'No exercises available. The Firebase "exercises" collection appears empty right now.';
     }
-
     if (hasActiveFilters) {
       return isFrench
           ? 'Aucun exercice trouve avec ces filtres.'
           : 'No exercise found with those filters.';
     }
-
     return isFrench ? 'Aucun exercice trouve.' : 'No exercise found.';
   }
-
-  String _muscleLabel({
-    required MuscleGroup muscle,
-    required bool isFrench,
-  }) {
-    switch (muscle) {
-      case MuscleGroup.chest:
-        return isFrench ? 'Pectoraux' : 'Chest';
-      case MuscleGroup.shoulders:
-        return isFrench ? 'Epaules' : 'Shoulders';
-      case MuscleGroup.triceps:
-        return 'Triceps';
-      case MuscleGroup.biceps:
-        return 'Biceps';
-      case MuscleGroup.back:
-        return isFrench ? 'Dos' : 'Back';
-      case MuscleGroup.forearms:
-        return isFrench ? 'Avant-bras' : 'Forearms';
-      case MuscleGroup.quads:
-        return isFrench ? 'Quadriceps' : 'Quads';
-      case MuscleGroup.hamstrings:
-        return isFrench ? 'Ischio-jambiers' : 'Hamstrings';
-      case MuscleGroup.calves:
-        return isFrench ? 'Mollets' : 'Calves';
-      case MuscleGroup.glutes:
-        return isFrench ? 'Fessiers' : 'Glutes';
-      case MuscleGroup.abs:
-        return isFrench ? 'Abdos' : 'Abs';
-      case MuscleGroup.obliques:
-        return 'Obliques';
-      case MuscleGroup.lowerBack:
-        return isFrench ? 'Bas du dos' : 'Lower back';
-      case MuscleGroup.cardio:
-        return 'Cardio';
-    }
-  }
-
-  String _difficultyLabel(DifficultyLevel difficulty, bool isFrench) {
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        return isFrench ? 'Debutant' : 'Beginner';
-      case DifficultyLevel.intermediate:
-        return isFrench ? 'Intermediaire' : 'Intermediate';
-      case DifficultyLevel.advanced:
-        return isFrench ? 'Avance' : 'Advanced';
-    }
-  }
-
-  Color _difficultyColor(DifficultyLevel difficulty) {
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        return AppColors.success;
-      case DifficultyLevel.intermediate:
-        return AppColors.warning;
-      case DifficultyLevel.advanced:
-        return AppColors.error;
-    }
-  }
-
-  int _difficultyRank(DifficultyLevel difficulty) {
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        return 0;
-      case DifficultyLevel.intermediate:
-        return 1;
-      case DifficultyLevel.advanced:
-        return 2;
-    }
-  }
 }
+
+// ---------------------------------------------------------------------------
+// Card widget
+// ---------------------------------------------------------------------------
 
 class _ExerciseCard extends StatelessWidget {
   final Exercise exercise;
   final String title;
   final String description;
   final String muscleSummary;
-  final String difficultyLabel;
-  final Color difficultyColor;
+  final DifficultyLevel difficulty;
+  final bool isFrench;
   final Offset shaderVelocity;
   final VoidCallback onTap;
 
@@ -597,56 +451,35 @@ class _ExerciseCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.muscleSummary,
-    required this.difficultyLabel,
-    required this.difficultyColor,
+    required this.difficulty,
+    required this.isFrench,
     required this.shaderVelocity,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    const double cardRadius = 8;
-    const double mediaRadius = 6;
-    const double pillRadius = 8;
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(cardRadius),
+        borderRadius: BorderRadius.circular(4),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(cardRadius),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                Color(0xFFD7E5FF),
-                Color(0xFFE4EEFF),
-              ],
-            ),
-            border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.45),
-            ),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: AppColors.primaryLight.withValues(alpha: 0.2),
-                blurRadius: 14,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(4),
+            color: AppColors.surface,
+            border: Border.all(color: AppColors.neutral300),
           ),
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               final double cardWidth = constraints.maxWidth.isFinite
                   ? constraints.maxWidth
                   : MediaQuery.sizeOf(context).width;
-              final double mediaWidth =
-                  (cardWidth * 0.36).clamp(118.0, 156.0).toDouble();
+              final double mediaWidth = (cardWidth * 0.36).clamp(118.0, 156.0);
               final double mediaHeight = mediaWidth * 0.64;
 
               return Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm),
+                padding: const EdgeInsets.all(AppSpacing.xs),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -660,55 +493,34 @@ class _ExerciseCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: AppColors.textPrimary,
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'AppFontMedium',
                             ),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.xs),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xs,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: difficultyColor.withValues(
-                              alpha: 0.18,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                              pillRadius,
-                            ),
-                            border: Border.all(
-                              color: difficultyColor.withValues(
-                                alpha: 0.45,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            difficultyLabel,
-                            style: TextStyle(
-                              color: difficultyColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                        ExerciseDifficultyBadge(
+                          difficulty: difficulty,
+                          isFrench: isFrench,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                    const SizedBox(height: AppSpacing.xxs),
                     Container(
                       height: 1,
-                      color: AppColors.primaryLight.withValues(alpha: 0.32),
+                      color: AppColors.primaryLight.withValues(
+                        alpha: AppOpacity.moderate,
+                      ),
                     ),
-                    const SizedBox(height: AppSpacing.sm),
+                    const SizedBox(height: AppSpacing.xs),
                     SizedBox(
                       height: mediaHeight,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(mediaRadius),
+                            borderRadius: BorderRadius.circular(AppRadii.sm),
                             child: SizedBox(
                               width: mediaWidth,
                               height: mediaHeight,
@@ -723,7 +535,7 @@ class _ExerciseCard extends StatelessWidget {
                             width: 1,
                             height: mediaHeight,
                             color: AppColors.primaryLight.withValues(
-                              alpha: 0.32,
+                              alpha: AppOpacity.moderate,
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
@@ -731,21 +543,21 @@ class _ExerciseCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                if (muscleSummary
-                                    .trim()
-                                    .isNotEmpty) ...<Widget>[
+                                if (muscleSummary.trim().isNotEmpty) ...[
                                   Text(
                                     muscleSummary,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: AppColors.textTertiary,
-                                      fontSize: 12,
+                                    style: TextStyle(
+                                      color: AppColors.primaryLight.withValues(
+                                        alpha: AppOpacity.bold,
+                                      ),
+                                      fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                       height: 1.2,
                                     ),
                                   ),
-                                  const SizedBox(height: AppSpacing.xs),
+                                  const SizedBox(height: AppSpacing.xxs),
                                 ],
                                 Expanded(
                                   child: Text(
@@ -754,7 +566,7 @@ class _ExerciseCard extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: AppColors.textSecondary,
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       height: 1.28,
                                     ),
                                   ),
@@ -776,14 +588,15 @@ class _ExerciseCard extends StatelessWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Image + shader
+// ---------------------------------------------------------------------------
+
 class _ExerciseWaveFilter extends StatefulWidget {
   final Widget child;
   final Offset velocity;
 
-  const _ExerciseWaveFilter({
-    required this.child,
-    required this.velocity,
-  });
+  const _ExerciseWaveFilter({required this.child, required this.velocity});
 
   @override
   State<_ExerciseWaveFilter> createState() => _ExerciseWaveFilterState();
@@ -798,23 +611,18 @@ class _ExerciseWaveFilterState extends State<_ExerciseWaveFilter> {
     return FutureBuilder<ui.FragmentProgram>(
       future: _programFuture,
       builder: (BuildContext context, AsyncSnapshot<ui.FragmentProgram> snap) {
-        if (!snap.hasData) {
-          return widget.child;
-        }
-
+        if (!snap.hasData) return widget.child;
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             final double width =
                 constraints.maxWidth.isFinite ? constraints.maxWidth : 1;
             final double height =
                 constraints.maxHeight.isFinite ? constraints.maxHeight : 1;
-
             final ui.FragmentShader shader = snap.data!.fragmentShader();
             shader.setFloat(0, width.clamp(1, 2000).toDouble());
             shader.setFloat(1, height.clamp(1, 2000).toDouble());
             shader.setFloat(2, widget.velocity.dx);
             shader.setFloat(3, widget.velocity.dy);
-
             return ImageFiltered(
               imageFilter: ui.ImageFilter.shader(shader),
               child: widget.child,
@@ -830,18 +638,12 @@ class _ExerciseImage extends StatelessWidget {
   final String imageUrl;
   final Offset shaderVelocity;
 
-  const _ExerciseImage({
-    required this.imageUrl,
-    required this.shaderVelocity,
-  });
+  const _ExerciseImage({required this.imageUrl, required this.shaderVelocity});
 
   @override
   Widget build(BuildContext context) {
     final String trimmed = imageUrl.trim();
-
-    if (trimmed.isEmpty) {
-      return const _MissingExerciseImage();
-    }
+    if (trimmed.isEmpty) return const _MissingExerciseImage();
 
     final Widget image = trimmed.startsWith('assets/')
         ? Image.asset(
@@ -859,10 +661,7 @@ class _ExerciseImage extends StatelessWidget {
       fit: StackFit.expand,
       children: <Widget>[
         const _MissingExerciseImage(),
-        _ExerciseWaveFilter(
-          velocity: shaderVelocity,
-          child: image,
-        ),
+        _ExerciseWaveFilter(velocity: shaderVelocity, child: image),
       ],
     );
   }
@@ -887,7 +686,7 @@ class _MissingExerciseImage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: AppColors.primaryLight.withValues(alpha: 0.18),
+            color: AppColors.neutral300,
           ),
         ),
       ),

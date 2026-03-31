@@ -13,6 +13,9 @@ enum WorkoutType {
   
   @HiveField(2)
   timed, // Single timed exercise (e.g., 60s plank)
+
+  @HiveField(3)
+  circuit, // Group of exercises repeated N rounds
 }
 
 /// Difficulty level for exercises and programs

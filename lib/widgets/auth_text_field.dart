@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class AuthTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -50,7 +51,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
       decoration: InputDecoration(
         labelText: widget.label,
         labelStyle: TextStyle(
-          color: AppColors.textPrimary.withValues(alpha: 0.6),
+          color: AppColors.textPrimary.withValues(alpha: AppOpacity.visible),
           fontSize: 16,
         ),
         floatingLabelStyle: const TextStyle(
@@ -60,7 +61,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
         ),
         hintText: widget.hint,
         hintStyle: TextStyle(
-          color: AppColors.textPrimary.withValues(alpha: 0.3),
+          color: AppColors.textPrimary.withValues(alpha: AppOpacity.mild),
           fontSize: 16,
         ),
         prefixIcon: Icon(widget.icon, color: AppColors.accent, size: 22),
@@ -90,7 +91,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadii.lg),
           borderSide: BorderSide(
-            color: AppColors.textPrimary.withValues(alpha: 0.1),
+            color: AppColors.textPrimary.withValues(alpha: AppOpacity.whisper),
             width: 1,
           ),
         ),

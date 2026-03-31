@@ -13,7 +13,10 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization_helper.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/models/achievement.dart';
+import 'package:workin_fit/providers/achievement_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 enum _WorkoutPhase {
   getReady,
@@ -60,6 +63,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   bool _isRunning = false;
   DateTime? _workoutStartedAt;
   bool _workoutHistorySaved = false;
+  List<Achievement> _newlyUnlockedAchievements = [];
   final Map<int, _ExerciseActualMetrics> _actualMetricsByIndex =
       <int, _ExerciseActualMetrics>{};
   int _currentSet = 0;
@@ -73,22 +77,31 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   int _tabataCurrentSet = 0;
   bool _tabataIsWork = true;
 
-  int get _totalExercises => widget.session.workouts.length;
+  /// Flat, unrolled list of steps (circuits expanded into individual reps).
+  /// Set on first build when exercise data resolves.
+  List<_WorkoutStep> _steps = const <_WorkoutStep>[];
+
+  int get _totalExercises => _steps.isEmpty
+      ? widget.session.workouts.length
+      : _steps.length;
 
   WorkoutConfig? get _currentWorkout {
-    if (_totalExercises == 0) {
-      return null;
-    }
+    if (_totalExercises == 0) return null;
+    if (_steps.isNotEmpty) return _steps[_currentExerciseIndex].config;
     return widget.session.workouts[_currentExerciseIndex];
   }
 
   WorkoutConfig? get _nextWorkout {
     final int nextIndex = _currentExerciseIndex + 1;
-    if (nextIndex >= _totalExercises) {
-      return null;
-    }
+    if (nextIndex >= _totalExercises) return null;
+    if (_steps.isNotEmpty) return _steps[nextIndex].config;
     return widget.session.workouts[nextIndex];
   }
+
+  _WorkoutStep? get _currentStep =>
+      _steps.isNotEmpty && _currentExerciseIndex < _steps.length
+          ? _steps[_currentExerciseIndex]
+          : null;
 
   int get _phaseDuration {
     switch (_phase) {
@@ -127,6 +140,12 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         }
         return _durationForWorkout(workout);
       case _WorkoutPhase.exerciseRest:
+        // If the step that just finished has a circuit override, use it.
+        final int? override = _currentExerciseIndex > 0 &&
+                _steps.length > _currentExerciseIndex - 1
+            ? _steps[_currentExerciseIndex - 1].overrideRestSeconds
+            : null;
+        if (override != null) return override > 0 ? override : 1;
         final int rest = widget.session.restBetweenExercises;
         return rest > 0 ? rest : 120;
       case _WorkoutPhase.finished:
@@ -1127,6 +1146,19 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       _workoutHistorySaved = true;
       // Refresh streak so profile & home banner reflect the new workout day.
       ref.invalidate(streakDataProvider);
+
+      // Check for newly unlocked achievements.
+      try {
+        final unlocked = await ref
+            .read(achievementServiceProvider)
+            .checkAndUnlock(userId);
+        if (unlocked.isNotEmpty && mounted) {
+          setState(() => _newlyUnlockedAchievements = unlocked);
+          ref.invalidate(achievementsProvider);
+        }
+      } catch (_) {
+        // Achievement check failures must never break the completion flow.
+      }
     } catch (_) {
       // Keep workout completion UX smooth if history write fails.
     }
@@ -1213,14 +1245,49 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     final Map<String, Exercise> exerciseById = <String, Exercise>{
       for (final Exercise exercise in exercises) exercise.id: exercise,
     };
-    return widget.session.workouts
-        .map(
-          (WorkoutConfig workout) => _WorkoutStep(
-            config: workout,
-            exercise: exerciseById[workout.exerciseId],
-          ),
-        )
-        .toList(growable: false);
+
+    final List<_WorkoutStep> steps = <_WorkoutStep>[];
+
+    for (final WorkoutConfig workout in widget.session.workouts) {
+      if (workout is CircuitConfig) {
+        // Unroll: [ex1, ex2, ..., rest, ex1, ex2, ..., rest, ex1, ex2, ...]
+        for (int round = 0; round < workout.rounds; round++) {
+          final String roundLabel =
+              '${workout.name} · Round ${round + 1}/${workout.rounds}';
+          for (int i = 0; i < workout.exercises.length; i++) {
+            final WorkoutConfig ex = workout.exercises[i];
+            final bool isLastExInRound = i == workout.exercises.length - 1;
+            final bool isLastRound = round == workout.rounds - 1;
+
+            // Override rest:
+            // - Between exercises within a round → restBetweenExercises
+            // - After last exercise of a round (but not the last round) → restBetweenRounds
+            // - After last exercise of last round → null (use session default / handled by executor)
+            int? overrideRest;
+            if (!isLastExInRound) {
+              overrideRest = workout.restBetweenExercises;
+            } else if (!isLastRound) {
+              overrideRest = workout.restBetweenRounds;
+            }
+            // Last exercise of last round: overrideRest stays null → session rest applies
+
+            steps.add(_WorkoutStep(
+              config: ex,
+              exercise: exerciseById[ex.exerciseId],
+              circuitLabel: roundLabel,
+              overrideRestSeconds: overrideRest,
+            ));
+          }
+        }
+      } else {
+        steps.add(_WorkoutStep(
+          config: workout,
+          exercise: exerciseById[workout.exerciseId],
+        ));
+      }
+    }
+
+    return steps;
   }
 
   @override
@@ -1233,6 +1300,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return exercisesAsync.when(
       data: (List<Exercise> exercises) {
         final List<_WorkoutStep> steps = _buildWorkoutSteps(exercises);
+        // Sync the mutable steps cache so state methods can access them
+        // without needing the exercises list.
+        if (_steps.length != steps.length) {
+          // Use a post-frame callback to avoid setState during build.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) setState(() => _steps = steps);
+          });
+        }
 
         if (steps.isEmpty) {
           return _buildStateScaffold(
@@ -1369,10 +1444,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   Widget _buildBackButton() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.primaryLight.withValues(alpha: 0.35),
+        color: AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
         borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
-          color: AppColors.background.withValues(alpha: 0.28),
+          color: AppColors.background.withValues(alpha: AppOpacity.thin),
         ),
       ),
       child: SizedBox(
@@ -1497,10 +1572,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         Container(
           padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            color: AppColors.success.withValues(alpha: 0.12),
+            color: AppColors.success.withValues(alpha: AppOpacity.subtle),
             borderRadius: BorderRadius.circular(AppRadii.md),
             border: Border.all(
-              color: AppColors.success.withValues(alpha: 0.35),
+              color: AppColors.success.withValues(alpha: AppOpacity.moderate),
             ),
           ),
           child: Column(
@@ -1571,13 +1646,17 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         ),
         const SizedBox(height: AppSpacing.sm),
 
+        // ── Achievement unlocks ───────────────────────────────────
+        if (_newlyUnlockedAchievements.isNotEmpty)
+          _AchievementUnlockBanner(achievements: _newlyUnlockedAchievements),
+
         // ── Per-exercise breakdown ────────────────────────────────
         ...steps.asMap().entries.map((entry) {
           final int i = entry.key;
           final _WorkoutStep step = entry.value;
           final _ExerciseActualMetrics? actual = _actualMetricsAt(i);
           final String name = _exerciseName(context, step, i);
-          final (_FinishedExerciseStats stats) = _finishedExerciseStats(step.config, actual);
+          final _FinishedExerciseStats stats = _finishedExerciseStats(step.config, actual);
 
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -1587,7 +1666,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 vertical: AppSpacing.xs + 2,
               ),
               decoration: BoxDecoration(
-                color: AppColors.background.withValues(alpha: 0.5),
+                color: AppColors.background.withValues(alpha: AppOpacity.half),
                 borderRadius: BorderRadius.circular(AppRadii.sm),
               ),
               child: Row(
@@ -1636,7 +1715,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primaryLight.withValues(alpha: 0.18),
+                        color: AppColors.primaryLight.withValues(alpha: AppOpacity.muted),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -1693,7 +1772,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return Container(
       width: 1,
       height: 32,
-      color: AppColors.success.withValues(alpha: 0.25),
+      color: AppColors.success.withValues(alpha: AppOpacity.medium),
     );
   }
 
@@ -1891,7 +1970,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         height: diameter,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppColors.success.withValues(alpha: 0.2),
+          color: AppColors.success.withValues(alpha: AppOpacity.soft),
           border: Border.all(
             color: AppColors.success,
             width: AppSpacing.xs - 2,
@@ -1934,7 +2013,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           controller: _timerController,
           width: diameter,
           height: diameter,
-          ringColor: AppColors.primaryAbyss.withValues(alpha: 0.45),
+          ringColor: AppColors.primaryAbyss.withValues(alpha: AppOpacity.dim),
           fillColor: fillColor,
           backgroundColor: AppColors.primaryPastel.withValues(alpha: 0.48),
           strokeWidth: AppSizes.workoutTimerStroke,
@@ -2004,9 +2083,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
               height: diameter * 0.36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primaryAbyss.withValues(alpha: 0.28),
+                color: AppColors.primaryAbyss.withValues(alpha: AppOpacity.thin),
                 border: Border.all(
-                  color: AppColors.background.withValues(alpha: 0.35),
+                  color: AppColors.background.withValues(alpha: AppOpacity.moderate),
                 ),
               ),
               child: const Icon(
@@ -2072,7 +2151,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 ? AppColors.success
                 : (isCurrent
                     ? AppColors.primary
-                    : AppColors.primaryLight.withValues(alpha: 0.35)),
+                    : AppColors.primaryLight.withValues(alpha: AppOpacity.moderate)),
             border: isCurrent
                 ? Border.all(color: AppColors.primary, width: 2)
                 : null,
@@ -2099,7 +2178,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         } else if (isCurrent) {
           dotColor = isWork ? AppColors.success : AppColors.errorSoft;
         } else {
-          dotColor = AppColors.primaryLight.withValues(alpha: 0.35);
+          dotColor = AppColors.primaryLight.withValues(alpha: AppOpacity.moderate);
         }
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 3),
@@ -2138,10 +2217,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         Container(
           padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            color: AppColors.warning.withValues(alpha: 0.12),
+            color: AppColors.warning.withValues(alpha: AppOpacity.subtle),
             borderRadius: BorderRadius.circular(AppRadii.md),
             border: Border.all(
-              color: AppColors.warning.withValues(alpha: 0.35),
+              color: AppColors.warning.withValues(alpha: AppOpacity.moderate),
             ),
           ),
           child: Row(
@@ -2149,7 +2228,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
               Container(
                 padding: const EdgeInsets.all(AppSpacing.xs),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withValues(alpha: 0.18),
+                  color: AppColors.warning.withValues(alpha: AppOpacity.muted),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -2248,6 +2327,34 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildWorkoutTypeBadge(step.config),
+                    if (step.circuitLabel != null) ...<Widget>[
+                      const SizedBox(width: AppSpacing.xs),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning
+                              .withValues(alpha: AppOpacity.light),
+                          borderRadius: BorderRadius.circular(AppRadii.xl),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Icon(Icons.loop_rounded,
+                                size: 11, color: AppColors.warning),
+                            const SizedBox(width: 4),
+                            Text(
+                              step.circuitLabel!,
+                              style: const TextStyle(
+                                color: AppColors.warning,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xxs),
@@ -2304,7 +2411,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              color: AppColors.background.withValues(alpha: 0.55),
+              color: AppColors.background.withValues(alpha: AppOpacity.over),
               borderRadius: BorderRadius.circular(AppRadii.sm),
             ),
             child: Text(
@@ -2470,9 +2577,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withValues(alpha: AppOpacity.light),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.55), width: 1),
+        border: Border.all(color: color.withValues(alpha: AppOpacity.over), width: 1),
       ),
       child: Text(
         _workoutTypeLabel(workout),
@@ -2732,9 +2839,19 @@ class _WorkoutStep {
   final WorkoutConfig config;
   final Exercise? exercise;
 
+  /// Non-null when this step belongs to a circuit.
+  /// Format: "Circuit Name · Round 2/3"
+  final String? circuitLabel;
+
+  /// Rest to insert after this step instead of session.restBetweenExercises.
+  /// Used for intra-circuit rests (between exercises and between rounds).
+  final int? overrideRestSeconds;
+
   const _WorkoutStep({
     required this.config,
     required this.exercise,
+    this.circuitLabel,
+    this.overrideRestSeconds,
   });
 }
 
@@ -2751,6 +2868,105 @@ class _MissingExerciseImage extends StatelessWidget {
           size: 44,
           color: AppColors.textTertiary,
         ),
+      ),
+    );
+  }
+}
+
+// ─── Achievement unlock banner ────────────────────────────────────────────────
+
+class _AchievementUnlockBanner extends StatelessWidget {
+  final List<Achievement> achievements;
+
+  const _AchievementUnlockBanner({required this.achievements});
+
+  String _trophyEmoji(AchievementRank rank) {
+    switch (rank) {
+      case AchievementRank.bronze:
+        return '🥉';
+      case AchievementRank.silver:
+        return '🥈';
+      case AchievementRank.gold:
+        return '🥇';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.gold, AppColors.goldDeep],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: AppOpacity.moderate),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Text('🏆', style: TextStyle(fontSize: 18)),
+              SizedBox(width: AppSpacing.xs),
+              Text(
+                'Trophies Unlocked!',
+                style: TextStyle(
+                  color: AppColors.goldText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Wrap(
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xxs,
+            children: achievements
+                .map(
+                  (a) => Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xxs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: AppOpacity.dim),
+                      borderRadius: BorderRadius.circular(AppRadii.xl),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _trophyEmoji(a.definition.rank),
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          a.definition.title,
+                          style: const TextStyle(
+                            color: AppColors.goldText,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }

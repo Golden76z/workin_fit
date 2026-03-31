@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/leaderboard_entry.dart';
-import 'package:workin_fit/providers/friend_providers.dart';
 import 'package:workin_fit/providers/leaderboard_providers.dart';
-import 'package:workin_fit/views/social/friends_screen.dart';
 import 'package:workin_fit/views/social/leaderboard_screen.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class SocialTab extends ConsumerStatefulWidget {
   const SocialTab({super.key});
@@ -43,12 +43,6 @@ class _SocialTabState extends ConsumerState<SocialTab>
     ref.invalidate(friendLeaderboardProvider(_activeType));
   }
 
-  void _openFriends() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => const FriendsScreen()),
-    );
-  }
-
   void _openFullLeaderboard() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => const LeaderboardScreen()),
@@ -57,65 +51,50 @@ class _SocialTabState extends ConsumerState<SocialTab>
 
   @override
   Widget build(BuildContext context) {
-    final incomingCount =
-        ref.watch(incomingRequestsProvider).valueOrNull?.length ?? 0;
-
-    return Scaffold(
-      backgroundColor: AppColors.surfaceVariant,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBar(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            floating: true,
-            snap: true,
-            pinned: false,
-            title: const Text(
-              'Social',
-              style: TextStyle(
-                fontFamily: 'AppFontMedium',
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
+    return AppSystemOverlayRegion(
+      style: AppChrome.homeOverlay,
+      child: Scaffold(
+        backgroundColor: AppColors.surfaceVariant,
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              foregroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
+              floating: true,
+              snap: true,
+              pinned: false,
+              title: const Text(
+                'Social',
+                style: TextStyle(
+                  fontFamily: 'AppFontMedium',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
               ),
-            ),
-            actions: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.group_rounded),
-                    tooltip: 'Friends',
-                    onPressed: _openFriends,
-                  ),
-                  if (incomingCount > 0)
-                    Positioned(
-                      right: 6,
-                      top: 6,
-                      child: _Badge(count: incomingCount),
-                    ),
-                ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: _LeaderboardTabBar(controller: _tabController),
               ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(48),
-              child: _LeaderboardTabBar(controller: _tabController),
-            ),
-          ),
-        ],
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _EmbeddedLeaderboardTab(
-              type: LeaderboardType.streak,
-              onRefresh: _refresh,
-              onExpand: _openFullLeaderboard,
-            ),
-            _EmbeddedLeaderboardTab(
-              type: LeaderboardType.workouts,
-              onRefresh: _refresh,
-              onExpand: _openFullLeaderboard,
             ),
           ],
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              _EmbeddedLeaderboardTab(
+                type: LeaderboardType.streak,
+                onRefresh: _refresh,
+                onExpand: _openFullLeaderboard,
+              ),
+              _EmbeddedLeaderboardTab(
+                type: LeaderboardType.workouts,
+                onRefresh: _refresh,
+                onExpand: _openFullLeaderboard,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -180,13 +159,15 @@ class _EmbeddedLeaderboardTab extends ConsumerWidget {
               Icon(
                 Icons.wifi_off_rounded,
                 size: 48,
-                color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+                color:
+                    AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Could not load leaderboard',
                 style: TextStyle(
-                  color: AppColors.textSecondary.withValues(alpha: 0.8),
+                  color: AppColors.textSecondary
+                      .withValues(alpha: AppOpacity.bold),
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
@@ -253,15 +234,16 @@ class _LeaderboardTile extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: entry.isCurrentUser
-            ? AppColors.primary.withValues(alpha: 0.08)
+            ? AppColors.primary.withValues(alpha: AppOpacity.faint)
             : AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.xl),
         border: entry.isCurrentUser
-            ? Border.all(color: AppColors.primary.withValues(alpha: 0.35))
+            ? Border.all(
+                color: AppColors.primary.withValues(alpha: AppOpacity.moderate))
             : null,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDarker.withValues(alpha: 0.06),
+            color: AppColors.primaryDarker.withValues(alpha: AppOpacity.trace),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -286,9 +268,8 @@ class _LeaderboardTile extends StatelessWidget {
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 15,
-                  fontWeight: entry.isCurrentUser
-                      ? FontWeight.w700
-                      : FontWeight.w600,
+                  fontWeight:
+                      entry.isCurrentUser ? FontWeight.w700 : FontWeight.w600,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -324,7 +305,8 @@ class _RankBadge extends StatelessWidget {
       child: Text(
         '#$rank',
         style: TextStyle(
-          color: AppColors.textSecondary.withValues(alpha: 0.7),
+          color:
+              AppColors.textSecondary.withValues(alpha: AppOpacity.prominent),
           fontSize: 13,
           fontWeight: FontWeight.w700,
         ),
@@ -345,8 +327,8 @@ class _ValueChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: entry.isCurrentUser
-            ? AppColors.primary.withValues(alpha: 0.15)
-            : AppColors.babyBlueIce.withValues(alpha: 0.25),
+            ? AppColors.primary.withValues(alpha: AppOpacity.light)
+            : AppColors.babyBlueIce.withValues(alpha: AppOpacity.medium),
         borderRadius: BorderRadius.circular(AppRadii.xl),
       ),
       child: Text(
@@ -373,11 +355,9 @@ class _StickyMyRankBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final medal = entry.rank <= 3
-        ? ['🥇', '🥈', '🥉'][entry.rank - 1]
-        : '#${entry.rank}';
-    final suffix =
-        type == LeaderboardType.streak ? 'day streak' : 'workouts';
+    final medal =
+        entry.rank <= 3 ? ['🥇', '🥈', '🥉'][entry.rank - 1] : '#${entry.rank}';
+    final suffix = type == LeaderboardType.streak ? 'day streak' : 'workouts';
     final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
 
     return Container(
@@ -391,7 +371,7 @@ class _StickyMyRankBar extends StatelessWidget {
         color: AppColors.primary,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDarker.withValues(alpha: 0.25),
+            color: AppColors.primaryDarker.withValues(alpha: AppOpacity.medium),
             blurRadius: 12,
             offset: const Offset(0, -4),
           ),
@@ -506,13 +486,15 @@ class _EmptyState extends StatelessWidget {
             Icon(
               Icons.emoji_events_rounded,
               size: 64,
-              color: AppColors.babyBlueIce.withValues(alpha: 0.6),
+              color:
+                  AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'No one to compete with yet!',
               style: TextStyle(
-                color: AppColors.textSecondary.withValues(alpha: 0.8),
+                color:
+                    AppColors.textSecondary.withValues(alpha: AppOpacity.bold),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
@@ -522,7 +504,8 @@ class _EmptyState extends StatelessWidget {
               'Add friends to see how you\nstack up on the leaderboard.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.textSecondary.withValues(alpha: 0.6),
+                color: AppColors.textSecondary
+                    .withValues(alpha: AppOpacity.visible),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -545,36 +528,6 @@ class _EmptyState extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Badge ────────────────────────────────────────────────────────────────────
-
-class _Badge extends StatelessWidget {
-  final int count;
-
-  const _Badge({required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: const BoxDecoration(
-        color: AppColors.error,
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          count > 9 ? '9+' : '$count',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 9,
-            fontWeight: FontWeight.w700,
-          ),
         ),
       ),
     );

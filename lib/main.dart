@@ -16,7 +16,6 @@ import 'package:workin_fit/providers/locale_provider.dart';
 import 'package:workin_fit/services/deep_link_service.dart';
 import 'package:workin_fit/features/auth/presentation/auth_gate.dart';
 // import 'firebase_options.dart';
-// import 'package:workin_fit/views/test/test_page_001.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +35,7 @@ void main() async {
   Hive.registerAdapter(SetsConfigAdapter());
   Hive.registerAdapter(TabataConfigAdapter());
   Hive.registerAdapter(TimedConfigAdapter());
+  Hive.registerAdapter(CircuitConfigAdapter());
   Hive.registerAdapter(SessionAdapter());
   Hive.registerAdapter(ProgramAdapter());
 
@@ -76,7 +76,7 @@ class _WorkinFitAppState extends ConsumerState<WorkinFitApp> {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       builder: (BuildContext context, Widget? child) {
         return AppSystemOverlayRegion(
           style: AppChrome.globalOverlay,

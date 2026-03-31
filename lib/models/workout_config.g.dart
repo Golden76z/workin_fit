@@ -184,6 +184,56 @@ class TimedConfigAdapter extends TypeAdapter<TimedConfig> {
           typeId == other.typeId;
 }
 
+class CircuitConfigAdapter extends TypeAdapter<CircuitConfig> {
+  @override
+  final int typeId = 7;
+
+  @override
+  CircuitConfig read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return CircuitConfig(
+      name: fields[2] as String? ?? 'Circuit',
+      exercises: (fields[3] as List?)?.cast<WorkoutConfig>() ?? [],
+      rounds: fields[4] as int? ?? 3,
+      restBetweenExercises: fields[5] as int? ?? 0,
+      restBetweenRounds: fields[6] as int? ?? 60,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, CircuitConfig obj) {
+    writer
+      ..writeByte(7)
+      ..writeByte(0)
+      ..write(obj.type)
+      ..writeByte(1)
+      ..write(obj.exerciseId)
+      ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.exercises)
+      ..writeByte(4)
+      ..write(obj.rounds)
+      ..writeByte(5)
+      ..write(obj.restBetweenExercises)
+      ..writeByte(6)
+      ..write(obj.restBetweenRounds);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CircuitConfigAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************

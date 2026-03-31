@@ -10,6 +10,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class StatsGraphScreen extends ConsumerStatefulWidget {
   const StatsGraphScreen({super.key});
@@ -84,7 +85,8 @@ class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
         monthKey: _monthKey(_selectedMonth),
       );
 
-      final List<dynamic> results = await Future.wait<dynamic>(<Future<dynamic>>[
+      final List<dynamic> results =
+          await Future.wait<dynamic>(<Future<dynamic>>[
         summaryFuture,
         aggregatesFuture,
       ]);
@@ -133,11 +135,11 @@ class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
 
     final List<Map<String, dynamic>> rankedExercises =
         List<Map<String, dynamic>>.from(_exerciseAggregates)
-          ..sort((a, b) => _asInt(b['doneReps']).compareTo(_asInt(a['doneReps'])));
+          ..sort(
+              (a, b) => _asInt(b['doneReps']).compareTo(_asInt(a['doneReps'])));
     const int maxVisibleRows = 100;
-    final List<Map<String, dynamic>> visibleRows = rankedExercises
-        .take(maxVisibleRows)
-        .toList(growable: false);
+    final List<Map<String, dynamic>> visibleRows =
+        rankedExercises.take(maxVisibleRows).toList(growable: false);
 
     final int totalWorkouts = _asInt(_monthlySummary?['totalWorkouts']);
     final int totalDoneReps = _asInt(_monthlySummary?['totalDoneReps']);
@@ -153,9 +155,11 @@ class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
           title: Text(
             isFrench ? 'Stats & Graphiques' : 'Stats & Graph',
           ),
-          backgroundColor: AppChrome.topSurface,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
           surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: AppChrome.topSurfaceOverlay,
+          flexibleSpace: const AppTopBarBackground(),
         ),
         body: RefreshIndicator(
           onRefresh: _loadMonthlyStats,
@@ -192,7 +196,8 @@ class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
                       : 'Top exercises (reps)',
                   rows: rankedExercises.take(7).toList(growable: false),
                   nameById: exerciseNameById,
-                  valueOf: (Map<String, dynamic> row) => _asInt(row['doneReps']),
+                  valueOf: (Map<String, dynamic> row) =>
+                      _asInt(row['doneReps']),
                   fallbackName: isFrench ? 'Exercice' : 'Exercise',
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -218,14 +223,14 @@ class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
                   ...visibleRows.map((Map<String, dynamic> row) {
                     final String exerciseId =
                         (row['exerciseId'] as String? ?? '').trim();
-                    final String title =
-                        exerciseNameById[exerciseId] ??
+                    final String title = exerciseNameById[exerciseId] ??
                         '${isFrench ? 'Exercice' : 'Exercise'} $exerciseId';
                     return _ExerciseRow(
                       title: title,
                       reps: _asInt(row['doneReps']),
                       sets: _asInt(row['doneSets']),
-                      workLabel: _formatDuration(_asInt(row['doneWorkSeconds'])),
+                      workLabel:
+                          _formatDuration(_asInt(row['doneWorkSeconds'])),
                     );
                   }),
                 if (rankedExercises.length > maxVisibleRows)
@@ -272,7 +277,8 @@ class _MonthHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.65)),
+        border:
+            Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.65)),
       ),
       child: Row(
         children: <Widget>[
@@ -350,12 +356,16 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: (MediaQuery.of(context).size.width - (AppSpacing.md * 2) - AppSpacing.xs) / 2,
+      width: (MediaQuery.of(context).size.width -
+              (AppSpacing.md * 2) -
+              AppSpacing.xs) /
+          2,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -401,21 +411,18 @@ class _RepsGraphCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> nonEmptyRows = rows
-        .where((row) => valueOf(row) > 0)
-        .toList(growable: false);
-    final int maxValue = nonEmptyRows.isEmpty
-        ? 0
-        : nonEmptyRows
-            .map(valueOf)
-            .reduce(math.max);
+    final List<Map<String, dynamic>> nonEmptyRows =
+        rows.where((row) => valueOf(row) > 0).toList(growable: false);
+    final int maxValue =
+        nonEmptyRows.isEmpty ? 0 : nonEmptyRows.map(valueOf).reduce(math.max);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,9 +452,8 @@ class _RepsGraphCard extends StatelessWidget {
               final String label =
                   nameById[exerciseId] ?? '$fallbackName $exerciseId';
               final int value = valueOf(row);
-              final double fraction = maxValue <= 0
-                  ? 0
-                  : (value / maxValue).clamp(0, 1).toDouble();
+              final double fraction =
+                  maxValue <= 0 ? 0 : (value / maxValue).clamp(0, 1).toDouble();
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -470,8 +476,8 @@ class _RepsGraphCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: fraction,
                         minHeight: 9,
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.12),
+                        backgroundColor: AppColors.primary
+                            .withValues(alpha: AppOpacity.subtle),
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           AppColors.primary,
                         ),
@@ -511,7 +517,8 @@ class _ExerciseRow extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Row(
         children: <Widget>[
@@ -572,7 +579,8 @@ class _ErrorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.errorSoft.withValues(alpha: 0.5)),
+        border: Border.all(
+            color: AppColors.errorSoft.withValues(alpha: AppOpacity.half)),
       ),
       child: Text(
         message,
@@ -598,7 +606,8 @@ class _EmptyCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.babyBlueIce.withValues(alpha: 0.6)),
+        border: Border.all(
+            color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible)),
       ),
       child: Text(
         label,

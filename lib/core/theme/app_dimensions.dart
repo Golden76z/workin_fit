@@ -30,6 +30,11 @@ class AppSizes {
   static const double workoutControlButtonHeight = 50;
 }
 
+class AppLayout {
+  /// Consistent horizontal margin applied to all list / content views.
+  static const double pageMargin = AppSpacing.xs;
+}
+
 class AppDurations {
   static const Duration snackBar = Duration(seconds: 4);
 }

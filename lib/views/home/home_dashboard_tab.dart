@@ -7,6 +7,7 @@ import 'package:workin_fit/features/workout/presentation/screens/exercise_list_s
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class HomeDashboardTab extends ConsumerStatefulWidget {
   const HomeDashboardTab({super.key});
@@ -42,7 +43,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
       child: Scaffold(
-        backgroundColor: AppColors.surfaceVariant,
+        backgroundColor: AppColors.surface,
         body: RefreshIndicator(
           onRefresh: _onRefresh,
           color: AppColors.primary,
@@ -78,8 +79,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                     // Warmup Selector
                     _SectionTitle(
                       title: isFrench ? 'Échauffement' : 'Warmup',
-                      subtitle:
-                          isFrench ? 'Commencez doucement' : 'Start easy',
+                      subtitle: isFrench ? 'Commencez doucement' : 'Start easy',
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _WarmupSelector(isFrench: isFrench),
@@ -206,15 +206,14 @@ class _HomeBannerSliver extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: ClipPath(
-        clipper: _WaveClipper(),
-        child: Container(
-          color: AppColors.navBarSurface,
+        clipper: _ArchClipper(),
+        child: AppTopBarBackground(
           child: Padding(
             padding: EdgeInsets.fromLTRB(
               AppSpacing.lg,
               topPadding + AppSpacing.md,
               AppSpacing.lg,
-              AppSpacing.xl + AppSpacing.sm,
+              AppSpacing.lg + AppSpacing.md,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,9 +222,10 @@ class _HomeBannerSliver extends StatelessWidget {
                 Text(
                   '$greeting,',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.82),
-                    fontSize: 16,
+                    color: Colors.white.withValues(alpha: AppOpacity.bold),
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -235,12 +235,12 @@ class _HomeBannerSliver extends StatelessWidget {
                     color: Colors.white,
                     fontFamily: 'AppFontMedium',
                     fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                    height: 1.1,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.lg),
-
+                const SizedBox(height: AppSpacing.md),
                 // Stats row
                 _BannerStatsRow(isFrench: isFrench),
               ],
@@ -251,7 +251,6 @@ class _HomeBannerSliver extends StatelessWidget {
     );
   }
 }
-
 
 class _BannerStatsRow extends ConsumerWidget {
   final bool isFrench;
@@ -311,36 +310,50 @@ class _StatPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs + 2,
+        vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppRadii.lg),
+        color: Colors.white.withValues(alpha: AppOpacity.light),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.25),
+          color: Colors.white.withValues(alpha: AppOpacity.soft),
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Icon(icon, color: color, size: 14),
-          const SizedBox(width: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: AppOpacity.moderate),
+              shape: BoxShape.circle,
             ),
+            child: Icon(icon, color: color, size: 14),
           ),
-          const SizedBox(width: 3),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.75),
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
+          const SizedBox(width: AppSpacing.xs),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                ),
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: AppOpacity.strong),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -352,29 +365,17 @@ class _StatPill extends StatelessWidget {
 // Wave clipper
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _WaveClipper extends CustomClipper<Path> {
+class _ArchClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final Path path = Path();
-    path.lineTo(0, size.height - 38);
-
-    path.cubicTo(
-      size.width * 0.15,
-      size.height - 10,
-      size.width * 0.35,
-      size.height + 10,
+    path.lineTo(0, size.height - 28);
+    path.quadraticBezierTo(
       size.width * 0.5,
-      size.height - 14,
-    );
-    path.cubicTo(
-      size.width * 0.65,
-      size.height - 38,
-      size.width * 0.82,
-      size.height - 4,
+      size.height + 28,
       size.width,
-      size.height - 20,
+      size.height - 28,
     );
-
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -402,26 +403,43 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
+        // Left accent bar
+        Container(
+          width: 3,
+          height: 22,
+          margin: const EdgeInsets.only(right: AppSpacing.xs),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[AppColors.primary, AppColors.primaryLight],
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
             children: <Widget>[
               Text(
                 title,
                 style: const TextStyle(
                   color: AppColors.textPrimary,
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'AppFontMedium',
                 ),
               ),
+              const SizedBox(width: 6),
               Text(
-                subtitle,
+                '· $subtitle',
                 style: const TextStyle(
                   color: AppColors.textSecondary,
-                  fontSize: 13,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
@@ -431,15 +449,24 @@ class _SectionTitle extends StatelessWidget {
           TextButton(
             onPressed: () {},
             style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.xs,
+                vertical: AppSpacing.xxs,
+              ),
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              foregroundColor: AppColors.primary,
+              backgroundColor:
+                  AppColors.primary.withValues(alpha: AppOpacity.whisper),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadii.sm),
+              ),
             ),
             child: Text(
               actionLabel!,
               style: const TextStyle(
                 color: AppColors.primary,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -463,95 +490,155 @@ class _SessionOfTheDayCard extends StatelessWidget {
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: <Color>[
-              Color(0xFF3340B8),
-              Color(0xFF5465FF),
+              AppColors.primaryDark,
+              AppColors.primary,
+              AppColors.cornflowerBlue,
             ],
+            stops: <double>[0.0, 0.45, 1.0],
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.35),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          child: Stack(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xs,
-                      vertical: 3,
+              // Decorative ring — top-right
+              Positioned(
+                right: -36,
+                top: -36,
+                child: Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: AppOpacity.soft),
+                      width: 28,
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                  ),
+                ),
+              ),
+              // Decorative ring — bottom-left
+              Positioned(
+                left: -20,
+                bottom: -44,
+                child: Container(
+                  width: 110,
+                  height: 110,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: AppOpacity.subtle),
+                      width: 20,
                     ),
-                    child: Text(
-                      isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+                  ),
+                ),
+              ),
+              // Card content
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.xs,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                Colors.white.withValues(alpha: AppOpacity.soft),
+                            borderRadius: BorderRadius.circular(AppRadii.sm),
+                            border: Border.all(
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.medium),
+                            ),
+                          ),
+                          child: Text(
+                            isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+                            style: TextStyle(
+                              color: Colors.white
+                                  .withValues(alpha: AppOpacity.high),
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color:
+                                Colors.white.withValues(alpha: AppOpacity.soft),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const Text(
+                      'Full Body Power',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.0,
+                        color: Colors.white,
+                        fontFamily: 'AppFontMedium',
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.3,
+                        height: 1.1,
                       ),
                     ),
-                  ),
-                  const Spacer(),
-                  Icon(
-                    Icons.play_circle_rounded,
-                    color: Colors.white.withValues(alpha: 0.9),
-                    size: 32,
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              const Text(
-                'Full Body Power',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'AppFontMedium',
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                    const SizedBox(height: 5),
+                    Text(
+                      isFrench
+                          ? 'Circuit complet — force et cardio combinés'
+                          : 'Full circuit — strength and cardio combined',
+                      style: TextStyle(
+                        color:
+                            Colors.white.withValues(alpha: AppOpacity.strong),
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Row(
+                      children: <Widget>[
+                        const _SessionMetaChip(
+                          icon: Icons.timer_outlined,
+                          label: '45 min',
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        _SessionMetaChip(
+                          icon: Icons.bolt_rounded,
+                          label: isFrench ? '8 exercices' : '8 exercises',
+                        ),
+                        const SizedBox(width: AppSpacing.xs),
+                        _SessionMetaChip(
+                          icon: Icons.bar_chart_rounded,
+                          label: isFrench ? 'Intermédiaire' : 'Intermediate',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                isFrench
-                    ? 'Circuit complet — force et cardio combinés'
-                    : 'Full circuit — strength and cardio combined',
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.75),
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: <Widget>[
-                  const _SessionMetaChip(
-                    icon: Icons.timer_outlined,
-                    label: '45 min',
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  _SessionMetaChip(
-                    icon: Icons.bolt_rounded,
-                    label: isFrench ? '8 exercices' : '8 exercises',
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  _SessionMetaChip(
-                    icon: Icons.bar_chart_rounded,
-                    label: isFrench ? 'Intermédiaire' : 'Intermediate',
-                  ),
-                ],
               ),
             ],
           ),
@@ -575,9 +662,10 @@ class _SessionMetaChip extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        color: Colors.white.withValues(alpha: AppOpacity.light),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        border:
+            Border.all(color: Colors.white.withValues(alpha: AppOpacity.soft)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -613,98 +701,160 @@ class _DailyChallengeCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           border: Border.all(
-            color: AppColors.primaryLight.withValues(alpha: 0.35),
+            color: AppColors.warning.withValues(alpha: AppOpacity.mild),
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              color: AppColors.warning.withValues(alpha: AppOpacity.faint),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      Color(0xFFFF9800),
-                      Color(0xFFFFB74D),
-                    ],
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: <Color>[
+                          AppColors.warning,
+                          AppColors.warningSoft,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                    ),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.white,
+                      size: 26,
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(AppRadii.lg),
-                ),
-                child: const Icon(
-                  Icons.emoji_events_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      isFrench ? 'DÉFI DU JOUR' : 'DAILY CHALLENGE',
-                      style: const TextStyle(
-                        color: AppColors.warning,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      isFrench
-                          ? '100 pompes en moins de 10 min'
-                          : '100 push-ups in under 10 min',
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'AppFontMedium',
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Row(
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        const Icon(
-                          Icons.people_outline_rounded,
-                          size: 12,
-                          color: AppColors.textSecondary,
+                        Text(
+                          isFrench ? 'DÉFI DU JOUR' : 'DAILY CHALLENGE',
+                          style: const TextStyle(
+                            color: AppColors.warning,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.8,
+                          ),
                         ),
-                        const SizedBox(width: 3),
+                        const SizedBox(height: 3),
                         Text(
                           isFrench
-                              ? '247 participants aujourd\'hui'
-                              : '247 participants today',
+                              ? '100 pompes en moins de 10 min'
+                              : '100 push-ups in under 10 min',
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'AppFontMedium',
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.people_outline_rounded,
+                              size: 11,
+                              color: AppColors.textSecondary,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              isFrench
+                                  ? '247 participants aujourd\'hui'
+                                  : '247 participants today',
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.warning,
+                    size: 22,
+                  ),
+                ],
+              ),
+            ),
+            // Progress bar strip
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(AppRadii.sm),
+              ),
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      0,
+                      AppSpacing.md,
+                      AppSpacing.xs,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          isFrench ? 'Progression' : 'Progress',
                           style: const TextStyle(
                             color: AppColors.textSecondary,
-                            fontSize: 12,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Text(
+                          '42 / 100',
+                          style: TextStyle(
+                            color: AppColors.warning,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    height: 4,
+                    color:
+                        AppColors.warning.withValues(alpha: AppOpacity.whisper),
+                    child: FractionallySizedBox(
+                      widthFactor: 0.42,
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: <Color>[
+                              AppColors.warning,
+                              AppColors.warningSoft,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.primary,
-                size: 22,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -771,7 +921,7 @@ class _WarmupSelectorState extends State<_WarmupSelector> {
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadii.lg),
+                borderRadius: BorderRadius.circular(AppRadii.sm),
               ),
             ),
           ),
@@ -803,16 +953,16 @@ class _WarmupDurationButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
-                : AppColors.primaryLight.withValues(alpha: 0.35),
+                : AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
           ),
           boxShadow: isSelected
               ? <BoxShadow>[
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: AppOpacity.mild),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -834,7 +984,7 @@ class _WarmupDurationButton extends StatelessWidget {
               label,
               style: TextStyle(
                 color: isSelected
-                    ? Colors.white.withValues(alpha: 0.8)
+                    ? Colors.white.withValues(alpha: AppOpacity.bold)
                     : AppColors.textSecondary,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -948,13 +1098,13 @@ class _ProgramCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: <Color>[
               data.color,
-              data.color.withValues(alpha: 0.7),
+              data.color.withValues(alpha: AppOpacity.prominent),
             ],
           ),
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: data.color.withValues(alpha: 0.3),
+              color: data.color.withValues(alpha: AppOpacity.mild),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -969,8 +1119,8 @@ class _ProgramCard extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AppRadii.md),
+                  color: Colors.white.withValues(alpha: AppOpacity.soft),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
                 child: Icon(data.icon, color: Colors.white, size: 22),
               ),
@@ -991,7 +1141,7 @@ class _ProgramCard extends StatelessWidget {
                     ? '${data.weeks} sem · ${data.sessions} séances'
                     : '${data.weeks}wk · ${data.sessions} sessions',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.75),
+                  color: Colors.white.withValues(alpha: AppOpacity.strong),
                   fontSize: 11,
                 ),
               ),
@@ -1002,7 +1152,7 @@ class _ProgramCard extends StatelessWidget {
                   vertical: 2,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
+                  color: Colors.white.withValues(alpha: AppOpacity.muted),
                   borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
                 child: Text(
@@ -1127,9 +1277,9 @@ class _SessionCard extends StatelessWidget {
         width: 180,
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
           border: Border.all(
-            color: AppColors.primaryLight.withValues(alpha: 0.3),
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.mild),
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -1150,8 +1300,9 @@ class _SessionCard extends StatelessWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(AppRadii.md),
+                      color: AppColors.primaryLight
+                          .withValues(alpha: AppOpacity.light),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Icon(
                       data.icon,
@@ -1166,10 +1317,12 @@ class _SessionCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: data.levelColor.withValues(alpha: 0.12),
+                      color:
+                          data.levelColor.withValues(alpha: AppOpacity.subtle),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                       border: Border.all(
-                        color: data.levelColor.withValues(alpha: 0.3),
+                        color:
+                            data.levelColor.withValues(alpha: AppOpacity.mild),
                       ),
                     ),
                     child: Text(
@@ -1308,9 +1461,9 @@ class _QuickAccessCard extends StatelessWidget {
           horizontal: AppSpacing.xs,
         ),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(AppRadii.lg),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: color.withValues(alpha: AppOpacity.whisper),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          border: Border.all(color: color.withValues(alpha: AppOpacity.medium)),
         ),
         child: Column(
           children: <Widget>[
@@ -1352,10 +1505,11 @@ class _LogoutButton extends StatelessWidget {
       label: Text(isFrench ? 'Se déconnecter' : 'Sign out'),
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.textSecondary,
-        side: BorderSide(color: AppColors.primaryLight.withValues(alpha: 0.4)),
+        side: BorderSide(
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm)),
         minimumSize: const Size(double.infinity, 44),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.lg),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
       ),
     );

@@ -848,6 +848,103 @@ class FirestoreService {
   String _toDateKey(DateTime dt) =>
       '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
+  // ===== ACHIEVEMENTS =====
+
+  /// Returns all unlocked achievement IDs for a user.
+  Future<Set<String>> getUnlockedAchievementIds(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.achievementsCollection)
+          .get();
+      return snapshot.docs.map((d) => d.id).toSet();
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Unlocks a single achievement and records the timestamp.
+  Future<void> unlockAchievement({
+    required String userId,
+    required String achievementId,
+    required DateTime unlockedAt,
+  }) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.achievementsCollection)
+          .doc(achievementId)
+          .set({
+        'achievementId': achievementId,
+        'unlockedAt': Timestamp.fromDate(unlockedAt),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw FirestoreException('Failed to unlock achievement: $e');
+    }
+  }
+
+  /// Returns the sum of `totalDoneReps` across all exercise_monthly month docs.
+  Future<int> getTotalDoneReps(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.exerciseMonthlyCollection)
+          .get();
+      int total = 0;
+      for (final doc in snapshot.docs) {
+        total += (doc.data()['totalDoneReps'] as num?)?.toInt() ?? 0;
+      }
+      return total;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  /// Returns the total workout count by summing `totalWorkouts` across month docs.
+  Future<int> getTotalWorkoutCount(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .collection(FirebaseConstants.exerciseMonthlyCollection)
+          .get();
+      int total = 0;
+      for (final doc in snapshot.docs) {
+        total += (doc.data()['totalWorkouts'] as num?)?.toInt() ?? 0;
+      }
+      return total;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  /// Returns the `programsCompleted` counter from the user profile doc.
+  Future<int> getProgramsCompleted(String userId) async {
+    try {
+      final doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .get();
+      return (doc.data()?['programsCompleted'] as num?)?.toInt() ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  /// Increments the `programsCompleted` counter in the user profile.
+  Future<void> incrementProgramsCompleted(String userId) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .update({'programsCompleted': FieldValue.increment(1)});
+    } catch (_) {}
+  }
+
   String _resolveMonthKey({
     required DateTime completedAt,
     required Map<String, dynamic> metadata,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
 
@@ -9,16 +10,21 @@ class PrivacyPolicyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     final now = DateTime.now();
-    final formattedDate = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final formattedDate =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
     return Scaffold(
       backgroundColor: AppColors.surfaceVariant,
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppChrome.topSurfaceOverlay,
+        flexibleSpace: const AppTopBarBackground(),
         title: Text(
           localizations.privacy_policy_title,
           style: const TextStyle(
-            color: AppColors.textPrimary,
+            color: Colors.white,
             fontFamily: 'AppFontMedium',
             fontSize: 20,
           ),
@@ -26,7 +32,7 @@ class PrivacyPolicyPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
-            color: AppColors.textPrimary,
+            color: Colors.white,
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -39,7 +45,8 @@ class PrivacyPolicyPage extends StatelessWidget {
             children: [
               Builder(
                 builder: (context) {
-                  final dateText = localizations.privacy_policy_last_updated(formattedDate);
+                  final dateText =
+                      localizations.privacy_policy_last_updated(formattedDate);
                   return Text(
                     dateText,
                     style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
@@ -8,6 +9,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
   final Exercise exercise;
@@ -67,8 +69,10 @@ class ExerciseDetailScreen extends StatelessWidget {
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,
-              backgroundColor: AppChrome.topSurface,
+              backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              systemOverlayStyle: AppChrome.topSurfaceOverlay,
+              flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
               title: Text(
                 localizedName,
@@ -107,9 +111,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                     // 1. Groupes musculaires + muscle image
                     _SectionCard(
                       icon: Icons.sports_gymnastics_rounded,
-                      title: isFrench
-                          ? 'Groupes musculaires'
-                          : 'Muscle Groups',
+                      title: isFrench ? 'Groupes musculaires' : 'Muscle Groups',
                       fullWidthBottom: _SectionImage(
                         imageUrl: exercise.imageMuscleUrl,
                         label: isFrench ? 'Muscles ciblés' : 'Targeted Muscles',
@@ -152,8 +154,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                     // 5. Comment effectuer
                     _SectionCard(
                       icon: Icons.checklist_rounded,
-                      title:
-                          isFrench ? 'Comment effectuer' : 'How to Perform',
+                      title: isFrench ? 'Comment effectuer' : 'How to Perform',
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: _buildHowToSteps(
@@ -188,9 +189,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                         onPressed: () => _startExercise(context),
                         icon: const Icon(Icons.play_arrow_rounded),
                         label: Text(
-                          isFrench
-                              ? "Démarrer l'exercice"
-                              : 'Start Exercise',
+                          isFrench ? "Démarrer l'exercice" : 'Start Exercise',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -201,8 +200,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                           foregroundColor: Colors.white,
                           backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppRadii.lg),
+                            borderRadius: BorderRadius.circular(AppRadii.lg),
                           ),
                         ),
                       ),
@@ -358,7 +356,7 @@ class _SectionCard extends StatelessWidget {
     return Material(
       color: AppColors.surface,
       elevation: 2,
-      shadowColor: AppColors.primary.withValues(alpha: 0.10),
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadii.md),
       ),
@@ -419,29 +417,29 @@ class _SectionImage extends StatelessWidget {
           width: double.infinity,
           child: _ExerciseMedia(url: imageUrl),
         ),
-          Positioned(
-            left: AppSpacing.sm,
-            bottom: AppSpacing.sm,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.primaryAbyss.withValues(alpha: 0.72),
-                borderRadius: BorderRadius.circular(AppRadii.lg),
-              ),
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.4,
-                ),
+        Positioned(
+          left: AppSpacing.sm,
+          bottom: AppSpacing.sm,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primaryAbyss.withValues(alpha: 0.72),
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+            ),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.4,
               ),
             ),
           ),
+        ),
       ],
     );
   }
@@ -569,10 +567,10 @@ class _MuscleChip extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primary.withValues(alpha: AppOpacity.faint),
         borderRadius: BorderRadius.circular(AppRadii.lg),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.35),
+          color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
         ),
       ),
       child: Text(
@@ -600,48 +598,14 @@ class _DifficultyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isFrench =
-        locale.languageCode.toLowerCase().startsWith('fr');
-    final ({String label, Color color}) meta = _difficultyMeta(isFrench);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: meta.color,
-        borderRadius: BorderRadius.circular(AppRadii.xl),
-      ),
-      child: Text(
-        meta.label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
+    final bool isFrench = locale.languageCode.toLowerCase().startsWith('fr');
+    return AppDifficultyBadge(
+      difficulty: difficulty,
+      isFrench: isFrench,
+      borderRadius: const BorderRadius.all(
+        Radius.circular(AppDifficultyTheme.pillRadius),
       ),
     );
-  }
-
-  ({String label, Color color}) _difficultyMeta(bool isFrench) {
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        return (
-          label: isFrench ? 'Débutant' : 'Beginner',
-          color: AppColors.success,
-        );
-      case DifficultyLevel.intermediate:
-        return (
-          label: isFrench ? 'Intermédiaire' : 'Intermediate',
-          color: AppColors.warning,
-        );
-      case DifficultyLevel.advanced:
-        return (
-          label: isFrench ? 'Avancé' : 'Advanced',
-          color: AppColors.error,
-        );
-    }
   }
 }
 
@@ -700,9 +664,6 @@ class _NavBarFill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.viewPaddingOf(context).bottom,
-      child: const ColoredBox(color: AppChrome.topSurface),
-    );
+    return const AppBottomInsetSurface();
   }
 }

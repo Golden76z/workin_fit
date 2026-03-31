@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
+import 'package:workin_fit/core/theme/app_opacity.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
@@ -12,17 +13,22 @@ import 'package:workin_fit/models/workout_config.dart';
 class ExerciseConfigBottomSheet extends StatefulWidget {
   final Exercise exercise;
   final WorkoutConfig? initialConfig;
+  /// When true, the exercise is inside a circuit — no sets, no rest.
+  /// Only reps or timed duration are relevant.
+  final bool isCircuitExercise;
 
   const ExerciseConfigBottomSheet({
     required this.exercise,
     super.key,
     this.initialConfig,
+    this.isCircuitExercise = false,
   });
 
   static Future<WorkoutConfig?> show(
     BuildContext context, {
     required Exercise exercise,
     WorkoutConfig? initialConfig,
+    bool isCircuitExercise = false,
   }) {
     return showModalBottomSheet<WorkoutConfig>(
       context: context,
@@ -31,6 +37,7 @@ class ExerciseConfigBottomSheet extends StatefulWidget {
       builder: (_) => ExerciseConfigBottomSheet(
         exercise: exercise,
         initialConfig: initialConfig,
+        isCircuitExercise: isCircuitExercise,
       ),
     );
   }
@@ -40,7 +47,8 @@ class ExerciseConfigBottomSheet extends StatefulWidget {
       _ExerciseConfigBottomSheetState();
 }
 
-class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
+class _ExerciseConfigBottomSheetState
+    extends State<ExerciseConfigBottomSheet> {
   late WorkoutType _type;
 
   // Sets fields
@@ -64,24 +72,15 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
     final cfg = widget.initialConfig;
     if (cfg is SetsConfig) {
       _type = WorkoutType.sets;
-      _sets = cfg.sets;
-      _reps = cfg.reps;
-      _restBetweenSets = cfg.restBetweenSets;
     } else if (cfg is TabataConfig) {
-      _type = WorkoutType.tabata;
-      _workTime = cfg.workTime;
-      _tabataRestTime = cfg.restTime;
-      _rounds = cfg.rounds;
-      _tabataSets = cfg.sets;
-      _restBetweenTabataSets = cfg.restBetweenSets;
+      // Tabata not available in circuits — fall back to sets (reps).
+      _type = widget.isCircuitExercise ? WorkoutType.sets : WorkoutType.tabata;
     } else if (cfg is TimedConfig) {
       _type = WorkoutType.timed;
-      _duration = cfg.duration;
     } else {
       _type = WorkoutType.sets;
     }
 
-    // Defaults if no initial config
     _sets = (cfg is SetsConfig) ? cfg.sets : 3;
     _reps = (cfg is SetsConfig) ? cfg.reps : 10;
     _restBetweenSets = (cfg is SetsConfig) ? cfg.restBetweenSets : 60;
@@ -98,9 +97,9 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
       case WorkoutType.sets:
         return SetsConfig(
           exerciseId: widget.exercise.id,
-          sets: _sets,
+          sets: widget.isCircuitExercise ? 1 : _sets,
           reps: _reps,
-          restBetweenSets: _restBetweenSets,
+          restBetweenSets: widget.isCircuitExercise ? 0 : _restBetweenSets,
         );
       case WorkoutType.tabata:
         return TabataConfig(
@@ -116,6 +115,9 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
           exerciseId: widget.exercise.id,
           duration: _duration,
         );
+      case WorkoutType.circuit:
+        // Circuit is built in the session builder, not here.
+        return TimedConfig(exerciseId: widget.exercise.id, duration: _duration);
     }
   }
 
@@ -126,114 +128,316 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
     return rem == 0 ? '${m}m' : '${m}m ${rem}s';
   }
 
+  String _typeLabel(WorkoutType t) {
+    switch (t) {
+      case WorkoutType.sets:
+        // In circuit context there are no sets — just reps.
+        return widget.isCircuitExercise ? 'Reps' : 'Sets';
+      case WorkoutType.tabata:
+        return 'Tabata';
+      case WorkoutType.timed:
+        return 'Timed';
+      case WorkoutType.circuit:
+        return 'Circuit';
+    }
+  }
+
+  String _summaryText() {
+    switch (_type) {
+      case WorkoutType.sets:
+        if (widget.isCircuitExercise) return '$_reps reps';
+        return '$_sets sets × $_reps reps · rest ${_formatSeconds(_restBetweenSets)}';
+      case WorkoutType.tabata:
+        final totalSeconds =
+            (_workTime + _tabataRestTime) * _rounds * _tabataSets;
+        return '$_rounds rounds · ${_formatSeconds(_workTime)} work / ${_formatSeconds(_tabataRestTime)} rest · ~${_formatSeconds(totalSeconds)}';
+      case WorkoutType.timed:
+        return 'Hold for ${_formatSeconds(_duration)}';
+      case WorkoutType.circuit:
+        return 'Hold for ${_formatSeconds(_duration)}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+    final systemBarPadding = MediaQuery.paddingOf(context).bottom;
     final exerciseName = widget.exercise.getLocalizedName(context);
 
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.sm,
-        AppSpacing.md,
-        AppSpacing.md + bottomInset,
+        color: AppColors.surfaceVariant,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.primaryLight.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(2),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // ── Gradient header ──────────────────────────────────────────
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[AppColors.primaryDarker, AppColors.primary],
               ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-
-          // Exercise name
-          Text(
-            exerciseName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'AppFontMedium',
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.sm,
+              AppSpacing.md,
+              AppSpacing.md,
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
+            child: Column(
+              children: <Widget>[
+                // Drag handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: AppOpacity.medium),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
 
-          // Workout type selector
-          Row(
-            children: WorkoutType.values.map((t) {
-              final selected = _type == t;
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.xs),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _type = t),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 160),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: selected
-                            ? AppColors.primary
-                            : AppColors.primaryPastel.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(AppRadii.md),
-                        border: Border.all(
-                          color: selected
-                              ? AppColors.primary
-                              : AppColors.primaryLight.withValues(alpha: 0.3),
+                // Exercise name + type badge
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        exerciseName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'AppFontMedium',
                         ),
                       ),
-                      child: Center(
-                        child: Text(
-                          _typeLabel(t),
-                          style: TextStyle(
-                            color:
-                                selected ? Colors.white : AppColors.textPrimary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: AppOpacity.soft),
+                        borderRadius: BorderRadius.circular(AppRadii.xl),
+                      ),
+                      child: Text(
+                        _typeLabel(_type),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // ── Content ──────────────────────────────────────────────────
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md + keyboardInset + systemBarPadding,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                // ── Type selector ──────────────────────────────────
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                    borderRadius: BorderRadius.circular(AppRadii.md + 4),
+                  ),
+                  child: Row(
+                    children: WorkoutType.values
+                        .where((t) {
+                          if (t == WorkoutType.circuit) return false;
+                          if (widget.isCircuitExercise && t == WorkoutType.tabata) return false;
+                          return true;
+                        })
+                        .map((t) {
+                      final selected = _type == t;
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _type = t);
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 180),
+                            padding: const EdgeInsets.symmetric(vertical: 9),
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? AppColors.surface
+                                  : Colors.transparent,
+                              borderRadius:
+                                  BorderRadius.circular(AppRadii.md),
+                              boxShadow: selected
+                                  ? <BoxShadow>[
+                                      BoxShadow(
+                                        color: AppColors.primary
+                                            .withValues(alpha: AppOpacity.light),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
+                            ),
+                            child: Center(
+                              child: Text(
+                                _typeLabel(t),
+                                style: TextStyle(
+                                  color: selected
+                                      ? AppColors.primary
+                                      : AppColors.textSecondary
+                                          .withValues(alpha: AppOpacity.prominent),
+                                  fontSize: 13,
+                                  fontWeight: selected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.md),
+
+                // ── Config fields card ────────────────────────────
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppRadii.lg),
+                    border: Border.all(
+                      color:
+                          AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+                    ),
+                  ),
+                  child: Column(
+                    children: _buildFields(),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.md),
+
+                // ── Summary ────────────────────────────────────────
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                    borderRadius: BorderRadius.circular(AppRadii.md),
+                  ),
+                  child: Center(
+                    child: Text(
+                      _summaryText(),
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: AppSpacing.lg),
 
-          // Config fields
-          if (_type == WorkoutType.sets) ...[
-            _StepperRow(
+                const SizedBox(height: AppSpacing.md),
+
+                // ── Confirm button ────────────────────────────────
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadii.lg),
+                      ),
+                    ),
+                    onPressed: () =>
+                        Navigator.of(context).pop(_buildConfig()),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildFields() {
+    switch (_type) {
+      case WorkoutType.sets:
+        // Circuit: one pass only — just pick reps, no sets or rest.
+        if (widget.isCircuitExercise) {
+          return [
+            _FieldRow(
+              isLast: true,
+              child: _StepperRow(
+                label: 'Reps',
+                value: _reps,
+                min: 1,
+                max: 100,
+                onChanged: (v) => setState(() => _reps = v),
+              ),
+            ),
+          ];
+        }
+        return [
+          _FieldRow(
+            child: _StepperRow(
               label: 'Sets',
               value: _sets,
               min: 1,
               max: 20,
               onChanged: (v) => setState(() => _sets = v),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _StepperRow(
+          ),
+          _FieldDivider(),
+          _FieldRow(
+            child: _StepperRow(
               label: 'Reps',
               value: _reps,
               min: 1,
               max: 100,
               onChanged: (v) => setState(() => _reps = v),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _SliderRow(
+          ),
+          _FieldDivider(),
+          _FieldRow(
+            isLast: true,
+            child: _SliderRow(
               label: 'Rest between sets',
               value: _restBetweenSets,
               min: 10,
@@ -242,8 +446,30 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
               display: _formatSeconds(_restBetweenSets),
               onChanged: (v) => setState(() => _restBetweenSets = v),
             ),
-          ] else if (_type == WorkoutType.tabata) ...[
-            _SliderRow(
+          ),
+        ];
+      case WorkoutType.tabata:
+        final extras = _tabataSets > 1
+            ? <Widget>[
+                _FieldDivider(),
+                _FieldRow(
+                  isLast: true,
+                  child: _SliderRow(
+                    label: 'Rest between sets',
+                    value: _restBetweenTabataSets,
+                    min: 10,
+                    max: 300,
+                    step: 5,
+                    display: _formatSeconds(_restBetweenTabataSets),
+                    onChanged: (v) =>
+                        setState(() => _restBetweenTabataSets = v),
+                  ),
+                ),
+              ]
+            : <Widget>[const SizedBox.shrink()];
+        return [
+          _FieldRow(
+            child: _SliderRow(
               label: 'Work time',
               value: _workTime,
               min: 5,
@@ -252,8 +478,10 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
               display: _formatSeconds(_workTime),
               onChanged: (v) => setState(() => _workTime = v),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _SliderRow(
+          ),
+          _FieldDivider(),
+          _FieldRow(
+            child: _SliderRow(
               label: 'Rest time',
               value: _tabataRestTime,
               min: 5,
@@ -262,36 +490,35 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
               display: _formatSeconds(_tabataRestTime),
               onChanged: (v) => setState(() => _tabataRestTime = v),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _StepperRow(
+          ),
+          _FieldDivider(),
+          _FieldRow(
+            child: _StepperRow(
               label: 'Rounds',
               value: _rounds,
               min: 1,
               max: 20,
               onChanged: (v) => setState(() => _rounds = v),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _StepperRow(
+          ),
+          _FieldDivider(),
+          _FieldRow(
+            isLast: _tabataSets <= 1,
+            child: _StepperRow(
               label: 'Sets',
               value: _tabataSets,
               min: 1,
               max: 10,
               onChanged: (v) => setState(() => _tabataSets = v),
             ),
-            if (_tabataSets > 1) ...[
-              const SizedBox(height: AppSpacing.sm),
-              _SliderRow(
-                label: 'Rest between sets',
-                value: _restBetweenTabataSets,
-                min: 10,
-                max: 300,
-                step: 5,
-                display: _formatSeconds(_restBetweenTabataSets),
-                onChanged: (v) => setState(() => _restBetweenTabataSets = v),
-              ),
-            ],
-          ] else ...[
-            _SliderRow(
+          ),
+          ...extras,
+        ];
+      case WorkoutType.timed:
+        return [
+          _FieldRow(
+            isLast: true,
+            child: _SliderRow(
               label: 'Duration',
               value: _duration,
               min: 5,
@@ -300,77 +527,47 @@ class _ExerciseConfigBottomSheetState extends State<ExerciseConfigBottomSheet> {
               display: _formatSeconds(_duration),
               onChanged: (v) => setState(() => _duration = v),
             ),
-          ],
-
-          const SizedBox(height: AppSpacing.lg),
-
-          // Summary line
-          Center(
-            child: Text(
-              _summaryText(),
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
-            ),
           ),
-          const SizedBox(height: AppSpacing.lg),
-
-          // Confirm button
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadii.lg),
-                ),
-              ),
-              onPressed: () => Navigator.of(context).pop(_buildConfig()),
-              child: const Text(
-                'Confirm',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _typeLabel(WorkoutType t) {
-    switch (t) {
-      case WorkoutType.sets:
-        return 'Sets';
-      case WorkoutType.tabata:
-        return 'Tabata';
-      case WorkoutType.timed:
-        return 'Timed';
-    }
-  }
-
-  String _summaryText() {
-    switch (_type) {
-      case WorkoutType.sets:
-        return '$_sets sets × $_reps reps · rest ${_formatSeconds(_restBetweenSets)}';
-      case WorkoutType.tabata:
-        final totalSeconds =
-            (_workTime + _tabataRestTime) * _rounds * _tabataSets;
-        return '$_rounds rounds · ${_formatSeconds(_workTime)} work / ${_formatSeconds(_tabataRestTime)} rest · ~${_formatSeconds(totalSeconds)}';
-      case WorkoutType.timed:
-        return 'Hold for ${_formatSeconds(_duration)}';
+        ];
+      case WorkoutType.circuit:
+        return [];
     }
   }
 }
 
-// ---------------------------------------------------------------------------
-// Helper widgets
-// ---------------------------------------------------------------------------
+// ─── Field layout helpers ──────────────────────────────────────────────────────
+
+class _FieldRow extends StatelessWidget {
+  final Widget child;
+  final bool isLast;
+
+  const _FieldRow({required this.child, this.isLast = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: child,
+    );
+  }
+}
+
+class _FieldDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height: 1,
+      indent: AppSpacing.md,
+      endIndent: AppSpacing.md,
+      color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.medium),
+    );
+  }
+}
+
+// ─── Stepper row ───────────────────────────────────────────────────────────────
 
 class _StepperRow extends StatelessWidget {
   final String label;
@@ -390,7 +587,7 @@ class _StepperRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: Text(
             label,
@@ -407,7 +604,7 @@ class _StepperRow extends StatelessWidget {
           onTap: () => onChanged(value - 1),
         ),
         SizedBox(
-          width: 44,
+          width: 48,
           child: Center(
             child: Text(
               '$value',
@@ -449,26 +646,38 @@ class _StepButton extends StatelessWidget {
               onTap();
             }
           : null,
-      child: Container(
-        width: 36,
-        height: 36,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: enabled
-              ? AppColors.primaryPastel.withValues(alpha: 0.5)
-              : AppColors.primaryPastel.withValues(alpha: 0.15),
+              ? AppColors.primary
+              : AppColors.primaryPastel.withValues(alpha: AppOpacity.light),
           borderRadius: BorderRadius.circular(AppRadii.md),
+          boxShadow: enabled
+              ? <BoxShadow>[
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: AppOpacity.light),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Icon(
           icon,
           size: 20,
           color: enabled
-              ? AppColors.primary
-              : AppColors.textSecondary.withValues(alpha: 0.4),
+              ? Colors.white
+              : AppColors.textSecondary.withValues(alpha: AppOpacity.firm),
         ),
       ),
     );
   }
 }
+
+// ─── Slider row ────────────────────────────────────────────────────────────────
 
 class _SliderRow extends StatelessWidget {
   final String label;
@@ -493,9 +702,9 @@ class _SliderRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Row(
-          children: [
+          children: <Widget>[
             Expanded(
               child: Text(
                 label,
@@ -506,12 +715,19 @@ class _SliderRow extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              display,
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                borderRadius: BorderRadius.circular(AppRadii.md),
+              ),
+              child: Text(
+                display,
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -519,9 +735,10 @@ class _SliderRow extends StatelessWidget {
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: AppColors.primary,
-            inactiveTrackColor: AppColors.primaryPastel.withValues(alpha: 0.4),
+            inactiveTrackColor:
+                AppColors.primaryPastel.withValues(alpha: AppOpacity.firm),
             thumbColor: AppColors.primary,
-            overlayColor: AppColors.primary.withValues(alpha: 0.15),
+            overlayColor: AppColors.primary.withValues(alpha: AppOpacity.light),
             trackHeight: 3,
           ),
           child: Slider(
