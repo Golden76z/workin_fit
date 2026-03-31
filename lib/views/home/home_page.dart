@@ -30,7 +30,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     _pageController = PageController();
     // Pre-warm the exercises data so the first swipe to that tab is lag-free
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(exercisesProvider);
+      if (!mounted) return;
+      ref.read(exercisesProvider);
+      // Drain any writes that were queued while offline
+      _runPendingSync();
     });
   }
 
@@ -39,6 +42,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     _tabIndex.dispose();
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _runPendingSync() async {
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) return;
+    await ref.read(syncServiceProvider).syncPendingChanges(userId);
   }
 
   void _onTabSelected(int index) {
@@ -181,8 +190,8 @@ class _FloatingBottomBar extends StatelessWidget {
         .startsWith('fr');
     final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     const double navContentHeight = 58;
-    const double centerButtonSize = 58;
-    const double centerButtonLift = 10;
+    const double centerButtonSize = 72;
+    const double centerButtonLift = 6;
     const double centerButtonBorderWidth = 3.6;
 
     return SizedBox(
@@ -269,7 +278,7 @@ class _FloatingBottomBar extends StatelessWidget {
                   ),
                   child: Icon(
                     Icons.calendar_month_rounded,
-                    size: 28,
+                    size: 32,
                     color: selectedIndex == 2
                         ? AppColors.neutral0
                         : AppColors.textSecondary,

@@ -13,17 +13,22 @@ import 'package:workin_fit/models/workout_config.dart';
 class ExerciseConfigBottomSheet extends StatefulWidget {
   final Exercise exercise;
   final WorkoutConfig? initialConfig;
+  /// When true, the exercise is inside a circuit — no sets, no rest.
+  /// Only reps or timed duration are relevant.
+  final bool isCircuitExercise;
 
   const ExerciseConfigBottomSheet({
     required this.exercise,
     super.key,
     this.initialConfig,
+    this.isCircuitExercise = false,
   });
 
   static Future<WorkoutConfig?> show(
     BuildContext context, {
     required Exercise exercise,
     WorkoutConfig? initialConfig,
+    bool isCircuitExercise = false,
   }) {
     return showModalBottomSheet<WorkoutConfig>(
       context: context,
@@ -32,6 +37,7 @@ class ExerciseConfigBottomSheet extends StatefulWidget {
       builder: (_) => ExerciseConfigBottomSheet(
         exercise: exercise,
         initialConfig: initialConfig,
+        isCircuitExercise: isCircuitExercise,
       ),
     );
   }
@@ -67,7 +73,8 @@ class _ExerciseConfigBottomSheetState
     if (cfg is SetsConfig) {
       _type = WorkoutType.sets;
     } else if (cfg is TabataConfig) {
-      _type = WorkoutType.tabata;
+      // Tabata not available in circuits — fall back to sets (reps).
+      _type = widget.isCircuitExercise ? WorkoutType.sets : WorkoutType.tabata;
     } else if (cfg is TimedConfig) {
       _type = WorkoutType.timed;
     } else {
@@ -90,9 +97,9 @@ class _ExerciseConfigBottomSheetState
       case WorkoutType.sets:
         return SetsConfig(
           exerciseId: widget.exercise.id,
-          sets: _sets,
+          sets: widget.isCircuitExercise ? 1 : _sets,
           reps: _reps,
-          restBetweenSets: _restBetweenSets,
+          restBetweenSets: widget.isCircuitExercise ? 0 : _restBetweenSets,
         );
       case WorkoutType.tabata:
         return TabataConfig(
@@ -108,6 +115,9 @@ class _ExerciseConfigBottomSheetState
           exerciseId: widget.exercise.id,
           duration: _duration,
         );
+      case WorkoutType.circuit:
+        // Circuit is built in the session builder, not here.
+        return TimedConfig(exerciseId: widget.exercise.id, duration: _duration);
     }
   }
 
@@ -121,23 +131,29 @@ class _ExerciseConfigBottomSheetState
   String _typeLabel(WorkoutType t) {
     switch (t) {
       case WorkoutType.sets:
-        return 'Sets';
+        // In circuit context there are no sets — just reps.
+        return widget.isCircuitExercise ? 'Reps' : 'Sets';
       case WorkoutType.tabata:
         return 'Tabata';
       case WorkoutType.timed:
         return 'Timed';
+      case WorkoutType.circuit:
+        return 'Circuit';
     }
   }
 
   String _summaryText() {
     switch (_type) {
       case WorkoutType.sets:
+        if (widget.isCircuitExercise) return '$_reps reps';
         return '$_sets sets × $_reps reps · rest ${_formatSeconds(_restBetweenSets)}';
       case WorkoutType.tabata:
         final totalSeconds =
             (_workTime + _tabataRestTime) * _rounds * _tabataSets;
         return '$_rounds rounds · ${_formatSeconds(_workTime)} work / ${_formatSeconds(_tabataRestTime)} rest · ~${_formatSeconds(totalSeconds)}';
       case WorkoutType.timed:
+        return 'Hold for ${_formatSeconds(_duration)}';
+      case WorkoutType.circuit:
         return 'Hold for ${_formatSeconds(_duration)}';
     }
   }
@@ -250,7 +266,13 @@ class _ExerciseConfigBottomSheetState
                     borderRadius: BorderRadius.circular(AppRadii.md + 4),
                   ),
                   child: Row(
-                    children: WorkoutType.values.map((t) {
+                    children: WorkoutType.values
+                        .where((t) {
+                          if (t == WorkoutType.circuit) return false;
+                          if (widget.isCircuitExercise && t == WorkoutType.tabata) return false;
+                          return true;
+                        })
+                        .map((t) {
                       final selected = _type == t;
                       return Expanded(
                         child: GestureDetector(
@@ -377,6 +399,21 @@ class _ExerciseConfigBottomSheetState
   List<Widget> _buildFields() {
     switch (_type) {
       case WorkoutType.sets:
+        // Circuit: one pass only — just pick reps, no sets or rest.
+        if (widget.isCircuitExercise) {
+          return [
+            _FieldRow(
+              isLast: true,
+              child: _StepperRow(
+                label: 'Reps',
+                value: _reps,
+                min: 1,
+                max: 100,
+                onChanged: (v) => setState(() => _reps = v),
+              ),
+            ),
+          ];
+        }
         return [
           _FieldRow(
             child: _StepperRow(
@@ -492,6 +529,8 @@ class _ExerciseConfigBottomSheetState
             ),
           ),
         ];
+      case WorkoutType.circuit:
+        return [];
     }
   }
 }

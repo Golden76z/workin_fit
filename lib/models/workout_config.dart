@@ -20,8 +20,22 @@ class WorkoutConfig extends HiveObject {
 
   // JSON serialization
   factory WorkoutConfig.fromJson(Map<String, dynamic> json) {
-    // Dispatch to correct subclass based on type
-    final type = WorkoutType.values.byName(json['type']);
+    // Get the type; fall back to field-inference for legacy Firestore docs
+    // that were stored without the 'type' field.
+    final rawType = json['type'] as String?;
+    WorkoutType type;
+    if (rawType != null) {
+      type = WorkoutType.values.byName(rawType);
+    } else if (json.containsKey('exercises')) {
+      type = WorkoutType.circuit;
+    } else if (json.containsKey('workTime') || json.containsKey('rounds')) {
+      type = WorkoutType.tabata;
+    } else if (json.containsKey('duration') && !json.containsKey('reps')) {
+      type = WorkoutType.timed;
+    } else {
+      type = WorkoutType.sets;
+    }
+
     switch (type) {
       case WorkoutType.sets:
         return SetsConfig.fromJson(json);
@@ -29,6 +43,8 @@ class WorkoutConfig extends HiveObject {
         return TabataConfig.fromJson(json);
       case WorkoutType.timed:
         return TimedConfig.fromJson(json);
+      case WorkoutType.circuit:
+        return CircuitConfig.fromJson(json);
     }
   }
 
@@ -75,11 +91,15 @@ class SetsConfig extends WorkoutConfig {
   /// Total estimated time for this exercise
   int get estimatedTotalTime => estimatedWorkDuration + totalRestTime;
 
-  factory SetsConfig.fromJson(Map<String, dynamic> json) => 
+  factory SetsConfig.fromJson(Map<String, dynamic> json) =>
       _$SetsConfigFromJson(json);
-  
+
   @override
-  Map<String, dynamic> toJson() => _$SetsConfigToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$SetsConfigToJson(this);
+    json['type'] = type.name;
+    return json;
+  }
 }
 
 @JsonSerializable()
@@ -128,7 +148,11 @@ class TabataConfig extends WorkoutConfig {
       _$TabataConfigFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => _$TabataConfigToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$TabataConfigToJson(this);
+    json['type'] = type.name;
+    return json;
+  }
 }
 
 @JsonSerializable()
@@ -144,9 +168,90 @@ class TimedConfig extends WorkoutConfig {
 
   int get totalDuration => duration;
 
-  factory TimedConfig.fromJson(Map<String, dynamic> json) => 
+  factory TimedConfig.fromJson(Map<String, dynamic> json) =>
       _$TimedConfigFromJson(json);
-  
+
   @override
-  Map<String, dynamic> toJson() => _$TimedConfigToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$TimedConfigToJson(this);
+    json['type'] = type.name;
+    return json;
+  }
+}
+
+/// A circuit: a list of exercises performed back-to-back, repeated [rounds] times.
+/// [exerciseId] is set to '' since a circuit has no single exercise.
+@HiveType(typeId: 7)
+class CircuitConfig extends WorkoutConfig {
+  /// Display name for the circuit (e.g. "Cardio Blast").
+  @HiveField(2)
+  final String name;
+
+  /// The exercises inside one loop of this circuit.
+  @HiveField(3)
+  final List<WorkoutConfig> exercises;
+
+  /// How many full loops of the exercise list to perform.
+  @HiveField(4)
+  final int rounds;
+
+  /// Rest between individual exercises within a single round (seconds).
+  @HiveField(5)
+  final int restBetweenExercises;
+
+  /// Rest between full rounds (seconds).
+  @HiveField(6)
+  final int restBetweenRounds;
+
+  CircuitConfig({
+    required this.name,
+    required this.exercises,
+    required this.rounds,
+    this.restBetweenExercises = 0,
+    this.restBetweenRounds = 60,
+  }) : super(exerciseId: '', type: WorkoutType.circuit);
+
+  /// Total duration estimate in seconds.
+  int get totalDuration {
+    int perRound = 0;
+    for (final ex in exercises) {
+      if (ex is SetsConfig) {
+        perRound += ex.estimatedTotalTime;
+      } else if (ex is TabataConfig) {
+        perRound += ex.totalDuration;
+      } else if (ex is TimedConfig) {
+        perRound += ex.totalDuration;
+      }
+      perRound += restBetweenExercises;
+    }
+    // Remove one trailing rest-between-exercises from the last exercise.
+    if (exercises.isNotEmpty) perRound -= restBetweenExercises;
+
+    final int roundRestTotal = (rounds - 1) * restBetweenRounds;
+    return perRound * rounds + roundRestTotal;
+  }
+
+  factory CircuitConfig.fromJson(Map<String, dynamic> json) {
+    final exercisesRaw = json['exercises'] as List<dynamic>? ?? [];
+    return CircuitConfig(
+      name: json['name'] as String? ?? 'Circuit',
+      exercises: exercisesRaw
+          .map((e) => WorkoutConfig.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      rounds: (json['rounds'] as num?)?.toInt() ?? 3,
+      restBetweenExercises:
+          (json['restBetweenExercises'] as num?)?.toInt() ?? 0,
+      restBetweenRounds: (json['restBetweenRounds'] as num?)?.toInt() ?? 60,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'type': type.name,
+        'name': name,
+        'exercises': exercises.map((e) => e.toJson()).toList(),
+        'rounds': rounds,
+        'restBetweenExercises': restBetweenExercises,
+        'restBetweenRounds': restBetweenRounds,
+      };
 }

@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/program.dart';
@@ -17,7 +18,7 @@ class SyncService {
     try {
       // Check connectivity
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         // Fetch from Firestore
@@ -33,8 +34,8 @@ class SyncService {
         // Return cached data
         return await _localService.getLocalSessions();
       }
-    } catch (e) {
-      // Fallback to cache on any error
+    } catch (e, st) {
+      debugPrint('[SyncService.getSessions] ERROR: $e\n$st');
       return await _localService.getLocalSessions();
     }
   }
@@ -47,7 +48,7 @@ class SyncService {
     try {
       // Check connectivity
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         // Sync to Firestore
@@ -71,7 +72,7 @@ class SyncService {
 
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         await _firestoreService.updateSession(userId, session);
@@ -91,7 +92,7 @@ class SyncService {
 
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         await _firestoreService.deleteSession(userId, sessionId);
@@ -104,7 +105,7 @@ class SyncService {
   /// Sync pending changes (sessions and programs)
   Future<void> syncPendingChanges(String userId) async {
     final connectivityResult = await _connectivity.checkConnectivity();
-    final isOnline = connectivityResult != ConnectivityResult.none;
+    final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
     if (!isOnline) return;
 
@@ -207,7 +208,7 @@ class SyncService {
   Future<List<Exercise>> searchExercises(String query) async {
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         return await _firestoreService.searchExercises(query);
@@ -246,26 +247,32 @@ class SyncService {
   Future<List<Program>> getPrograms({String? userId}) async {
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
-        final presetPrograms = await _firestoreService.getPrograms();
+        // Preset programs may be restricted by Firestore rules — treat as optional
+        List<Program> presetPrograms = [];
+        try {
+          presetPrograms = await _firestoreService.getPrograms();
+        } catch (_) {
+          // No preset programs available (permission or network) — continue
+        }
+
         List<Program> userPrograms = [];
-        
         if (userId != null) {
           userPrograms = await _firestoreService.getUserPrograms(userId);
         }
-        
+
         // Cache all programs
         await _localService.cachePrograms([...presetPrograms, ...userPrograms]);
-        
+
         return [...presetPrograms, ...userPrograms];
       } else {
         // Return cached
         return await _localService.getLocalPrograms();
       }
-    } catch (e) {
-      // Fallback to cache
+    } catch (e, st) {
+      debugPrint('[SyncService.getPrograms] ERROR: $e\n$st');
       return await _localService.getLocalPrograms();
     }
   }
@@ -307,7 +314,7 @@ class SyncService {
 
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         await _firestoreService.createProgram(userId, program);
@@ -327,7 +334,7 @@ class SyncService {
 
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         await _firestoreService.updateProgram(userId, program);
@@ -347,7 +354,7 @@ class SyncService {
 
     try {
       final connectivityResult = await _connectivity.checkConnectivity();
-      final isOnline = connectivityResult != ConnectivityResult.none;
+      final isOnline = connectivityResult.any((r) => r != ConnectivityResult.none);
 
       if (isOnline) {
         await _firestoreService.deleteProgram(userId, programId);

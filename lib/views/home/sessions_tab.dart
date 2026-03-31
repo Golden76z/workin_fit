@@ -70,55 +70,67 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
       style: AppChrome.homeOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(
+            // paddingOf.bottom is inflated by the outer scaffold's extendBody
+            // to include the nav bar height (58) + system safe area inset.
+            bottom: MediaQuery.paddingOf(context).bottom + 8,
+          ),
+          child: FloatingActionButton(
+            heroTag: 'sessions_fab',
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 4,
+            onPressed: onProgramsTab
+                ? _openProgramBuilder
+                : _openSessionBuilder,
+            child: const Icon(Icons.add_rounded),
+          ),
+        ),
         body: Column(
           children: [
-            // ── Top section: status bar + title bar + active program ──────
-            ColoredBox(
-              color: AppChrome.topSurface,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Status-bar height spacer
-                  SizedBox(height: MediaQuery.paddingOf(context).top),
-                  // Title bar
-                  SizedBox(
-                    height: kToolbarHeight,
-                    child: Row(
-                      children: [
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: Text(
-                            isFrench ? 'Entraînements' : 'Workouts',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'AppFontMedium',
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
+                // ── Top section: status bar + title bar + active program ──────
+                ColoredBox(
+                  color: AppColors.navBarSurface,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Status-bar height spacer
+                      SizedBox(height: MediaQuery.paddingOf(context).top),
+                      // Title bar
+                      SizedBox(
+                        height: kToolbarHeight,
+                        child: Row(
+                          children: [
+                            // Spacer to balance the history button on the right
+                            const SizedBox(width: 48),
+                            Expanded(
+                              child: Text(
+                                isFrench ? 'Entraînements' : 'Workouts',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'AppFontMedium',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: -0.3,
+                                ),
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.history_rounded,
+                                color: Colors.white,
+                              ),
+                              tooltip: isFrench ? 'Historique' : 'History',
+                              onPressed: () => Navigator.of(context).push(
+                                SessionHistoryScreen.route(),
+                              ),
+                            ),
+                          ],
                         ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.history_rounded,
-                            color: Colors.white,
-                          ),
-                          tooltip: isFrench ? 'Historique' : 'History',
-                          onPressed: () => Navigator.of(context).push(
-                            SessionHistoryScreen.route(),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_rounded, color: Colors.white),
-                          tooltip: onProgramsTab
-                              ? (isFrench ? 'Créer un programme' : 'New program')
-                              : (isFrench ? 'Créer une session' : 'New session'),
-                          onPressed: onProgramsTab
-                              ? _openProgramBuilder
-                              : _openSessionBuilder,
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
                   // Active program row (only when a program is running)
                   if (activeProgramId != null) ...[
                     Container(
@@ -141,7 +153,7 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
 
             // ── Tab bar ──────────────────────────────────────────────────
             ColoredBox(
-              color: AppChrome.topSurface,
+              color: AppColors.navBarSurface,
               child: TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,
@@ -486,7 +498,7 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xs,
-              AppSpacing.md,
+              AppSpacing.xs,
               AppSpacing.xs,
               104,
             ),
@@ -494,7 +506,7 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
             itemBuilder: (context, index) {
               final session = sessions[index];
               return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                padding: const EdgeInsets.only(bottom: 2),
                 child: _SessionCard(
                   session: session,
                   isFrench: widget.isFrench,
@@ -564,7 +576,7 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
             physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xs,
-              AppSpacing.md,
+              AppSpacing.xs,
               AppSpacing.xs,
               104,
             ),
@@ -573,7 +585,7 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
               final program = programs[index];
               final isActive = activeProgramId == program.id;
               return Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                padding: const EdgeInsets.only(bottom: 2),
                 child: _ProgramCard(
                   program: program,
                   isActive: isActive,
@@ -658,7 +670,7 @@ class _SessionCard extends StatelessWidget {
         padding: const EdgeInsets.only(right: AppSpacing.lg),
         decoration: BoxDecoration(
           color: AppColors.error.withValues(alpha: AppOpacity.subtle),
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(4),
         ),
         child: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
       ),
@@ -669,13 +681,13 @@ class _SessionCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(4),
           onTap: onTap,
           onLongPress: onDelete,
           child: Ink(
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppRadii.sm),
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(
                 color: AppColors.neutral300,
               ),
@@ -690,8 +702,8 @@ class _SessionCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: color,
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(AppRadii.sm),
-                        bottomLeft: Radius.circular(AppRadii.sm),
+                        topLeft: Radius.circular(4),
+                        bottomLeft: Radius.circular(4),
                       ),
                     ),
                   ),
@@ -699,22 +711,23 @@ class _SessionCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.md,
-                        vertical: AppSpacing.sm,
+                        vertical: AppSpacing.md,
                       ),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Icon block
                           Container(
-                            width: 48,
-                            height: 48,
+                            width: 56,
+                            height: 56,
                             decoration: BoxDecoration(
                               color: AppColors.neutral300,
-                              borderRadius: BorderRadius.circular(AppRadii.sm),
+                              borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Icon(
                               Icons.fitness_center_rounded,
                               color: AppColors.primary,
-                              size: 24,
+                              size: 28,
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
@@ -730,12 +743,12 @@ class _SessionCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: AppColors.textPrimary,
-                                    fontSize: 15,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                     fontFamily: 'AppFontMedium',
                                   ),
                                 ),
-                                const SizedBox(height: 5),
+                                const SizedBox(height: 6),
                                 Row(
                                   children: [
                                     _MetaChip(
@@ -747,38 +760,45 @@ class _SessionCard extends StatelessWidget {
                                       icon: Icons.timer_outlined,
                                       label: session.durationDisplay,
                                     ),
-                                    const Spacer(),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: color.withValues(alpha: AppOpacity.subtle),
-                                        borderRadius: BorderRadius.circular(4),
-                                        border: Border.all(
-                                          color: color.withValues(alpha: AppOpacity.half),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        _difficultyLabel(session.difficulty),
-                                        style: TextStyle(
-                                          color: color,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.xs),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            color: AppColors.textTertiary,
-                            size: 18,
+                          const SizedBox(width: AppSpacing.sm),
+                          // Difficulty badge + chevron aligned together
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: color.withValues(alpha: AppOpacity.subtle),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: color.withValues(alpha: AppOpacity.half),
+                                  ),
+                                ),
+                                child: Text(
+                                  _difficultyLabel(session.difficulty),
+                                  style: TextStyle(
+                                    color: color,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: AppColors.textTertiary,
+                                size: 18,
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -840,14 +860,14 @@ class _ProgramCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadii.sm),
+        borderRadius: BorderRadius.circular(4),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
             color: isActive
                 ? AppColors.primary.withValues(alpha: AppOpacity.whisper)
                 : AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadii.sm),
+            borderRadius: BorderRadius.circular(4),
             border: Border.all(
               color: isActive ? AppColors.primary : AppColors.neutral300,
             ),
@@ -862,8 +882,8 @@ class _ProgramCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isActive ? AppColors.primary : color,
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(AppRadii.sm),
-                      bottomLeft: Radius.circular(AppRadii.sm),
+                      topLeft: Radius.circular(4),
+                      bottomLeft: Radius.circular(4),
                     ),
                   ),
                 ),
@@ -871,24 +891,25 @@ class _ProgramCard extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
+                      vertical: AppSpacing.md,
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Icon block
                         Container(
-                          width: 48,
-                          height: 48,
+                          width: 56,
+                          height: 56,
                           decoration: BoxDecoration(
                             color: isActive
                                 ? AppColors.primary.withValues(alpha: AppOpacity.mild)
                                 : AppColors.neutral300,
-                            borderRadius: BorderRadius.circular(AppRadii.sm),
+                            borderRadius: BorderRadius.circular(4),
                           ),
                           child: Icon(
                             Icons.calendar_month_rounded,
                             color: isActive ? AppColors.primary : AppColors.textSecondary,
-                            size: 24,
+                            size: 28,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -929,7 +950,7 @@ class _ProgramCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         color: AppColors.textPrimary,
-                                        fontSize: 15,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w700,
                                         fontFamily: 'AppFontMedium',
                                       ),
@@ -937,7 +958,7 @@ class _ProgramCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
+                              const SizedBox(height: 6),
                               Row(
                                 children: [
                                   _MetaChip(
@@ -949,38 +970,45 @@ class _ProgramCard extends StatelessWidget {
                                     icon: Icons.calendar_today_rounded,
                                     label: '${program.durationWeeks} ${isFrench ? 'sem.' : 'wks'}',
                                   ),
-                                  const Spacer(),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: color.withValues(alpha: AppOpacity.subtle),
-                                      borderRadius: BorderRadius.circular(4),
-                                      border: Border.all(
-                                        color: color.withValues(alpha: AppOpacity.half),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      _difficultyLabel(program.difficulty),
-                                      style: TextStyle(
-                                        color: color,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: AppSpacing.xs),
-                        const Icon(
-                          Icons.chevron_right_rounded,
-                          color: AppColors.textTertiary,
-                          size: 18,
+                        const SizedBox(width: AppSpacing.sm),
+                        // Difficulty badge + chevron aligned together
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: AppOpacity.subtle),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: color.withValues(alpha: AppOpacity.half),
+                                ),
+                              ),
+                              child: Text(
+                                _difficultyLabel(program.difficulty),
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            const Icon(
+                              Icons.chevron_right_rounded,
+                              color: AppColors.textTertiary,
+                              size: 18,
+                            ),
+                          ],
                         ),
                       ],
                     ),

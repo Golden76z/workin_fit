@@ -9,6 +9,8 @@ String getWorkoutTypeDisplay(WorkoutType type) {
       return 'Tabata';
     case WorkoutType.timed:
       return 'Timed';
+    case WorkoutType.circuit:
+      return 'Circuit';
   }
 }
 

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // ── Brand scale — light → deep (no color-name labels) ────────────────────
-  static const Color brand50  = Color(0xFFFFECB3); // lightest tint
-  static const Color brand100 = Color(0xFFFFD54F); // light
-  static const Color brand200 = Color(0xFFFFBE0B); // main accent
-  static const Color brand300 = Color(0xFFFF9F1C); // secondary
-  static const Color brand400 = Color(0xFFFF6B35); // deeper
-  static const Color brand500 = Color(0xFFE85D04); // deep
-  static const Color brand600 = Color(0xFFBF4000); // darkest
+  static const Color brand50  = Color(0xFFEDE8FF); // lightest tint
+  static const Color brand100 = Color(0xFFCFC6FF); // light
+  static const Color brand200 = Color(0xFFAF99FF); // main accent
+  static const Color brand300 = Color(0xFF9178F8); // secondary
+  static const Color brand400 = Color(0xFF7355EE); // deeper
+  static const Color brand500 = Color(0xFF5535D4); // deep
+  static const Color brand600 = Color(0xFF3A1EAA); // darkest
 
   // ── Neutral scale — near-black → near-white (no color-name labels) ────────
   static const Color neutral0   = Color(0xFF111111); // page background
@@ -84,8 +84,10 @@ class AppColors {
   static const Color successSoft = Color(0xFF81C784);
   static const Color error       = Color(0xFFF44336);
   static const Color errorSoft   = Color(0xFFE57373);
-  static const Color warning     = brand200;
-  static const Color warningSoft = brand100;
+  // Warning uses amber — independent of the brand so it stays legible
+  // regardless of the brand hue.
+  static const Color warning     = Color(0xFFFF9800);
+  static const Color warningSoft = Color(0xFFFFB74D);
   static const Color info        = Color(0xFF29B6F6);
 
   // ── Navigation surface ────────────────────────────────────────────────────

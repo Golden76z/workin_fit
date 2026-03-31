@@ -35,6 +35,7 @@ void main() async {
   Hive.registerAdapter(SetsConfigAdapter());
   Hive.registerAdapter(TabataConfigAdapter());
   Hive.registerAdapter(TimedConfigAdapter());
+  Hive.registerAdapter(CircuitConfigAdapter());
   Hive.registerAdapter(SessionAdapter());
   Hive.registerAdapter(ProgramAdapter());
 

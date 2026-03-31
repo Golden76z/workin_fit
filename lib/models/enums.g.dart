@@ -19,6 +19,8 @@ class WorkoutTypeAdapter extends TypeAdapter<WorkoutType> {
         return WorkoutType.tabata;
       case 2:
         return WorkoutType.timed;
+      case 3:
+        return WorkoutType.circuit;
       default:
         return WorkoutType.sets;
     }
@@ -35,6 +37,9 @@ class WorkoutTypeAdapter extends TypeAdapter<WorkoutType> {
         break;
       case WorkoutType.timed:
         writer.writeByte(2);
+        break;
+      case WorkoutType.circuit:
+        writer.writeByte(3);
         break;
     }
   }

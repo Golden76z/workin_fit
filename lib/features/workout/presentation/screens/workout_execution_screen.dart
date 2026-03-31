@@ -77,22 +77,31 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   int _tabataCurrentSet = 0;
   bool _tabataIsWork = true;
 
-  int get _totalExercises => widget.session.workouts.length;
+  /// Flat, unrolled list of steps (circuits expanded into individual reps).
+  /// Set on first build when exercise data resolves.
+  List<_WorkoutStep> _steps = const <_WorkoutStep>[];
+
+  int get _totalExercises => _steps.isEmpty
+      ? widget.session.workouts.length
+      : _steps.length;
 
   WorkoutConfig? get _currentWorkout {
-    if (_totalExercises == 0) {
-      return null;
-    }
+    if (_totalExercises == 0) return null;
+    if (_steps.isNotEmpty) return _steps[_currentExerciseIndex].config;
     return widget.session.workouts[_currentExerciseIndex];
   }
 
   WorkoutConfig? get _nextWorkout {
     final int nextIndex = _currentExerciseIndex + 1;
-    if (nextIndex >= _totalExercises) {
-      return null;
-    }
+    if (nextIndex >= _totalExercises) return null;
+    if (_steps.isNotEmpty) return _steps[nextIndex].config;
     return widget.session.workouts[nextIndex];
   }
+
+  _WorkoutStep? get _currentStep =>
+      _steps.isNotEmpty && _currentExerciseIndex < _steps.length
+          ? _steps[_currentExerciseIndex]
+          : null;
 
   int get _phaseDuration {
     switch (_phase) {
@@ -131,6 +140,12 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         }
         return _durationForWorkout(workout);
       case _WorkoutPhase.exerciseRest:
+        // If the step that just finished has a circuit override, use it.
+        final int? override = _currentExerciseIndex > 0 &&
+                _steps.length > _currentExerciseIndex - 1
+            ? _steps[_currentExerciseIndex - 1].overrideRestSeconds
+            : null;
+        if (override != null) return override > 0 ? override : 1;
         final int rest = widget.session.restBetweenExercises;
         return rest > 0 ? rest : 120;
       case _WorkoutPhase.finished:
@@ -1230,14 +1245,49 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     final Map<String, Exercise> exerciseById = <String, Exercise>{
       for (final Exercise exercise in exercises) exercise.id: exercise,
     };
-    return widget.session.workouts
-        .map(
-          (WorkoutConfig workout) => _WorkoutStep(
-            config: workout,
-            exercise: exerciseById[workout.exerciseId],
-          ),
-        )
-        .toList(growable: false);
+
+    final List<_WorkoutStep> steps = <_WorkoutStep>[];
+
+    for (final WorkoutConfig workout in widget.session.workouts) {
+      if (workout is CircuitConfig) {
+        // Unroll: [ex1, ex2, ..., rest, ex1, ex2, ..., rest, ex1, ex2, ...]
+        for (int round = 0; round < workout.rounds; round++) {
+          final String roundLabel =
+              '${workout.name} · Round ${round + 1}/${workout.rounds}';
+          for (int i = 0; i < workout.exercises.length; i++) {
+            final WorkoutConfig ex = workout.exercises[i];
+            final bool isLastExInRound = i == workout.exercises.length - 1;
+            final bool isLastRound = round == workout.rounds - 1;
+
+            // Override rest:
+            // - Between exercises within a round → restBetweenExercises
+            // - After last exercise of a round (but not the last round) → restBetweenRounds
+            // - After last exercise of last round → null (use session default / handled by executor)
+            int? overrideRest;
+            if (!isLastExInRound) {
+              overrideRest = workout.restBetweenExercises;
+            } else if (!isLastRound) {
+              overrideRest = workout.restBetweenRounds;
+            }
+            // Last exercise of last round: overrideRest stays null → session rest applies
+
+            steps.add(_WorkoutStep(
+              config: ex,
+              exercise: exerciseById[ex.exerciseId],
+              circuitLabel: roundLabel,
+              overrideRestSeconds: overrideRest,
+            ));
+          }
+        }
+      } else {
+        steps.add(_WorkoutStep(
+          config: workout,
+          exercise: exerciseById[workout.exerciseId],
+        ));
+      }
+    }
+
+    return steps;
   }
 
   @override
@@ -1250,6 +1300,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return exercisesAsync.when(
       data: (List<Exercise> exercises) {
         final List<_WorkoutStep> steps = _buildWorkoutSteps(exercises);
+        // Sync the mutable steps cache so state methods can access them
+        // without needing the exercises list.
+        if (_steps.length != steps.length) {
+          // Use a post-frame callback to avoid setState during build.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) setState(() => _steps = steps);
+          });
+        }
 
         if (steps.isEmpty) {
           return _buildStateScaffold(
@@ -1598,7 +1656,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           final _WorkoutStep step = entry.value;
           final _ExerciseActualMetrics? actual = _actualMetricsAt(i);
           final String name = _exerciseName(context, step, i);
-          final (_FinishedExerciseStats stats) = _finishedExerciseStats(step.config, actual);
+          final _FinishedExerciseStats stats = _finishedExerciseStats(step.config, actual);
 
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -2269,6 +2327,34 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildWorkoutTypeBadge(step.config),
+                    if (step.circuitLabel != null) ...<Widget>[
+                      const SizedBox(width: AppSpacing.xs),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning
+                              .withValues(alpha: AppOpacity.light),
+                          borderRadius: BorderRadius.circular(AppRadii.xl),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Icon(Icons.loop_rounded,
+                                size: 11, color: AppColors.warning),
+                            const SizedBox(width: 4),
+                            Text(
+                              step.circuitLabel!,
+                              style: const TextStyle(
+                                color: AppColors.warning,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xxs),
@@ -2753,9 +2839,19 @@ class _WorkoutStep {
   final WorkoutConfig config;
   final Exercise? exercise;
 
+  /// Non-null when this step belongs to a circuit.
+  /// Format: "Circuit Name · Round 2/3"
+  final String? circuitLabel;
+
+  /// Rest to insert after this step instead of session.restBetweenExercises.
+  /// Used for intra-circuit rests (between exercises and between rounds).
+  final int? overrideRestSeconds;
+
   const _WorkoutStep({
     required this.config,
     required this.exercise,
+    this.circuitLabel,
+    this.overrideRestSeconds,
   });
 }
 

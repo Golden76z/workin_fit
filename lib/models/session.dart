@@ -71,6 +71,8 @@ class Session extends HiveObject {
         workoutTime += workout.totalDuration;
       } else if (workout is TimedConfig) {
         workoutTime += workout.totalDuration;
+      } else if (workout is CircuitConfig) {
+        workoutTime += workout.totalDuration;
       }
     }
     
@@ -110,7 +112,19 @@ class Session extends HiveObject {
   }
   
   factory Session.fromFirestore(Map<String, dynamic> data) {
-    data['createdAt'] = DateTime.parse(data['createdAt']);
+    final raw = data['createdAt'];
+    if (raw == null) {
+      // Leave null — fromJson already handles null by defaulting to DateTime.now()
+      data.remove('createdAt');
+    } else if (raw is! String) {
+      // Firestore Timestamp or DateTime — convert to ISO string for fromJson
+      try {
+        data['createdAt'] = (raw as dynamic).toDate().toIso8601String();
+      } catch (_) {
+        data.remove('createdAt');
+      }
+    }
+    // If raw is already a String, leave it untouched for fromJson to parse
     return Session.fromJson(data);
   }
 }
