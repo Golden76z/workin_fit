@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/models/active_program_state.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
@@ -14,7 +15,8 @@ class FirestoreException implements Exception {
   FirestoreException(this.message, {this.code});
 
   @override
-  String toString() => 'FirestoreException: $message${code != null ? ' (code: $code)' : ''}';
+  String toString() =>
+      'FirestoreException: $message${code != null ? ' (code: $code)' : ''}';
 }
 
 class FirestoreService {
@@ -25,7 +27,7 @@ class FirestoreService {
   /// data locally and syncs when connection is restored.
 
   // ===== USER PROFILE =====
-  
+
   /// Create or update user profile
   Future<void> createOrUpdateUserProfile({
     required String userId,
@@ -60,7 +62,7 @@ class FirestoreService {
           .collection(FirebaseConstants.usersCollection)
           .doc(userId)
           .get();
-      
+
       if (!doc.exists) return null;
       return doc.data();
     } catch (e) {
@@ -69,8 +71,102 @@ class FirestoreService {
     }
   }
 
+  /// Stream currently subscribed program state from the user profile.
+  Stream<ActiveProgramState?> activeProgramStateStream(String userId) {
+    return _firestore
+        .collection(FirebaseConstants.usersCollection)
+        .doc(userId)
+        .snapshots()
+        .map((doc) => ActiveProgramState.fromUserProfile(doc.data()))
+        .handleError((error) {
+      throw FirestoreException(
+        'Error streaming active program state: $error',
+      );
+    });
+  }
+
+  /// Read currently subscribed program state from the user profile.
+  Future<ActiveProgramState?> getActiveProgramState(String userId) async {
+    try {
+      final doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .get();
+      return ActiveProgramState.fromUserProfile(doc.data());
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch active program state: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException(
+        'Unexpected error fetching active program state: $e',
+      );
+    }
+  }
+
+  /// Subscribe user to a program and set the start date.
+  Future<void> subscribeUserToProgram({
+    required String userId,
+    required String programId,
+    required DateTime startDate,
+  }) async {
+    final DateTime startDateOnly = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .set(
+        <String, dynamic>{
+          'activeProgramId': programId,
+          'activeProgramStartDate': Timestamp.fromDate(startDateOnly),
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to subscribe to program: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error subscribing to program: $e');
+    }
+  }
+
+  /// Clear user's active program subscription.
+  Future<void> unsubscribeUserFromProgram(String userId) async {
+    try {
+      await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(userId)
+          .set(
+        <String, dynamic>{
+          'activeProgramId': null,
+          'activeProgramStartDate': null,
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to unsubscribe from program: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException(
+        'Unexpected error unsubscribing from program: $e',
+      );
+    }
+  }
+
   // ===== EXERCISES (READ-ONLY FOR USERS) =====
-  
+
   /// Get all exercises
   Future<List<Exercise>> getExercises() async {
     try {
@@ -78,14 +174,12 @@ class FirestoreService {
           .collection(FirebaseConstants.exercisesCollection)
           .orderBy('name')
           .get();
-      
-      return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id; // Ensure ID is set
-            return Exercise.fromJson(data);
-          })
-          .toList();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id; // Ensure ID is set
+        return Exercise.fromJson(data);
+      }).toList();
     } on FirebaseException catch (e) {
       throw FirestoreException(
         'Failed to fetch exercises: ${e.message}',
@@ -103,9 +197,9 @@ class FirestoreService {
           .collection(FirebaseConstants.exercisesCollection)
           .doc(id)
           .get();
-      
+
       if (!doc.exists) return null;
-      
+
       final data = doc.data()!;
       data['id'] = doc.id;
       return Exercise.fromJson(data);
@@ -124,16 +218,16 @@ class FirestoreService {
     if (query.trim().isEmpty) {
       return await getExercises();
     }
-    
+
     try {
       // Note: This is a simple client-side search
       // For production, consider using Algolia or similar
       final allExercises = await getExercises();
-      
+
       final lowerQuery = query.toLowerCase();
       return allExercises.where((exercise) {
         return exercise.name.toLowerCase().contains(lowerQuery) ||
-               exercise.muscleGroupsDisplay.toLowerCase().contains(lowerQuery);
+            exercise.muscleGroupsDisplay.toLowerCase().contains(lowerQuery);
       }).toList();
     } on FirestoreException {
       rethrow;
@@ -149,23 +243,21 @@ class FirestoreService {
         .orderBy('name')
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map((doc) {
-                final data = doc.data();
-                data['id'] = doc.id;
-                return Exercise.fromJson(data);
-              })
-              .toList(),
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Exercise.fromJson(data);
+          }).toList(),
         )
         .handleError((error) {
-          throw FirestoreException(
-            'Error streaming exercises: $error',
-          );
-        });
+      throw FirestoreException(
+        'Error streaming exercises: $error',
+      );
+    });
   }
 
   // ===== USER SESSIONS (CRUD) =====
-  
+
   /// Get user's custom sessions
   Future<List<Session>> getSessions(String userId) async {
     try {
@@ -175,14 +267,12 @@ class FirestoreService {
           .collection(FirebaseConstants.sessionsCollection)
           .orderBy('createdAt', descending: true)
           .get();
-      
-      return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return Session.fromFirestore(data);
-          })
-          .toList();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Session.fromFirestore(data);
+      }).toList();
     } on FirebaseException catch (e) {
       throw FirestoreException(
         'Failed to fetch sessions: ${e.message}',
@@ -202,9 +292,9 @@ class FirestoreService {
           .collection(FirebaseConstants.sessionsCollection)
           .doc(sessionId)
           .get();
-      
+
       if (!doc.exists) return null;
-      
+
       final data = doc.data()!;
       data['id'] = doc.id;
       return Session.fromFirestore(data);
@@ -284,23 +374,21 @@ class FirestoreService {
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs
-              .map((doc) {
-                final data = doc.data();
-                data['id'] = doc.id;
-                return Session.fromFirestore(data);
-              })
-              .toList(),
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return Session.fromFirestore(data);
+          }).toList(),
         )
         .handleError((error) {
-          throw FirestoreException(
-            'Error streaming sessions: $error',
-          );
-        });
+      throw FirestoreException(
+        'Error streaming sessions: $error',
+      );
+    });
   }
 
   // ===== PRESET SESSIONS (READ-ONLY) =====
-  
+
   /// Get preset sessions (created by admin)
   Future<List<Session>> getPresetSessions() async {
     try {
@@ -308,17 +396,19 @@ class FirestoreService {
           .collection('preset_sessions')
           .orderBy('difficulty')
           .get();
-      
-      return snapshot.docs
-          .map((doc) => Session.fromFirestore(doc.data()))
-          .toList();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Session.fromFirestore(data);
+      }).toList();
     } catch (e) {
       throw FirestoreException('Unexpected error fetching preset sessions: $e');
     }
   }
 
   // ===== PROGRAMS =====
-  
+
   /// Get all preset programs
   Future<List<Program>> getPrograms() async {
     try {
@@ -326,14 +416,12 @@ class FirestoreService {
           .collection(FirebaseConstants.programsCollection)
           .orderBy('difficulty')
           .get();
-      
-      return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return Program.fromFirestore(data);
-          })
-          .toList();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Program.fromFirestore(data);
+      }).toList();
     } on FirebaseException catch (e) {
       throw FirestoreException(
         'Failed to fetch programs: ${e.message}',
@@ -352,13 +440,13 @@ class FirestoreService {
           .collection(FirebaseConstants.programsCollection)
           .doc(programId)
           .get();
-      
+
       if (presetDoc.exists) {
         final data = presetDoc.data()!;
         data['id'] = presetDoc.id;
         return Program.fromFirestore(data);
       }
-      
+
       // If not found and userId provided, check user programs
       if (userId != null) {
         final userDoc = await _firestore
@@ -367,14 +455,14 @@ class FirestoreService {
             .collection(FirebaseConstants.programsCollection)
             .doc(programId)
             .get();
-        
+
         if (userDoc.exists) {
           final data = userDoc.data()!;
           data['id'] = userDoc.id;
           return Program.fromFirestore(data);
         }
       }
-      
+
       return null;
     } on FirebaseException catch (e) {
       throw FirestoreException(
@@ -395,12 +483,12 @@ class FirestoreService {
         .doc(programId)
         .snapshots()
         .map((doc) {
-          if (!doc.exists) return null;
-          final data = doc.data()!;
-          data['id'] = doc.id;
-          return Program.fromFirestore(data);
-        });
-    
+      if (!doc.exists) return null;
+      final data = doc.data()!;
+      data['id'] = doc.id;
+      return Program.fromFirestore(data);
+    });
+
     // If userId provided, also listen to user programs
     if (userId != null) {
       final userStream = _firestore
@@ -410,11 +498,11 @@ class FirestoreService {
           .doc(programId)
           .snapshots()
           .map((doc) {
-            if (!doc.exists) return null;
-            final data = doc.data()!;
-            data['id'] = doc.id;
-            return Program.fromFirestore(data);
-          });
+        if (!doc.exists) return null;
+        final data = doc.data()!;
+        data['id'] = doc.id;
+        return Program.fromFirestore(data);
+      });
 
       // Listen to both streams and forward whichever has data.
       return Stream<Program?>.multi((controller) {
@@ -449,7 +537,7 @@ class FirestoreService {
         );
       });
     }
-    
+
     return presetStream.handleError((error) {
       throw FirestoreException(
         'Error subscribing to program: $error',
@@ -466,14 +554,12 @@ class FirestoreService {
           .collection(FirebaseConstants.programsCollection)
           .orderBy('createdAt', descending: true)
           .get();
-      
-      return snapshot.docs
-          .map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return Program.fromFirestore(data);
-          })
-          .toList();
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        data['id'] = doc.id;
+        return Program.fromFirestore(data);
+      }).toList();
     } on FirebaseException catch (e) {
       throw FirestoreException(
         'Failed to fetch user programs: ${e.message}',
@@ -638,7 +724,7 @@ class FirestoreService {
       );
     }
   }
-  
+
   /// Save completed workout
   Future<void> saveWorkoutHistory({
     required String userId,
@@ -657,9 +743,8 @@ class FirestoreService {
       );
       final DateTime monthDate = _parseMonthKey(monthKey);
 
-      final DocumentReference<Map<String, dynamic>> userDocRef = _firestore
-          .collection(FirebaseConstants.usersCollection)
-          .doc(userId);
+      final DocumentReference<Map<String, dynamic>> userDocRef =
+          _firestore.collection(FirebaseConstants.usersCollection).doc(userId);
       final DocumentReference<Map<String, dynamic>> historyDocRef = userDocRef
           .collection(FirebaseConstants.workoutHistoryCollection)
           .doc();
@@ -709,15 +794,16 @@ class FirestoreService {
         safeMetadata['exerciseSummaries'],
       );
       for (final Map<String, dynamic> exerciseSummary in exerciseSummaries) {
-        final String exerciseId = (exerciseSummary['exerciseId'] as String? ?? '')
-            .trim();
+        final String exerciseId =
+            (exerciseSummary['exerciseId'] as String? ?? '').trim();
         if (exerciseId.isEmpty) {
           continue;
         }
 
-        final DocumentReference<Map<String, dynamic>> exerciseDocRef = monthDocRef
-            .collection(FirebaseConstants.exercisesCollection)
-            .doc(exerciseId);
+        final DocumentReference<Map<String, dynamic>> exerciseDocRef =
+            monthDocRef
+                .collection(FirebaseConstants.exercisesCollection)
+                .doc(exerciseId);
 
         batch.set(
           exerciseDocRef,
@@ -995,10 +1081,9 @@ class FirestoreService {
     return rawValue
         .whereType<Map<dynamic, dynamic>>()
         .map((Map<dynamic, dynamic> rawMap) {
-          return rawMap.map(
-            (key, value) => MapEntry(key.toString(), value),
-          );
-        })
-        .toList();
+      return rawMap.map(
+        (key, value) => MapEntry(key.toString(), value),
+      );
+    }).toList();
   }
 }
