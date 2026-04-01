@@ -76,3 +76,12 @@ enum MuscleGroup {
   @HiveField(13)
   cardio,
 }
+
+/// Category of warmup routine
+enum WarmupCategory {
+  fullBody,
+  upperBody,
+  lowerBody,
+  core,
+  cardio,
+}

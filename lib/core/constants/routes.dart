@@ -17,5 +17,6 @@ class RouteConstants {
   static const String sessionDetail = '/session/detail';
   static const String sessionBuilder = '/session/builder';
   static const String programBuilder = '/program/builder';
+  static const String warmupCategories = '/warmup/categories';
 }
 
