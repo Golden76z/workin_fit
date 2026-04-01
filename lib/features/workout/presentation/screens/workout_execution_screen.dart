@@ -98,11 +98,6 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return widget.session.workouts[nextIndex];
   }
 
-  _WorkoutStep? get _currentStep =>
-      _steps.isNotEmpty && _currentExerciseIndex < _steps.length
-          ? _steps[_currentExerciseIndex]
-          : null;
-
   int get _phaseDuration {
     switch (_phase) {
       case _WorkoutPhase.getReady:
@@ -1276,14 +1271,14 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
               exercise: exerciseById[ex.exerciseId],
               circuitLabel: roundLabel,
               overrideRestSeconds: overrideRest,
-            ));
+            ),);
           }
         }
       } else {
         steps.add(_WorkoutStep(
           config: workout,
           exercise: exerciseById[workout.exerciseId],
-        ));
+        ),);
       }
     }
 
@@ -1483,10 +1478,10 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            color: AppColors.darkAccentLight.withValues(alpha: 0.74),
+            color: AppColors.surface.withValues(alpha: AppOpacity.prominent),
             border: Border(
               top: BorderSide(
-                color: AppColors.accent.withValues(alpha: 0.16),
+                color: AppColors.accent.withValues(alpha: AppOpacity.muted),
               ),
             ),
           ),
@@ -2015,7 +2010,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           height: diameter,
           ringColor: AppColors.primaryAbyss.withValues(alpha: AppOpacity.dim),
           fillColor: fillColor,
-          backgroundColor: AppColors.primaryPastel.withValues(alpha: 0.48),
+          backgroundColor: AppColors.primaryPastel.withValues(alpha: AppOpacity.half),
           strokeWidth: AppSizes.workoutTimerStroke,
           strokeCap: StrokeCap.round,
           textStyle: const TextStyle(
@@ -2103,7 +2098,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return Container(
       width: AppSpacing.xxxl + AppSpacing.md,
       height: 1,
-      color: AppColors.background.withValues(alpha: 0.34),
+      color: AppColors.background.withValues(alpha: AppOpacity.moderate),
     );
   }
 
@@ -2280,7 +2275,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
             ),
             style: FilledButton.styleFrom(
               backgroundColor: AppColors.warning,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.textPrimary,
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
             ),
             onPressed: _skipRest,
@@ -2313,7 +2308,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
-        color: AppColors.accentLight,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadii.md),
       ),
       child: Column(
@@ -2331,7 +2326,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                       const SizedBox(width: AppSpacing.xs),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
+                            horizontal: 8, vertical: 3,),
                         decoration: BoxDecoration(
                           color: AppColors.warning
                               .withValues(alpha: AppOpacity.light),
@@ -2341,7 +2336,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             const Icon(Icons.loop_rounded,
-                                size: 11, color: AppColors.warning),
+                                size: 11, color: AppColors.warning,),
                             const SizedBox(width: 4),
                             Text(
                               step.circuitLabel!,
@@ -2465,7 +2460,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.success,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.textPrimary,
                   padding: const EdgeInsets.symmetric(
                     vertical: AppSpacing.sm,
                   ),
@@ -2487,7 +2482,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                 ),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.warning,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.textPrimary,
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
                 ),
                 onPressed: _skipRest,
@@ -2511,7 +2506,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   backgroundColor: hasActualMetrics
                       ? AppColors.success
                       : AppColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.textPrimary,
                   padding: const EdgeInsets.symmetric(
                     vertical: AppSpacing.xs,
                   ),
@@ -2667,7 +2662,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
       return Container(
         padding: const EdgeInsets.all(AppSpacing.xs),
         decoration: BoxDecoration(
-          color: AppColors.babyBlueIce,
+          color: AppColors.surfaceVariant,
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
         child: Row(
@@ -2695,7 +2690,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
-        color: AppColors.darkAccentLight,
+        color: AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadii.sm),
       ),
       child: Row(
@@ -2712,7 +2707,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
           Container(
             width: 1,
             height: AppSizes.workoutNextImageSize - AppSpacing.xs,
-            color: AppColors.darkPrimaryDarker.withValues(alpha: 0.32),
+            color: AppColors.textTertiary.withValues(alpha: AppOpacity.mild),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -2743,7 +2738,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: AppColors.darkPrimaryDarker,
+                    color: AppColors.textPrimary,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'AppFontMedium',
@@ -2755,7 +2750,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: AppColors.darkPrimaryDarker,
+                    color: AppColors.textPrimary,
                     fontSize: 12,
                   ),
                 ),
@@ -2941,7 +2936,7 @@ class _AchievementUnlockBanner extends StatelessWidget {
                       vertical: AppSpacing.xxs,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: AppOpacity.dim),
+                      color: AppColors.textPrimary.withValues(alpha: AppOpacity.dim),
                       borderRadius: BorderRadius.circular(AppRadii.xl),
                     ),
                     child: Row(
