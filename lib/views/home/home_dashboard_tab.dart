@@ -3,8 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/features/warmup/presentation/screens/warmup_category_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
+import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
+import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
+import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
@@ -865,29 +869,79 @@ class _DailyChallengeCard extends StatelessWidget {
 // Warmup Selector
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _WarmupSelector extends StatefulWidget {
+class _WarmupSelector extends ConsumerStatefulWidget {
   final bool isFrench;
   const _WarmupSelector({required this.isFrench});
 
   @override
-  State<_WarmupSelector> createState() => _WarmupSelectorState();
+  ConsumerState<_WarmupSelector> createState() => _WarmupSelectorState();
 }
 
-class _WarmupSelectorState extends State<_WarmupSelector> {
-  int _selected = 1; // default: 5 min
-
+class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
   static const List<int> _durations = <int>[2, 5, 10];
+
+  static const _categoryLabels = {
+    WarmupCategory.fullBody:  ('Full Body',   'Corps entier'),
+    WarmupCategory.upperBody: ('Upper Body',  'Haut du corps'),
+    WarmupCategory.lowerBody: ('Lower Body',  'Bas du corps'),
+    WarmupCategory.core:      ('Core',        'Abdominaux'),
+    WarmupCategory.cardio:    ('Cardio',      'Cardio'),
+  };
 
   @override
   Widget build(BuildContext context) {
+    final category = ref.watch(warmupCategoryProvider);
+    final duration = ref.watch(warmupDurationProvider);
+    final selectedIndex = _durations.indexOf(duration);
+
+    final labels = _categoryLabels[category]!;
+    final categoryLabel = widget.isFrench ? labels.$2 : labels.$1;
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        // Category chip
+        GestureDetector(
+          onTap: () => Navigator.of(context).push(WarmupCategoryScreen.route()),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.xs,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: AppOpacity.light),
+              borderRadius: BorderRadius.circular(AppRadii.xl),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Icon(Icons.tune_rounded, size: 14, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.xxs),
+                Text(
+                  categoryLabel,
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xxs),
+                const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.primary),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        // Duration buttons
         Row(
           children: List<Widget>.generate(
             _durations.length,
             (int i) {
               final int minutes = _durations[i];
-              final bool isSelected = _selected == i;
+              final bool isSelected = selectedIndex == i;
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -896,8 +950,10 @@ class _WarmupSelectorState extends State<_WarmupSelector> {
                   child: _WarmupDurationButton(
                     minutes: minutes,
                     isSelected: isSelected,
-                    label: widget.isFrench ? 'min' : 'min',
-                    onTap: () => setState(() => _selected = i),
+                    label: 'min',
+                    onTap: () {
+                      ref.read(warmupDurationProvider.notifier).state = minutes;
+                    },
                   ),
                 ),
               );
@@ -905,15 +961,27 @@ class _WarmupSelectorState extends State<_WarmupSelector> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
+        // Start button
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              final routine = ref.read(warmupRoutineProvider);
+              final exercises = ref.read(warmupExercisesProvider);
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => WorkoutExecutionScreen(
+                    session: routine.toSession(),
+                    seededExercises: exercises,
+                  ),
+                ),
+              );
+            },
             icon: const Icon(Icons.play_arrow_rounded, size: 20),
             label: Text(
               widget.isFrench
-                  ? 'Démarrer ${_durations[_selected]} min d\'échauffement'
-                  : 'Start ${_durations[_selected]} min warmup',
+                  ? 'Démarrer $duration min d\'échauffement'
+                  : 'Start $duration min warmup',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             style: FilledButton.styleFrom(
