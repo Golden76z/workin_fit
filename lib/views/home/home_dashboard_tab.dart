@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
+import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
+import 'package:workin_fit/features/session/presentation/screens/program_detail_screen.dart';
 import 'package:workin_fit/features/warmup/presentation/screens/warmup_category_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
 import 'package:workin_fit/models/enums.dart';
+import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
@@ -26,7 +29,16 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
   bool get wantKeepAlive => true;
 
   Future<void> _onRefresh() async {
-    await Future<void>.delayed(const Duration(milliseconds: 900));
+    ref.invalidate(programsProvider);
+    ref.invalidate(activeProgramStateProvider);
+    try {
+      await Future.wait<void>([
+        ref.read(programsProvider.future).then((_) {}),
+        ref.read(streakDataProvider.future).then((_) {}),
+      ]);
+    } catch (_) {
+      // Keep pull-to-refresh resilient even if one source fails.
+    }
   }
 
   @override
@@ -74,6 +86,10 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                   delegate: SliverChildListDelegate(<Widget>[
                     // Session of the Day
                     _SessionOfTheDayCard(isFrench: isFrench),
+                    const SizedBox(height: AppSpacing.md),
+
+                    // Active Program Day
+                    _CurrentProgramDayCard(isFrench: isFrench),
                     const SizedBox(height: AppSpacing.md),
 
                     // Daily Challenge
@@ -865,6 +881,265 @@ class _DailyChallengeCard extends StatelessWidget {
   }
 }
 
+class _CurrentProgramDayCard extends ConsumerWidget {
+  final bool isFrench;
+  const _CurrentProgramDayCard({required this.isFrench});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeProgramStateAsync = ref.watch(activeProgramStateProvider);
+
+    return activeProgramStateAsync.when(
+      data: (activeProgramState) {
+        if (activeProgramState == null) {
+          return _ProgramCardContainer(
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color:
+                        AppColors.primary.withValues(alpha: AppOpacity.subtle),
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
+                  ),
+                  child: const Icon(
+                    Icons.calendar_month_rounded,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    isFrench
+                        ? 'Aucun programme actif. Démarrez-en un depuis l\'onglet Programmes.'
+                        : 'No active program. Start one from the Programs tab.',
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final programAsync = ref.watch(
+          programByIdProvider(activeProgramState.programId),
+        );
+        return programAsync.when(
+          data: (program) {
+            if (program == null) {
+              return _ProgramCardContainer(
+                child: Text(
+                  isFrench
+                      ? 'Programme actif introuvable.'
+                      : 'Active program could not be loaded.',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 13,
+                  ),
+                ),
+              );
+            }
+
+            final DateTime startDate = activeProgramState.startDateOnly;
+            final DateTime now = DateTime.now();
+            final DateTime today = DateTime(now.year, now.month, now.day);
+            final int elapsed = today.difference(startDate).inDays;
+            final int totalDays = program.totalDays;
+            final bool startsInFuture = elapsed < 0;
+            final bool isCompleted = elapsed >= totalDays;
+            final int currentDay =
+                startsInFuture ? 1 : (elapsed + 1).clamp(1, totalDays);
+            final int currentWeek = startsInFuture
+                ? 1
+                : ((elapsed ~/ 7) + 1).clamp(1, program.durationWeeks);
+            final int daysUntilStart = startsInFuture ? -elapsed : 0;
+            final double progress =
+                startsInFuture ? 0 : (currentDay / totalDays).clamp(0.0, 1.0);
+            final Color accent =
+                AppDifficultyTheme.paletteFor(program.difficulty).accentColor;
+
+            return _ProgramCardContainer(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(AppRadii.sm),
+                onTap: () => Navigator.of(context).push(
+                  ProgramDetailScreen.route(program: program),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color:
+                                  accent.withValues(alpha: AppOpacity.subtle),
+                              borderRadius: BorderRadius.circular(AppRadii.sm),
+                            ),
+                            child: Icon(
+                              Icons.flag_rounded,
+                              color: accent,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  isFrench
+                                      ? 'JOUR DU PROGRAMME'
+                                      : 'PROGRAM DAY',
+                                  style: TextStyle(
+                                    color: accent,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.8,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  program.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'AppFontMedium',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            color: AppColors.textTertiary,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        startsInFuture
+                            ? (isFrench
+                                ? 'Démarre dans $daysUntilStart jour${daysUntilStart > 1 ? 's' : ''}'
+                                : 'Starts in $daysUntilStart day${daysUntilStart > 1 ? 's' : ''}')
+                            : (isFrench
+                                ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
+                                : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays'),
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 5,
+                          backgroundColor:
+                              accent.withValues(alpha: AppOpacity.whisper),
+                          valueColor: AlwaysStoppedAnimation<Color>(accent),
+                        ),
+                      ),
+                      if (isCompleted) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          isFrench
+                              ? 'Programme terminé. Choisissez le prochain objectif.'
+                              : 'Program complete. Choose your next goal.',
+                          style: const TextStyle(
+                            color: AppColors.success,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+          loading: () => const _ProgramCardContainer(
+            child: SizedBox(
+              height: 64,
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            ),
+          ),
+          error: (_, __) => _ProgramCardContainer(
+            child: Text(
+              isFrench
+                  ? 'Impossible de charger le programme actif.'
+                  : 'Could not load active program.',
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        );
+      },
+      loading: () => const _ProgramCardContainer(
+        child: SizedBox(
+          height: 64,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+      ),
+      error: (_, __) => _ProgramCardContainer(
+        child: Text(
+          isFrench
+              ? 'Impossible de charger le jour du programme.'
+              : 'Could not load program day.',
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProgramCardContainer extends StatelessWidget {
+  final Widget child;
+  const _ProgramCardContainer({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppOpacity.soft),
+        ),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Warmup Selector
 // ─────────────────────────────────────────────────────────────────────────────
@@ -881,11 +1156,11 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
   static const List<int> _durations = <int>[2, 5, 10];
 
   static const _categoryLabels = {
-    WarmupCategory.fullBody:  ('Full Body',   'Corps entier'),
-    WarmupCategory.upperBody: ('Upper Body',  'Haut du corps'),
-    WarmupCategory.lowerBody: ('Lower Body',  'Bas du corps'),
-    WarmupCategory.core:      ('Core',        'Abdominaux'),
-    WarmupCategory.cardio:    ('Cardio',      'Cardio'),
+    WarmupCategory.fullBody: ('Full Body', 'Corps entier'),
+    WarmupCategory.upperBody: ('Upper Body', 'Haut du corps'),
+    WarmupCategory.lowerBody: ('Lower Body', 'Bas du corps'),
+    WarmupCategory.core: ('Core', 'Abdominaux'),
+    WarmupCategory.cardio: ('Cardio', 'Cardio'),
   };
 
   @override
@@ -918,7 +1193,8 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Icon(Icons.tune_rounded, size: 14, color: AppColors.primary),
+                const Icon(Icons.tune_rounded,
+                    size: 14, color: AppColors.primary),
                 const SizedBox(width: AppSpacing.xxs),
                 Text(
                   categoryLabel,
@@ -929,7 +1205,8 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.xxs),
-                const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.primary),
+                const Icon(Icons.chevron_right_rounded,
+                    size: 16, color: AppColors.primary),
               ],
             ),
           ),
@@ -1072,107 +1349,140 @@ class _WarmupDurationButton extends StatelessWidget {
 class _ProgramsCarousel extends StatelessWidget {
   const _ProgramsCarousel();
 
-  static const List<_ProgramData> _programs = <_ProgramData>[
-    _ProgramData(
-      title: 'Full Body Blast',
-      weeks: 6,
-      sessions: 18,
-      level: 'Beginner',
-      levelFr: 'Débutant',
-      icon: Icons.accessibility_new_rounded,
-      color: AppColors.electricSapphire,
-    ),
-    _ProgramData(
-      title: 'Upper Body\nFocus',
-      weeks: 4,
-      sessions: 12,
-      level: 'Intermediate',
-      levelFr: 'Intermédiaire',
-      icon: Icons.sports_gymnastics_rounded,
-      color: AppColors.cornflowerBlue,
-    ),
-    _ProgramData(
-      title: 'Core & Cardio',
-      weeks: 8,
-      sessions: 24,
-      level: 'Advanced',
-      levelFr: 'Avancé',
-      icon: Icons.directions_run_rounded,
-      color: AppColors.primaryDark,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    return const _ProgramsCarouselBody();
+  }
+}
+
+class _ProgramsCarouselBody extends ConsumerWidget {
+  const _ProgramsCarouselBody();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final bool isFrench = Localizations.localeOf(context)
         .languageCode
         .toLowerCase()
         .startsWith('fr');
+    final programsAsync = ref.watch(programsProvider);
+    final activeProgramId =
+        ref.watch(activeProgramStateProvider).valueOrNull?.programId;
 
     return SizedBox(
       height: 178,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        clipBehavior: Clip.none,
-        itemCount: _programs.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (BuildContext context, int index) {
-          return _ProgramCard(
-            data: _programs[index],
-            isFrench: isFrench,
+      child: programsAsync.when(
+        data: (programs) {
+          if (programs.isEmpty) {
+            return Center(
+              child: Text(
+                isFrench
+                    ? 'Aucun programme disponible.'
+                    : 'No programs available.',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                ),
+              ),
+            );
+          }
+
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            clipBehavior: Clip.none,
+            itemCount: programs.length,
+            separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+            itemBuilder: (BuildContext context, int index) {
+              final program = programs[index];
+              return _ProgramCard(
+                program: program,
+                isFrench: isFrench,
+                isActive: program.id == activeProgramId,
+              );
+            },
           );
         },
+        loading: () => ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          itemCount: 3,
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+          itemBuilder: (_, __) => Container(
+            width: 160,
+            decoration: BoxDecoration(
+              color: AppColors.neutral300,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+            ),
+          ),
+        ),
+        error: (_, __) => Center(
+          child: Text(
+            isFrench
+                ? 'Impossible de charger les programmes.'
+                : 'Could not load programs.',
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _ProgramData {
-  final String title;
-  final int weeks;
-  final int sessions;
-  final String level;
-  final String levelFr;
-  final IconData icon;
-  final Color color;
-
-  const _ProgramData({
-    required this.title,
-    required this.weeks,
-    required this.sessions,
-    required this.level,
-    required this.levelFr,
-    required this.icon,
-    required this.color,
-  });
-}
-
 class _ProgramCard extends StatelessWidget {
-  final _ProgramData data;
+  final Program program;
   final bool isFrench;
+  final bool isActive;
 
-  const _ProgramCard({required this.data, required this.isFrench});
+  const _ProgramCard({
+    required this.program,
+    required this.isFrench,
+    required this.isActive,
+  });
+
+  IconData _iconForProgram() {
+    final lower = program.name.toLowerCase();
+    if (lower.contains('upper')) return Icons.sports_gymnastics_rounded;
+    if (lower.contains('core')) return Icons.filter_center_focus_rounded;
+    if (lower.contains('hiit') || lower.contains('conditioning')) {
+      return Icons.bolt_rounded;
+    }
+    if (lower.contains('strength')) return Icons.fitness_center_rounded;
+    return Icons.accessibility_new_rounded;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final palette = AppDifficultyTheme.paletteFor(program.difficulty);
+    final Color baseColor = palette.accentColor;
+
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.of(context).push(
+        ProgramDetailScreen.route(program: program),
+      ),
       child: Container(
-        width: 150,
+        width: 160,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: <Color>[
-              data.color,
-              data.color.withValues(alpha: AppOpacity.prominent),
+              baseColor,
+              baseColor.withValues(alpha: AppOpacity.prominent),
             ],
           ),
           borderRadius: BorderRadius.circular(AppRadii.sm),
+          border: isActive
+              ? Border.all(
+                  color: Colors.white.withValues(alpha: AppOpacity.over),
+                  width: 1.4,
+                )
+              : null,
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: data.color.withValues(alpha: AppOpacity.mild),
+              color: baseColor.withValues(alpha: AppOpacity.mild),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -1190,11 +1500,13 @@ class _ProgramCard extends StatelessWidget {
                   color: Colors.white.withValues(alpha: AppOpacity.soft),
                   borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
-                child: Icon(data.icon, color: Colors.white, size: 22),
+                child: Icon(_iconForProgram(), color: Colors.white, size: 22),
               ),
               const Spacer(),
               Text(
-                data.title,
+                program.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'AppFontMedium',
@@ -1206,8 +1518,8 @@ class _ProgramCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxs),
               Text(
                 isFrench
-                    ? '${data.weeks} sem · ${data.sessions} séances'
-                    : '${data.weeks}wk · ${data.sessions} sessions',
+                    ? '${program.durationWeeks} sem · ${program.totalSessions} séances'
+                    : '${program.durationWeeks}wk · ${program.totalSessions} sessions',
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: AppOpacity.strong),
                   fontSize: 11,
@@ -1224,7 +1536,8 @@ class _ProgramCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
                 child: Text(
-                  isFrench ? data.levelFr : data.level,
+                  AppDifficultyTheme.label(program.difficulty,
+                      isFrench: isFrench),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -1232,6 +1545,17 @@ class _ProgramCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (isActive) ...[
+                const SizedBox(height: 4),
+                Text(
+                  isFrench ? 'Actif' : 'Active',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: AppOpacity.strong),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ],
           ),
         ),

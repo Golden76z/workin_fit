@@ -106,8 +106,20 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
         destructive: true,
       );
       if (ok == true && mounted) {
-        ref.read(activeProgramIdProvider.notifier).state = null;
-        ref.read(activeProgramStartProvider.notifier).state = null;
+        try {
+          await ref.read(activeProgramActionsProvider).unsubscribe();
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isFrench
+                    ? 'Impossible d\'arrêter le programme : $e'
+                    : 'Failed to stop program: $e',
+              ),
+            ),
+          );
+        }
       }
     } else if (activeProgramId != null) {
       // Confirm replace then choose start date
@@ -125,14 +137,44 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
       if (ok != true || !mounted) return;
       final startDate = await _chooseStartDate(isFrench);
       if (startDate != null && mounted) {
-        ref.read(activeProgramIdProvider.notifier).state = program.id;
-        ref.read(activeProgramStartProvider.notifier).state = startDate;
+        try {
+          await ref.read(activeProgramActionsProvider).subscribe(
+                programId: program.id,
+                startDate: startDate,
+              );
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isFrench
+                    ? 'Impossible de démarrer le programme : $e'
+                    : 'Failed to start program: $e',
+              ),
+            ),
+          );
+        }
       }
     } else {
       final startDate = await _chooseStartDate(isFrench);
       if (startDate != null && mounted) {
-        ref.read(activeProgramIdProvider.notifier).state = program.id;
-        ref.read(activeProgramStartProvider.notifier).state = startDate;
+        try {
+          await ref.read(activeProgramActionsProvider).subscribe(
+                programId: program.id,
+                startDate: startDate,
+              );
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isFrench
+                    ? 'Impossible de démarrer le programme : $e'
+                    : 'Failed to start program: $e',
+              ),
+            ),
+          );
+        }
       }
     }
   }
@@ -148,9 +190,11 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
         .toLowerCase()
         .startsWith('fr');
 
-    final sessionsAsync = ref.watch(userSessionsProvider);
-    final activeProgramId = ref.watch(activeProgramIdProvider);
-    final startDate = ref.watch(activeProgramStartProvider);
+    final sessionsAsync = ref.watch(programSessionsProvider);
+    final activeProgramState =
+        ref.watch(activeProgramStateProvider).valueOrNull;
+    final activeProgramId = activeProgramState?.programId;
+    final startDate = activeProgramState?.startDateOnly;
     final completedIds = ref.watch(completedTodaySessionIdsProvider);
     final isActive = activeProgramId == program.id;
 
@@ -158,9 +202,13 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
     int? activeWeekIndex;
     int? activeDayInWeek;
     if (isActive && startDate != null) {
-      final elapsed = DateTime.now().difference(startDate).inDays;
-      activeWeekIndex = (elapsed ~/ 7).clamp(0, program.durationWeeks - 1);
-      activeDayInWeek = elapsed % 7;
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final elapsed = today.difference(startDate).inDays;
+      if (elapsed >= 0) {
+        activeWeekIndex = (elapsed ~/ 7).clamp(0, program.durationWeeks - 1);
+        activeDayInWeek = elapsed % 7;
+      }
     }
 
     return AppSystemOverlayRegion(

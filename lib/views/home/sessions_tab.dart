@@ -6,6 +6,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_builder_screen.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_detail_screen.dart';
+import 'package:workin_fit/models/active_program_state.dart';
 import 'package:workin_fit/features/session/presentation/screens/session_builder_screen.dart';
 import 'package:workin_fit/features/session/presentation/screens/session_detail_screen.dart';
 import 'package:workin_fit/features/session/presentation/screens/session_history_screen.dart';
@@ -110,7 +111,8 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
         .startsWith('fr');
 
     final bool onProgramsTab = _tabController.index == 1;
-    final activeProgramId = ref.watch(activeProgramIdProvider);
+    final activeProgramState =
+        ref.watch(activeProgramStateProvider).valueOrNull;
 
     return AppSystemOverlayRegion(
       style: AppChrome.homeOverlay,
@@ -172,13 +174,13 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
                       ],
                     ),
                   ),
-                  if (activeProgramId != null) ...[
+                  if (activeProgramState != null) ...[
                     Container(
                       height: 1,
                       color: Colors.white.withValues(alpha: AppOpacity.whisper),
                     ),
                     _ActiveProgramInline(
-                      activeProgramId: activeProgramId,
+                      activeProgramState: activeProgramState,
                       isFrench: isFrench,
                     ),
                   ],
@@ -254,18 +256,19 @@ class _SessionsTabState extends ConsumerState<SessionsTab>
 // ---------------------------------------------------------------------------
 
 class _ActiveProgramInline extends ConsumerWidget {
-  final String activeProgramId;
+  final ActiveProgramState activeProgramState;
   final bool isFrench;
 
   const _ActiveProgramInline({
-    required this.activeProgramId,
+    required this.activeProgramState,
     required this.isFrench,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final programAsync = ref.watch(programByIdProvider(activeProgramId));
-    final startDate = ref.watch(activeProgramStartProvider);
+    final programAsync =
+        ref.watch(programByIdProvider(activeProgramState.programId));
+    final startDate = activeProgramState.startDateOnly;
 
     return programAsync.maybeWhen(
       data: (program) {
@@ -275,14 +278,21 @@ class _ActiveProgramInline extends ConsumerWidget {
         int? currentDay;
         int? currentWeek;
         double? progress;
+        int? daysUntilStart;
         final totalDays = program.totalDays;
 
-        if (startDate != null && totalDays > 0) {
-          final elapsed = DateTime.now().difference(startDate).inDays;
-          currentDay = (elapsed + 1).clamp(1, totalDays);
-          currentWeek =
-              ((elapsed / 7).floor() + 1).clamp(1, program.durationWeeks);
-          progress = (currentDay / totalDays).clamp(0.0, 1.0);
+        if (totalDays > 0) {
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          final elapsed = today.difference(startDate).inDays;
+          if (elapsed >= 0) {
+            currentDay = (elapsed + 1).clamp(1, totalDays);
+            currentWeek =
+                ((elapsed / 7).floor() + 1).clamp(1, program.durationWeeks);
+            progress = (currentDay / totalDays).clamp(0.0, 1.0);
+          } else {
+            daysUntilStart = -elapsed;
+          }
         }
 
         final hasProgress = currentDay != null;
@@ -363,11 +373,22 @@ class _ActiveProgramInline extends ConsumerWidget {
                               destructive: true,
                             );
                             if (confirmed == true) {
-                              ref.read(activeProgramIdProvider.notifier).state =
-                                  null;
-                              ref
-                                  .read(activeProgramStartProvider.notifier)
-                                  .state = null;
+                              try {
+                                await ref
+                                    .read(activeProgramActionsProvider)
+                                    .unsubscribe();
+                              } catch (e) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      isFrench
+                                          ? 'Impossible d\'arrêter le programme : $e'
+                                          : 'Failed to stop program: $e',
+                                    ),
+                                  ),
+                                );
+                              }
                             }
                           },
                           child: Padding(
@@ -451,9 +472,13 @@ class _ActiveProgramInline extends ConsumerWidget {
                       const SizedBox(height: 3),
                       // Show static stats when no start date
                       Text(
-                        isFrench
-                            ? '${program.durationWeeks} semaines  •  ${program.daysPerWeek} j/sem'
-                            : '${program.durationWeeks} weeks  •  ${program.daysPerWeek} days/wk',
+                        daysUntilStart != null
+                            ? (isFrench
+                                ? 'Commence dans $daysUntilStart jour${daysUntilStart > 1 ? 's' : ''}'
+                                : 'Starts in $daysUntilStart day${daysUntilStart > 1 ? 's' : ''}')
+                            : (isFrench
+                                ? '${program.durationWeeks} semaines  •  ${program.daysPerWeek} j/sem'
+                                : '${program.durationWeeks} weeks  •  ${program.daysPerWeek} days/wk'),
                         style: TextStyle(
                           color:
                               Colors.white.withValues(alpha: AppOpacity.half),
@@ -604,7 +629,8 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
   @override
   Widget build(BuildContext context) {
     final programsAsync = ref.watch(programsProvider);
-    final activeProgramId = ref.watch(activeProgramIdProvider);
+    final activeProgramId =
+        ref.watch(activeProgramStateProvider).valueOrNull?.programId;
 
     return RefreshIndicator(
       onRefresh: _onRefresh,

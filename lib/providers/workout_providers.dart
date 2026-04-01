@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/services/sync_service.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/services/local_storage_service.dart';
+import 'package:workin_fit/models/active_program_state.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
@@ -11,9 +12,11 @@ import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 
 final syncServiceProvider = Provider<SyncService>((ref) => SyncService());
 
-final firestoreServiceProvider = Provider<FirestoreService>((ref) => FirestoreService());
+final firestoreServiceProvider =
+    Provider<FirestoreService>((ref) => FirestoreService());
 
-final localStorageServiceProvider = Provider<LocalStorageService>((ref) => LocalStorageService());
+final localStorageServiceProvider =
+    Provider<LocalStorageService>((ref) => LocalStorageService());
 
 // ===== USER ID PROVIDER =====
 
@@ -78,9 +81,9 @@ final exercisesStreamProvider = StreamProvider<List<Exercise>>((ref) {
 final userSessionsProvider = FutureProvider<List<Session>>((ref) async {
   final syncService = ref.watch(syncServiceProvider);
   final userId = ref.watch(currentUserIdProvider);
-  
+
   if (userId == null) return [];
-  
+
   try {
     return await syncService.getSessions(userId);
   } catch (e) {
@@ -89,14 +92,44 @@ final userSessionsProvider = FutureProvider<List<Session>>((ref) async {
   }
 });
 
+/// Preset sessions used by curated programs.
+final presetSessionsProvider = FutureProvider<List<Session>>((ref) async {
+  final syncService = ref.watch(syncServiceProvider);
+  try {
+    return await syncService.getPresetSessions();
+  } catch (_) {
+    return [];
+  }
+});
+
+/// Sessions available for programs (preset + user custom sessions).
+final programSessionsProvider = FutureProvider<List<Session>>((ref) async {
+  List<Session> userSessions = [];
+  List<Session> presetSessions = [];
+  try {
+    userSessions = await ref.watch(userSessionsProvider.future);
+  } catch (_) {}
+  try {
+    presetSessions = await ref.watch(presetSessionsProvider.future);
+  } catch (_) {}
+  final Map<String, Session> byId = <String, Session>{};
+  for (final session in presetSessions) {
+    byId[session.id] = session;
+  }
+  for (final session in userSessions) {
+    byId[session.id] = session;
+  }
+  return byId.values.toList(growable: false);
+});
+
 /// Session by ID provider
 final sessionByIdProvider = FutureProvider.family<Session?, String>(
   (ref, sessionId) async {
     final firestoreService = ref.watch(firestoreServiceProvider);
     final userId = ref.watch(currentUserIdProvider);
-    
+
     if (userId == null) return null;
-    
+
     try {
       return await firestoreService.getSessionById(userId, sessionId);
     } catch (e) {
@@ -116,16 +149,17 @@ final sessionByIdProvider = FutureProvider.family<Session?, String>(
 final userSessionsStreamProvider = StreamProvider<List<Session>>((ref) {
   final firestoreService = ref.watch(firestoreServiceProvider);
   final userId = ref.watch(currentUserIdProvider);
-  
+
   if (userId == null) {
     return Stream.value([]);
   }
-  
+
   return firestoreService.userSessionsStream(userId);
 });
 
 /// Session actions provider (CRUD operations)
-final sessionActionsProvider = Provider<SessionActions>((ref) => SessionActions(ref));
+final sessionActionsProvider =
+    Provider<SessionActions>((ref) => SessionActions(ref));
 
 class SessionActions {
   final Ref ref;
@@ -134,11 +168,11 @@ class SessionActions {
   Future<void> createSession(Session session) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.createSession(userId, session);
       // Invalidate providers to refresh data
@@ -153,11 +187,11 @@ class SessionActions {
   Future<void> updateSession(Session session) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.updateSession(userId, session);
       ref.invalidate(userSessionsProvider);
@@ -171,11 +205,11 @@ class SessionActions {
   Future<void> deleteSession(String sessionId) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.deleteSession(userId, sessionId);
       ref.invalidate(userSessionsProvider);
@@ -193,7 +227,7 @@ class SessionActions {
 final programsProvider = FutureProvider<List<Program>>((ref) async {
   final syncService = ref.watch(syncServiceProvider);
   final userId = ref.watch(currentUserIdProvider);
-  
+
   try {
     return await syncService.getPrograms(userId: userId);
   } catch (e) {
@@ -207,7 +241,7 @@ final programByIdProvider = FutureProvider.family<Program?, String>(
   (ref, programId) async {
     final syncService = ref.watch(syncServiceProvider);
     final userId = ref.watch(currentUserIdProvider);
-    
+
     try {
       return await syncService.getProgramById(programId, userId: userId);
     } catch (e) {
@@ -222,13 +256,14 @@ final programStreamProvider = StreamProvider.family<Program?, String>(
   (ref, programId) {
     final firestoreService = ref.watch(firestoreServiceProvider);
     final userId = ref.watch(currentUserIdProvider);
-    
+
     return firestoreService.subscribeToProgram(programId, userId: userId);
   },
 );
 
 /// Program actions provider (CRUD operations)
-final programActionsProvider = Provider<ProgramActions>((ref) => ProgramActions(ref));
+final programActionsProvider =
+    Provider<ProgramActions>((ref) => ProgramActions(ref));
 
 class ProgramActions {
   final Ref ref;
@@ -237,11 +272,11 @@ class ProgramActions {
   Future<void> createProgram(Program program) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.createProgram(userId, program);
       ref.invalidate(programsProvider);
@@ -254,11 +289,11 @@ class ProgramActions {
   Future<void> updateProgram(Program program) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.updateProgram(userId, program);
       ref.invalidate(programsProvider);
@@ -272,11 +307,11 @@ class ProgramActions {
   Future<void> deleteProgram(String programId) async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) {
       throw Exception('User not authenticated');
     }
-    
+
     try {
       await syncService.deleteProgram(userId, programId);
       ref.invalidate(programsProvider);
@@ -289,11 +324,55 @@ class ProgramActions {
 
 // ===== ACTIVE PROGRAM & SESSION TRACKING =====
 
-/// ID of the program the user has set as active (in-memory, resets on restart)
-final activeProgramIdProvider = StateProvider<String?>((ref) => null);
+/// Active program subscription state persisted in Firestore user profile.
+final activeProgramStateProvider = StreamProvider<ActiveProgramState?>((ref) {
+  final firestoreService = ref.watch(firestoreServiceProvider);
+  final userId = ref.watch(currentUserIdProvider);
 
-/// When the active program was started (in-memory, resets on restart)
-final activeProgramStartProvider = StateProvider<DateTime?>((ref) => null);
+  if (userId == null) {
+    return Stream.value(null);
+  }
+
+  return firestoreService.activeProgramStateStream(userId);
+});
+
+/// Active program actions (subscribe / unsubscribe).
+final activeProgramActionsProvider = Provider<ActiveProgramActions>(
+  (ref) => ActiveProgramActions(ref),
+);
+
+class ActiveProgramActions {
+  final Ref ref;
+  ActiveProgramActions(this.ref);
+
+  Future<void> subscribe({
+    required String programId,
+    required DateTime startDate,
+  }) async {
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    await ref.read(firestoreServiceProvider).subscribeUserToProgram(
+          userId: userId,
+          programId: programId,
+          startDate: startDate,
+        );
+
+    ref.invalidate(activeProgramStateProvider);
+  }
+
+  Future<void> unsubscribe() async {
+    final userId = ref.read(currentUserIdProvider);
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    await ref.read(firestoreServiceProvider).unsubscribeUserFromProgram(userId);
+    ref.invalidate(activeProgramStateProvider);
+  }
+}
 
 /// Session IDs the user has started today (in-memory, resets on restart)
 final completedTodaySessionIdsProvider =
@@ -322,9 +401,9 @@ final streakDataProvider = FutureProvider<Map<String, dynamic>>((ref) async {
 final syncPendingChangesProvider = FutureProvider<void>((ref) async {
   final syncService = ref.watch(syncServiceProvider);
   final userId = ref.watch(currentUserIdProvider);
-  
+
   if (userId == null) return;
-  
+
   try {
     await syncService.syncPendingChanges(userId);
     // Invalidate all providers to refresh data
@@ -346,9 +425,9 @@ class SyncActions {
   Future<void> syncNow() async {
     final syncService = ref.read(syncServiceProvider);
     final userId = ref.read(currentUserIdProvider);
-    
+
     if (userId == null) return;
-    
+
     try {
       await syncService.syncPendingChanges(userId);
       // Invalidate providers to refresh
