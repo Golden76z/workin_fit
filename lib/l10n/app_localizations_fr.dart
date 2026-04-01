@@ -1665,4 +1665,37 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get exercise_core_017_beginner_tips =>
       'Commencez avec les genoux pliés ou en utilisant une chaise pour le support. Travaillez progressivement vers un L-sit complet.';
+
+  @override
+  String get warmup_category_full_body => 'Corps entier';
+
+  @override
+  String get warmup_category_upper_body => 'Haut du corps';
+
+  @override
+  String get warmup_category_lower_body => 'Bas du corps';
+
+  @override
+  String get warmup_category_core => 'Abdominaux';
+
+  @override
+  String get warmup_category_cardio => 'Cardio';
+
+  @override
+  String get warmup_category_desc_full_body => 'Activation du corps entier';
+
+  @override
+  String get warmup_category_desc_upper_body => 'Bras, épaules et poitrine';
+
+  @override
+  String get warmup_category_desc_lower_body => 'Jambes, hanches et fessiers';
+
+  @override
+  String get warmup_category_desc_core => 'Abdos et bas du dos';
+
+  @override
+  String get warmup_category_desc_cardio => 'Augmentez votre rythme cardiaque';
+
+  @override
+  String get warmup_pick_category => 'Choisissez votre zone';
 }

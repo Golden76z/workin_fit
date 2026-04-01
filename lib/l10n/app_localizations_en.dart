@@ -1650,4 +1650,37 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get exercise_core_017_beginner_tips =>
       'Start with bent knees or using chair for support. Gradually work toward full L-sit.';
+
+  @override
+  String get warmup_category_full_body => 'Full Body';
+
+  @override
+  String get warmup_category_upper_body => 'Upper Body';
+
+  @override
+  String get warmup_category_lower_body => 'Lower Body';
+
+  @override
+  String get warmup_category_core => 'Core';
+
+  @override
+  String get warmup_category_cardio => 'Cardio';
+
+  @override
+  String get warmup_category_desc_full_body => 'Whole body activation';
+
+  @override
+  String get warmup_category_desc_upper_body => 'Arms, shoulders & chest';
+
+  @override
+  String get warmup_category_desc_lower_body => 'Legs, hips & glutes';
+
+  @override
+  String get warmup_category_desc_core => 'Abs & lower back';
+
+  @override
+  String get warmup_category_desc_cardio => 'Get your heart rate up';
+
+  @override
+  String get warmup_pick_category => 'Choose focus area';
 }

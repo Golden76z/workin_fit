@@ -2839,6 +2839,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start with bent knees or using chair for support. Gradually work toward full L-sit.'**
   String get exercise_core_017_beginner_tips;
+
+  /// Full body warmup category
+  ///
+  /// In en, this message translates to:
+  /// **'Full Body'**
+  String get warmup_category_full_body;
+
+  /// Upper body warmup category
+  ///
+  /// In en, this message translates to:
+  /// **'Upper Body'**
+  String get warmup_category_upper_body;
+
+  /// Lower body warmup category
+  ///
+  /// In en, this message translates to:
+  /// **'Lower Body'**
+  String get warmup_category_lower_body;
+
+  /// Core warmup category
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get warmup_category_core;
+
+  /// Cardio warmup category
+  ///
+  /// In en, this message translates to:
+  /// **'Cardio'**
+  String get warmup_category_cardio;
+
+  /// Full body warmup description
+  ///
+  /// In en, this message translates to:
+  /// **'Whole body activation'**
+  String get warmup_category_desc_full_body;
+
+  /// Upper body warmup description
+  ///
+  /// In en, this message translates to:
+  /// **'Arms, shoulders & chest'**
+  String get warmup_category_desc_upper_body;
+
+  /// Lower body warmup description
+  ///
+  /// In en, this message translates to:
+  /// **'Legs, hips & glutes'**
+  String get warmup_category_desc_lower_body;
+
+  /// Core warmup description
+  ///
+  /// In en, this message translates to:
+  /// **'Abs & lower back'**
+  String get warmup_category_desc_core;
+
+  /// Cardio warmup description
+  ///
+  /// In en, this message translates to:
+  /// **'Get your heart rate up'**
+  String get warmup_category_desc_cardio;
+
+  /// Warmup category picker prompt
+  ///
+  /// In en, this message translates to:
+  /// **'Choose focus area'**
+  String get warmup_pick_category;
 }
 
 class _AppLocalizationsDelegate
