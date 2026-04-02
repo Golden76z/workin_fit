@@ -8,9 +8,17 @@ import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/services/local_storage_service.dart';
 
 class SyncService {
-  final FirestoreService _firestoreService = FirestoreService();
-  final LocalStorageService _localService = LocalStorageService();
-  final Connectivity _connectivity = Connectivity();
+  final FirestoreService _firestoreService;
+  final LocalStorageService _localService;
+  final Connectivity _connectivity;
+
+  SyncService({
+    FirestoreService? firestoreService,
+    LocalStorageService? localService,
+    Connectivity? connectivity,
+  })  : _firestoreService = firestoreService ?? FirestoreService(),
+        _localService = localService ?? LocalStorageService(),
+        _connectivity = connectivity ?? Connectivity();
 
   // ===== SESSIONS =====
 
