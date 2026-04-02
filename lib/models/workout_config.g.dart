@@ -109,8 +109,8 @@ class TabataConfigAdapter extends TypeAdapter<TabataConfig> {
       workTime: fields[2] as int,
       restTime: fields[3] as int,
       rounds: fields[4] as int,
-      sets: fields[5] as int? ?? 1,
-      restBetweenSets: fields[6] as int? ?? 60,
+      sets: fields[5] as int,
+      restBetweenSets: fields[6] as int,
     );
   }
 
@@ -195,11 +195,11 @@ class CircuitConfigAdapter extends TypeAdapter<CircuitConfig> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CircuitConfig(
-      name: fields[2] as String? ?? 'Circuit',
-      exercises: (fields[3] as List?)?.cast<WorkoutConfig>() ?? [],
-      rounds: fields[4] as int? ?? 3,
-      restBetweenExercises: fields[5] as int? ?? 0,
-      restBetweenRounds: fields[6] as int? ?? 60,
+      name: fields[2] as String,
+      exercises: (fields[3] as List).cast<WorkoutConfig>(),
+      rounds: fields[4] as int,
+      restBetweenExercises: fields[5] as int,
+      restBetweenRounds: fields[6] as int,
     );
   }
 
@@ -207,10 +207,6 @@ class CircuitConfigAdapter extends TypeAdapter<CircuitConfig> {
   void write(BinaryWriter writer, CircuitConfig obj) {
     writer
       ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.type)
-      ..writeByte(1)
-      ..write(obj.exerciseId)
       ..writeByte(2)
       ..write(obj.name)
       ..writeByte(3)
@@ -220,7 +216,11 @@ class CircuitConfigAdapter extends TypeAdapter<CircuitConfig> {
       ..writeByte(5)
       ..write(obj.restBetweenExercises)
       ..writeByte(6)
-      ..write(obj.restBetweenRounds);
+      ..write(obj.restBetweenRounds)
+      ..writeByte(0)
+      ..write(obj.type)
+      ..writeByte(1)
+      ..write(obj.exerciseId);
   }
 
   @override
@@ -254,6 +254,7 @@ const _$WorkoutTypeEnumMap = {
   WorkoutType.sets: 'sets',
   WorkoutType.tabata: 'tabata',
   WorkoutType.timed: 'timed',
+  WorkoutType.circuit: 'circuit',
 };
 
 SetsConfig _$SetsConfigFromJson(Map<String, dynamic> json) => SetsConfig(

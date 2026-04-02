@@ -77,7 +77,9 @@ class Session extends HiveObject {
     }
     
     // Add rest between exercises and transitions
-    final int totalRest = (exerciseCount - 1) * restBetweenExercises;
+    // Guard against 0 exercises (max ensures no negative rest time)
+    final int totalRest =
+        exerciseCount > 1 ? (exerciseCount - 1) * restBetweenExercises : 0;
     final int totalTransitions = exerciseCount * transitionTime;
     
     return workoutTime + totalRest + totalTransitions;
