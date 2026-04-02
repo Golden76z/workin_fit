@@ -7,6 +7,7 @@ class ChatConversation {
   final DateTime? lastMessageAt;
   final String lastMessageType;
   final DateTime createdAt;
+  final Map<String, int> unreadCounts;
 
   const ChatConversation({
     required this.id,
@@ -17,6 +18,7 @@ class ChatConversation {
     required this.lastMessageType,
     required this.createdAt,
     this.lastMessageAt,
+    this.unreadCounts = const {},
   });
 
   factory ChatConversation.fromFirestore(
@@ -41,8 +43,12 @@ class ChatConversation {
       createdAt: data['createdAt'] != null
           ? DateTime.tryParse(data['createdAt'] as String) ?? DateTime.now()
           : DateTime.now(),
+      unreadCounts: (data['unreadCounts'] as Map<String, dynamic>? ?? {})
+          .map((k, v) => MapEntry(k, (v as num?)?.toInt() ?? 0)),
     );
   }
+
+  int unreadFor(String userId) => unreadCounts[userId] ?? 0;
 
   Map<String, dynamic> toFirestore() => {
         'participants': participants,
@@ -52,6 +58,7 @@ class ChatConversation {
         'lastMessageAt': lastMessageAt?.toUtc().toIso8601String(),
         'lastMessageType': lastMessageType,
         'createdAt': createdAt.toUtc().toIso8601String(),
+        'unreadCounts': unreadCounts,
       };
 
   String otherUserId(String currentUserId) =>

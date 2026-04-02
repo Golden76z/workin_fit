@@ -17,3 +17,10 @@ final messagesStreamProvider =
     StreamProvider.family<List<ChatMessage>, String>((ref, chatId) {
   return ref.watch(chatServiceProvider).streamMessages(chatId);
 });
+
+/// Total unread message count across all conversations for the current user.
+final unreadTotalProvider = Provider<int>((ref) {
+  final userId = ref.watch(currentUserProvider)?.uid ?? '';
+  final convs = ref.watch(conversationsStreamProvider).valueOrNull ?? [];
+  return convs.fold(0, (sum, c) => sum + c.unreadFor(userId));
+});
