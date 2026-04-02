@@ -236,6 +236,17 @@ final programsProvider = FutureProvider<List<Program>>((ref) async {
   }
 });
 
+/// Programs for the home screen — preset only (no user ID), max 5.
+final homePresetProgramsProvider = FutureProvider<List<Program>>((ref) async {
+  final syncService = ref.watch(syncServiceProvider);
+  try {
+    final all = await syncService.getPrograms();
+    return all.take(5).toList();
+  } catch (_) {
+    return [];
+  }
+});
+
 /// Program by ID provider
 final programByIdProvider = FutureProvider.family<Program?, String>(
   (ref, programId) async {
