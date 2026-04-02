@@ -5,15 +5,14 @@ import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_detail_screen.dart';
-import 'package:workin_fit/features/warmup/presentation/screens/warmup_category_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
-import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class HomeDashboardTab extends ConsumerStatefulWidget {
@@ -84,12 +83,8 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(<Widget>[
-                    // Session of the Day
-                    _SessionOfTheDayCard(isFrench: isFrench),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Active Program Day
-                    _CurrentProgramDayCard(isFrench: isFrench),
+                    // Session Hero Card (real data, gradient design)
+                    _SessionHeroCard(isFrench: isFrench),
                     const SizedBox(height: AppSpacing.md),
 
                     // Daily Challenge
@@ -141,26 +136,6 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                       },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-
-                    // Logout
-                    _LogoutButton(
-                      isFrench: isFrench,
-                      onLogout: () async {
-                        try {
-                          if (context.mounted) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute<void>(
-                                builder: (_) => const AuthenticationView(
-                                  initialTabIndex: 1,
-                                ),
-                              ),
-                              (Route<dynamic> route) => false,
-                            );
-                          }
-                          await ref.read(authActionsProvider).signOut();
-                        } catch (_) {}
-                      },
-                    ),
 
                     // Bottom padding — floating nav bar clearance
                     const SizedBox(height: 104),
@@ -225,46 +200,43 @@ class _HomeBannerSliver extends StatelessWidget {
     final double topPadding = MediaQuery.of(context).padding.top;
 
     return SliverToBoxAdapter(
-      child: ClipPath(
-        clipper: _ArchClipper(),
-        child: AppTopBarBackground(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              topPadding + AppSpacing.md,
-              AppSpacing.lg,
-              AppSpacing.lg + AppSpacing.md,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Greeting
-                Text(
-                  '$greeting,',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: AppOpacity.bold),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.2,
-                  ),
+      child: AppTopBarBackground(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            topPadding + AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // Greeting
+              Text(
+                '$greeting,',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: AppOpacity.bold),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.2,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  displayName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'AppFontMedium',
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                    height: 1.1,
-                  ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                displayName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'AppFontMedium',
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  height: 1.1,
                 ),
-                const SizedBox(height: AppSpacing.md),
-                // Stats row
-                _BannerStatsRow(isFrench: isFrench),
-              ],
-            ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              // Stats row
+              _BannerStatsRow(isFrench: isFrench),
+            ],
           ),
         ),
       ),
@@ -382,30 +354,6 @@ class _StatPill extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Wave clipper
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _ArchClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = Path();
-    path.lineTo(0, size.height - 28);
-    path.quadraticBezierTo(
-      size.width * 0.5,
-      size.height + 28,
-      size.width,
-      size.height - 28,
-    );
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Section title
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -497,17 +445,144 @@ class _SectionTitle extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Session of the Day
+// Session Hero Card (gradient design + real active program data)
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _SessionOfTheDayCard extends StatelessWidget {
+class _SessionHeroCard extends ConsumerWidget {
   final bool isFrench;
-  const _SessionOfTheDayCard({required this.isFrench});
+  const _SessionHeroCard({required this.isFrench});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeProgramStateAsync = ref.watch(activeProgramStateProvider);
+
+    return activeProgramStateAsync.when(
+      data: (activeProgramState) {
+        if (activeProgramState == null) {
+          return _buildGradientCard(
+            context: context,
+            label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+            title: isFrench ? 'Prêt à s\'entraîner ?' : 'Ready to train?',
+            subtitle: isFrench
+                ? 'Démarrez un programme depuis l\'onglet Programmes'
+                : 'Start a program from the Programs tab',
+            chips: [],
+            onTap: null,
+          );
+        }
+        final programAsync = ref.watch(
+          programByIdProvider(activeProgramState.programId),
+        );
+        return programAsync.when(
+          data: (program) {
+            if (program == null) {
+              return _buildGradientCard(
+                context: context,
+                label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+                title: isFrench ? 'Programme introuvable' : 'Program not found',
+                subtitle: isFrench
+                    ? 'Choisissez un nouveau programme'
+                    : 'Choose a new program',
+                chips: [],
+                onTap: null,
+              );
+            }
+            final DateTime startDate = activeProgramState.startDateOnly;
+            final DateTime now = DateTime.now();
+            final DateTime today = DateTime(now.year, now.month, now.day);
+            final int elapsed = today.difference(startDate).inDays;
+            final int totalDays = program.totalDays;
+            final bool startsInFuture = elapsed < 0;
+            final int currentDay =
+                startsInFuture ? 1 : (elapsed + 1).clamp(1, totalDays);
+            final int currentWeek = startsInFuture
+                ? 1
+                : ((elapsed ~/ 7) + 1).clamp(1, program.durationWeeks);
+            final int daysUntilStart = startsInFuture ? -elapsed : 0;
+
+            final String subtitle = startsInFuture
+                ? (isFrench
+                    ? 'Démarre dans $daysUntilStart jour${daysUntilStart > 1 ? 's' : ''}'
+                    : 'Starts in $daysUntilStart day${daysUntilStart > 1 ? 's' : ''}')
+                : (isFrench
+                    ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
+                    : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays');
+
+            return _buildGradientCard(
+              context: context,
+              label: isFrench ? 'PROGRAMME ACTIF' : 'ACTIVE PROGRAM',
+              title: program.name,
+              subtitle: subtitle,
+              chips: [
+                _SessionMetaChip(
+                  icon: Icons.calendar_today_rounded,
+                  label: isFrench
+                      ? 'Jour $currentDay'
+                      : 'Day $currentDay',
+                ),
+                _SessionMetaChip(
+                  icon: Icons.bar_chart_rounded,
+                  label: AppDifficultyTheme.label(
+                    program.difficulty,
+                    isFrench: isFrench,
+                  ),
+                ),
+              ],
+              onTap: () => Navigator.of(context).push(
+                ProgramDetailScreen.route(program: program),
+              ),
+            );
+          },
+          loading: () => _buildGradientCard(
+            context: context,
+            label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+            title: '...',
+            subtitle: '',
+            chips: [],
+            onTap: null,
+            isLoading: true,
+          ),
+          error: (_, __) => _buildGradientCard(
+            context: context,
+            label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+            title: isFrench ? 'Erreur de chargement' : 'Could not load',
+            subtitle: '',
+            chips: [],
+            onTap: null,
+          ),
+        );
+      },
+      loading: () => _buildGradientCard(
+        context: context,
+        label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+        title: '...',
+        subtitle: '',
+        chips: [],
+        onTap: null,
+        isLoading: true,
+      ),
+      error: (_, __) => _buildGradientCard(
+        context: context,
+        label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+        title: isFrench ? 'Erreur de chargement' : 'Could not load',
+        subtitle: '',
+        chips: [],
+        onTap: null,
+      ),
+    );
+  }
+
+  Widget _buildGradientCard({
+    required BuildContext context,
+    required String label,
+    required String title,
+    required String subtitle,
+    required List<Widget> chips,
+    required VoidCallback? onTap,
+    bool isLoading = false,
+  }) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadii.sm),
@@ -568,97 +643,104 @@ class _SessionOfTheDayCard extends StatelessWidget {
               // Card content
               Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xs,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                Colors.white.withValues(alpha: AppOpacity.soft),
-                            borderRadius: BorderRadius.circular(AppRadii.sm),
-                            border: Border.all(
-                              color: Colors.white
-                                  .withValues(alpha: AppOpacity.medium),
-                            ),
-                          ),
-                          child: Text(
-                            isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
-                            style: TextStyle(
-                              color: Colors.white
-                                  .withValues(alpha: AppOpacity.high),
-                              fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color:
-                                Colors.white.withValues(alpha: AppOpacity.soft),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.play_arrow_rounded,
+                child: isLoading
+                    ? const SizedBox(
+                        height: 80,
+                        child: Center(
+                          child: CircularProgressIndicator(
                             color: Colors.white,
-                            size: 24,
+                            strokeWidth: 2,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const Text(
-                      'Full Body Power',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'AppFontMedium',
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
-                        height: 1.1,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.xs,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white
+                                      .withValues(alpha: AppOpacity.soft),
+                                  borderRadius:
+                                      BorderRadius.circular(AppRadii.sm),
+                                  border: Border.all(
+                                    color: Colors.white
+                                        .withValues(alpha: AppOpacity.medium),
+                                  ),
+                                ),
+                                child: Text(
+                                  label,
+                                  style: TextStyle(
+                                    color: Colors.white
+                                        .withValues(alpha: AppOpacity.high),
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              if (onTap != null)
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white
+                                        .withValues(alpha: AppOpacity.soft),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                          Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'AppFontMedium',
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
+                              height: 1.1,
+                            ),
+                          ),
+                          if (subtitle.isNotEmpty) ...[
+                            const SizedBox(height: 5),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                color: Colors.white
+                                    .withValues(alpha: AppOpacity.strong),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                          if (chips.isNotEmpty) ...[
+                            const SizedBox(height: AppSpacing.md),
+                            Row(
+                              children: chips
+                                  .expand((chip) => [
+                                        chip,
+                                        const SizedBox(width: AppSpacing.xs),
+                                      ])
+                                  .toList()
+                                ..removeLast(),
+                            ),
+                          ],
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      isFrench
-                          ? 'Circuit complet — force et cardio combinés'
-                          : 'Full circuit — strength and cardio combined',
-                      style: TextStyle(
-                        color:
-                            Colors.white.withValues(alpha: AppOpacity.strong),
-                        fontSize: 13,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Row(
-                      children: <Widget>[
-                        const _SessionMetaChip(
-                          icon: Icons.timer_outlined,
-                          label: '45 min',
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        _SessionMetaChip(
-                          icon: Icons.bolt_rounded,
-                          label: isFrench ? '8 exercices' : '8 exercises',
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        _SessionMetaChip(
-                          icon: Icons.bar_chart_rounded,
-                          label: isFrench ? 'Intermédiaire' : 'Intermediate',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
@@ -881,264 +963,6 @@ class _DailyChallengeCard extends StatelessWidget {
   }
 }
 
-class _CurrentProgramDayCard extends ConsumerWidget {
-  final bool isFrench;
-  const _CurrentProgramDayCard({required this.isFrench});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeProgramStateAsync = ref.watch(activeProgramStateProvider);
-
-    return activeProgramStateAsync.when(
-      data: (activeProgramState) {
-        if (activeProgramState == null) {
-          return _ProgramCardContainer(
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color:
-                        AppColors.primary.withValues(alpha: AppOpacity.subtle),
-                    borderRadius: BorderRadius.circular(AppRadii.sm),
-                  ),
-                  child: const Icon(
-                    Icons.calendar_month_rounded,
-                    color: AppColors.primary,
-                    size: 22,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    isFrench
-                        ? 'Aucun programme actif. Démarrez-en un depuis l\'onglet Programmes.'
-                        : 'No active program. Start one from the Programs tab.',
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 13,
-                      height: 1.35,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        final programAsync = ref.watch(
-          programByIdProvider(activeProgramState.programId),
-        );
-        return programAsync.when(
-          data: (program) {
-            if (program == null) {
-              return _ProgramCardContainer(
-                child: Text(
-                  isFrench
-                      ? 'Programme actif introuvable.'
-                      : 'Active program could not be loaded.',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                  ),
-                ),
-              );
-            }
-
-            final DateTime startDate = activeProgramState.startDateOnly;
-            final DateTime now = DateTime.now();
-            final DateTime today = DateTime(now.year, now.month, now.day);
-            final int elapsed = today.difference(startDate).inDays;
-            final int totalDays = program.totalDays;
-            final bool startsInFuture = elapsed < 0;
-            final bool isCompleted = elapsed >= totalDays;
-            final int currentDay =
-                startsInFuture ? 1 : (elapsed + 1).clamp(1, totalDays);
-            final int currentWeek = startsInFuture
-                ? 1
-                : ((elapsed ~/ 7) + 1).clamp(1, program.durationWeeks);
-            final int daysUntilStart = startsInFuture ? -elapsed : 0;
-            final double progress =
-                startsInFuture ? 0 : (currentDay / totalDays).clamp(0.0, 1.0);
-            final Color accent =
-                AppDifficultyTheme.paletteFor(program.difficulty).accentColor;
-
-            return _ProgramCardContainer(
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppRadii.sm),
-                onTap: () => Navigator.of(context).push(
-                  ProgramDetailScreen.route(program: program),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color:
-                                  accent.withValues(alpha: AppOpacity.subtle),
-                              borderRadius: BorderRadius.circular(AppRadii.sm),
-                            ),
-                            child: Icon(
-                              Icons.flag_rounded,
-                              color: accent,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isFrench
-                                      ? 'JOUR DU PROGRAMME'
-                                      : 'PROGRAM DAY',
-                                  style: TextStyle(
-                                    color: accent,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0.8,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  program.name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'AppFontMedium',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            color: AppColors.textTertiary,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        startsInFuture
-                            ? (isFrench
-                                ? 'Démarre dans $daysUntilStart jour${daysUntilStart > 1 ? 's' : ''}'
-                                : 'Starts in $daysUntilStart day${daysUntilStart > 1 ? 's' : ''}')
-                            : (isFrench
-                                ? 'Semaine $currentWeek/${program.durationWeeks}  •  Jour $currentDay/$totalDays'
-                                : 'Week $currentWeek/${program.durationWeeks}  •  Day $currentDay/$totalDays'),
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 5,
-                          backgroundColor:
-                              accent.withValues(alpha: AppOpacity.whisper),
-                          valueColor: AlwaysStoppedAnimation<Color>(accent),
-                        ),
-                      ),
-                      if (isCompleted) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          isFrench
-                              ? 'Programme terminé. Choisissez le prochain objectif.'
-                              : 'Program complete. Choose your next goal.',
-                          style: const TextStyle(
-                            color: AppColors.success,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-          loading: () => const _ProgramCardContainer(
-            child: SizedBox(
-              height: 64,
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            ),
-          ),
-          error: (_, __) => _ProgramCardContainer(
-            child: Text(
-              isFrench
-                  ? 'Impossible de charger le programme actif.'
-                  : 'Could not load active program.',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
-            ),
-          ),
-        );
-      },
-      loading: () => const _ProgramCardContainer(
-        child: SizedBox(
-          height: 64,
-          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        ),
-      ),
-      error: (_, __) => _ProgramCardContainer(
-        child: Text(
-          isFrench
-              ? 'Impossible de charger le jour du programme.'
-              : 'Could not load program day.',
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 13,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgramCardContainer extends StatelessWidget {
-  final Widget child;
-  const _ProgramCardContainer({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: AppOpacity.soft),
-        ),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: AppOpacity.faint),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: child,
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Warmup Selector
@@ -1163,55 +987,120 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
     WarmupCategory.cardio: ('Cardio', 'Cardio'),
   };
 
+  void _showCategorySheet(BuildContext context) {
+    WarmupCategory? selected = ref.read(warmupCategoryProvider);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.lg)),
+      ),
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.md,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Handle
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight
+                          .withValues(alpha: AppOpacity.moderate),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  widget.isFrench
+                      ? 'Zone d\'échauffement'
+                      : 'Choose focus area',
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'AppFontMedium',
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                for (final entry in _categoryLabels.entries)
+                  _WarmupCategoryTile(
+                    category: entry.key,
+                    label: widget.isFrench ? entry.value.$2 : entry.value.$1,
+                    isSelected: selected == entry.key,
+                    onTap: () => setSheetState(() => selected = entry.key),
+                  ),
+                const SizedBox(height: AppSpacing.md),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: selected == null
+                        ? null
+                        : () {
+                            ref
+                                .read(warmupCategoryProvider.notifier)
+                                .state = selected!;
+                            Navigator.of(sheetContext).pop();
+                            if (!context.mounted) return;
+                            final routine = ref.read(warmupRoutineProvider);
+                            final exercises =
+                                ref.read(warmupExercisesProvider);
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => WorkoutExecutionScreen(
+                                  session: routine.toSession(),
+                                  seededExercises: exercises,
+                                ),
+                              ),
+                            );
+                          },
+                    icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                    label: Text(
+                      widget.isFrench
+                          ? 'Confirmer et démarrer'
+                          : 'Confirm & Start',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      disabledBackgroundColor:
+                          AppColors.primary.withValues(alpha: AppOpacity.moderate),
+                      foregroundColor: Colors.white,
+                      padding:
+                          const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadii.sm),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final category = ref.watch(warmupCategoryProvider);
     final duration = ref.watch(warmupDurationProvider);
     final selectedIndex = _durations.indexOf(duration);
-
-    final labels = _categoryLabels[category]!;
-    final categoryLabel = widget.isFrench ? labels.$2 : labels.$1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // Category chip
-        GestureDetector(
-          onTap: () => Navigator.of(context).push(WarmupCategoryScreen.route()),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: AppOpacity.light),
-              borderRadius: BorderRadius.circular(AppRadii.xl),
-              border: Border.all(
-                color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Icon(Icons.tune_rounded,
-                    size: 14, color: AppColors.primary),
-                const SizedBox(width: AppSpacing.xxs),
-                Text(
-                  categoryLabel,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.xxs),
-                const Icon(Icons.chevron_right_rounded,
-                    size: 16, color: AppColors.primary),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
         // Duration buttons
         Row(
           children: List<Widget>.generate(
@@ -1238,27 +1127,14 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        // Start button
+        // Start button — opens category selection sheet
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: () {
-              final routine = ref.read(warmupRoutineProvider);
-              final exercises = ref.read(warmupExercisesProvider);
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => WorkoutExecutionScreen(
-                    session: routine.toSession(),
-                    seededExercises: exercises,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => _showCategorySheet(context),
             icon: const Icon(Icons.play_arrow_rounded, size: 20),
             label: Text(
-              widget.isFrench
-                  ? 'Démarrer $duration min d\'échauffement'
-                  : 'Start $duration min warmup',
+              widget.isFrench ? 'Démarrer l\'échauffement' : 'Start warmup',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             style: FilledButton.styleFrom(
@@ -1342,6 +1218,65 @@ class _WarmupDurationButton extends StatelessWidget {
   }
 }
 
+class _WarmupCategoryTile extends StatelessWidget {
+  final WarmupCategory category;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _WarmupCategoryTile({
+    required this.category,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: AppOpacity.subtle)
+              : AppColors.surface,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Text(
+              label,
+              style: TextStyle(
+                color:
+                    isSelected ? AppColors.primary : AppColors.textPrimary,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Spacer(),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Programs Carousel
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1364,7 +1299,7 @@ class _ProgramsCarouselBody extends ConsumerWidget {
         .languageCode
         .toLowerCase()
         .startsWith('fr');
-    final programsAsync = ref.watch(programsProvider);
+    final programsAsync = ref.watch(homePresetProgramsProvider);
     final activeProgramId =
         ref.watch(activeProgramStateProvider).valueOrNull?.programId;
 
@@ -1568,101 +1503,103 @@ class _ProgramCard extends StatelessWidget {
 // Sessions Carousel
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _SessionsCarousel extends StatelessWidget {
+class _SessionsCarousel extends ConsumerWidget {
   final bool isFrench;
   const _SessionsCarousel({required this.isFrench});
 
-  static const List<_SessionData> _sessions = <_SessionData>[
-    _SessionData(
-      title: 'Push Day',
-      titleFr: 'Jour Push',
-      duration: '45 min',
-      exercises: 6,
-      level: 'Intermediate',
-      levelFr: 'Intermédiaire',
-      levelColor: AppColors.warning,
-      icon: Icons.fitness_center_rounded,
-    ),
-    _SessionData(
-      title: 'Leg Day',
-      titleFr: 'Jour Jambes',
-      duration: '60 min',
-      exercises: 8,
-      level: 'Beginner',
-      levelFr: 'Débutant',
-      levelColor: AppColors.success,
-      icon: Icons.directions_walk_rounded,
-    ),
-    _SessionData(
-      title: 'HIIT Circuit',
-      titleFr: 'Circuit HIIT',
-      duration: '30 min',
-      exercises: 10,
-      level: 'Advanced',
-      levelFr: 'Avancé',
-      levelColor: AppColors.error,
-      icon: Icons.bolt_rounded,
-    ),
-    _SessionData(
-      title: 'Pull Day',
-      titleFr: 'Jour Pull',
-      duration: '50 min',
-      exercises: 7,
-      level: 'Intermediate',
-      levelFr: 'Intermédiaire',
-      levelColor: AppColors.warning,
-      icon: Icons.open_with_rounded,
-    ),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionsAsync = ref.watch(presetSessionsProvider);
     return SizedBox(
       height: 120,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        clipBehavior: Clip.none,
-        itemCount: _sessions.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (BuildContext context, int index) {
-          return _SessionCard(data: _sessions[index], isFrench: isFrench);
+      child: sessionsAsync.when(
+        data: (sessions) {
+          final capped = sessions.take(10).toList();
+          if (capped.isEmpty) {
+            return Center(
+              child: Text(
+                isFrench
+                    ? 'Aucune séance disponible.'
+                    : 'No sessions available.',
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                ),
+              ),
+            );
+          }
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            clipBehavior: Clip.none,
+            itemCount: capped.length,
+            separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+            itemBuilder: (BuildContext context, int index) =>
+                _SessionCard(session: capped[index], isFrench: isFrench),
+          );
         },
+        loading: () => ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 3,
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+          itemBuilder: (_, __) => Container(
+            width: 180,
+            decoration: BoxDecoration(
+              color: AppColors.neutral300,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+            ),
+          ),
+        ),
+        error: (_, __) => Center(
+          child: Text(
+            isFrench
+                ? 'Impossible de charger les séances.'
+                : 'Could not load sessions.',
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _SessionData {
-  final String title;
-  final String titleFr;
-  final String duration;
-  final int exercises;
-  final String level;
-  final String levelFr;
-  final Color levelColor;
-  final IconData icon;
-
-  const _SessionData({
-    required this.title,
-    required this.titleFr,
-    required this.duration,
-    required this.exercises,
-    required this.level,
-    required this.levelFr,
-    required this.levelColor,
-    required this.icon,
-  });
-}
-
 class _SessionCard extends StatelessWidget {
-  final _SessionData data;
+  final Session session;
   final bool isFrench;
 
-  const _SessionCard({required this.data, required this.isFrench});
+  const _SessionCard({required this.session, required this.isFrench});
+
+  IconData _iconForSession() {
+    final lower = session.name.toLowerCase();
+    if (lower.contains('upper') || lower.contains('push') || lower.contains('pull')) {
+      return Icons.fitness_center_rounded;
+    }
+    if (lower.contains('leg') || lower.contains('lower')) {
+      return Icons.directions_walk_rounded;
+    }
+    if (lower.contains('hiit') || lower.contains('cardio')) {
+      return Icons.bolt_rounded;
+    }
+    if (lower.contains('core') || lower.contains('abs')) {
+      return Icons.sports_gymnastics_rounded;
+    }
+    return Icons.accessibility_new_rounded;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final palette = AppDifficultyTheme.paletteFor(session.difficulty);
+    final Color levelColor = palette.accentColor;
+    final String levelLabel =
+        AppDifficultyTheme.label(session.difficulty, isFrench: isFrench);
+    final int durationMinutes = session.estimatedDuration ~/ 60;
+    final String durationLabel =
+        durationMinutes > 0 ? '$durationMinutes min' : '—';
+
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -1697,7 +1634,7 @@ class _SessionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                     ),
                     child: Icon(
-                      data.icon,
+                      _iconForSession(),
                       color: AppColors.primary,
                       size: 18,
                     ),
@@ -1709,18 +1646,16 @@ class _SessionCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          data.levelColor.withValues(alpha: AppOpacity.subtle),
+                      color: levelColor.withValues(alpha: AppOpacity.subtle),
                       borderRadius: BorderRadius.circular(AppRadii.sm),
                       border: Border.all(
-                        color:
-                            data.levelColor.withValues(alpha: AppOpacity.mild),
+                        color: levelColor.withValues(alpha: AppOpacity.mild),
                       ),
                     ),
                     child: Text(
-                      isFrench ? data.levelFr : data.level,
+                      levelLabel,
                       style: TextStyle(
-                        color: data.levelColor,
+                        color: levelColor,
                         fontSize: 9,
                         fontWeight: FontWeight.w700,
                       ),
@@ -1730,7 +1665,7 @@ class _SessionCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                isFrench ? data.titleFr : data.title,
+                session.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -1750,7 +1685,7 @@ class _SessionCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 3),
                   Text(
-                    data.duration,
+                    durationLabel,
                     style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 11,
@@ -1764,9 +1699,7 @@ class _SessionCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 3),
                   Text(
-                    isFrench
-                        ? '${data.exercises} ex.'
-                        : '${data.exercises} ex.',
+                    '${session.workouts.length} ex.',
                     style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 11,
@@ -1879,31 +1812,3 @@ class _QuickAccessCard extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Logout button
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _LogoutButton extends StatelessWidget {
-  final bool isFrench;
-  final VoidCallback onLogout;
-
-  const _LogoutButton({required this.isFrench, required this.onLogout});
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: onLogout,
-      icon: const Icon(Icons.logout_rounded, size: 18),
-      label: Text(isFrench ? 'Se déconnecter' : 'Sign out'),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.textSecondary,
-        side: BorderSide(
-            color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm)),
-        minimumSize: const Size(double.infinity, 44),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-        ),
-      ),
-    );
-  }
-}
