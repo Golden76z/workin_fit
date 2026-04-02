@@ -44,6 +44,7 @@ class FirebaseConstants {
   static const String friendsCollection = 'friends';
   static const String friendRequestsCollection = 'friend_requests';
   static const String chatsCollection = 'chats';
+  static const String messagesCollection = 'messages';
   static const String achievementsCollection = 'achievements';
   static const String streaksCollection = 'streaks';
   

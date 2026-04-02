@@ -308,6 +308,34 @@ class FirestoreService {
     }
   }
 
+  /// Fetch a session owned by any user (used for "Start This Workout" on shared workouts).
+  /// Requires Firestore security rules to allow the current user to read another
+  /// user's sessions subcollection, or the session to be public/shared.
+  Future<Session?> getSessionByOwner(
+      String ownerId, String sessionId) async {
+    try {
+      final doc = await _firestore
+          .collection(FirebaseConstants.usersCollection)
+          .doc(ownerId)
+          .collection(FirebaseConstants.sessionsCollection)
+          .doc(sessionId)
+          .get();
+
+      if (!doc.exists) return null;
+
+      final data = doc.data()!;
+      data['id'] = doc.id;
+      return Session.fromFirestore(data);
+    } on FirebaseException catch (e) {
+      throw FirestoreException(
+        'Failed to fetch shared session: ${e.message}',
+        code: e.code,
+      );
+    } catch (e) {
+      throw FirestoreException('Unexpected error fetching shared session: $e');
+    }
+  }
+
   /// Create custom session
   Future<void> createSession(String userId, Session session) async {
     try {
@@ -725,8 +753,8 @@ class FirestoreService {
     }
   }
 
-  /// Save completed workout
-  Future<void> saveWorkoutHistory({
+  /// Save completed workout. Returns the Firestore document ID of the history entry.
+  Future<String> saveWorkoutHistory({
     required String userId,
     required String sessionId,
     required DateTime completedAt,
@@ -857,6 +885,7 @@ class FirestoreService {
       }
 
       await batch.commit();
+      return historyDocRef.id;
     } catch (e) {
       throw FirestoreException('Unexpected error saving workout history: $e');
     }

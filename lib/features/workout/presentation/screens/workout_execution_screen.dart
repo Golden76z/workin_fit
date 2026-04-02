@@ -17,6 +17,8 @@ import 'package:workin_fit/models/achievement.dart';
 import 'package:workin_fit/providers/achievement_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
+import 'package:workin_fit/models/chat_message.dart';
+import 'package:workin_fit/widgets/share_workout_sheet.dart';
 
 enum _WorkoutPhase {
   getReady,
@@ -63,6 +65,9 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
   bool _isRunning = false;
   DateTime? _workoutStartedAt;
   bool _workoutHistorySaved = false;
+  int _savedTotalDoneReps = 0;
+  int _savedTotalDoneWorkSeconds = 0;
+  String _savedWorkoutHistoryId = '';
   List<Achievement> _newlyUnlockedAchievements = [];
   final Map<int, _ExerciseActualMetrics> _actualMetricsByIndex =
       <int, _ExerciseActualMetrics>{};
@@ -1100,8 +1105,13 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         ? (exerciseCount - 1) * widget.session.restBetweenExercises
         : 0;
 
+    // Persist totals and history doc ID so the share sheet can read them.
+    _savedTotalDoneReps = totalDoneReps;
+    _savedTotalDoneWorkSeconds = totalDoneWorkSeconds;
+
     try {
-      await ref.read(firestoreServiceProvider).saveWorkoutHistory(
+      final String historyDocId =
+          await ref.read(firestoreServiceProvider).saveWorkoutHistory(
         userId: userId,
         sessionId: widget.session.id,
         completedAt: completedAtUtc,
@@ -1139,6 +1149,7 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         },
       );
       _workoutHistorySaved = true;
+      _savedWorkoutHistoryId = historyDocId;
       // Refresh streak so profile & home banner reflect the new workout day.
       ref.invalidate(streakDataProvider);
 
@@ -1644,6 +1655,51 @@ class _WorkoutExecutionScreenState extends ConsumerState<WorkoutExecutionScreen>
         // ── Achievement unlocks ───────────────────────────────────
         if (_newlyUnlockedAchievements.isNotEmpty)
           _AchievementUnlockBanner(achievements: _newlyUnlockedAchievements),
+
+        // ── Share button ─────────────────────────────────────────
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              final String? userId =
+                  ref.read(currentUserIdProvider);
+              if (userId == null) return;
+              final shareData = WorkoutShareData(
+                sessionId: widget.session.id,
+                ownerId: userId,
+                sessionName: widget.session.name,
+                durationSeconds: totalSeconds,
+                exerciseCount: steps.length,
+                totalReps: _savedTotalDoneReps > 0
+                    ? _savedTotalDoneReps
+                    : totalReps,
+                totalWorkSeconds: _savedTotalDoneWorkSeconds > 0
+                    ? _savedTotalDoneWorkSeconds
+                    : totalWorkSeconds,
+                difficulty: widget.session.difficulty.name,
+                workoutHistoryId: _savedWorkoutHistoryId,
+              );
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (_) =>
+                    ShareWorkoutSheet(shareData: shareData),
+              );
+            },
+            icon: const Icon(Icons.share_rounded, size: 18),
+            label: const Text('Share'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.success,
+              side: BorderSide(
+                  color: AppColors.success
+                      .withValues(alpha: AppOpacity.bold)),
+              padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.xs),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
 
         // ── Per-exercise breakdown ────────────────────────────────
         ...steps.asMap().entries.map((entry) {
