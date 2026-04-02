@@ -59,11 +59,17 @@ class ChatService {
         'lastMessageAt': nowIso,
         'lastMessageType': 'workout_share',
         'updatedAt': FieldValue.serverTimestamp(),
+        'unreadCounts.$toUserId': FieldValue.increment(1),
       };
 
       if (!convSnap.exists) {
         // First time — write the full document including createdAt.
-        tx.set(convRef, {...updateFields, 'createdAt': nowIso});
+        // FieldValue.increment not allowed in tx.set, use concrete map.
+        tx.set(convRef, {
+          ...updateFields,
+          'createdAt': nowIso,
+          'unreadCounts': {fromUserId: 0, toUserId: 1},
+        }..remove('unreadCounts.$toUserId'));
       } else {
         // Subsequent share — update only the mutable fields.
         tx.update(convRef, updateFields);
@@ -71,6 +77,69 @@ class ChatService {
 
       tx.set(msgRef, message.toFirestore());
     });
+  }
+
+  /// Send a plain text message. Creates the conversation doc if absent.
+  Future<void> sendMessage({
+    required String fromUserId,
+    required String fromUsername,
+    String? fromPhotoUrl,
+    required String toUserId,
+    required String toUsername,
+    String? toPhotoUrl,
+    required String content,
+  }) async {
+    final cid = chatId(fromUserId, toUserId);
+    final now = DateTime.now().toUtc();
+    final nowIso = now.toIso8601String();
+
+    final convRef =
+        _db.collection(FirebaseConstants.chatsCollection).doc(cid);
+    final msgRef =
+        convRef.collection(FirebaseConstants.messagesCollection).doc();
+
+    final message = ChatMessage(
+      id: msgRef.id,
+      senderId: fromUserId,
+      type: ChatMessageType.text,
+      content: content,
+      createdAt: now,
+    );
+
+    await _db.runTransaction((tx) async {
+      final convSnap = await tx.get(convRef);
+      final updateFields = <String, dynamic>{
+        'participants': [fromUserId, toUserId],
+        'participantNames': {fromUserId: fromUsername, toUserId: toUsername},
+        'participantPhotos': {fromUserId: fromPhotoUrl, toUserId: toPhotoUrl},
+        'lastMessage': content,
+        'lastMessageAt': nowIso,
+        'lastMessageType': 'text',
+        'updatedAt': FieldValue.serverTimestamp(),
+        'unreadCounts.$toUserId': FieldValue.increment(1),
+      };
+
+      if (!convSnap.exists) {
+        tx.set(convRef, {
+          ...updateFields,
+          'createdAt': nowIso,
+          // Use a concrete map on first create — FieldValue.increment is not
+          // allowed inside tx.set().
+          'unreadCounts': {fromUserId: 0, toUserId: 1},
+        }..remove('unreadCounts.$toUserId'));
+      } else {
+        tx.update(convRef, updateFields);
+      }
+      tx.set(msgRef, message.toFirestore());
+    });
+  }
+
+  /// Reset unread count to zero for [userId] in conversation [cid].
+  Future<void> markAsRead(String cid, String userId) async {
+    await _db
+        .collection(FirebaseConstants.chatsCollection)
+        .doc(cid)
+        .update({'unreadCounts.$userId': 0});
   }
 
   /// Stream of conversations for [userId], ordered by most recent.

@@ -116,9 +116,11 @@ class ChatTab extends ConsumerWidget {
               ),
               itemBuilder: (context, index) {
                 final conv = conversations[index];
+                final otherUserId = conv.otherUserId(currentUserId);
                 final otherName = conv.otherUserName(currentUserId);
                 final photoUrl = conv.otherUserPhoto(currentUserId);
                 final lastAt = conv.lastMessageAt;
+                final unreadCount = conv.unreadFor(currentUserId);
 
                 return ListTile(
                   tileColor: AppColors.surface,
@@ -140,9 +142,11 @@ class ChatTab extends ConsumerWidget {
                   ),
                   title: Text(
                     otherName,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: unreadCount > 0
+                          ? FontWeight.w700
+                          : FontWeight.w600,
                     ),
                   ),
                   subtitle: Text(
@@ -151,24 +155,44 @@ class ChatTab extends ConsumerWidget {
                       color: AppColors.textSecondary
                           .withValues(alpha: AppOpacity.bold),
                       fontSize: 13,
+                      fontWeight: unreadCount > 0
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  trailing: lastAt != null
-                      ? Text(
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (lastAt != null)
+                        Text(
                           _formatTime(lastAt),
                           style: TextStyle(
                             color: AppColors.textSecondary
                                 .withValues(alpha: AppOpacity.visible),
                             fontSize: 12,
                           ),
-                        )
-                      : null,
+                        ),
+                      if (unreadCount > 0) ...[
+                        const SizedBox(width: AppSpacing.xs),
+                        Badge(
+                          label: Text(
+                            '$unreadCount',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 11),
+                          ),
+                          backgroundColor: AppColors.primary,
+                          child: const SizedBox.shrink(),
+                        ),
+                      ],
+                    ],
+                  ),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => ConversationScreen(
                         chatId: conv.id,
+                        otherUserId: otherUserId,
                         otherUserName: otherName,
                         otherUserPhoto: photoUrl,
                       ),
