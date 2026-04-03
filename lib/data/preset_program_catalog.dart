@@ -23,6 +23,9 @@ class PresetProgramCatalog {
     'prog_hiit_conditioning_4w': <int>[1, 2, 4, 6],
     'prog_core_abs_focus_4w': <int>[1, 3, 5, 6],
     'prog_upper_body_focus_4w': <int>[1, 2, 4, 5, 6],
+    'prog_intermediate_ppl_6d_6w': <int>[1, 2, 3, 4, 5, 6],
+    'prog_advanced_ppl_6d_8w': <int>[1, 2, 3, 4, 5, 6],
+    'prog_intermediate_active_5d_4w': <int>[1, 2, 3, 4, 5],
   };
 
   /// Serializes a program map with schedule metadata for Firestore.
@@ -395,6 +398,229 @@ class PresetProgramCatalog {
       difficulty: DifficultyLevel.intermediate,
       createdAt: _seededAt,
     ),
+
+    // ── Active Rest ────────────────────────────────────────────────────────
+    Session(
+      id: 'sess_active_rest_breathwork',
+      name: 'Breathwork & Mindfulness',
+      description:
+          'Guided breathing and light mobility to reduce stress and aid recovery.',
+      workouts: <WorkoutConfig>[
+        _timed('rest_001', 600),
+        _timed('core_018', 60),
+        _timed('pull_005', 60),
+        _timed('pull_010', 60),
+        _timed('rest_001', 300),
+      ],
+      restBetweenExercises: 30,
+      difficulty: DifficultyLevel.beginner,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_active_rest_jog',
+      name: 'Easy Jog / Brisk Walk',
+      description:
+          '25 minutes of low-intensity steady-state cardio for active recovery.',
+      workouts: <WorkoutConfig>[
+        _timed('rest_002', 1500),
+      ],
+      restBetweenExercises: 0,
+      difficulty: DifficultyLevel.beginner,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_active_rest_mobility',
+      name: 'Full Body Mobility',
+      description:
+          'Dynamic stretching and mobility drills to improve flexibility and reduce DOMS.',
+      workouts: <WorkoutConfig>[
+        _timed('rest_003', 300),
+        _timed('core_018', 120),
+        _timed('pull_003', 90),
+        _timed('pull_005', 90),
+        _timed('legs_009', 60),
+        _timed('rest_003', 300),
+      ],
+      restBetweenExercises: 20,
+      difficulty: DifficultyLevel.beginner,
+      createdAt: _seededAt,
+    ),
+
+    // ── Intermediate Extended (~35–45 min) ─────────────────────────────────
+    Session(
+      id: 'sess_int_push_b',
+      name: 'Intermediate Push B',
+      description:
+          'Shoulder and tricep-focused pressing volume at higher density.',
+      workouts: <WorkoutConfig>[
+        _sets('push_006', 4, 10, restBetweenSets: 90),
+        _sets('push_009', 4, 8, restBetweenSets: 90),
+        _sets('push_014', 4, 10, restBetweenSets: 90),
+        _sets('push_020', 3, 8, restBetweenSets: 90),
+        _sets('core_020', 3, 15),
+        _timed('core_002', 90),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.intermediate,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_int_pull_b',
+      name: 'Intermediate Pull B',
+      description:
+          'Scapular, rotator-cuff, and row endurance for balanced upper-back development.',
+      workouts: <WorkoutConfig>[
+        _sets('pull_007', 4, 15, restBetweenSets: 90),
+        _sets('pull_006', 4, 15, restBetweenSets: 90),
+        _sets('pull_013', 4, 10, restBetweenSets: 90),
+        _sets('pull_012', 3, 10, restBetweenSets: 90),
+        _sets('pull_010', 3, 12),
+        _timed('core_009', 60),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.intermediate,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_int_legs_b',
+      name: 'Intermediate Legs B',
+      description: 'Quad-dominant session with glute and calf finishers.',
+      workouts: <WorkoutConfig>[
+        _sets('legs_001', 4, 15, restBetweenSets: 90),
+        _sets('legs_019', 4, 10, restBetweenSets: 90),
+        _sets('legs_021', 4, 12, restBetweenSets: 90),
+        _sets('legs_020', 3, 12, restBetweenSets: 90),
+        _sets('legs_010', 3, 20),
+        _timed('core_012', 90),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.intermediate,
+      createdAt: _seededAt,
+    ),
+
+    // ── Advanced PPL (~50–60 min) ───────────────────────────────────────────
+    Session(
+      id: 'sess_adv_push_a',
+      name: 'Advanced Push A',
+      description:
+          'High-volume chest and tricep strength block with explosive finisher.',
+      workouts: <WorkoutConfig>[
+        _sets('push_001', 5, 15, restBetweenSets: 90),
+        _sets('push_009', 5, 8, restBetweenSets: 90),
+        _sets('push_003', 5, 10, restBetweenSets: 90),
+        _sets('push_016', 4, 6, restBetweenSets: 120),
+        _tabata(
+          'push_017',
+          workTime: 20,
+          restTime: 10,
+          rounds: 8,
+          setCount: 2,
+          restBetweenSets: 90,
+        ),
+        _timed('core_001', 120),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_adv_pull_a',
+      name: 'Advanced Pull A',
+      description:
+          'Upper-back and scapular strength with high-volume bodyweight rows.',
+      workouts: <WorkoutConfig>[
+        _sets('pull_016', 5, 10, restBetweenSets: 90),
+        _sets('pull_019', 5, 8, restBetweenSets: 90),
+        _sets('pull_020', 5, 8, restBetweenSets: 90),
+        _sets('pull_014', 4, 12, restBetweenSets: 90),
+        _sets('pull_017', 3, 5, restBetweenSets: 120),
+        _timed('core_017', 60),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_adv_legs_a',
+      name: 'Advanced Legs A',
+      description:
+          'Unilateral strength and explosive leg power with pistol progression.',
+      workouts: <WorkoutConfig>[
+        _sets('legs_003', 5, 5, restBetweenSets: 120),
+        _sets('legs_004', 5, 8, restBetweenSets: 90),
+        _sets('legs_008', 4, 10, restBetweenSets: 90),
+        _sets('legs_023', 4, 8, restBetweenSets: 90),
+        _tabata(
+          'legs_024',
+          workTime: 20,
+          restTime: 10,
+          rounds: 8,
+          setCount: 2,
+          restBetweenSets: 90,
+        ),
+        _timed('core_009', 90),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_adv_push_b',
+      name: 'Advanced Push B',
+      description:
+          'Overhead and handstand push strength with tricep accessory volume.',
+      workouts: <WorkoutConfig>[
+        _sets('push_019', 4, 3, restBetweenSets: 120),
+        _sets('push_016', 4, 5, restBetweenSets: 120),
+        _sets('push_006', 5, 12, restBetweenSets: 90),
+        _sets('push_014', 4, 12, restBetweenSets: 90),
+        _sets('core_020', 4, 20, restBetweenSets: 60),
+        _timed('core_002', 120),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_adv_pull_b',
+      name: 'Advanced Pull B',
+      description:
+          'Row density, scapular endurance, and rear-delt isolation.',
+      workouts: <WorkoutConfig>[
+        _sets('pull_016', 5, 12, restBetweenSets: 90),
+        _sets('pull_013', 5, 10, restBetweenSets: 90),
+        _timed('pull_011', 90),
+        _sets('pull_018', 4, 15, restBetweenSets: 75),
+        _sets('pull_004', 3, 15, restBetweenSets: 75),
+        _timed('core_003', 120),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
+    Session(
+      id: 'sess_adv_legs_b',
+      name: 'Advanced Legs B',
+      description: 'Hip-hinge dominance and explosive jump power finisher.',
+      workouts: <WorkoutConfig>[
+        _sets('legs_018', 5, 8, restBetweenSets: 90),
+        _sets('legs_013', 5, 8, restBetweenSets: 90),
+        _sets('legs_022', 4, 6, restBetweenSets: 120),
+        _tabata(
+          'legs_002',
+          workTime: 20,
+          restTime: 10,
+          rounds: 8,
+          setCount: 2,
+          restBetweenSets: 90,
+        ),
+        _sets('legs_025', 3, 30, restBetweenSets: 60),
+        _timed('core_006', 90),
+      ],
+      restBetweenExercises: 90,
+      difficulty: DifficultyLevel.advanced,
+      createdAt: _seededAt,
+    ),
   ];
 
   static final List<Program> _programs = <Program>[
@@ -519,6 +745,86 @@ class PresetProgramCatalog {
         'Build balanced push and pull strength endurance.',
         'Improve shoulder and scapular control through accessory volume.',
         'Rest days: Wednesday, Sunday.',
+      ],
+      daysPerWeek: 5,
+      createdAt: _seededAt,
+    ),
+    Program(
+      id: 'prog_intermediate_ppl_6d_6w',
+      name: 'Intermediate PPL 6-Day (6 Weeks)',
+      description:
+          'A 6-day Push/Pull/Legs split for intermediate athletes. Each pattern is trained twice per week — A sessions Mon/Tue/Wed, B sessions Thu/Fri/Sat — with full rest on Sunday.',
+      sessionIds: _repeatWeekly(
+        <String>[
+          'sess_int_str_push',
+          'sess_int_str_pull',
+          'sess_int_str_lower',
+          'sess_int_push_b',
+          'sess_int_pull_b',
+          'sess_int_legs_b',
+        ],
+        6,
+      ),
+      durationWeeks: 6,
+      difficulty: DifficultyLevel.intermediate,
+      goals: <String>[
+        'Train each major pattern twice per week for accelerated hypertrophy.',
+        'Develop balanced push and pull volume with matched lower-body frequency.',
+        'Build the capacity to sustain 6 consecutive training days.',
+        'Rest day: Sunday.',
+      ],
+      daysPerWeek: 6,
+      createdAt: _seededAt,
+    ),
+    Program(
+      id: 'prog_advanced_ppl_6d_8w',
+      name: 'Advanced PPL 6-Day (8 Weeks)',
+      description:
+          'High-volume Push/Pull/Legs split for advanced bodyweight athletes. Emphasises progressive overload through density and exercise complexity over 8 weeks.',
+      sessionIds: _repeatWeekly(
+        <String>[
+          'sess_adv_push_a',
+          'sess_adv_pull_a',
+          'sess_adv_legs_a',
+          'sess_adv_push_b',
+          'sess_adv_pull_b',
+          'sess_adv_legs_b',
+        ],
+        8,
+      ),
+      durationWeeks: 8,
+      difficulty: DifficultyLevel.advanced,
+      goals: <String>[
+        'Achieve advanced calisthenics: handstand push-up, pistol squat, pseudo-planche.',
+        'Maximise push/pull/legs frequency while preserving Sunday recovery.',
+        'Build structural balance across all planes of movement.',
+        'Rest day: Sunday.',
+      ],
+      daysPerWeek: 6,
+      createdAt: _seededAt,
+    ),
+    Program(
+      id: 'prog_intermediate_active_5d_4w',
+      name: 'Intermediate Active Recovery (4 Weeks)',
+      description:
+          'A 5-day intermediate program that integrates structured active recovery days — mobility and breathwork — to maximise adaptation while minimising cumulative fatigue.',
+      sessionIds: _repeatWeekly(
+        <String>[
+          'sess_int_str_push',
+          'sess_int_str_pull',
+          'sess_active_rest_mobility',
+          'sess_int_str_lower',
+          'sess_int_str_power',
+        ],
+        4,
+      ),
+      durationWeeks: 4,
+      difficulty: DifficultyLevel.intermediate,
+      goals: <String>[
+        'Sustain consistent weekly training without accumulated fatigue.',
+        'Experience structured active recovery as a training tool, not just rest.',
+        'Improve mobility and breathing patterns alongside strength work.',
+        'Rest days: Saturday, Sunday.',
       ],
       daysPerWeek: 5,
       createdAt: _seededAt,

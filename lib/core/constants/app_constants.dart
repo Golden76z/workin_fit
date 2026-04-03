@@ -47,6 +47,7 @@ class FirebaseConstants {
   static const String messagesCollection = 'messages';
   static const String achievementsCollection = 'achievements';
   static const String streaksCollection = 'streaks';
+  static const String challengeCompletionsCollection = 'challenge_completions';
   
   // Storage Paths
   static const String profileImagesPath = 'profile_images';

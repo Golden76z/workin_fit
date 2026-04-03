@@ -546,6 +546,47 @@ class MockFirestoreService extends _i1.Mock implements _i3.FirestoreService {
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),
       ) as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> getChallengeCompletion({
+    required String? userId,
+    required String? challengeId,
+    required DateTime? date,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getChallengeCompletion,
+          [],
+          {
+            #userId: userId,
+            #challengeId: challengeId,
+            #date: date,
+          },
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> setChallengeCompleted({
+    required String? userId,
+    required String? challengeId,
+    required DateTime? date,
+    required bool? completed,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setChallengeCompleted,
+          [],
+          {
+            #userId: userId,
+            #challengeId: challengeId,
+            #date: date,
+            #completed: completed,
+          },
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }
 
 /// A class which mocks [AuthRepository].

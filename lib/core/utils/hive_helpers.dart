@@ -18,11 +18,11 @@ String getWorkoutTypeDisplay(WorkoutType type) {
 String getDifficultyColor(DifficultyLevel difficulty) {
   switch (difficulty) {
     case DifficultyLevel.beginner:
-      return '#4CAF50'; // Green
+      return '#D8C9FF'; // Brand light
     case DifficultyLevel.intermediate:
-      return '#FF9800'; // Orange
+      return '#5E2BFF'; // Brand primary
     case DifficultyLevel.advanced:
-      return '#F44336'; // Red
+      return '#331886'; // Brand deep
   }
 }
 

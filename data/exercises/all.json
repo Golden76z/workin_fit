@@ -1766,5 +1766,53 @@
     "nameKey": "exercise_cardio_015_name",
     "descriptionKey": "exercise_cardio_015_description",
     "beginnerTipsKey": "exercise_cardio_015_beginner_tips"
+  },
+  {
+    "id": "rest_001",
+    "name": "Meditation & Deep Breathing",
+    "nameKey": "exercise_rest_001_name",
+    "description": "Focused mindfulness session. Sit or lie still, close your eyes, and practise box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s. Reduces cortisol and accelerates recovery.",
+    "descriptionKey": "exercise_rest_001_description",
+    "beginnerTips": "Start with 5-minute sessions. A wandering mind is normal — gently redirect to the breath without judgement.",
+    "beginnerTipsKey": "exercise_rest_001_beginner_tips",
+    "difficulty": "beginner",
+    "muscleGroups": [
+      "cardio"
+    ],
+    "equipment": [],
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": ""
+  },
+  {
+    "id": "rest_002",
+    "name": "Easy Jog / Brisk Walk",
+    "nameKey": "exercise_rest_002_name",
+    "description": "Low-intensity steady-state cardio. Keep pace conversational — you should complete full sentences without gasping. Promotes blood flow and active recovery without adding training stress.",
+    "descriptionKey": "exercise_rest_002_description",
+    "beginnerTips": "If your heart rate exceeds 130 bpm, slow to a walk. The goal is circulation, not intensity.",
+    "beginnerTipsKey": "exercise_rest_002_beginner_tips",
+    "difficulty": "beginner",
+    "muscleGroups": [
+      "cardio"
+    ],
+    "equipment": [],
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": ""
+  },
+  {
+    "id": "rest_003",
+    "name": "Full Body Mobility Flow",
+    "nameKey": "exercise_rest_003_name",
+    "description": "Dynamic and static stretching targeting major muscle groups in sequence. Improves range of motion, reduces soreness, and primes the body for the next training day.",
+    "descriptionKey": "exercise_rest_003_description",
+    "beginnerTips": "Move at breath pace. Never bounce into a stretch. Work from ankles upward: ankles to hips to thoracic spine to shoulders to neck.",
+    "beginnerTipsKey": "exercise_rest_003_beginner_tips",
+    "difficulty": "beginner",
+    "muscleGroups": [
+      "cardio"
+    ],
+    "equipment": [],
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": ""
   }
 ]

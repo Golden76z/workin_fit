@@ -197,3 +197,47 @@ class MuscleGroupAdapter extends TypeAdapter<MuscleGroup> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class DailyChallengeTypeAdapter extends TypeAdapter<DailyChallengeType> {
+  @override
+  final int typeId = 13;
+
+  @override
+  DailyChallengeType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return DailyChallengeType.exercise;
+      case 1:
+        return DailyChallengeType.session;
+      case 2:
+        return DailyChallengeType.freestyle;
+      default:
+        return DailyChallengeType.exercise;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, DailyChallengeType obj) {
+    switch (obj) {
+      case DailyChallengeType.exercise:
+        writer.writeByte(0);
+        break;
+      case DailyChallengeType.session:
+        writer.writeByte(1);
+        break;
+      case DailyChallengeType.freestyle:
+        writer.writeByte(2);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DailyChallengeTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

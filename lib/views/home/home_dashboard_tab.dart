@@ -5,7 +5,6 @@ import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_detail_screen.dart';
-import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
@@ -14,6 +13,10 @@ import 'package:workin_fit/providers/auth_provider.dart';
 import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
+import 'package:workin_fit/providers/challenge_providers.dart';
+
+const double _homeBlockRadius = 6;
+const double _homeSheetRadius = 10;
 
 class HomeDashboardTab extends ConsumerStatefulWidget {
   const HomeDashboardTab({super.key});
@@ -24,8 +27,34 @@ class HomeDashboardTab extends ConsumerStatefulWidget {
 
 class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
     with AutomaticKeepAliveClientMixin<HomeDashboardTab> {
+  late final ScrollController _scrollController;
+  final GlobalKey _programsSectionKey = GlobalKey();
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _scrollToProgramsSection() async {
+    final BuildContext? sectionContext = _programsSectionKey.currentContext;
+    if (sectionContext == null) return;
+    await Scrollable.ensureVisible(
+      sectionContext,
+      duration: const Duration(milliseconds: 360),
+      curve: Curves.easeInOutCubic,
+      alignment: 0.1,
+    );
+  }
 
   Future<void> _onRefresh() async {
     ref.invalidate(programsProvider);
@@ -64,27 +93,30 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
           color: AppColors.primary,
           backgroundColor: AppColors.surface,
           child: CustomScrollView(
+            controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: <Widget>[
               // ─── Banner ───────────────────────────────────────────
               _HomeBannerSliver(
                 greeting: greeting,
                 displayName: displayName,
-                isFrench: isFrench,
               ),
 
               // ─── Body sections ────────────────────────────────────
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
+                  AppSpacing.sm,
                   AppSpacing.lg,
-                  AppSpacing.md,
+                  AppSpacing.sm,
                   0,
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(<Widget>[
                     // Session Hero Card (real data, gradient design)
-                    _SessionHeroCard(isFrench: isFrench),
+                    _SessionHeroCard(
+                      isFrench: isFrench,
+                      onSelectProgram: _scrollToProgramsSection,
+                    ),
                     const SizedBox(height: AppSpacing.md),
 
                     // Daily Challenge
@@ -101,6 +133,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                     const SizedBox(height: AppSpacing.lg),
 
                     // Programs Carousel
+                    SizedBox(key: _programsSectionKey),
                     _SectionTitle(
                       title: isFrench ? 'Programmes' : 'Programs',
                       subtitle: isFrench
@@ -122,20 +155,7 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _SessionsCarousel(isFrench: isFrench),
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // Quick Access: Exercises
-                    _QuickAccessRow(
-                      isFrench: isFrench,
-                      onExercisesTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => const ExerciseListScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Bottom padding — floating nav bar clearance
                     const SizedBox(height: 104),
@@ -187,12 +207,10 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
 class _HomeBannerSliver extends StatelessWidget {
   final String greeting;
   final String displayName;
-  final bool isFrench;
 
   const _HomeBannerSliver({
     required this.greeting,
     required this.displayName,
-    required this.isFrench,
   });
 
   @override
@@ -233,121 +251,9 @@ class _HomeBannerSliver extends StatelessWidget {
                   height: 1.1,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-              // Stats row
-              _BannerStatsRow(isFrench: isFrench),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _BannerStatsRow extends ConsumerWidget {
-  final bool isFrench;
-  const _BannerStatsRow({required this.isFrench});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final streakAsync = ref.watch(streakDataProvider);
-    final int currentStreak = streakAsync.when(
-      data: (d) => (d['currentStreak'] as int?) ?? 0,
-      loading: () => 0,
-      error: (_, __) => 0,
-    );
-
-    return Row(
-      children: <Widget>[
-        _StatPill(
-          icon: Icons.local_fire_department_rounded,
-          value: '$currentStreak',
-          label: isFrench ? 'jours' : 'day streak',
-          color: AppColors.warning,
-        ),
-        const SizedBox(width: AppSpacing.xs),
-        _StatPill(
-          icon: Icons.fitness_center_rounded,
-          value: '—',
-          label: isFrench ? 'cette semaine' : 'this week',
-          color: AppColors.frostedCyan,
-        ),
-        const SizedBox(width: AppSpacing.xs),
-        _StatPill(
-          icon: Icons.emoji_events_rounded,
-          value: '—',
-          label: isFrench ? 'succès' : 'trophies',
-          color: AppColors.babyBlueIce,
-        ),
-      ],
-    );
-  }
-}
-
-class _StatPill extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _StatPill({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: AppOpacity.light),
-        borderRadius: BorderRadius.circular(AppRadii.sm),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: AppOpacity.soft),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: AppOpacity.moderate),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: color, size: 14),
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  height: 1.1,
-                ),
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: AppOpacity.strong),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -427,7 +333,7 @@ class _SectionTitle extends StatelessWidget {
               backgroundColor:
                   AppColors.primary.withValues(alpha: AppOpacity.whisper),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadii.sm),
+                borderRadius: BorderRadius.circular(_homeBlockRadius),
               ),
             ),
             child: Text(
@@ -450,7 +356,12 @@ class _SectionTitle extends StatelessWidget {
 
 class _SessionHeroCard extends ConsumerWidget {
   final bool isFrench;
-  const _SessionHeroCard({required this.isFrench});
+  final VoidCallback onSelectProgram;
+
+  const _SessionHeroCard({
+    required this.isFrench,
+    required this.onSelectProgram,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -461,13 +372,13 @@ class _SessionHeroCard extends ConsumerWidget {
         if (activeProgramState == null) {
           return _buildGradientCard(
             context: context,
-            label: isFrench ? 'SÉANCE DU JOUR' : 'SESSION OF THE DAY',
+            label: null,
             title: isFrench ? 'Prêt à s\'entraîner ?' : 'Ready to train?',
             subtitle: isFrench
-                ? 'Démarrez un programme depuis l\'onglet Programmes'
-                : 'Start a program from the Programs tab',
+                ? 'Touchez ici pour choisir votre programme'
+                : 'Tap here to choose your program',
             chips: [],
-            onTap: null,
+            onTap: onSelectProgram,
           );
         }
         final programAsync = ref.watch(
@@ -484,7 +395,7 @@ class _SessionHeroCard extends ConsumerWidget {
                     ? 'Choisissez un nouveau programme'
                     : 'Choose a new program',
                 chips: [],
-                onTap: null,
+                onTap: onSelectProgram,
               );
             }
             final DateTime startDate = activeProgramState.startDateOnly;
@@ -516,9 +427,7 @@ class _SessionHeroCard extends ConsumerWidget {
               chips: [
                 _SessionMetaChip(
                   icon: Icons.calendar_today_rounded,
-                  label: isFrench
-                      ? 'Jour $currentDay'
-                      : 'Day $currentDay',
+                  label: isFrench ? 'Jour $currentDay' : 'Day $currentDay',
                 ),
                 _SessionMetaChip(
                   icon: Icons.bar_chart_rounded,
@@ -574,7 +483,7 @@ class _SessionHeroCard extends ConsumerWidget {
 
   Widget _buildGradientCard({
     required BuildContext context,
-    required String label,
+    required String? label,
     required String title,
     required String subtitle,
     required List<Widget> chips,
@@ -585,7 +494,7 @@ class _SessionHeroCard extends ConsumerWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -605,7 +514,7 @@ class _SessionHeroCard extends ConsumerWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           child: Stack(
             children: <Widget>[
               // Decorative ring — top-right
@@ -658,32 +567,33 @@ class _SessionHeroCard extends ConsumerWidget {
                         children: <Widget>[
                           Row(
                             children: <Widget>[
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.xs,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white
-                                      .withValues(alpha: AppOpacity.soft),
-                                  borderRadius:
-                                      BorderRadius.circular(AppRadii.sm),
-                                  border: Border.all(
+                              if (label != null && label.isNotEmpty)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.xs,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
                                     color: Colors.white
-                                        .withValues(alpha: AppOpacity.medium),
+                                        .withValues(alpha: AppOpacity.soft),
+                                    borderRadius:
+                                        BorderRadius.circular(_homeBlockRadius),
+                                    border: Border.all(
+                                      color: Colors.white
+                                          .withValues(alpha: AppOpacity.medium),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    label,
+                                    style: TextStyle(
+                                      color: Colors.white
+                                          .withValues(alpha: AppOpacity.high),
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
+                                    ),
                                   ),
                                 ),
-                                child: Text(
-                                  label,
-                                  style: TextStyle(
-                                    color: Colors.white
-                                        .withValues(alpha: AppOpacity.high),
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: 1.2,
-                                  ),
-                                ),
-                              ),
                               const Spacer(),
                               if (onTap != null)
                                 Container(
@@ -731,10 +641,12 @@ class _SessionHeroCard extends ConsumerWidget {
                             const SizedBox(height: AppSpacing.md),
                             Row(
                               children: chips
-                                  .expand((chip) => [
-                                        chip,
-                                        const SizedBox(width: AppSpacing.xs),
-                                      ])
+                                  .expand(
+                                    (chip) => [
+                                      chip,
+                                      const SizedBox(width: AppSpacing.xs),
+                                    ],
+                                  )
                                   .toList()
                                 ..removeLast(),
                             ),
@@ -765,7 +677,7 @@ class _SessionMetaChip extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: AppOpacity.light),
-        borderRadius: BorderRadius.circular(AppRadii.sm),
+        borderRadius: BorderRadius.circular(_homeBlockRadius),
         border:
             Border.all(color: Colors.white.withValues(alpha: AppOpacity.soft)),
       ),
@@ -792,24 +704,44 @@ class _SessionMetaChip extends StatelessWidget {
 // Daily Challenge
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _DailyChallengeCard extends StatelessWidget {
+class _DailyChallengeCard extends ConsumerWidget {
   final bool isFrench;
   const _DailyChallengeCard({required this.isFrench});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final challenges = ref.watch(todaysChallengesProvider);
+    if (challenges.isEmpty) return const SizedBox.shrink();
+
+    final challenge = challenges.first;
+    final completionAsync = ref.watch(challengeCompletionProvider(challenge.id));
+    final isCompleted = completionAsync.valueOrNull ?? false;
+
+    final accentColor = isCompleted ? AppColors.success : AppColors.warning;
+    final accentSoft = isCompleted ? AppColors.successSoft : AppColors.warningSoft;
+    final iconData = isCompleted
+        ? Icons.check_circle_rounded
+        : Icons.emoji_events_rounded;
+
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        final actions = ref.read(challengeActionsProvider);
+        if (isCompleted) {
+          actions.markUncompleted(challenge.id);
+        } else {
+          actions.markCompleted(challenge.id);
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           border: Border.all(
-            color: AppColors.warning.withValues(alpha: AppOpacity.mild),
+            color: accentColor.withValues(alpha: AppOpacity.mild),
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: AppColors.warning.withValues(alpha: AppOpacity.faint),
+              color: accentColor.withValues(alpha: AppOpacity.faint),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -825,18 +757,15 @@ class _DailyChallengeCard extends StatelessWidget {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: <Color>[
-                          AppColors.warning,
-                          AppColors.warningSoft,
-                        ],
+                        colors: <Color>[accentColor, accentSoft],
                       ),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                      borderRadius: BorderRadius.circular(_homeBlockRadius),
                     ),
-                    child: const Icon(
-                      Icons.emoji_events_rounded,
+                    child: Icon(
+                      iconData,
                       color: Colors.white,
                       size: 26,
                     ),
@@ -848,8 +777,8 @@ class _DailyChallengeCard extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           isFrench ? 'DÉFI DU JOUR' : 'DAILY CHALLENGE',
-                          style: const TextStyle(
-                            color: AppColors.warning,
+                          style: TextStyle(
+                            color: accentColor,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.8,
@@ -857,9 +786,7 @@ class _DailyChallengeCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          isFrench
-                              ? '100 pompes en moins de 10 min'
-                              : '100 push-ups in under 10 min',
+                          challenge.title,
                           style: const TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 14,
@@ -868,40 +795,30 @@ class _DailyChallengeCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 3),
-                        Row(
-                          children: <Widget>[
-                            const Icon(
-                              Icons.people_outline_rounded,
-                              size: 11,
-                              color: AppColors.textSecondary,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              isFrench
-                                  ? '247 participants aujourd\'hui'
-                                  : '247 participants today',
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          challenge.description,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
-                    color: AppColors.warning,
+                    color: accentColor,
                     size: 22,
                   ),
                 ],
               ),
             ),
-            // Progress bar strip
+            // Status strip
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(AppRadii.sm),
+                bottom: Radius.circular(_homeBlockRadius),
               ),
               child: Column(
                 children: <Widget>[
@@ -916,17 +833,19 @@ class _DailyChallengeCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          isFrench ? 'Progression' : 'Progress',
+                          isFrench ? 'Statut' : 'Status',
                           style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const Text(
-                          '42 / 100',
+                        Text(
+                          isCompleted
+                              ? (isFrench ? 'Terminé ✓' : 'Done ✓')
+                              : '0 / ${challenge.target} ${challenge.unit}',
                           style: TextStyle(
-                            color: AppColors.warning,
+                            color: accentColor,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
@@ -936,18 +855,14 @@ class _DailyChallengeCard extends StatelessWidget {
                   ),
                   Container(
                     height: 4,
-                    color:
-                        AppColors.warning.withValues(alpha: AppOpacity.whisper),
+                    color: accentColor.withValues(alpha: AppOpacity.whisper),
                     child: FractionallySizedBox(
-                      widthFactor: 0.42,
+                      widthFactor: isCompleted ? 1.0 : 0.0,
                       alignment: Alignment.centerLeft,
                       child: Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: <Color>[
-                              AppColors.warning,
-                              AppColors.warningSoft,
-                            ],
+                            colors: <Color>[accentColor, accentSoft],
                           ),
                         ),
                       ),
@@ -962,7 +877,6 @@ class _DailyChallengeCard extends StatelessWidget {
     );
   }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Warmup Selector
@@ -994,16 +908,19 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
       isScrollControlled: true,
       backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadii.lg)),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(_homeSheetRadius)),
       ),
       builder: (sheetContext) => StatefulBuilder(
         builder: (sheetContext, setSheetState) {
+          final double bottomInset =
+              MediaQuery.viewPaddingOf(sheetContext).bottom;
           return Padding(
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               AppSpacing.md,
               AppSpacing.md,
               AppSpacing.md,
-              AppSpacing.lg,
+              AppSpacing.lg + bottomInset,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1048,14 +965,12 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
                     onPressed: selected == null
                         ? null
                         : () {
-                            ref
-                                .read(warmupCategoryProvider.notifier)
-                                .state = selected!;
+                            ref.read(warmupCategoryProvider.notifier).state =
+                                selected!;
                             Navigator.of(sheetContext).pop();
                             if (!context.mounted) return;
                             final routine = ref.read(warmupRoutineProvider);
-                            final exercises =
-                                ref.read(warmupExercisesProvider);
+                            final exercises = ref.read(warmupExercisesProvider);
                             Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                 builder: (_) => WorkoutExecutionScreen(
@@ -1074,13 +989,13 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
                     ),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      disabledBackgroundColor:
-                          AppColors.primary.withValues(alpha: AppOpacity.moderate),
+                      disabledBackgroundColor: AppColors.primary
+                          .withValues(alpha: AppOpacity.moderate),
                       foregroundColor: Colors.white,
                       padding:
                           const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadii.sm),
+                        borderRadius: BorderRadius.circular(_homeBlockRadius),
                       ),
                     ),
                   ),
@@ -1098,56 +1013,114 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
     final duration = ref.watch(warmupDurationProvider);
     final selectedIndex = _durations.indexOf(duration);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        // Duration buttons
-        Row(
-          children: List<Widget>.generate(
-            _durations.length,
-            (int i) {
-              final int minutes = _durations[i];
-              final bool isSelected = selectedIndex == i;
-              return Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    right: i < _durations.length - 1 ? AppSpacing.xs : 0,
-                  ),
-                  child: _WarmupDurationButton(
-                    minutes: minutes,
-                    isSelected: isSelected,
-                    label: 'min',
-                    onTap: () {
-                      ref.read(warmupDurationProvider.notifier).state = minutes;
-                    },
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            AppColors.primary.withValues(alpha: AppOpacity.whisper),
+            AppColors.surface,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(_homeBlockRadius),
+        border: Border.all(
+          color: AppColors.primaryLight.withValues(alpha: AppOpacity.light),
+        ),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                width: 30,
+                height: 30,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[AppColors.primary, AppColors.primaryDark],
                   ),
                 ),
-              );
-            },
+                child: const Icon(
+                  Icons.flash_on_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.xs),
+              Text(
+                widget.isFrench ? 'Activation rapide' : 'Quick activation',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        // Start button — opens category selection sheet
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: () => _showCategorySheet(context),
-            icon: const Icon(Icons.play_arrow_rounded, size: 20),
-            label: Text(
-              widget.isFrench ? 'Démarrer l\'échauffement' : 'Start warmup',
-              style: const TextStyle(fontWeight: FontWeight.w600),
+          const SizedBox(height: AppSpacing.sm),
+
+          // Duration buttons
+          Row(
+            children: List<Widget>.generate(
+              _durations.length,
+              (int i) {
+                final int minutes = _durations[i];
+                final bool isSelected = selectedIndex == i;
+                return Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      right: i < _durations.length - 1 ? AppSpacing.xs : 0,
+                    ),
+                    child: _WarmupDurationButton(
+                      minutes: minutes,
+                      isSelected: isSelected,
+                      label: 'min',
+                      onTap: () {
+                        ref.read(warmupDurationProvider.notifier).state =
+                            minutes;
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadii.sm),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+
+          // Start button — opens category selection sheet
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => _showCategorySheet(context),
+              icon: const Icon(Icons.play_arrow_rounded, size: 20),
+              label: Text(
+                widget.isFrench ? 'Démarrer l\'échauffement' : 'Start warmup',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(_homeBlockRadius),
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -1174,7 +1147,7 @@ class _WarmupDurationButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
@@ -1246,7 +1219,7 @@ class _WarmupCategoryTile extends StatelessWidget {
           color: isSelected
               ? AppColors.primary.withValues(alpha: AppOpacity.subtle)
               : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.md),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           border: Border.all(
             color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
             width: isSelected ? 2 : 1,
@@ -1257,8 +1230,7 @@ class _WarmupCategoryTile extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color:
-                    isSelected ? AppColors.primary : AppColors.textPrimary,
+                color: isSelected ? AppColors.primary : AppColors.textPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
@@ -1346,7 +1318,7 @@ class _ProgramsCarouselBody extends ConsumerWidget {
             width: 160,
             decoration: BoxDecoration(
               color: AppColors.neutral300,
-              borderRadius: BorderRadius.circular(AppRadii.sm),
+              borderRadius: BorderRadius.circular(_homeBlockRadius),
             ),
           ),
         ),
@@ -1408,7 +1380,7 @@ class _ProgramCard extends StatelessWidget {
               baseColor.withValues(alpha: AppOpacity.prominent),
             ],
           ),
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           border: isActive
               ? Border.all(
                   color: Colors.white.withValues(alpha: AppOpacity.over),
@@ -1433,7 +1405,7 @@ class _ProgramCard extends StatelessWidget {
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: AppOpacity.soft),
-                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  borderRadius: BorderRadius.circular(_homeBlockRadius),
                 ),
                 child: Icon(_iconForProgram(), color: Colors.white, size: 22),
               ),
@@ -1468,11 +1440,13 @@ class _ProgramCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: AppOpacity.muted),
-                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  borderRadius: BorderRadius.circular(_homeBlockRadius),
                 ),
                 child: Text(
-                  AppDifficultyTheme.label(program.difficulty,
-                      isFrench: isFrench),
+                  AppDifficultyTheme.label(
+                    program.difficulty,
+                    isFrench: isFrench,
+                  ),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -1547,7 +1521,7 @@ class _SessionsCarousel extends ConsumerWidget {
             width: 180,
             decoration: BoxDecoration(
               color: AppColors.neutral300,
-              borderRadius: BorderRadius.circular(AppRadii.sm),
+              borderRadius: BorderRadius.circular(_homeBlockRadius),
             ),
           ),
         ),
@@ -1575,7 +1549,9 @@ class _SessionCard extends StatelessWidget {
 
   IconData _iconForSession() {
     final lower = session.name.toLowerCase();
-    if (lower.contains('upper') || lower.contains('push') || lower.contains('pull')) {
+    if (lower.contains('upper') ||
+        lower.contains('push') ||
+        lower.contains('pull')) {
       return Icons.fitness_center_rounded;
     }
     if (lower.contains('leg') || lower.contains('lower')) {
@@ -1606,7 +1582,7 @@ class _SessionCard extends StatelessWidget {
         width: 180,
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadii.sm),
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
           border: Border.all(
             color: AppColors.primaryLight.withValues(alpha: AppOpacity.mild),
           ),
@@ -1631,7 +1607,7 @@ class _SessionCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.primaryLight
                           .withValues(alpha: AppOpacity.light),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                      borderRadius: BorderRadius.circular(_homeBlockRadius),
                     ),
                     child: Icon(
                       _iconForSession(),
@@ -1647,7 +1623,7 @@ class _SessionCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: levelColor.withValues(alpha: AppOpacity.subtle),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                      borderRadius: BorderRadius.circular(_homeBlockRadius),
                       border: Border.all(
                         color: levelColor.withValues(alpha: AppOpacity.mild),
                       ),
@@ -1714,101 +1690,3 @@ class _SessionCard extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Quick Access Row
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _QuickAccessRow extends StatelessWidget {
-  final bool isFrench;
-  final VoidCallback onExercisesTap;
-
-  const _QuickAccessRow({
-    required this.isFrench,
-    required this.onExercisesTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: _QuickAccessCard(
-            icon: Icons.fitness_center_rounded,
-            label: isFrench ? 'Exercices' : 'Exercises',
-            color: AppColors.electricSapphire,
-            onTap: onExercisesTap,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _QuickAccessCard(
-            icon: Icons.bar_chart_rounded,
-            label: isFrench ? 'Statistiques' : 'Statistics',
-            color: AppColors.success,
-            onTap: () {},
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: _QuickAccessCard(
-            icon: Icons.people_rounded,
-            label: isFrench ? 'Communauté' : 'Community',
-            color: AppColors.warning,
-            onTap: () {},
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _QuickAccessCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _QuickAccessCard({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.md,
-          horizontal: AppSpacing.xs,
-        ),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: AppOpacity.whisper),
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-          border: Border.all(color: color.withValues(alpha: AppOpacity.medium)),
-        ),
-        child: Column(
-          children: <Widget>[
-            Icon(icon, color: color, size: 26),
-            const SizedBox(height: AppSpacing.xxs),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: color,
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
