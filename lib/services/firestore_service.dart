@@ -1102,6 +1102,54 @@ class FirestoreService {
     return 0;
   }
 
+  // ── Daily Challenge Completion ─────────────────────────────────────────
+
+  String _completionDocId(String challengeId, DateTime date) {
+    final DateTime d = date.toLocal();
+    final String y = d.year.toString().padLeft(4, '0');
+    final String m = d.month.toString().padLeft(2, '0');
+    final String day = d.day.toString().padLeft(2, '0');
+    return '$y-$m-${day}_$challengeId';
+  }
+
+  Future<bool> getChallengeCompletion({
+    required String userId,
+    required String challengeId,
+    required DateTime date,
+  }) async {
+    final String docId = _completionDocId(challengeId, date);
+    final DocumentSnapshot<Map<String, dynamic>> doc = await _firestore
+        .collection(FirebaseConstants.usersCollection)
+        .doc(userId)
+        .collection(FirebaseConstants.challengeCompletionsCollection)
+        .doc(docId)
+        .get();
+    return doc.exists && (doc.data()?['completed'] == true);
+  }
+
+  Future<void> setChallengeCompleted({
+    required String userId,
+    required String challengeId,
+    required DateTime date,
+    required bool completed,
+  }) async {
+    final String docId = _completionDocId(challengeId, date);
+    await _firestore
+        .collection(FirebaseConstants.usersCollection)
+        .doc(userId)
+        .collection(FirebaseConstants.challengeCompletionsCollection)
+        .doc(docId)
+        .set(
+          <String, dynamic>{
+            'challengeId': challengeId,
+            'completed': completed,
+            'date': Timestamp.fromDate(date),
+            'updatedAt': FieldValue.serverTimestamp(),
+          },
+          SetOptions(merge: true),
+        );
+  }
+
   List<Map<String, dynamic>> _toMapList(dynamic rawValue) {
     if (rawValue is! List<dynamic>) {
       return <Map<String, dynamic>>[];

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // ── Brand scale — light → deep (no color-name labels) ────────────────────
-  static const Color brand50 = Color(0xFFEDE8FF); // lightest tint
-  static const Color brand100 = Color(0xFFCFC6FF); // light
-  static const Color brand200 = Color(0xFFAF99FF); // main accent
-  static const Color brand300 = Color(0xFF9178F8); // secondary
-  static const Color brand400 = Color(0xFF7355EE); // deeper
-  static const Color brand500 = Color(0xFF5535D4); // deep
-  static const Color brand600 = Color(0xFF3A1EAA); // darkest
+  static const Color brand50 = Color(0xFFF1EAFF); // lightest tint
+  static const Color brand100 = Color(0xFFD8C9FF); // light
+  static const Color brand200 = Color(0xFF5E2BFF); // main accent
+  static const Color brand300 = Color(0xFF4E25D9); // secondary
+  static const Color brand400 = Color(0xFF401EAE); // deeper
+  static const Color brand500 = Color(0xFF331886); // deep
+  static const Color brand600 = Color(0xFF260F63); // darkest
 
   // ── Neutral scale — near-black → near-white (no color-name labels) ────────
   static const Color neutral0 = Color(0xFF111111); // page background
@@ -37,7 +37,7 @@ class AppColors {
   static const Color lightPrimaryLight = brand100;
   static const Color lightPrimaryPastel = brand50;
   static const Color lightAccent = brand300;
-  static const Color lightAccentLight = Color(0xFFFFCC80);
+  static const Color lightAccentLight = Color(0xFFBCA6FF);
   static const Color lightBackground = neutral0;
   static const Color lightSurface = neutral100;
   static const Color lightSurfaceVariant = neutral200;
@@ -54,7 +54,7 @@ class AppColors {
   static const Color darkPrimaryLight = brand100;
   static const Color darkPrimaryPastel = brand50;
   static const Color darkAccent = brand300;
-  static const Color darkAccentLight = Color(0xFFFFCC80);
+  static const Color darkAccentLight = Color(0xFFBCA6FF);
   static const Color darkBackground = neutral0;
   static const Color darkSurface = neutral100;
   static const Color darkSurfaceVariant = neutral200;
@@ -71,7 +71,7 @@ class AppColors {
   static const Color primaryLight = brand100;
   static const Color primaryPastel = brand50;
   static const Color accent = brand300;
-  static const Color accentLight = Color(0xFFFFCC80);
+  static const Color accentLight = Color(0xFFBCA6FF);
   static const Color background = neutral0;
   static const Color surface = neutral100;
   static const Color surfaceVariant = neutral200;

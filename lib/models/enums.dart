@@ -85,3 +85,16 @@ enum WarmupCategory {
   core,
   cardio,
 }
+
+/// Type of daily challenge
+@HiveType(typeId: 13)
+enum DailyChallengeType {
+  @HiveField(0)
+  exercise, // Complete N reps / N seconds of a specific exercise
+
+  @HiveField(1)
+  session, // Complete a specific named session
+
+  @HiveField(2)
+  freestyle, // Open-ended challenge (manually marked complete)
+}
