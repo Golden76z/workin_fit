@@ -6,7 +6,6 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/session/presentation/screens/program_builder_screen.dart';
 import 'package:workin_fit/features/session/presentation/screens/session_detail_screen.dart';
-import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
@@ -230,7 +229,7 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
             SliverAppBar(
               pinned: true,
               centerTitle: true,
-              toolbarHeight: description.isEmpty ? 92 : 148,
+              toolbarHeight: description.isEmpty ? 72 : 112,
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               systemOverlayStyle: AppChrome.topSurfaceOverlay,
@@ -239,8 +238,6 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
               title: _DetailAppBarTitle(
                 title: program.name,
                 description: description,
-                difficulty: program.difficulty,
-                isFrench: isFrench,
               ),
               actions: [
                 if (program.isCustom)
@@ -272,6 +269,14 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: AppDifficultyBadge(
+                        difficulty: program.difficulty,
+                        isFrench: isFrench,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
                     _MetaRow(program: program, isFrench: isFrench),
                     if (program.goals.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.md),
@@ -562,14 +567,10 @@ class _MetaRow extends StatelessWidget {
 class _DetailAppBarTitle extends StatelessWidget {
   final String title;
   final String description;
-  final DifficultyLevel difficulty;
-  final bool isFrench;
 
   const _DetailAppBarTitle({
     required this.title,
     required this.description,
-    required this.difficulty,
-    required this.isFrench,
   });
 
   @override
@@ -605,21 +606,6 @@ class _DetailAppBarTitle extends StatelessWidget {
             ),
           ),
         ],
-        const SizedBox(height: 4),
-        AppDifficultyBadge(
-          difficulty: difficulty,
-          isFrench: isFrench,
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDifficultyTheme.compactHorizontalPadding,
-            vertical: AppDifficultyTheme.compactVerticalPadding,
-          ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(AppDifficultyTheme.compactRadius),
-          ),
-          fontSize: AppDifficultyTheme.compactFontSize,
-          backgroundAlpha: AppOpacity.subtle,
-          borderAlpha: AppOpacity.half,
-        ),
       ],
     );
   }
