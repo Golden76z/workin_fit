@@ -197,6 +197,7 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
     final startDate = activeProgramState?.startDateOnly;
     final completedIds = ref.watch(completedTodaySessionIdsProvider);
     final isActive = activeProgramId == program.id;
+    final String description = program.description.trim();
 
     // Compute current week/day in program
     int? activeWeekIndex;
@@ -215,27 +216,31 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
       style: AppChrome.topAndBottomOverlay,
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
-        extendBody: true,
-        bottomNavigationBar: const _NavBarFill(),
+        bottomNavigationBar: _ProgramStickyActionBar(
+          isActive: isActive,
+          isFrench: isFrench,
+          onPressed: () => _handleToggle(
+            isActive,
+            activeProgramId,
+            isFrench,
+          ),
+        ),
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
               pinned: true,
+              centerTitle: true,
+              toolbarHeight: description.isEmpty ? 92 : 148,
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               systemOverlayStyle: AppChrome.topSurfaceOverlay,
               flexibleSpace: const AppTopBarBackground(),
               iconTheme: const IconThemeData(color: Colors.white),
-              title: Text(
-                program.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'AppFontMedium',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
+              title: _DetailAppBarTitle(
+                title: program.name,
+                description: description,
+                difficulty: program.difficulty,
+                isFrench: isFrench,
               ),
               actions: [
                 if (program.isCustom)
@@ -251,72 +256,28 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                         ref.invalidate(programsProvider);
                       }
                     },
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.md),
-                  child: Center(
-                    child: _DifficultyBadge(difficulty: program.difficulty),
-                  ),
-                ),
+                  )
+                else
+                  const SizedBox(width: 48),
               ],
             ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
+                  AppLayout.pageMargin,
                   AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.md,
+                  AppLayout.pageMargin,
                   0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _MetaRow(program: program, isFrench: isFrench),
-                    const SizedBox(height: AppSpacing.sm),
-                    if (program.description.isNotEmpty)
-                      Text(
-                        program.description,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                          height: 1.5,
-                        ),
-                      ),
                     if (program.goals.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.md),
-                      _SectionHeader(
-                        icon: Icons.flag_rounded,
-                        title: isFrench ? 'Objectifs' : 'Goals',
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      ...program.goals.map(
-                        (g) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.only(top: 4),
-                                child: Icon(
-                                  Icons.check_circle_rounded,
-                                  size: 14,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.xs),
-                              Expanded(
-                                child: Text(
-                                  g,
-                                  style: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 14,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      _GoalsDetailCard(
+                        goals: program.goals,
+                        isFrench: isFrench,
                       ),
                     ],
                     const SizedBox(height: AppSpacing.md),
@@ -387,22 +348,27 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                 // Distribute sessions into week × day grid
                 final weeks = <List<Session?>>[];
                 int cursor = 0;
+                final int trainingDaysPerWeek = program.daysPerWeek.clamp(0, 7);
                 for (int w = 0; w < program.durationWeeks; w++) {
                   final week = <Session?>[];
-                  for (int d = 0; d < program.daysPerWeek; d++) {
-                    week.add(
-                      cursor < sessions.length ? sessions[cursor] : null,
-                    );
-                    cursor++;
+                  for (int d = 0; d < 7; d++) {
+                    if (d < trainingDaysPerWeek) {
+                      week.add(
+                        cursor < sessions.length ? sessions[cursor] : null,
+                      );
+                      cursor++;
+                    } else {
+                      week.add(null);
+                    }
                   }
                   weeks.add(week);
                 }
 
                 return SliverPadding(
                   padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.md,
+                    AppLayout.pageMargin,
                     0,
-                    AppSpacing.md,
+                    AppLayout.pageMargin,
                     0,
                   ),
                   sliver: SliverList.builder(
@@ -461,50 +427,10 @@ class _ProgramDetailScreenState extends ConsumerState<ProgramDetailScreen> {
                 ),
               ),
             ),
-            // Start / Active button
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.lg,
-                  AppSpacing.md,
-                  MediaQuery.paddingOf(context).bottom + AppSpacing.xl,
-                ),
-                child: SizedBox(
-                  height: 54,
-                  child: ElevatedButton.icon(
-                    onPressed: () => _handleToggle(
-                      isActive,
-                      activeProgramId,
-                      isFrench,
-                    ),
-                    icon: Icon(
-                      isActive
-                          ? Icons.stop_circle_outlined
-                          : Icons.play_arrow_rounded,
-                    ),
-                    label: Text(
-                      isActive
-                          ? (isFrench ? 'Arrêter le programme' : 'Stop Program')
-                          : (isFrench
-                              ? 'Démarrer le programme'
-                              : 'Start Program'),
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'AppFontMedium',
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor:
-                          isActive ? AppColors.warning : AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppRadii.sm),
-                      ),
-                    ),
-                  ),
-                ),
+              child: SizedBox(
+                height:
+                    MediaQuery.viewPaddingOf(context).bottom + AppSpacing.sm,
               ),
             ),
           ],
@@ -630,38 +556,241 @@ class _MetaRow extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Section header
+// Detail app bar content
 // ---------------------------------------------------------------------------
 
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
+class _DetailAppBarTitle extends StatelessWidget {
   final String title;
+  final String description;
+  final DifficultyLevel difficulty;
+  final bool isFrench;
 
-  const _SectionHeader({required this.icon, required this.title});
+  const _DetailAppBarTitle({
+    required this.title,
+    required this.description,
+    required this.difficulty,
+    required this.isFrench,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'AppFontMedium',
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
+        if (description.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            description,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: AppOpacity.over),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              height: 1.2,
+            ),
+          ),
+        ],
+        const SizedBox(height: 4),
+        AppDifficultyBadge(
+          difficulty: difficulty,
+          isFrench: isFrench,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDifficultyTheme.compactHorizontalPadding,
+            vertical: AppDifficultyTheme.compactVerticalPadding,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(AppDifficultyTheme.compactRadius),
+          ),
+          fontSize: AppDifficultyTheme.compactFontSize,
+          backgroundAlpha: AppOpacity.subtle,
+          borderAlpha: AppOpacity.half,
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Goals detail card
+// ---------------------------------------------------------------------------
+
+class _GoalsDetailCard extends StatefulWidget {
+  final List<String> goals;
+  final bool isFrench;
+
+  const _GoalsDetailCard({
+    required this.goals,
+    required this.isFrench,
+  });
+
+  @override
+  State<_GoalsDetailCard> createState() => _GoalsDetailCardState();
+}
+
+class _GoalsDetailCardState extends State<_GoalsDetailCard> {
+  bool _expanded = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface,
+      elevation: 2,
+      shadowColor: AppColors.primary.withValues(alpha: AppOpacity.faint),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(AppRadii.sm)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              color: AppChrome.topSurface,
+              child: Row(
+                children: [
+                  const Icon(Icons.flag_rounded, size: 16, color: Colors.white),
+                  const SizedBox(width: AppSpacing.xs),
+                  Text(
+                    widget.isFrench ? 'Objectifs' : 'Goals',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'AppFontMedium',
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: AppOpacity.soft),
+                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                    ),
+                    child: Text(
+                      '${widget.goals.length}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  AnimatedRotation(
+                    turns: _expanded ? 0 : -0.25,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(
+                      Icons.expand_more_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedSize(
+            alignment: Alignment.topCenter,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            child: _expanded
+                ? Padding(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    child: Column(
+                      children: [
+                        for (int index = 0;
+                            index < widget.goals.length;
+                            index++)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              bottom: index == widget.goals.length - 1
+                                  ? 0
+                                  : AppSpacing.xs,
+                            ),
+                            child: _GoalTile(goal: widget.goals[index]),
+                          ),
+                      ],
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoalTile extends StatelessWidget {
+  final String goal;
+
+  const _GoalTile({
+    required this.goal,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
+        horizontal: AppSpacing.sm,
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppChrome.topSurface,
+        color: AppColors.primary.withValues(alpha: AppOpacity.hairline),
         borderRadius: BorderRadius.circular(AppRadii.sm),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
+        ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: Colors.white),
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: AppOpacity.light),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: const Icon(
+              Icons.flag_rounded,
+              size: 12,
+              color: AppColors.primary,
+            ),
+          ),
           const SizedBox(width: AppSpacing.xs),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'AppFontMedium',
+          Expanded(
+            child: Text(
+              goal,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 14,
+                height: 1.35,
+              ),
             ),
           ),
         ],
@@ -670,7 +799,6 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
 // Week detail card
 // ---------------------------------------------------------------------------
 
@@ -981,7 +1109,8 @@ class _DayDetailRow extends StatelessWidget {
                                             ? AppColors.primary
                                             : AppColors.textSecondary
                                                 .withValues(
-                                                    alpha: AppOpacity.firm),
+                                                alpha: AppOpacity.firm,
+                                              ),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -1060,7 +1189,8 @@ class _DayDetailRow extends StatelessWidget {
                                     style: TextStyle(
                                       color: isPastDay && !isDone
                                           ? AppColors.textTertiary.withValues(
-                                              alpha: AppOpacity.firm)
+                                              alpha: AppOpacity.firm,
+                                            )
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -1081,7 +1211,8 @@ class _DayDetailRow extends StatelessWidget {
                                     style: TextStyle(
                                       color: isPastDay && !isDone
                                           ? AppColors.textTertiary.withValues(
-                                              alpha: AppOpacity.firm)
+                                              alpha: AppOpacity.firm,
+                                            )
                                           : AppColors.textTertiary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
@@ -1140,29 +1271,6 @@ class _DayDetailRow extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Difficulty badge
-// ---------------------------------------------------------------------------
-
-class _DifficultyBadge extends StatelessWidget {
-  final DifficultyLevel difficulty;
-
-  const _DifficultyBadge({required this.difficulty});
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isFrench = Localizations.localeOf(context)
-        .languageCode
-        .toLowerCase()
-        .startsWith('fr');
-    return AppDifficultyBadge(
-      difficulty: difficulty,
-      isFrench: isFrench,
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Meta chip
 // ---------------------------------------------------------------------------
 
@@ -1193,14 +1301,74 @@ class _MetaChip extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Nav bar fill
+// Sticky action bar
 // ---------------------------------------------------------------------------
 
-class _NavBarFill extends StatelessWidget {
-  const _NavBarFill();
+class _ProgramStickyActionBar extends StatelessWidget {
+  final bool isActive;
+  final bool isFrench;
+  final VoidCallback onPressed;
+
+  const _ProgramStickyActionBar({
+    required this.isActive,
+    required this.isFrench,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const AppBottomInsetSurface();
+    final double bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    const double buttonHeight = 54;
+    final double barHeight = buttonHeight + AppSpacing.sm * 2 + bottomInset;
+
+    return AppBottomBarSurface(
+      height: barHeight,
+      padding: EdgeInsets.fromLTRB(
+        AppLayout.pageMargin,
+        AppSpacing.sm,
+        AppLayout.pageMargin,
+        AppSpacing.sm + bottomInset,
+      ),
+      border: Border(
+        top: BorderSide(
+          color: AppColors.background.withValues(alpha: AppOpacity.thin),
+        ),
+      ),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: SizedBox(
+            height: buttonHeight,
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: onPressed,
+              icon: Icon(
+                isActive
+                    ? Icons.stop_circle_outlined
+                    : Icons.play_arrow_rounded,
+              ),
+              label: Text(
+                isActive
+                    ? (isFrench ? 'Arrêter le programme' : 'Stop Program')
+                    : (isFrench ? 'Démarrer le programme' : 'Start Program'),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'AppFontMedium',
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    isActive ? AppColors.primaryDarkest : AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

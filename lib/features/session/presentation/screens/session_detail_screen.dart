@@ -57,6 +57,7 @@ class SessionDetailScreen extends ConsumerWidget {
     final exercisesAsync = ref.watch(exercisesProvider);
     final completedIds = ref.watch(completedTodaySessionIdsProvider);
     final isDone = completedIds.contains(session.id);
+    final String description = (session.description ?? '').trim();
 
     return AppSystemOverlayRegion(
       style: AppChrome.topAndBottomOverlay,
@@ -71,37 +72,27 @@ class SessionDetailScreen extends ConsumerWidget {
               slivers: [
                 SliverAppBar(
                   pinned: true,
+                  centerTitle: true,
+                  toolbarHeight: description.isEmpty ? 92 : 148,
                   backgroundColor: Colors.transparent,
                   surfaceTintColor: Colors.transparent,
                   systemOverlayStyle: AppChrome.topSurfaceOverlay,
                   flexibleSpace: const AppTopBarBackground(),
                   iconTheme: const IconThemeData(color: Colors.white),
-                  title: Text(
-                    session.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'AppFontMedium',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18,
-                    ),
+                  title: _DetailAppBarTitle(
+                    title: session.name,
+                    description: description,
+                    difficulty: session.difficulty,
+                    isFrench: isFrench,
                   ),
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: AppSpacing.md),
-                      child: Center(
-                        child: _DifficultyBadge(difficulty: session.difficulty),
-                      ),
-                    ),
-                  ],
+                  actions: const [SizedBox(width: 48)],
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
+                      AppLayout.pageMargin,
                       AppSpacing.md,
-                      AppSpacing.md,
-                      AppSpacing.md,
+                      AppLayout.pageMargin,
                       0,
                     ),
                     child: Column(
@@ -109,18 +100,6 @@ class SessionDetailScreen extends ConsumerWidget {
                       children: [
                         // Meta row
                         _MetaRow(session: session, isFrench: isFrench),
-                        if (session.description != null &&
-                            session.description!.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            session.description!,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 14,
-                              height: 1.5,
-                            ),
-                          ),
-                        ],
                         const SizedBox(height: AppSpacing.md),
                         // Done banner
                         if (isDone)
@@ -172,9 +151,9 @@ class SessionDetailScreen extends ConsumerWidget {
                 // Exercise list
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.md,
+                    AppLayout.pageMargin,
                     AppSpacing.xs,
-                    AppSpacing.md,
+                    AppLayout.pageMargin,
                     0,
                   ),
                   sliver: SliverList.builder(
@@ -204,9 +183,9 @@ class SessionDetailScreen extends ConsumerWidget {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
-                      AppSpacing.md,
+                      AppLayout.pageMargin,
                       AppSpacing.lg,
-                      AppSpacing.md,
+                      AppLayout.pageMargin,
                       MediaQuery.paddingOf(context).bottom + AppSpacing.xl,
                     ),
                     child: SizedBox(
@@ -339,6 +318,76 @@ class _MetaRow extends StatelessWidget {
                 '${session.restBetweenExercises}s ${isFrench ? 'repos' : 'rest'}',
           ),
         ],
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Detail app bar content
+// ---------------------------------------------------------------------------
+
+class _DetailAppBarTitle extends StatelessWidget {
+  final String title;
+  final String description;
+  final DifficultyLevel difficulty;
+  final bool isFrench;
+
+  const _DetailAppBarTitle({
+    required this.title,
+    required this.description,
+    required this.difficulty,
+    required this.isFrench,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'AppFontMedium',
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
+        ),
+        if (description.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Text(
+            description,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: AppOpacity.over),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              height: 1.2,
+            ),
+          ),
+        ],
+        const SizedBox(height: 4),
+        AppDifficultyBadge(
+          difficulty: difficulty,
+          isFrench: isFrench,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDifficultyTheme.compactHorizontalPadding,
+            vertical: AppDifficultyTheme.compactVerticalPadding,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(AppDifficultyTheme.compactRadius),
+          ),
+          fontSize: AppDifficultyTheme.compactFontSize,
+          backgroundAlpha: AppOpacity.subtle,
+          borderAlpha: AppOpacity.half,
+        ),
       ],
     );
   }
@@ -505,32 +554,6 @@ class _ExerciseRow extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Difficulty badge
-// ---------------------------------------------------------------------------
-
-class _DifficultyBadge extends StatelessWidget {
-  final DifficultyLevel difficulty;
-
-  const _DifficultyBadge({required this.difficulty});
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isFrench = Localizations.localeOf(context)
-        .languageCode
-        .toLowerCase()
-        .startsWith('fr');
-    return AppDifficultyBadge(
-      difficulty: difficulty,
-      isFrench: isFrench,
-      borderRadius: const BorderRadius.all(
-        Radius.circular(AppDifficultyTheme.pillRadius),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Meta chip
 // ---------------------------------------------------------------------------
 
