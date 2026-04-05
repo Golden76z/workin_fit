@@ -30,7 +30,7 @@ const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
 // Banner ends at the avatar's vertical centre (avatar straddles the boundary).
 const double _kBannerHeight = 100.0;
-const double _kProfileBlockRadius = AppRadii.lg;
+const double _kProfileBlockRadius = AppRadii.sm;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -496,21 +496,48 @@ class _ProfileHeaderSliver extends StatelessWidget {
             ],
           ),
 
-          // ── Email — below banner line, right of avatar ───────────────
+          // ── Email badge — below banner line, right of avatar ────────
           if (email != null && email!.isNotEmpty)
             Positioned(
               top: topPadding + _kBannerHeight + AppSpacing.xs,
               left: AppSpacing.lg + _kAvatarTotalRadius * 2 + AppSpacing.md,
               right: AppSpacing.md,
-              child: Text(
-                email!,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: AppColors.textSecondary
-                      .withValues(alpha: AppOpacity.bold),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xs,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: AppOpacity.muted),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.mail_outline_rounded,
+                      size: 11,
+                      color: AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.prominent),
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        email!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textSecondary
+                              .withValues(alpha: AppOpacity.bold),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -962,7 +989,7 @@ class _StreakCalendar extends ConsumerWidget {
                 decoration: BoxDecoration(
                   color: AppColors.babyBlueIce
                       .withValues(alpha: AppOpacity.medium),
-                  borderRadius: BorderRadius.circular(AppRadii.lg),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1549,7 +1576,7 @@ class _FriendsSectionCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.lg),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
         border: Border.all(
           color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
         ),
@@ -1797,7 +1824,7 @@ class _FriendsEmptyState extends StatelessWidget {
                   vertical: AppSpacing.sm,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadii.xl),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
               ),
             ),
