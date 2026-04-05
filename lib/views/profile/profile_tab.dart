@@ -28,8 +28,8 @@ import 'package:workin_fit/providers/locale_provider.dart';
 const double _kAvatarRadius = 52.0;
 const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
-// Banner is tall enough to fully contain the avatar with comfortable margins.
-const double _kBannerHeight = 130.0;
+// Banner ends at the avatar's vertical centre (avatar straddles the boundary).
+const double _kBannerHeight = 100.0;
 const double _kProfileBlockRadius = AppRadii.lg;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
@@ -305,9 +305,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                         backgroundColor: AppColors.surface,
                         child: ListView(
                           padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.md,
-                            AppSpacing.md,
-                            AppSpacing.md,
+                            AppSpacing.xs,
+                            AppSpacing.sm,
+                            AppSpacing.xs,
                             0,
                           ),
                           children: <Widget>[
@@ -428,127 +428,102 @@ class _ProfileHeaderSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double topPadding = MediaQuery.of(context).padding.top;
-    final double totalBannerHeight = _kBannerHeight + topPadding;
 
     return SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
+        clipBehavior: Clip.none,
         children: <Widget>[
-          // ── Banner: gradient bg + avatar left + username + edit FAB ──
-          SizedBox(
-            height: totalBannerHeight,
-            child: Stack(
-              children: <Widget>[
-                // Gradient background
-                const Positioned.fill(child: AppTopBarBackground()),
+          // ── Banner + white section ────────────────────────────────────
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              // Top banner — gradient bg + username/email + edit FAB
+              SizedBox(
+                height: _kBannerHeight + topPadding,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: <Widget>[
+                    const Positioned.fill(child: AppTopBarBackground()),
 
-                // Content row: avatar (left) + username (right)
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppSpacing.lg,
-                    topPadding +
-                        (_kBannerHeight - _kAvatarTotalRadius * 2) / 2,
-                    AppSpacing.lg,
-                    (_kBannerHeight - _kAvatarTotalRadius * 2) / 2,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      // Avatar
-                      _AvatarWidget(
-                        photoUrl: photoUrl,
-                        uploading: uploadingImage,
-                        onTap: onEditAvatar,
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      // Username
-                      Expanded(
-                        child: Text(
-                          username,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'AppFontMedium',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.3,
+                    // Username + email column, right of avatar space
+                    Positioned(
+                      top: topPadding +
+                          _kBannerHeight -
+                          _kAvatarTotalRadius +
+                          AppSpacing.sm,
+                      left: AppSpacing.lg +
+                          _kAvatarTotalRadius * 2 +
+                          AppSpacing.md,
+                      right: 60,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            username,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'AppFontMedium',
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.2,
+                            ),
                           ),
-                        ),
+                          if (email != null && email!.isNotEmpty) ...<Widget>[
+                            const SizedBox(height: 3),
+                            Text(
+                              email!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white
+                                    .withValues(alpha: AppOpacity.prominent),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
 
-                // Edit FAB — bottom-right of banner
-                Positioned(
-                  bottom: AppSpacing.sm,
-                  right: AppSpacing.md,
-                  child: _BannerEditButton(
-                    label: isFrench ? 'Modifier' : 'Edit',
-                    onTap: onEditProfile,
-                  ),
+                    // Edit FAB — bottom-right of banner
+                    Positioned(
+                      bottom: AppSpacing.sm,
+                      right: AppSpacing.md,
+                      child: _BannerEditButton(
+                        label: isFrench ? 'Modifier' : 'Edit',
+                        onTap: onEditProfile,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              // White section — top padding accommodates avatar overlap
+              Container(
+                color: AppColors.surface,
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  _kAvatarTotalRadius + AppSpacing.sm,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                ),
+                child: _InlineStats(isFrench: isFrench),
+              ),
+            ],
           ),
 
-          // ── White info section below banner ──────────────────────────
-          Container(
-            color: AppColors.surface,
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.md,
-              AppSpacing.xl,
-              AppSpacing.xl,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Email badge — left-aligned below banner
-                if (email != null && email!.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary
-                          .withValues(alpha: AppOpacity.faint),
-                      borderRadius: BorderRadius.circular(AppRadii.lg),
-                      border: Border.all(
-                        color: AppColors.primary
-                            .withValues(alpha: AppOpacity.muted),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.mail_outline_rounded,
-                          size: 12,
-                          color: AppColors.textSecondary
-                              .withValues(alpha: AppOpacity.prominent),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          email!,
-                          style: TextStyle(
-                            color:
-                                AppColors.textSecondary.withValues(alpha: 0.85),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                // Inline stats row
-                _InlineStats(isFrench: isFrench),
-              ],
+          // ── Avatar — left-aligned, centre at banner/white boundary ────
+          Positioned(
+            top: topPadding + _kBannerHeight - _kAvatarTotalRadius,
+            left: AppSpacing.lg,
+            child: _AvatarWidget(
+              photoUrl: photoUrl,
+              uploading: uploadingImage,
+              onTap: onEditAvatar,
             ),
           ),
         ],
