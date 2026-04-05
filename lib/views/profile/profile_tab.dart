@@ -445,27 +445,47 @@ class _ProfileHeaderSliver extends StatelessWidget {
                   children: <Widget>[
                     const Positioned.fill(child: AppTopBarBackground()),
 
-                    // Username — right of avatar space, inside banner
+                    // Username + email — right of avatar space, inside banner
                     Positioned(
                       top: topPadding +
                           _kBannerHeight -
                           _kAvatarTotalRadius +
-                          AppSpacing.sm,
+                          AppSpacing.lg,
                       left: AppSpacing.lg +
                           _kAvatarTotalRadius * 2 +
                           AppSpacing.md,
                       right: 60,
-                      child: Text(
-                        username,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'AppFontMedium',
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.3,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            username,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'AppFontMedium',
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          if (email != null && email!.isNotEmpty) ...<Widget>[
+                            const SizedBox(height: 3),
+                            Text(
+                              email!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white
+                                    .withValues(alpha: AppOpacity.prominent),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
 
@@ -491,36 +511,7 @@ class _ProfileHeaderSliver extends StatelessWidget {
                   AppSpacing.md,
                   AppSpacing.md,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // Email — just below the banner
-                    if (email != null && email!.isNotEmpty)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(
-                            Icons.mail_outline_rounded,
-                            size: 13,
-                            color: AppColors.textSecondary
-                                .withValues(alpha: AppOpacity.prominent),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            email!,
-                            style: TextStyle(
-                              color: AppColors.textSecondary
-                                  .withValues(alpha: AppOpacity.bold),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    const SizedBox(height: AppSpacing.md),
-                    _InlineStats(isFrench: isFrench),
-                  ],
-                ),
+                child: _InlineStats(isFrench: isFrench),
               ),
             ],
           ),
