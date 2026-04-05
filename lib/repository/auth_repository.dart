@@ -37,20 +37,9 @@ class AuthRepository {
         password: password,
       );
 
-      // Send email verification with deep link support
-      await userCredential.user?.sendEmailVerification(
-        ActionCodeSettings(
-          // URL that will be opened after email verification
-          // This should be your app's deep link
-          url: 'workinfit://verify-email',
-          // Set to true to handle the code in the app
-          handleCodeInApp: true,
-          // Android package name
-          androidPackageName: 'com.workinfit.workin_fit',
-          // iOS bundle ID
-          iOSBundleId: 'com.workinfit.workinFit',
-        ),
-      );
+      // Send standard Firebase verification email (browser-based).
+      // The user clicks the link in the email, then taps refresh in-app.
+      await userCredential.user?.sendEmailVerification();
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -250,18 +239,7 @@ class AuthRepository {
 
   Future<void> sendEmailVerification() async {
     try {
-      await _firebaseAuth.currentUser?.sendEmailVerification(
-        ActionCodeSettings(
-          // URL that will be opened after email verification
-          url: 'workinfit://verify-email',
-          // Set to true to handle the code in the app
-          handleCodeInApp: true,
-          // Android package name
-          androidPackageName: 'com.workinfit.workin_fit',
-          // iOS bundle ID
-          iOSBundleId: 'com.workinfit.workinFit',
-        ),
-      );
+      await _firebaseAuth.currentUser?.sendEmailVerification();
     } on FirebaseAuthException catch (e) {
       throw AuthException(
         AuthErrorHandler.handleFirebaseAuthException(
