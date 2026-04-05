@@ -445,7 +445,7 @@ class _ProfileHeaderSliver extends StatelessWidget {
                   children: <Widget>[
                     const Positioned.fill(child: AppTopBarBackground()),
 
-                    // Username + email — right of avatar space, inside banner
+                    // Username — right of avatar space, inside banner
                     Positioned(
                       top: topPadding +
                           _kBannerHeight -
@@ -455,37 +455,17 @@ class _ProfileHeaderSliver extends StatelessWidget {
                           _kAvatarTotalRadius * 2 +
                           AppSpacing.md,
                       right: 60,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            username,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'AppFontMedium',
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                          if (email != null && email!.isNotEmpty) ...<Widget>[
-                            const SizedBox(height: 3),
-                            Text(
-                              email!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colors.white
-                                    .withValues(alpha: AppOpacity.prominent),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ],
+                      child: Text(
+                        username,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'AppFontMedium',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
+                        ),
                       ),
                     ),
 
@@ -515,6 +495,25 @@ class _ProfileHeaderSliver extends StatelessWidget {
               ),
             ],
           ),
+
+          // ── Email — below banner line, right of avatar ───────────────
+          if (email != null && email!.isNotEmpty)
+            Positioned(
+              top: topPadding + _kBannerHeight + AppSpacing.xs,
+              left: AppSpacing.lg + _kAvatarTotalRadius * 2 + AppSpacing.md,
+              right: AppSpacing.md,
+              child: Text(
+                email!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: AppColors.textSecondary
+                      .withValues(alpha: AppOpacity.bold),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
 
           // ── Avatar — left-aligned, centre at banner/white boundary ────
           Positioned(
