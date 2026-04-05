@@ -47,7 +47,16 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
         .languageCode
         .toLowerCase()
         .startsWith('fr');
-    const Color selectedFilterCheckColor = AppColors.primaryDarkest;
+    final Color selectedFilterColor = Colors.white.withValues(alpha: 0.98);
+    final Color selectedFilterBorderColor = AppColors.primary.withValues(
+      alpha: 0.92,
+    );
+    final Color unselectedFilterBorderColor = Colors.white.withValues(
+      alpha: 0.5,
+    );
+    const Color selectedFilterLabelColor = AppColors.primary;
+    const Color unselectedFilterLabelColor = AppColors.neutral0;
+    const Color selectedFilterCheckColor = AppColors.primary;
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
 
@@ -187,8 +196,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       checkmarkColor: selectedFilterCheckColor,
                                       backgroundColor:
                                           Colors.white.withValues(alpha: 0.84),
-                                      selectedColor: AppColors.primaryPastel
-                                          .withValues(alpha: 0.96),
+                                      selectedColor: selectedFilterColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
                                           AppRadii.sm,
@@ -196,17 +204,13 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       ),
                                       side: BorderSide(
                                         color: _selectedMuscleGroup == null
-                                            ? AppColors.primaryLight.withValues(
-                                                alpha: 0.9,
-                                              )
-                                            : Colors.white.withValues(
-                                                alpha: 0.5,
-                                              ),
+                                            ? selectedFilterBorderColor
+                                            : unselectedFilterBorderColor,
                                       ),
                                       labelStyle: TextStyle(
                                         color: _selectedMuscleGroup == null
-                                            ? AppColors.primaryDarkest
-                                            : AppColors.neutral0,
+                                            ? selectedFilterLabelColor
+                                            : unselectedFilterLabelColor,
                                         fontWeight: FontWeight.w600,
                                       ),
                                       onSelected: (_) => setState(
@@ -224,8 +228,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                             selectedFilterCheckColor,
                                         backgroundColor: Colors.white
                                             .withValues(alpha: 0.84),
-                                        selectedColor: AppColors.primaryPastel
-                                            .withValues(alpha: 0.96),
+                                        selectedColor: selectedFilterColor,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                             AppRadii.sm,
@@ -233,16 +236,13 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                         ),
                                         side: BorderSide(
                                           color: _selectedMuscleGroup == muscle
-                                              ? AppColors.primaryLight
-                                                  .withValues(alpha: 0.9)
-                                              : Colors.white.withValues(
-                                                  alpha: 0.5,
-                                                ),
+                                              ? selectedFilterBorderColor
+                                              : unselectedFilterBorderColor,
                                         ),
                                         labelStyle: TextStyle(
                                           color: _selectedMuscleGroup == muscle
-                                              ? AppColors.primaryDarkest
-                                              : AppColors.neutral0,
+                                              ? selectedFilterLabelColor
+                                              : unselectedFilterLabelColor,
                                           fontWeight: FontWeight.w600,
                                         ),
                                         label: Text(

@@ -34,10 +34,10 @@ class AppColors {
   static const Color lightPrimaryDarker = brand400;
   static const Color lightPrimaryDarkest = brand500;
   static const Color lightPrimaryAbyss = brand600;
-  static const Color lightPrimaryLight = brand100;
-  static const Color lightPrimaryPastel = brand50;
+  static const Color lightPrimaryLight = Color(0xFF7C67D8);
+  static const Color lightPrimaryPastel = Color(0xFF2E2A3A);
   static const Color lightAccent = brand300;
-  static const Color lightAccentLight = Color(0xFFBCA6FF);
+  static const Color lightAccentLight = Color(0xFF6659A8);
   static const Color lightBackground = neutral0;
   static const Color lightSurface = neutral100;
   static const Color lightSurfaceVariant = neutral200;
@@ -51,10 +51,10 @@ class AppColors {
   static const Color darkPrimaryDarker = brand400;
   static const Color darkPrimaryDarkest = brand500;
   static const Color darkPrimaryAbyss = brand600;
-  static const Color darkPrimaryLight = brand100;
-  static const Color darkPrimaryPastel = brand50;
+  static const Color darkPrimaryLight = Color(0xFF7C67D8);
+  static const Color darkPrimaryPastel = Color(0xFF2E2A3A);
   static const Color darkAccent = brand300;
-  static const Color darkAccentLight = Color(0xFFBCA6FF);
+  static const Color darkAccentLight = Color(0xFF6659A8);
   static const Color darkBackground = neutral0;
   static const Color darkSurface = neutral100;
   static const Color darkSurfaceVariant = neutral200;
@@ -68,10 +68,10 @@ class AppColors {
   static const Color primaryDarker = brand400;
   static const Color primaryDarkest = brand500;
   static const Color primaryAbyss = brand600;
-  static const Color primaryLight = brand100;
-  static const Color primaryPastel = brand50;
+  static const Color primaryLight = Color(0xFF7C67D8);
+  static const Color primaryPastel = Color(0xFF2E2A3A);
   static const Color accent = brand300;
-  static const Color accentLight = Color(0xFFBCA6FF);
+  static const Color accentLight = Color(0xFF6659A8);
   static const Color background = neutral0;
   static const Color surface = neutral100;
   static const Color surfaceVariant = neutral200;
@@ -100,11 +100,11 @@ class AppColors {
   // ── Navigation surface ────────────────────────────────────────────────────
   // neutral100 at ~91 % opacity so page content subtly bleeds on scroll.
   static const Color navBarSurface = Color(0xE81C1C1C);
-  static const Color navCenterButtonSelected = primaryLight;
-  static const Color navCenterButtonUnselected = primary;
+  static const Color navCenterButtonSelected = primary;
+  static const Color navCenterButtonUnselected = primaryDark;
   static const Color navCenterButtonBorder = textPrimary;
   static const Color navCenterButtonIcon = textPrimary;
-  static const Color navCenterButtonShadow = primaryLight;
+  static const Color navCenterButtonShadow = primaryDark;
 
   // Keep old non-brand colour names referenced in a couple of places
   static const Color nearBlack = neutral0;
