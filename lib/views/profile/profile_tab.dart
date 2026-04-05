@@ -485,13 +485,26 @@ class _ProfileHeaderSliver extends StatelessWidget {
               // White section — top padding accommodates avatar overlap
               Container(
                 color: AppColors.surface,
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  _kAvatarTotalRadius + AppSpacing.sm,
-                  AppSpacing.md,
-                  AppSpacing.md,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        _kAvatarTotalRadius + AppSpacing.lg,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: _InlineStats(isFrench: isFrench),
+                    ),
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors.babyBlueIce
+                          .withValues(alpha: AppOpacity.visible),
+                    ),
+                  ],
                 ),
-                child: _InlineStats(isFrench: isFrench),
               ),
             ],
           ),
