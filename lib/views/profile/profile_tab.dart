@@ -19,16 +19,17 @@ import 'package:workin_fit/providers/friend_providers.dart';
 import 'package:workin_fit/views/achievements/achievements_page.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
 import 'package:workin_fit/views/social/friend_search_screen.dart';
-import 'package:workin_fit/views/welcome/choose_language.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/providers/locale_provider.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
 
 const double _kAvatarRadius = 52.0;
 const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
-// Banner ends exactly at the avatar centre (half the avatar is inside the banner).
-const double _kBannerHeight = _kAvatarTotalRadius;
+// Banner is tall enough to fully contain the avatar with comfortable margins.
+const double _kBannerHeight = 130.0;
 const double _kProfileBlockRadius = AppRadii.lg;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
@@ -108,6 +109,41 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     } catch (_) {}
   }
 
+  Future<void> _confirmLogout(bool isFrench) async {
+    final confirmed = await AppDialog.showConfirm(
+      context: context,
+      title: isFrench ? 'Se déconnecter ?' : 'Log out?',
+      message: isFrench
+          ? 'Êtes-vous sûr de vouloir vous déconnecter ?'
+          : 'Are you sure you want to log out?',
+      confirmLabel: isFrench ? 'Déconnecter' : 'Log out',
+      cancelLabel: isFrench ? 'Annuler' : 'Cancel',
+      icon: Icons.logout_rounded,
+      iconColor: AppColors.error,
+      destructive: true,
+    );
+    if (confirmed == true) {
+      await _logout();
+    }
+  }
+
+  Future<void> _openEditProfile(String username) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _EditProfileSheet(
+        currentUsername: username,
+        userId: user.uid,
+        email: user.email,
+      ),
+    );
+    // Refresh in case username was updated
+    ref.invalidate(_userProfileProvider);
+  }
+
   void _showComingSoon(bool isFrench) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -120,10 +156,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
   }
 
   void _openLanguage() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const LanguageSelectionScreen(),
-      ),
+    showDialog<void>(
+      context: context,
+      builder: (_) => const _LanguagePickerDialog(),
     );
   }
 
@@ -238,7 +273,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                       uploadingImage: _uploadingImage,
                       isFrench: isFrench,
                       onEditAvatar: _pickAndUploadImage,
-                      onEditProfile: () => _showComingSoon(isFrench),
+                      onEditProfile: () => _openEditProfile(username),
                     ),
                     // ─── Sticky tab bar ────────────────────────────────
                     SliverPersistentHeader(
@@ -319,13 +354,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                                         onTap: _openAchievements,
                                       ),
                                       _MenuItem(
-                                        icon: Icons.edit_rounded,
-                                        label: isFrench
-                                            ? 'Modifier le profil'
-                                            : 'Edit profile',
-                                        onTap: () => _showComingSoon(isFrench),
-                                      ),
-                                      _MenuItem(
                                         icon: Icons.language_rounded,
                                         label: isFrench ? 'Langue' : 'Language',
                                         onTap: _openLanguage,
@@ -353,7 +381,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                             const SizedBox(height: AppSpacing.md),
                             _LogoutButton(
                               label: isFrench ? 'Se déconnecter' : 'Log out',
-                              onTap: _logout,
+                              onTap: () => _confirmLogout(isFrench),
                             ),
                             const SizedBox(height: 104),
                           ],
@@ -400,114 +428,127 @@ class _ProfileHeaderSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double topPadding = MediaQuery.of(context).padding.top;
+    final double totalBannerHeight = _kBannerHeight + topPadding;
 
     return SliverToBoxAdapter(
-      child: Stack(
-        clipBehavior: Clip.none,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          // ── Background: banner on top, white card below ──────────────
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              // Top banner — gradient, reaches to the avatar centre line
-              SizedBox(
-                height: _kBannerHeight + topPadding,
-                child: const AppTopBarBackground(),
-              ),
+          // ── Banner: gradient bg + avatar left + username + edit FAB ──
+          SizedBox(
+            height: totalBannerHeight,
+            child: Stack(
+              children: <Widget>[
+                // Gradient background
+                const Positioned.fill(child: AppTopBarBackground()),
 
-              // White info section
-              Container(
-                color: AppColors.surface,
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl,
-                  _kAvatarTotalRadius + AppSpacing.sm,
-                  AppSpacing.xl,
-                  AppSpacing.xl,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    // Name
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontFamily: 'AppFontMedium',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
+                // Content row: avatar (left) + username (right)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppSpacing.lg,
+                    topPadding +
+                        (_kBannerHeight - _kAvatarTotalRadius * 2) / 2,
+                    AppSpacing.lg,
+                    (_kBannerHeight - _kAvatarTotalRadius * 2) / 2,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // Avatar
+                      _AvatarWidget(
+                        photoUrl: photoUrl,
+                        uploading: uploadingImage,
+                        onTap: onEditAvatar,
                       ),
-                    ),
-
-                    const SizedBox(height: 5),
-
-                    // Email badge
-                    if (email != null && email!.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary
-                              .withValues(alpha: AppOpacity.faint),
-                          borderRadius: BorderRadius.circular(AppRadii.lg),
-                          border: Border.all(
-                            color: AppColors.primary
-                                .withValues(alpha: AppOpacity.muted),
+                      const SizedBox(width: AppSpacing.md),
+                      // Username
+                      Expanded(
+                        child: Text(
+                          username,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'AppFontMedium',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.3,
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              Icons.mail_outline_rounded,
-                              size: 12,
-                              color: AppColors.textSecondary
-                                  .withValues(alpha: AppOpacity.prominent),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              email!,
-                              style: TextStyle(
-                                color: AppColors.textSecondary
-                                    .withValues(alpha: 0.85),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Inline stats row
-                    _InlineStats(isFrench: isFrench),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Edit profile button
-                    _EditProfileButton(
-                      label: isFrench ? 'Modifier le profil' : 'Edit Profile',
-                      onTap: onEditProfile,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+
+                // Edit FAB — bottom-right of banner
+                Positioned(
+                  bottom: AppSpacing.sm,
+                  right: AppSpacing.md,
+                  child: _BannerEditButton(
+                    label: isFrench ? 'Modifier' : 'Edit',
+                    onTap: onEditProfile,
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          // ── Avatar — overlaps banner / white boundary ─────────────────
-          Positioned(
-            top: _kBannerHeight + topPadding - _kAvatarTotalRadius,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: _AvatarWidget(
-                photoUrl: photoUrl,
-                uploading: uploadingImage,
-                onTap: onEditAvatar,
-              ),
+          // ── White info section below banner ──────────────────────────
+          Container(
+            color: AppColors.surface,
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.md,
+              AppSpacing.xl,
+              AppSpacing.xl,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Email badge — left-aligned below banner
+                if (email != null && email!.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary
+                          .withValues(alpha: AppOpacity.faint),
+                      borderRadius: BorderRadius.circular(AppRadii.lg),
+                      border: Border.all(
+                        color: AppColors.primary
+                            .withValues(alpha: AppOpacity.muted),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.mail_outline_rounded,
+                          size: 12,
+                          color: AppColors.textSecondary
+                              .withValues(alpha: AppOpacity.prominent),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          email!,
+                          style: TextStyle(
+                            color:
+                                AppColors.textSecondary.withValues(alpha: 0.85),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                const SizedBox(height: AppSpacing.lg),
+
+                // Inline stats row
+                _InlineStats(isFrench: isFrench),
+              ],
             ),
           ),
         ],
@@ -595,61 +636,6 @@ class _InlineStatItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Edit profile button — gradient, full-width
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _EditProfileButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _EditProfileButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: <Color>[AppColors.primaryDarker, AppColors.primary],
-        ),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: AppOpacity.thin),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm + 4),
-            child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'AppFontMedium',
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -1841,6 +1827,387 @@ class _FriendsEmptyState extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Banner edit button — small glass-style pill at bottom-right of banner
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BannerEditButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _BannerEditButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xxs + 2,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: AppOpacity.light),
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: AppOpacity.mild),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Edit profile bottom sheet
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _EditProfileSheet extends ConsumerStatefulWidget {
+  final String currentUsername;
+  final String userId;
+  final String? email;
+
+  const _EditProfileSheet({
+    required this.currentUsername,
+    required this.userId,
+    this.email,
+  });
+
+  @override
+  ConsumerState<_EditProfileSheet> createState() => _EditProfileSheetState();
+}
+
+class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
+  late final TextEditingController _controller;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.currentUsername);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final String newName = _controller.text.trim();
+    if (newName.isEmpty || newName == widget.currentUsername) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      await FirestoreService().createOrUpdateUserProfile(
+        userId: widget.userId,
+        username: newName,
+        email: widget.email ?? '',
+      );
+      final user = ref.read(currentUserProvider);
+      await user?.updateDisplayName(newName);
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update profile.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+    final double bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.lg + bottomPadding,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // Handle bar
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.textTertiary
+                    .withValues(alpha: AppOpacity.half),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            isFrench ? 'Modifier le profil' : 'Edit Profile',
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontFamily: 'AppFontMedium',
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            isFrench ? 'Nom d\'utilisateur' : 'Username',
+            style: TextStyle(
+              color: AppColors.textSecondary
+                  .withValues(alpha: AppOpacity.prominent),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            style: const TextStyle(color: AppColors.textPrimary),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.surfaceVariant,
+              hintText: isFrench ? 'Votre nom' : 'Your name',
+              hintStyle: TextStyle(
+                color: AppColors.textSecondary
+                    .withValues(alpha: AppOpacity.half),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: BorderSide(
+                  color: AppColors.primary.withValues(alpha: AppOpacity.muted),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: BorderSide(
+                  color:
+                      AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: OutlinedButton(
+                  onPressed:
+                      _saving ? null : () => Navigator.of(context).pop(),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.textSecondary,
+                    side: BorderSide(
+                      color:
+                          AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                    ),
+                  ),
+                  child: Text(isFrench ? 'Annuler' : 'Cancel'),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                    ),
+                  ),
+                  child: _saving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          isFrench ? 'Sauvegarder' : 'Save',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Language picker dialog
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _LanguagePickerDialog extends ConsumerWidget {
+  const _LanguagePickerDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+
+    return AppDialog(
+      title: isFrench ? 'Langue' : 'Language',
+      icon: Icons.language_rounded,
+      iconColor: AppColors.primary,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _LanguageOption(
+              flag: '🇬🇧',
+              label: 'English',
+              isSelected: !isFrench,
+              onTap: () {
+                ref.read(localeProvider.notifier).setLocale('en');
+                Navigator.of(context).pop();
+              },
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            _LanguageOption(
+              flag: '🇫🇷',
+              label: 'Français',
+              isSelected: isFrench,
+              onTap: () {
+                ref.read(localeProvider.notifier).setLocale('fr');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: <AppDialogAction<dynamic>>[
+        AppDialogAction<bool>(
+          label: isFrench ? 'Fermer' : 'Close',
+          returnValue: false,
+        ),
+      ],
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  final String flag;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LanguageOption({
+    required this.flag,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm + 2,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: AppOpacity.faint)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: AppOpacity.muted)
+                : AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Text(flag, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.textPrimary,
+                  fontSize: 16,
+                  fontWeight:
+                      isSelected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
           ],
         ),
       ),
