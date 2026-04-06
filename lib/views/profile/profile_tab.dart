@@ -19,17 +19,18 @@ import 'package:workin_fit/providers/friend_providers.dart';
 import 'package:workin_fit/views/achievements/achievements_page.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
 import 'package:workin_fit/views/social/friend_search_screen.dart';
-import 'package:workin_fit/views/welcome/choose_language.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
+import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/providers/locale_provider.dart';
 
 // ─── Avatar size constants ────────────────────────────────────────────────────
 
 const double _kAvatarRadius = 52.0;
 const double _kRingWidth = 8.0;
 const double _kAvatarTotalRadius = _kAvatarRadius + _kRingWidth; // 60
-// Banner ends exactly at the avatar centre (half the avatar is inside the banner).
-const double _kBannerHeight = _kAvatarTotalRadius;
-const double _kProfileBlockRadius = AppRadii.lg;
+// Banner ends at the avatar's vertical centre (avatar straddles the boundary).
+const double _kBannerHeight = 100.0;
+const double _kProfileBlockRadius = AppRadii.sm;
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -38,6 +39,29 @@ final _userProfileProvider =
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
   return FirestoreService().getUserProfile(user.uid);
+});
+
+final _profileStatsProvider =
+    FutureProvider.autoDispose<({int sessions, int programs, int totalHours})>(
+        (ref) async {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return (sessions: 0, programs: 0, totalHours: 0);
+  final svc = FirestoreService();
+  final results = await Future.wait([
+    svc.getWorkoutHistory(userId: user.uid),
+    svc.getProgramsCompleted(user.uid),
+  ]);
+  final history = results[0] as List<Map<String, dynamic>>;
+  final programs = results[1] as int;
+  int totalSeconds = 0;
+  for (final entry in history) {
+    totalSeconds += (entry['duration'] as num?)?.toInt() ?? 0;
+  }
+  return (
+    sessions: history.length,
+    programs: programs,
+    totalHours: (totalSeconds / 3600).round(),
+  );
 });
 
 // ─── Main tab ────────────────────────────────────────────────────────────────
@@ -108,6 +132,41 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     } catch (_) {}
   }
 
+  Future<void> _confirmLogout(bool isFrench) async {
+    final confirmed = await AppDialog.showConfirm(
+      context: context,
+      title: isFrench ? 'Se déconnecter ?' : 'Log out?',
+      message: isFrench
+          ? 'Êtes-vous sûr de vouloir vous déconnecter ?'
+          : 'Are you sure you want to log out?',
+      confirmLabel: isFrench ? 'Déconnecter' : 'Log out',
+      cancelLabel: isFrench ? 'Annuler' : 'Cancel',
+      icon: Icons.logout_rounded,
+      iconColor: AppColors.error,
+      destructive: true,
+    );
+    if (confirmed == true) {
+      await _logout();
+    }
+  }
+
+  Future<void> _openEditProfile(String username) async {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _EditProfileSheet(
+        currentUsername: username,
+        userId: user.uid,
+        email: user.email,
+      ),
+    );
+    // Refresh in case username was updated
+    ref.invalidate(_userProfileProvider);
+  }
+
   void _showComingSoon(bool isFrench) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -120,10 +179,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
   }
 
   void _openLanguage() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const LanguageSelectionScreen(),
-      ),
+    showDialog<void>(
+      context: context,
+      builder: (_) => const _LanguagePickerDialog(),
     );
   }
 
@@ -223,7 +281,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
           builder: (BuildContext tabContext) {
             final TabController tabController =
                 DefaultTabController.of(tabContext);
-
             return Scaffold(
               backgroundColor: AppColors.surfaceVariant,
               body: NestedScrollView(
@@ -231,14 +288,18 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                     (BuildContext ctx, bool innerBoxIsScrolled) {
                   return <Widget>[
                     // ─── Banner + header info ──────────────────────────
-                    _ProfileHeaderSliver(
-                      username: username,
-                      email: user?.email,
-                      photoUrl: user?.photoURL,
-                      uploadingImage: _uploadingImage,
-                      isFrench: isFrench,
-                      onEditAvatar: _pickAndUploadImage,
-                      onEditProfile: () => _showComingSoon(isFrench),
+                    SliverOverlapAbsorber(
+                      handle:
+                          NestedScrollView.sliverOverlapAbsorberHandleFor(ctx),
+                      sliver: _ProfileHeaderSliver(
+                        username: username,
+                        email: user?.email,
+                        photoUrl: user?.photoURL,
+                        uploadingImage: _uploadingImage,
+                        isFrench: isFrench,
+                        onEditAvatar: _pickAndUploadImage,
+                        onEditProfile: () => _openEditProfile(username),
+                      ),
                     ),
                     // ─── Sticky tab bar ────────────────────────────────
                     SliverPersistentHeader(
@@ -258,105 +319,122 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                     controller: tabController,
                     children: <Widget>[
                       // ─── Tab 0: Profile ────────────────────────────────
-                      RefreshIndicator(
-                        onRefresh: () async {
-                          ref.invalidate(_userProfileProvider);
-                          ref.invalidate(streakDataProvider);
-                          await Future<void>.delayed(
-                            const Duration(milliseconds: 600),
-                          );
-                        },
-                        color: AppColors.primary,
-                        backgroundColor: AppColors.surface,
-                        child: ListView(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.md,
-                            AppSpacing.md,
-                            AppSpacing.md,
-                            0,
-                          ),
-                          children: <Widget>[
-                            _ProfileSection(
-                              title: isFrench
-                                  ? 'Série & Compte'
-                                  : 'Streak & Account',
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>[
-                                  _SectionSubheader(
-                                    label: isFrench ? 'Série' : 'Streak',
-                                  ),
-                                  _StreakCalendar(isFrench: isFrench),
-                                  Divider(
-                                    height: 1,
-                                    color: AppColors.babyBlueIce
-                                        .withValues(alpha: AppOpacity.visible),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.all(AppSpacing.md),
-                                    child: _StatsGraphButton(
-                                      label: isFrench
-                                          ? 'Statistiques & Graphiques'
-                                          : 'Stats & Graph',
-                                      onTap: _openStatsGraph,
+                      Builder(
+                        builder: (BuildContext innerContext) =>
+                            RefreshIndicator(
+                          onRefresh: () async {
+                            ref.invalidate(_userProfileProvider);
+                            ref.invalidate(streakDataProvider);
+                            await Future<void>.delayed(
+                              const Duration(milliseconds: 600),
+                            );
+                          },
+                          color: AppColors.primary,
+                          backgroundColor: AppColors.surface,
+                          child: CustomScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            slivers: <Widget>[
+                              SliverOverlapInjector(
+                                handle:
+                                    NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                        innerContext,
+                                    ),
+                              ),
+                              SliverPadding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  AppSpacing.xs,
+                                  AppSpacing.sm,
+                                  AppSpacing.xs,
+                                  0,
+                                ),
+                                sliver: SliverToBoxAdapter(
+                                  child: _ProfileSection(
+                                    title: isFrench
+                                        ? 'Série & Compte'
+                                        : 'Streak & Account',
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: <Widget>[
+                                        _StreakCalendar(isFrench: isFrench),
+                                        Divider(
+                                          height: 1,
+                                          color: AppColors.babyBlueIce
+                                              .withValues(
+                                            alpha: AppOpacity.visible,
+                                          ),
+                                        ),
+                                        _SectionSubheader(
+                                          label:
+                                              isFrench ? 'Compte' : 'Account',
+                                        ),
+                                        _MenuList(
+                                          items: <_MenuItem>[
+                                            _MenuItem(
+                                              icon: Icons.insights_rounded,
+                                              label: isFrench
+                                                  ? 'Statistiques & Graphiques'
+                                                  : 'Stats & Graph',
+                                              onTap: _openStatsGraph,
+                                            ),
+                                            _MenuItem(
+                                              icon:
+                                                  Icons.emoji_events_rounded,
+                                              label: isFrench
+                                                  ? 'Trophées'
+                                                  : 'Trophies',
+                                              onTap: _openAchievements,
+                                            ),
+                                            _MenuItem(
+                                              icon: Icons.language_rounded,
+                                              label: isFrench
+                                                  ? 'Langue'
+                                                  : 'Language',
+                                              onTap: _openLanguage,
+                                            ),
+                                            _MenuItem(
+                                              icon: Icons.settings_rounded,
+                                              label: isFrench
+                                                  ? 'Paramètres'
+                                                  : 'Settings',
+                                              onTap: () =>
+                                                  _showComingSoon(isFrench),
+                                            ),
+                                            _MenuItem(
+                                              icon:
+                                                  Icons.lock_outline_rounded,
+                                              label: isFrench
+                                                  ? 'Confidentialité'
+                                                  : 'Privacy',
+                                              onTap: () =>
+                                                  _showComingSoon(isFrench),
+                                              isLast: true,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Divider(
-                                    height: 1,
-                                    color: AppColors.babyBlueIce
-                                        .withValues(alpha: AppOpacity.visible),
-                                  ),
-                                  _SectionSubheader(
-                                    label: isFrench ? 'Compte' : 'Account',
-                                  ),
-                                  _MenuList(
-                                    items: <_MenuItem>[
-                                      _MenuItem(
-                                        icon: Icons.emoji_events_rounded,
-                                        label:
-                                            isFrench ? 'Trophées' : 'Trophies',
-                                        onTap: _openAchievements,
-                                      ),
-                                      _MenuItem(
-                                        icon: Icons.edit_rounded,
-                                        label: isFrench
-                                            ? 'Modifier le profil'
-                                            : 'Edit profile',
-                                        onTap: () => _showComingSoon(isFrench),
-                                      ),
-                                      _MenuItem(
-                                        icon: Icons.language_rounded,
-                                        label: isFrench ? 'Langue' : 'Language',
-                                        onTap: _openLanguage,
-                                      ),
-                                      _MenuItem(
-                                        icon: Icons.settings_rounded,
-                                        label: isFrench
-                                            ? 'Paramètres'
-                                            : 'Settings',
-                                        onTap: () => _showComingSoon(isFrench),
-                                      ),
-                                      _MenuItem(
-                                        icon: Icons.lock_outline_rounded,
-                                        label: isFrench
-                                            ? 'Confidentialité'
-                                            : 'Privacy',
-                                        onTap: () => _showComingSoon(isFrench),
-                                        isLast: true,
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            _LogoutButton(
-                              label: isFrench ? 'Se déconnecter' : 'Log out',
-                              onTap: _logout,
-                            ),
-                            const SizedBox(height: 104),
-                          ],
+                              SliverPadding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  AppSpacing.xs,
+                                  AppSpacing.sm,
+                                  AppSpacing.xs,
+                                  AppSpacing.sm,
+                                ),
+                                sliver: SliverToBoxAdapter(
+                                  child: _LogoutButton(
+                                    label: isFrench
+                                        ? 'Se déconnecter'
+                                        : 'Log out',
+                                    onTap: () => _confirmLogout(isFrench),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
@@ -405,91 +483,89 @@ class _ProfileHeaderSliver extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[
-          // ── Background: banner on top, white card below ──────────────
+          // ── Banner + white section ────────────────────────────────────
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Top banner — gradient, reaches to the avatar centre line
+              // Top banner — gradient bg + username/email + edit FAB
               SizedBox(
                 height: _kBannerHeight + topPadding,
-                child: const AppTopBarBackground(),
-              ),
-
-              // White info section
-              Container(
-                color: AppColors.surface,
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl,
-                  _kAvatarTotalRadius + AppSpacing.sm,
-                  AppSpacing.xl,
-                  AppSpacing.xl,
-                ),
-                child: Column(
+                child: Stack(
+                  clipBehavior: Clip.none,
                   children: <Widget>[
-                    // Name
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontFamily: 'AppFontMedium',
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
+                    const Positioned.fill(child: AppTopBarBackground()),
+
+                    // Username — right of avatar space, inside banner
+                    Positioned(
+                      top: topPadding +
+                          _kBannerHeight -
+                          _kAvatarTotalRadius +
+                          AppSpacing.lg,
+                      left: AppSpacing.lg +
+                          _kAvatarTotalRadius * 2 +
+                          AppSpacing.md,
+                      right: 60,
+                      child: Text(
+                        username,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'AppFontMedium',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
+                        ),
                       ),
                     ),
 
-                    const SizedBox(height: 5),
-
-                    // Email badge
-                    if (email != null && email!.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary
-                              .withValues(alpha: AppOpacity.faint),
-                          borderRadius: BorderRadius.circular(AppRadii.lg),
-                          border: Border.all(
-                            color: AppColors.primary
-                                .withValues(alpha: AppOpacity.muted),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              Icons.mail_outline_rounded,
-                              size: 12,
-                              color: AppColors.textSecondary
-                                  .withValues(alpha: AppOpacity.prominent),
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              email!,
-                              style: TextStyle(
-                                color: AppColors.textSecondary
-                                    .withValues(alpha: 0.85),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+                    // Edit FAB — bottom-right of banner
+                    Positioned(
+                      bottom: AppSpacing.sm,
+                      right: AppSpacing.md,
+                      child: _BannerEditButton(
+                        label: isFrench ? 'Modifier' : 'Edit',
+                        onTap: onEditProfile,
                       ),
+                    ),
+                  ],
+                ),
+              ),
 
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Inline stats row
-                    _InlineStats(isFrench: isFrench),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Edit profile button
-                    _EditProfileButton(
-                      label: isFrench ? 'Modifier le profil' : 'Edit Profile',
-                      onTap: onEditProfile,
+              // White section — top padding accommodates avatar overlap
+              Container(
+                color: AppColors.surface,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    const SizedBox(
+                      height: _kAvatarTotalRadius + AppSpacing.xl,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                      ),
+                      child: Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: AppColors.babyBlueIce
+                            .withValues(alpha: AppOpacity.visible),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.md,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                        AppSpacing.md,
+                      ),
+                      child: _InlineStats(isFrench: isFrench),
+                    ),
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors.babyBlueIce
+                          .withValues(alpha: AppOpacity.visible),
                     ),
                   ],
                 ),
@@ -497,17 +573,61 @@ class _ProfileHeaderSliver extends StatelessWidget {
             ],
           ),
 
-          // ── Avatar — overlaps banner / white boundary ─────────────────
-          Positioned(
-            top: _kBannerHeight + topPadding - _kAvatarTotalRadius,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: _AvatarWidget(
-                photoUrl: photoUrl,
-                uploading: uploadingImage,
-                onTap: onEditAvatar,
+          // ── Email badge — below banner line, right of avatar ────────
+          if (email != null && email!.isNotEmpty)
+            Positioned(
+              top: topPadding + _kBannerHeight + AppSpacing.xs,
+              left: AppSpacing.lg + _kAvatarTotalRadius * 2 + AppSpacing.md,
+              right: AppSpacing.md,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.xs,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  border: Border.all(
+                    color:
+                        AppColors.primary.withValues(alpha: AppOpacity.muted),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.mail_outline_rounded,
+                      size: 11,
+                      color: AppColors.textSecondary
+                          .withValues(alpha: AppOpacity.prominent),
+                    ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: Text(
+                        email!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColors.textSecondary
+                              .withValues(alpha: AppOpacity.bold),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            ),
+
+          // ── Avatar — left-aligned, centre at banner/white boundary ────
+          Positioned(
+            top: topPadding + _kBannerHeight - _kAvatarTotalRadius,
+            left: AppSpacing.lg,
+            child: _AvatarWidget(
+              photoUrl: photoUrl,
+              uploading: uploadingImage,
+              onTap: onEditAvatar,
             ),
           ),
         ],
@@ -520,20 +640,27 @@ class _ProfileHeaderSliver extends StatelessWidget {
 // Inline stats — Posts / Followers / Following style
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _InlineStats extends StatelessWidget {
+class _InlineStats extends ConsumerWidget {
   final bool isFrench;
 
   const _InlineStats({required this.isFrench});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(_profileStatsProvider);
+    final stats = statsAsync.valueOrNull;
+
+    final String sessions = stats != null ? '${stats.sessions}' : '—';
+    final String programs = stats != null ? '${stats.programs}' : '—';
+    final String totalTime = stats != null ? '${stats.totalHours}h' : '—';
+
     return IntrinsicHeight(
       child: Row(
         children: <Widget>[
           Expanded(
             child: _InlineStatItem(
-              value: '48',
-              label: isFrench ? 'Séances' : 'Workouts',
+              value: sessions,
+              label: isFrench ? 'Séances' : 'Sessions',
             ),
           ),
           VerticalDivider(
@@ -543,7 +670,7 @@ class _InlineStats extends StatelessWidget {
           ),
           Expanded(
             child: _InlineStatItem(
-              value: '3',
+              value: programs,
               label: isFrench ? 'Programmes' : 'Programs',
             ),
           ),
@@ -554,7 +681,7 @@ class _InlineStats extends StatelessWidget {
           ),
           Expanded(
             child: _InlineStatItem(
-              value: '72h',
+              value: totalTime,
               label: isFrench ? 'Temps total' : 'Total time',
             ),
           ),
@@ -595,61 +722,6 @@ class _InlineStatItem extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Edit profile button — gradient, full-width
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _EditProfileButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _EditProfileButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: <Color>[AppColors.primaryDarker, AppColors.primary],
-        ),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: AppOpacity.thin),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm + 4),
-            child: Center(
-              child: Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'AppFontMedium',
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -836,74 +908,6 @@ class _SectionSubheader extends StatelessWidget {
   }
 }
 
-class _StatsGraphButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _StatsGraphButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: <Color>[AppColors.primaryDarker, AppColors.primary],
-        ),
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.22),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm + 2,
-            ),
-            child: Row(
-              children: <Widget>[
-                const Icon(
-                  Icons.insights_rounded,
-                  color: Colors.white,
-                  size: 18,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'AppFontMedium',
-                    ),
-                  ),
-                ),
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Streak calendar — shows last 7 days
 // ─────────────────────────────────────────────────────────────────────────────
@@ -942,88 +946,75 @@ class _StreakCalendar extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Big streak number
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: <Widget>[
-                  const Icon(
-                    Icons.local_fire_department_rounded,
-                    color: AppColors.warning,
-                    size: 32,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '$currentStreak',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontFamily: 'AppFontMedium',
-                      fontSize: 40,
-                      fontWeight: FontWeight.w900,
-                      height: 1,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    isFrench ? 'jours' : 'days',
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: AppSpacing.md),
-
-              // Day bubbles
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List<Widget>.generate(7, (int i) {
-                  return _DayBubble(
-                    letter: letters[(days[i].weekday - 1) % 7],
-                    worked: lastSevenDays[i],
-                    isToday: i == 6,
-                  );
-                }),
-              ),
-
-              const SizedBox(height: AppSpacing.md),
-
-              // Best streak badge
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xxs + 2,
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.babyBlueIce
-                      .withValues(alpha: AppOpacity.medium),
-                  borderRadius: BorderRadius.circular(AppRadii.lg),
+                  color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(
+                      alpha: AppOpacity.medium,
+                    ),
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Icon(
-                      Icons.emoji_events_rounded,
-                      color: AppColors.cornflowerBlue,
-                      size: 14,
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      isFrench
-                          ? 'Meilleur : $bestStreak jours'
-                          : 'Best: $bestStreak days',
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: _StreakSummaryStat(
+                          icon: Icons.local_fire_department_rounded,
+                          iconColor: AppColors.warning,
+                          value: '$currentStreak',
+                          unit: isFrench ? 'jours' : 'days',
+                          label: isFrench ? 'Actuelle' : 'Current',
+                        ),
                       ),
+                      VerticalDivider(
+                        color: AppColors.babyBlueIce
+                            .withValues(alpha: AppOpacity.visible),
+                        thickness: 1,
+                        width: AppSpacing.md,
+                      ),
+                      Expanded(
+                        child: _StreakSummaryStat(
+                          icon: Icons.emoji_events_rounded,
+                          iconColor: AppColors.cornflowerBlue,
+                          value: '$bestStreak',
+                          unit: isFrench ? 'jours' : 'days',
+                          label: isFrench ? 'Record' : 'Best',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xs,
+                  AppSpacing.xs,
+                  AppSpacing.xs,
+                  AppSpacing.xxs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceVariant
+                      .withValues(alpha: AppOpacity.moderate),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                  border: Border.all(
+                    color: AppColors.babyBlueIce.withValues(
+                      alpha: AppOpacity.mild,
                     ),
-                  ],
+                  ),
+                ),
+                child: _StreakDayTrack(
+                  days: days,
+                  lastSevenDays: lastSevenDays,
+                  letters: letters,
                 ),
               ),
             ],
@@ -1034,15 +1025,165 @@ class _StreakCalendar extends ConsumerWidget {
   }
 }
 
-class _DayBubble extends StatelessWidget {
+class _StreakSummaryStat extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String value;
+  final String unit;
+  final String label;
+
+  const _StreakSummaryStat({
+    required this.icon,
+    required this.iconColor,
+    required this.value,
+    required this.unit,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(icon, color: iconColor, size: 18),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              label,
+              style: TextStyle(
+                color: AppColors.textSecondary.withValues(
+                  alpha: AppOpacity.prominent,
+                ),
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text(
+              value,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontFamily: 'AppFontMedium',
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                height: 1,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 1),
+              child: Text(
+                unit,
+                style: TextStyle(
+                  color: AppColors.textSecondary.withValues(
+                    alpha: AppOpacity.bold,
+                  ),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _StreakDayTrack extends StatelessWidget {
+  final List<DateTime> days;
+  final List<bool> lastSevenDays;
+  final List<String> letters;
+
+  const _StreakDayTrack({
+    required this.days,
+    required this.lastSevenDays,
+    required this.letters,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const double maxNodeSize = 34;
+    const double minNodeSize = 24;
+    const double minGap = 4;
+    const double maxGap = 14;
+    const double connectorHeight = 10;
+    const double labelHeight = 14;
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double availableWidth = constraints.maxWidth;
+        final double estimatedGap = (availableWidth - (maxNodeSize * 7)) / 6;
+        final double gap = estimatedGap.clamp(minGap, maxGap).toDouble();
+        final double nodeSize = ((availableWidth - (gap * 6)) / 7)
+            .clamp(minNodeSize, maxNodeSize)
+            .toDouble();
+        final double topOffset =
+            labelHeight + AppSpacing.xs + ((nodeSize - connectorHeight) / 2);
+        final double totalHeight = labelHeight + AppSpacing.xs + nodeSize;
+
+        return SizedBox(
+          height: totalHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              for (int i = 0; i < 6; i++)
+                Positioned(
+                  left: ((nodeSize + gap) * i) + nodeSize,
+                  top: topOffset,
+                  width: gap,
+                  height: connectorHeight,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: lastSevenDays[i] && lastSevenDays[i + 1]
+                          ? AppColors.primary
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+              for (int i = 0; i < 7; i++)
+                Positioned(
+                  left: (nodeSize + gap) * i,
+                  top: 0,
+                  width: nodeSize,
+                  child: _DaySquare(
+                    letter: letters[(days[i].weekday - 1) % 7],
+                    worked: lastSevenDays[i],
+                    isToday: i == 6,
+                    size: nodeSize,
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DaySquare extends StatelessWidget {
   final String letter;
   final bool worked;
   final bool isToday;
+  final double size;
 
-  const _DayBubble({
+  const _DaySquare({
     required this.letter,
     required this.worked,
     required this.isToday,
+    required this.size,
   });
 
   @override
@@ -1061,16 +1202,23 @@ class _DayBubble extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Container(
-          width: 34,
-          height: 34,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(4),
             color: worked
                 ? AppColors.primary
                 : AppColors.babyBlueIce.withValues(alpha: AppOpacity.moderate),
-            border: isToday
-                ? Border.all(color: AppColors.primaryDark, width: 2)
-                : null,
+            border: Border.all(
+              color: isToday
+                  ? AppColors.primaryLight
+                  : worked
+                      ? AppColors.primary
+                      : AppColors.babyBlueIce.withValues(
+                          alpha: AppOpacity.visible,
+                        ),
+              width: isToday ? 2 : 1,
+            ),
             boxShadow: worked
                 ? <BoxShadow>[
                     BoxShadow(
@@ -1086,10 +1234,10 @@ class _DayBubble extends StatelessWidget {
             child: worked
                 ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
                 : Container(
-                    width: 6,
-                    height: 6,
+                    width: 8,
+                    height: 8,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(1.5),
                       color: AppColors.textSecondary
                           .withValues(alpha: AppOpacity.mild),
                     ),
@@ -1146,15 +1294,29 @@ class _MenuList extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     Container(
-                      width: 34,
-                      height: 34,
+                      width: 32,
+                      height: 32,
                       decoration: BoxDecoration(
                         color: AppColors.primary
                             .withValues(alpha: AppOpacity.faint),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: AppColors.primary
+                              .withValues(alpha: AppOpacity.muted),
+                        ),
                       ),
-                      child:
-                          Icon(item.icon, color: AppColors.primary, size: 17),
+                      child: Icon(
+                        item.icon,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      width: 1,
+                      height: 24,
+                      color: AppColors.babyBlueIce
+                          .withValues(alpha: AppOpacity.visible),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
@@ -1180,7 +1342,8 @@ class _MenuList extends StatelessWidget {
             if (!item.isLast)
               Divider(
                 height: 1,
-                indent: AppSpacing.md + 34 + AppSpacing.sm,
+                indent: AppSpacing.md,
+                endIndent: AppSpacing.md,
                 color:
                     AppColors.babyBlueIce.withValues(alpha: AppOpacity.visible),
               ),
@@ -1201,10 +1364,10 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
   const _ProfileTabBarDelegate({required this.isFrench});
 
   @override
-  double get minExtent => 48;
+  double get minExtent => 56;
 
   @override
-  double get maxExtent => 48;
+  double get maxExtent => 56;
 
   @override
   Widget build(
@@ -1212,37 +1375,59 @@ class _ProfileTabBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return AppTopBarBackground(
+    return Container(
+      color: AppColors.surface,
       child: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(
-              color: Colors.white.withValues(alpha: AppOpacity.trace),
-            ),
             bottom: BorderSide(
-              color: Colors.white.withValues(alpha: AppOpacity.subtle),
+              color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.subtle),
             ),
           ),
         ),
-        child: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white.withValues(alpha: AppOpacity.over),
-          indicatorColor: Colors.white,
-          indicatorWeight: 2,
-          dividerColor: Colors.transparent,
-          labelStyle: const TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-            fontFamily: 'AppFontMedium',
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xs,
+            AppSpacing.xs,
+            AppSpacing.xs,
+            AppSpacing.sm,
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+              border: Border.all(
+                color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.soft),
+              ),
+            ),
+            child: TabBar(
+              splashFactory: NoSplash.splashFactory,
+              overlayColor: WidgetStateProperty.all(Colors.transparent),
+              labelColor: AppColors.textPrimary,
+              unselectedLabelColor: AppColors.textSecondary.withValues(
+                alpha: AppOpacity.prominent,
+              ),
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: AppOpacity.light),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              dividerColor: Colors.transparent,
+              labelStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                fontFamily: 'AppFontMedium',
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+              tabs: <Tab>[
+                Tab(text: isFrench ? 'Profil' : 'Profile'),
+                Tab(text: isFrench ? 'Amis' : 'Friends'),
+              ],
+            ),
           ),
-          tabs: <Tab>[
-            Tab(text: isFrench ? 'Profil' : 'Profile'),
-            Tab(text: isFrench ? 'Amis' : 'Friends'),
-          ],
         ),
       ),
     );
@@ -1589,7 +1774,7 @@ class _FriendsSectionCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadii.lg),
+        borderRadius: BorderRadius.circular(AppRadii.sm),
         border: Border.all(
           color: AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
         ),
@@ -1837,10 +2022,387 @@ class _FriendsEmptyState extends StatelessWidget {
                   vertical: AppSpacing.sm,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadii.xl),
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Banner edit button — small glass-style pill at bottom-right of banner
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BannerEditButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _BannerEditButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xxs + 2,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: AppOpacity.light),
+            borderRadius: BorderRadius.circular(AppRadii.md),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: AppOpacity.mild),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Edit profile bottom sheet
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _EditProfileSheet extends ConsumerStatefulWidget {
+  final String currentUsername;
+  final String userId;
+  final String? email;
+
+  const _EditProfileSheet({
+    required this.currentUsername,
+    required this.userId,
+    this.email,
+  });
+
+  @override
+  ConsumerState<_EditProfileSheet> createState() => _EditProfileSheetState();
+}
+
+class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
+  late final TextEditingController _controller;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.currentUsername);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final String newName = _controller.text.trim();
+    if (newName.isEmpty || newName == widget.currentUsername) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      await FirestoreService().createOrUpdateUserProfile(
+        userId: widget.userId,
+        username: newName,
+        email: widget.email ?? '',
+      );
+      final user = ref.read(currentUserProvider);
+      await user?.updateDisplayName(newName);
+      if (mounted) Navigator.of(context).pop();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update profile.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+    final double bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.lg,
+        AppSpacing.xl,
+        AppSpacing.lg + bottomPadding,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // Handle bar
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color:
+                    AppColors.textTertiary.withValues(alpha: AppOpacity.half),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            isFrench ? 'Modifier le profil' : 'Edit Profile',
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontFamily: 'AppFontMedium',
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            isFrench ? 'Nom d\'utilisateur' : 'Username',
+            style: TextStyle(
+              color: AppColors.textSecondary
+                  .withValues(alpha: AppOpacity.prominent),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            style: const TextStyle(color: AppColors.textPrimary),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.surfaceVariant,
+              hintText: isFrench ? 'Votre nom' : 'Your name',
+              hintStyle: TextStyle(
+                color:
+                    AppColors.textSecondary.withValues(alpha: AppOpacity.half),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: BorderSide(
+                  color: AppColors.primary.withValues(alpha: AppOpacity.muted),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: const BorderSide(color: AppColors.primary),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadii.md),
+                borderSide: BorderSide(
+                  color:
+                      AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _saving ? null : () => Navigator.of(context).pop(),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.textSecondary,
+                    side: BorderSide(
+                      color: AppColors.babyBlueIce
+                          .withValues(alpha: AppOpacity.half),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                    ),
+                  ),
+                  child: Text(isFrench ? 'Annuler' : 'Cancel'),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _save,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm + 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadii.md),
+                    ),
+                  ),
+                  child: _saving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          isFrench ? 'Sauvegarder' : 'Save',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Language picker dialog
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _LanguagePickerDialog extends ConsumerWidget {
+  const _LanguagePickerDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isFrench = Localizations.localeOf(context)
+        .languageCode
+        .toLowerCase()
+        .startsWith('fr');
+
+    return AppDialog(
+      title: isFrench ? 'Langue' : 'Language',
+      icon: Icons.language_rounded,
+      iconColor: AppColors.primary,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _LanguageOption(
+              flag: '🇬🇧',
+              label: 'English',
+              isSelected: !isFrench,
+              onTap: () {
+                ref.read(localeProvider.notifier).setLocale('en');
+                Navigator.of(context).pop();
+              },
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            _LanguageOption(
+              flag: '🇫🇷',
+              label: 'Français',
+              isSelected: isFrench,
+              onTap: () {
+                ref.read(localeProvider.notifier).setLocale('fr');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: <AppDialogAction<dynamic>>[
+        AppDialogAction<bool>(
+          label: isFrench ? 'Fermer' : 'Close',
+          returnValue: false,
+        ),
+      ],
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  final String flag;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _LanguageOption({
+    required this.flag,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadii.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm + 2,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: AppOpacity.faint)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary.withValues(alpha: AppOpacity.muted)
+                : AppColors.babyBlueIce.withValues(alpha: AppOpacity.half),
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Text(flag, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+            ),
+            if (isSelected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
           ],
         ),
       ),
