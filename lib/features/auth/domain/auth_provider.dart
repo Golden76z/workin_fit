@@ -76,10 +76,27 @@ class AuthActions {
     required String email,
     required String password,
   }) async {
-    await _authRepo.signInWithEmailPassword(
+    final userCredential = await _authRepo.signInWithEmailPassword(
       email: email,
       password: password,
     );
+
+    // Backfill usernameSearch field in case it's missing (ensures friend search works)
+    if (userCredential.user != null) {
+      try {
+        final user = userCredential.user!;
+        final displayName = user.displayName;
+        if (displayName != null && displayName.isNotEmpty) {
+          await _firestoreService.createOrUpdateUserProfile(
+            userId: user.uid,
+            username: displayName,
+            email: user.email ?? email,
+          );
+        }
+      } catch (_) {
+        // Non-critical — sign-in still succeeds
+      }
+    }
   }
 
   // Google sign-in
@@ -113,12 +130,42 @@ class AuthActions {
 
   // Apple sign-in
   Future<void> signInWithApple() async {
-    await _authRepo.signInWithApple();
+    final userCredential = await _authRepo.signInWithApple();
+    if (userCredential.user != null) {
+      try {
+        final user = userCredential.user!;
+        final email = user.email ?? '';
+        final username = user.displayName ??
+            (email.isNotEmpty
+                ? email.split('@')[0]
+                : 'user_${user.uid.substring(0, 8)}');
+        await _firestoreService.createOrUpdateUserProfile(
+          userId: user.uid,
+          username: username,
+          email: email,
+        );
+      } catch (_) {}
+    }
   }
 
   // GitHub sign-in
   Future<void> signInWithGitHub() async {
-    await _authRepo.signInWithGitHub();
+    final userCredential = await _authRepo.signInWithGitHub();
+    if (userCredential.user != null) {
+      try {
+        final user = userCredential.user!;
+        final email = user.email ?? '';
+        final username = user.displayName ??
+            (email.isNotEmpty
+                ? email.split('@')[0]
+                : 'user_${user.uid.substring(0, 8)}');
+        await _firestoreService.createOrUpdateUserProfile(
+          userId: user.uid,
+          username: username,
+          email: email,
+        );
+      } catch (_) {}
+    }
   }
 
   // Password reset

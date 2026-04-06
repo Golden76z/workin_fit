@@ -36,7 +36,10 @@ class _FriendSearchScreenState extends ConsumerState<FriendSearchScreen> {
     setState(() => _loading = true);
     try {
       final user = ref.read(currentUserProvider);
-      if (user == null) return;
+      if (user == null) {
+        setState(() => _loading = false);
+        return;
+      }
       final service = ref.read(friendServiceProvider);
       final results = await service.searchUsersByUsername(query, user.uid);
       // Load statuses for each result
@@ -46,6 +49,8 @@ class _FriendSearchScreenState extends ConsumerState<FriendSearchScreen> {
             await service.getFriendStatus(user.uid, targetId);
       }
       if (mounted) setState(() => _results = results);
+    } catch (_) {
+      // Search failed silently — results stay empty
     } finally {
       if (mounted) setState(() => _loading = false);
     }
