@@ -38,3 +38,20 @@ class AppLayout {
 class AppDurations {
   static const Duration snackBar = Duration(seconds: 4);
 }
+
+class AppAnimations {
+  // Durations
+  static const Duration fastest = Duration(milliseconds: 150);
+  static const Duration fast = Duration(milliseconds: 200);
+  static const Duration medium = Duration(milliseconds: 300);
+  static const Duration slow = Duration(milliseconds: 500);
+  static const Duration progressBar = Duration(milliseconds: 600);
+
+  // List item stagger — kept small so scrolling never feels laggy
+  static const int staggerMs = 20;
+  static const int staggerMaxItems = 4;
+
+  // Curves
+  static const Curve defaultIn = Curves.easeOutCubic;
+  static const Curve defaultOut = Curves.easeInCubic;
+}
