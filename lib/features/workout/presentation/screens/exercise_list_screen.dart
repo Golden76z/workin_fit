@@ -1,6 +1,9 @@
+import 'dart:math' show min;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
@@ -318,7 +321,21 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                               onTap: () => Navigator.of(context).push(
                                 ExerciseDetailScreen.route(exercise: exercise),
                               ),
-                            ),
+                            )
+                                .animate(
+                                  delay: Duration(
+                                    milliseconds:
+                                        min(index, AppAnimations.staggerMaxItems) *
+                                            AppAnimations.staggerMs,
+                                  ),
+                                )
+                                .fadeIn(duration: AppAnimations.fast)
+                                .slideY(
+                                  begin: 0.06,
+                                  end: 0,
+                                  duration: AppAnimations.fast,
+                                  curve: AppAnimations.defaultIn,
+                                ),
                           );
                         },
                       ),
@@ -326,7 +343,35 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                 ],
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppLayout.pageMargin,
+                    AppSpacing.md,
+                    AppLayout.pageMargin,
+                    104,
+                  ),
+                  sliver: SliverList.builder(
+                    itemCount: 5,
+                    itemBuilder: (_, __) => Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
+                      child: Shimmer.fromColors(
+                        baseColor: AppColors.surface,
+                        highlightColor: AppColors.surfaceVariant,
+                        child: Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             error: (Object error, StackTrace stackTrace) => Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.xl),
@@ -519,14 +564,19 @@ class _ExerciseCard extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(AppRadii.sm),
-                            child: SizedBox(
-                              width: mediaWidth,
-                              height: mediaHeight,
-                              child: _ExerciseImage(
-                                imageUrl: exercise.imageTutorialUrl,
-                                shaderVelocity: shaderVelocity,
+                          Hero(
+                            tag: exercise.imageTutorialUrl.isNotEmpty
+                                ? 'exercise-img-${exercise.imageTutorialUrl}'
+                                : 'exercise-img-${exercise.id}',
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(AppRadii.sm),
+                              child: SizedBox(
+                                width: mediaWidth,
+                                height: mediaHeight,
+                                child: _ExerciseImage(
+                                  imageUrl: exercise.imageTutorialUrl,
+                                  shaderVelocity: shaderVelocity,
+                                ),
                               ),
                             ),
                           ),
