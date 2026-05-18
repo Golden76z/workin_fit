@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
@@ -1016,62 +1018,22 @@ class _WarmupSelectorState extends ConsumerState<_WarmupSelector> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            AppColors.primary.withValues(alpha: AppOpacity.whisper),
-            AppColors.surface,
-          ],
-        ),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(_homeBlockRadius),
         border: Border.all(
-          color: AppColors.primaryLight.withValues(alpha: AppOpacity.light),
+          color: AppColors.primaryLight.withValues(alpha: AppOpacity.firm),
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+            color: AppColors.primaryLight.withValues(alpha: AppOpacity.soft),
             blurRadius: 12,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Container(
-                width: 30,
-                height: 30,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[AppColors.primary, AppColors.primaryDark],
-                  ),
-                ),
-                child: const Icon(
-                  Icons.flash_on_rounded,
-                  color: Colors.white,
-                  size: 16,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              Text(
-                widget.isFrench ? 'Activation rapide' : 'Quick activation',
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'AppFontMedium',
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-
-          // Duration buttons
           Row(
             children: List<Widget>.generate(
               _durations.length,
@@ -1144,15 +1106,8 @@ class _WarmupDurationButton extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(_homeBlockRadius),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primary
-                : AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
-          ),
           boxShadow: isSelected
               ? <BoxShadow>[
                   BoxShadow(
@@ -1163,30 +1118,57 @@ class _WarmupDurationButton extends StatelessWidget {
                 ]
               : null,
         ),
-        child: Column(
-          children: <Widget>[
-            Text(
-              '$minutes',
-              style: TextStyle(
-                color: isSelected ? Colors.white : AppColors.textPrimary,
-                fontSize: 24,
-                fontWeight: FontWeight.w800,
-                fontFamily: 'AppFontMedium',
-              ),
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected
-                    ? Colors.white.withValues(alpha: AppOpacity.bold)
-                    : AppColors.textSecondary,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(_homeBlockRadius),
+          child: isSelected
+              ? Container(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                  color: AppColors.primary.withValues(alpha: 0.95),
+                  child: _buildLabel(),
+                )
+              : BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceVariant.withValues(alpha: 0.95),
+                      border: Border.all(
+                        color: AppColors.primaryLight
+                            .withValues(alpha: AppOpacity.subtle),
+                      ),
+                    ),
+                    child: _buildLabel(),
+                  ),
+                ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLabel() {
+    return Column(
+      children: <Widget>[
+        Text(
+          '$minutes',
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textPrimary,
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'AppFontMedium',
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: isSelected
+                ? Colors.white.withValues(alpha: AppOpacity.bold)
+                : AppColors.textSecondary,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
