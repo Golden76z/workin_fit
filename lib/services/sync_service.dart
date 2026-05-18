@@ -169,15 +169,18 @@ class SyncService {
 
   // ===== EXERCISES (CACHE-FIRST) =====
 
-  /// Get exercises with cache-first strategy
-  Future<List<Exercise>> getExercises() async {
+  /// Get exercises with cache-first strategy.
+  ///
+  /// When local data exists, returns it immediately and merges any exercises
+  /// that exist on Firestore but not in cache ([onCacheUpdated] after merge).
+  Future<List<Exercise>> getExercises({void Function()? onCacheUpdated}) async {
     try {
       // Try local first
       final cached = await _localService.getCachedExercises();
 
       if (cached.isNotEmpty) {
-        // Return cached, but fetch fresh in background
-        _refreshExercisesInBackground();
+        // Return cached, diff with Firestore in background and add missing only
+        _mergeMissingExercisesFromFirestore(onUpdated: onCacheUpdated);
         return cached;
       }
 
@@ -192,15 +195,20 @@ class SyncService {
   }
 
   /// Get exercise by ID
-  Future<Exercise?> getExerciseById(String id) async {
+  Future<Exercise?> getExerciseById(
+    String id, {
+    void Function()? onCacheUpdated,
+  }) async {
     try {
       // Try cache first
       final cached = await _localService.getCachedExercise(id);
       if (cached != null) {
-        // Refresh in background
-        _firestoreService.getExerciseById(id).then((exercise) {
-          if (exercise != null) {
-            _localService.cacheExercises([exercise]);
+        // If missing locally but present remotely, merge in background
+        _firestoreService.getExerciseById(id).then((exercise) async {
+          if (exercise == null) return;
+          final added = await _localService.mergeCachedExercises([exercise]);
+          if (added > 0) {
+            onCacheUpdated?.call();
           }
         }).catchError((_) {
           // Silent fail for background refresh
@@ -211,7 +219,7 @@ class SyncService {
       // Not in cache, fetch from Firestore
       final exercise = await _firestoreService.getExerciseById(id);
       if (exercise != null) {
-        await _localService.cacheExercises([exercise]);
+        await _localService.mergeCachedExercises([exercise]);
       }
       return exercise;
     } catch (e) {
@@ -249,10 +257,29 @@ class SyncService {
     }
   }
 
-  Future<void> _refreshExercisesInBackground() async {
+  /// Fetches Firestore exercises and adds any ids not already in local cache.
+  Future<void> _mergeMissingExercisesFromFirestore({
+    void Function()? onUpdated,
+  }) async {
     try {
-      final exercises = await _firestoreService.getExercises();
-      await _localService.cacheExercises(exercises);
+      final connectivityResult = await _connectivity.checkConnectivity();
+      final isOnline =
+          connectivityResult.any((r) => r != ConnectivityResult.none);
+      if (!isOnline) return;
+
+      final cached = await _localService.getCachedExercises();
+      final Set<String> cachedIds = cached.map((e) => e.id).toSet();
+
+      final remote = await _firestoreService.getExercises();
+      final List<Exercise> missing = remote
+          .where((Exercise exercise) => !cachedIds.contains(exercise.id))
+          .toList(growable: false);
+      if (missing.isEmpty) return;
+
+      final int added = await _localService.mergeCachedExercises(missing);
+      if (added > 0) {
+        onUpdated?.call();
+      }
     } catch (e) {
       // Silent fail for background refresh
     }

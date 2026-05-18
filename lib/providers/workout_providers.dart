@@ -32,7 +32,11 @@ final currentUserIdProvider = Provider<String?>((ref) {
 final exercisesProvider = FutureProvider<List<Exercise>>((ref) async {
   final syncService = ref.watch(syncServiceProvider);
   try {
-    return await syncService.getExercises();
+    return await syncService.getExercises(
+      onCacheUpdated: () {
+        ref.invalidateSelf();
+      },
+    );
   } catch (e) {
     // Error handling is done in sync service, returns cached data
     rethrow;
