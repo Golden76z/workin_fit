@@ -35,6 +35,7 @@ dependencies:
   percent_indicator: ^4.2.3
   
   # Workout Specific
+  flutter_body_atlas: ^0.1.4
   circular_countdown_timer: ^0.2.3
   stop_watch_timer: ^3.0.1
   vibration: ^3.1.4
@@ -93,6 +94,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/exercises/movements/
     # - assets/animations/
     - lib/l10n/
   fonts:

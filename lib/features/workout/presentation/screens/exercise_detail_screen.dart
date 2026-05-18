@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:workin_fit/core/constants/exercise_assets.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
-import 'package:workin_fit/features/workout/presentation/screens/workout_execution_screen.dart';
+import 'package:workin_fit/features/workout/data/muscle_atlas_mapper.dart';
+import 'package:workin_fit/models/muscle_activation.dart';
+import 'package:workin_fit/features/workout/presentation/utils/exercise_ui_helpers.dart';
+import 'package:workin_fit/features/workout/presentation/widgets/exercise_muscle_atlas.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
-import 'package:workin_fit/models/session.dart';
-import 'package:workin_fit/models/workout_config.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
@@ -58,6 +60,10 @@ class ExerciseDetailScreen extends StatelessWidget {
     final String localizedDescription =
         exercise.getLocalizedDescription(context);
     final String? localizedTips = exercise.getLocalizedBeginnerTips(context);
+    final Map<MuscleGroup, int> muscleActivation =
+        exercise.resolvedMuscleActivation;
+    final bool showMuscleAtlas =
+        MuscleAtlasMapper.hasDrawableMuscles(exercise.muscleGroups);
 
     return AppSystemOverlayRegion(
       style: AppChrome.topAndBottomOverlay,
@@ -87,7 +93,9 @@ class ExerciseDetailScreen extends StatelessWidget {
               ),
               actions: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.md),
+                  padding: const EdgeInsets.only(
+                    right: AppExerciseDetailLayout.screenPadding,
+                  ),
                   child: Center(
                     child: _DifficultyBadge(
                       difficulty: exercise.difficulty,
@@ -100,10 +108,10 @@ class ExerciseDetailScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.md,
-                  AppSpacing.xl,
+                  AppExerciseDetailLayout.screenPadding,
+                  AppExerciseDetailLayout.screenPadding,
+                  AppExerciseDetailLayout.screenPadding,
+                  AppExerciseDetailLayout.screenPaddingBottom,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,23 +120,33 @@ class ExerciseDetailScreen extends StatelessWidget {
                     _SectionCard(
                       icon: Icons.sports_gymnastics_rounded,
                       title: isFrench ? 'Groupes musculaires' : 'Muscle Groups',
-                      fullWidthBottom: _SectionImage(
-                        imageUrl: exercise.imageMuscleUrl,
-                        label: isFrench ? 'Muscles ciblés' : 'Targeted Muscles',
-                      ),
+                      fullWidthBottom: showMuscleAtlas
+                          ? ExerciseMuscleAtlas(
+                              muscleActivation: muscleActivation,
+                              isFrench: isFrench,
+                            )
+                          : _SectionImage(
+                              imageUrl: exercise.imageMuscleUrl,
+                              label: isFrench
+                                  ? 'Muscles ciblés'
+                                  : 'Targeted Muscles',
+                            ),
                       child: Wrap(
                         spacing: AppSpacing.xs,
                         runSpacing: AppSpacing.xs,
                         alignment: WrapAlignment.center,
-                        children: exercise.muscleGroups
+                        children: muscleActivation.entries
                             .map(
-                              (MuscleGroup g) =>
-                                  _MuscleChip(label: _muscleLabel(g, isFrench)),
+                              (MapEntry<MuscleGroup, int> entry) =>
+                                  _MuscleChip(
+                                label: muscleGroupLabel(entry.key, isFrench),
+                                level: entry.value,
+                              ),
                             )
                             .toList(growable: false),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppExerciseDetailLayout.sectionGap),
 
                     // 2. Description du mouvement + tutorial image
                     _SectionCard(
@@ -137,7 +155,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                           ? 'Description du mouvement'
                           : 'Movement Description',
                       fullWidthBottom: _SectionImage(
-                        imageUrl: exercise.imageTutorialUrl,
+                        imageUrl: _movementMediaUrl(exercise),
                         label: isFrench ? 'Mouvement' : 'Movement',
                       ),
                       child: Text(
@@ -149,7 +167,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppExerciseDetailLayout.sectionGap),
 
                     // 5. Comment effectuer
                     _SectionCard(
@@ -157,10 +175,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                       title: isFrench ? 'Comment effectuer' : 'How to Perform',
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _buildHowToSteps(
-                          description: localizedDescription,
-                          isFrench: isFrench,
-                        )
+                        children: _buildHowToSteps(isFrench: isFrench)
                             .asMap()
                             .entries
                             .map(
@@ -170,7 +185,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                             .toList(growable: false),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppExerciseDetailLayout.sectionGap),
 
                     // 6. Conseils débutant
                     _TipsCallout(
@@ -180,34 +195,9 @@ class ExerciseDetailScreen extends StatelessWidget {
                         isFrench: isFrench,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // Start button
                     SizedBox(
-                      height: 54,
-                      child: ElevatedButton.icon(
-                        onPressed: () => _startExercise(context),
-                        icon: const Icon(Icons.play_arrow_rounded),
-                        label: Text(
-                          isFrench ? "Démarrer l'exercice" : 'Start Exercise',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'AppFontMedium',
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadii.lg),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height:
-                          MediaQuery.paddingOf(context).bottom + AppSpacing.md,
+                      height: MediaQuery.paddingOf(context).bottom +
+                          AppExerciseDetailLayout.screenPadding,
                     ),
                   ],
                 ),
@@ -221,47 +211,10 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
-  void _startExercise(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    final bool isFrench = locale.languageCode.toLowerCase().startsWith('fr');
-    final String localizedName = exercise.getLocalizedName(context);
-
-    final Session quickSession = Session(
-      id: 'quick_${exercise.id}_${DateTime.now().millisecondsSinceEpoch}',
-      name: isFrench
-          ? 'Démarrage rapide - $localizedName'
-          : 'Quick Start - $localizedName',
-      workouts: <WorkoutConfig>[
-        TimedConfig(
-          exerciseId: exercise.id,
-          duration: _durationFromDifficulty(exercise.difficulty),
-        ),
-      ],
-      difficulty: exercise.difficulty,
-      restBetweenExercises: 10,
-      transitionTime: 5,
-      isCustom: false,
-    );
-
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => WorkoutExecutionScreen(
-          session: quickSession,
-          seededExercises: <Exercise>[exercise],
-        ),
-      ),
-    );
-  }
-
-  int _durationFromDifficulty(DifficultyLevel difficulty) {
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        return 35;
-      case DifficultyLevel.intermediate:
-        return 45;
-      case DifficultyLevel.advanced:
-        return 60;
-    }
+  String _movementMediaUrl(Exercise exercise) {
+    final String url = exercise.imageTutorialUrl.trim();
+    if (url.isNotEmpty) return url;
+    return ExerciseAssets.movementPath(exercise.id);
   }
 
   String _tipsFallback({required String? tips, required bool isFrench}) {
@@ -272,20 +225,9 @@ class ExerciseDetailScreen extends StatelessWidget {
         : 'Move slowly with control, keep breathing regularly, and stop if your form starts to break.';
   }
 
-  List<String> _buildHowToSteps({
-    required String description,
-    required bool isFrench,
-  }) {
-    final List<String> extracted = description
-        .replaceAll('\n', ' ')
-        .split(RegExp(r'[.!?]'))
-        .map((String s) => s.trim())
-        .where((String s) => s.length > 10)
-        .take(4)
-        .toList(growable: false);
-
-    if (extracted.isNotEmpty) return extracted;
-
+  /// Actionable cues only — not parsed from [localizedDescription] (that block is
+  /// an overview shown above under Movement Description).
+  List<String> _buildHowToSteps({required bool isFrench}) {
     if (isFrench) {
       return const <String>[
         'Prends une position de départ stable et aligne ton corps.',
@@ -302,38 +244,6 @@ class ExerciseDetailScreen extends StatelessWidget {
     ];
   }
 
-  String _muscleLabel(MuscleGroup muscle, bool isFrench) {
-    switch (muscle) {
-      case MuscleGroup.chest:
-        return isFrench ? 'Pectoraux' : 'Chest';
-      case MuscleGroup.shoulders:
-        return isFrench ? 'Épaules' : 'Shoulders';
-      case MuscleGroup.triceps:
-        return 'Triceps';
-      case MuscleGroup.biceps:
-        return 'Biceps';
-      case MuscleGroup.back:
-        return isFrench ? 'Dos' : 'Back';
-      case MuscleGroup.forearms:
-        return isFrench ? 'Avant-bras' : 'Forearms';
-      case MuscleGroup.quads:
-        return isFrench ? 'Quadriceps' : 'Quads';
-      case MuscleGroup.hamstrings:
-        return isFrench ? 'Ischio-jambiers' : 'Hamstrings';
-      case MuscleGroup.calves:
-        return isFrench ? 'Mollets' : 'Calves';
-      case MuscleGroup.glutes:
-        return isFrench ? 'Fessiers' : 'Glutes';
-      case MuscleGroup.abs:
-        return isFrench ? 'Abdos' : 'Abs';
-      case MuscleGroup.obliques:
-        return 'Obliques';
-      case MuscleGroup.lowerBack:
-        return isFrench ? 'Bas du dos' : 'Lower Back';
-      case MuscleGroup.cardio:
-        return 'Cardio';
-    }
-  }
 }
 
 // ─── Section card ─────────────────────────────────────────────────────────────
@@ -358,7 +268,7 @@ class _SectionCard extends StatelessWidget {
       elevation: 2,
       shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadii.md),
+        borderRadius: BorderRadius.circular(AppExerciseDetailLayout.cardRadius),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -368,8 +278,8 @@ class _SectionCard extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
+              horizontal: AppExerciseDetailLayout.cardHeaderPaddingH,
+              vertical: AppExerciseDetailLayout.cardHeaderPaddingV,
             ),
             color: AppChrome.topSurface,
             child: Row(
@@ -390,7 +300,7 @@ class _SectionCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppExerciseDetailLayout.cardPadding),
             child: child,
           ),
           if (fullWidthBottom != null) fullWidthBottom!,
@@ -413,21 +323,23 @@ class _SectionImage extends StatelessWidget {
     return Stack(
       children: <Widget>[
         SizedBox(
-          height: 200,
+          height: AppSizes.exerciseMovementMediaHeight,
           width: double.infinity,
           child: _ExerciseMedia(url: imageUrl),
         ),
         Positioned(
-          left: AppSpacing.sm,
-          bottom: AppSpacing.sm,
+          left: AppExerciseDetailLayout.cardPadding,
+          bottom: AppExerciseDetailLayout.cardPadding,
           child: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: 4,
+              horizontal: AppSpacing.xs,
+              vertical: AppSpacing.xxs,
             ),
             decoration: BoxDecoration(
-              color: AppColors.primaryAbyss.withValues(alpha: 0.72),
-              borderRadius: BorderRadius.circular(AppRadii.lg),
+              color: AppColors.mediaCanvas.withValues(alpha: 0.88),
+              borderRadius: BorderRadius.circular(
+                AppExerciseDetailLayout.mediaLabelRadius,
+              ),
             ),
             child: Text(
               label,
@@ -456,7 +368,7 @@ class _StepRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -509,11 +421,13 @@ class _TipsCallout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppExerciseDetailLayout.cardPadding),
       decoration: BoxDecoration(
-        color: AppColors.frostedCyan,
-        borderRadius: BorderRadius.circular(AppRadii.md),
-        border: Border.all(color: AppColors.pearlBlue),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppExerciseDetailLayout.tipsRadius),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: AppOpacity.faint),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,7 +443,7 @@ class _TipsCallout extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  color: AppColors.textPrimary,
+                  color: Colors.white,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'AppFontMedium',
@@ -537,7 +451,7 @@ class _TipsCallout extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             text,
             style: const TextStyle(
@@ -556,30 +470,53 @@ class _TipsCallout extends StatelessWidget {
 
 class _MuscleChip extends StatelessWidget {
   final String label;
+  final int level;
 
-  const _MuscleChip({required this.label});
+  const _MuscleChip({required this.label, required this.level});
 
   @override
   Widget build(BuildContext context) {
+    final Color fill = MuscleActivationLevel.highlightColor(level);
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: 5,
+        horizontal: AppSpacing.xs,
+        vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: AppOpacity.faint),
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: AppOpacity.moderate),
-        ),
+        color: fill.withValues(alpha: AppOpacity.faint),
+        borderRadius: BorderRadius.circular(AppExerciseDetailLayout.chipRadius),
+        border: Border.all(color: fill),
       ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: AppColors.primary,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            label,
+            style: TextStyle(
+              color: fill,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Container(
+            width: 18,
+            height: 18,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: fill,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '$level',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -643,13 +580,14 @@ class _MissingExerciseMedia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.primaryAbyss,
-      alignment: Alignment.center,
-      child: const Icon(
-        Icons.fitness_center_rounded,
-        color: AppColors.frostedCyan,
-        size: 56,
+    return const ColoredBox(
+      color: AppColors.mediaCanvas,
+      child: Center(
+        child: Icon(
+          Icons.fitness_center_rounded,
+          color: AppColors.frostedCyan,
+          size: 56,
+        ),
       ),
     );
   }

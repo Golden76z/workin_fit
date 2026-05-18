@@ -2905,6 +2905,744 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose focus area'**
   String get warmup_pick_category;
+
+  /// No description provided for @exercise_cardio_016_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Broad Jump'**
+  String get exercise_cardio_016_name;
+
+  /// No description provided for @exercise_cardio_016_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Explosive forward jump landing softly in an athletic stance. Develops power in legs and spikes heart rate for conditioning.'**
+  String get exercise_cardio_016_description;
+
+  /// No description provided for @exercise_cardio_016_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Swing arms for momentum. Bend knees on landing to absorb impact.'**
+  String get exercise_cardio_016_beginner_tips;
+
+  /// No description provided for @exercise_cardio_017_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sprawl'**
+  String get exercise_cardio_017_name;
+
+  /// No description provided for @exercise_cardio_017_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop hips back, shoot legs out to plank, jump feet in, stand up. Burpee without the push-up—pure conditioning.'**
+  String get exercise_cardio_017_description;
+
+  /// No description provided for @exercise_cardio_017_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Step feet back one at a time if jumping is too intense. Stand fully between reps.'**
+  String get exercise_cardio_017_beginner_tips;
+
+  /// No description provided for @exercise_cardio_018_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Skips'**
+  String get exercise_cardio_018_name;
+
+  /// No description provided for @exercise_cardio_018_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Exaggerated skipping with explosive knee drive and arm swing. Develops single-leg power and high-intensity conditioning.'**
+  String get exercise_cardio_018_description;
+
+  /// No description provided for @exercise_cardio_018_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Drive the opposite arm and leg together. Land softly on the ball of the foot.'**
+  String get exercise_cardio_018_beginner_tips;
+
+  /// No description provided for @exercise_cardio_019_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Boxer Shuffle'**
+  String get exercise_cardio_019_name;
+
+  /// No description provided for @exercise_cardio_019_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Rapid weight shifts side to side on the balls of the feet with light punches optional. Low-impact cardio finisher.'**
+  String get exercise_cardio_019_description;
+
+  /// No description provided for @exercise_cardio_019_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on the balls of your feet. Keep movements small and rhythm steady.'**
+  String get exercise_cardio_019_beginner_tips;
+
+  /// No description provided for @exercise_core_021_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Heel Taps'**
+  String get exercise_core_021_name;
+
+  /// No description provided for @exercise_core_021_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Lie on your back, crunch up slightly, and alternate tapping heels to the floor. Trains abs with light oblique engagement.'**
+  String get exercise_core_021_description;
+
+  /// No description provided for @exercise_core_021_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Press lower back gently into the floor. Move slowly—do not rush the taps.'**
+  String get exercise_core_021_beginner_tips;
+
+  /// No description provided for @exercise_core_022_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Knee Pull-In'**
+  String get exercise_core_022_name;
+
+  /// No description provided for @exercise_core_022_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Seated or on hands, draw knees toward chest and extend legs. Dynamic ab exercise scaling from beginner to advanced.'**
+  String get exercise_core_022_description;
+
+  /// No description provided for @exercise_core_022_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Round lower back slightly as knees come in. Move slowly to avoid momentum.'**
+  String get exercise_core_022_beginner_tips;
+
+  /// No description provided for @exercise_core_023_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sit-up'**
+  String get exercise_core_023_name;
+
+  /// No description provided for @exercise_core_023_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic abdominal exercise. Curl torso up from the floor with feet anchored or bent, then lower with control.'**
+  String get exercise_core_023_description;
+
+  /// No description provided for @exercise_core_023_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Exhale on the way up. If your neck strains, support your head lightly with your hands.'**
+  String get exercise_core_023_beginner_tips;
+
+  /// No description provided for @exercise_core_025_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Standing Side Crunch'**
+  String get exercise_core_025_name;
+
+  /// No description provided for @exercise_core_025_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Stand tall and crunch sideways bringing elbow toward hip. Isolates obliques without lying on the floor.'**
+  String get exercise_core_025_description;
+
+  /// No description provided for @exercise_core_025_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep hips level—avoid leaning the whole body. Contract the side you are crunching toward.'**
+  String get exercise_core_025_beginner_tips;
+
+  /// No description provided for @exercise_core_026_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Cross-Body Mountain Climber'**
+  String get exercise_core_026_name;
+
+  /// No description provided for @exercise_core_026_description.
+  ///
+  /// In en, this message translates to:
+  /// **'In high plank, drive knee toward opposite elbow. Adds rotation to mountain climbers for obliques and cardio.'**
+  String get exercise_core_026_description;
+
+  /// No description provided for @exercise_core_026_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep shoulders over wrists. Quality beats speed—alternate sides with control.'**
+  String get exercise_core_026_beginner_tips;
+
+  /// No description provided for @exercise_core_027_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Hollow Rock'**
+  String get exercise_core_027_name;
+
+  /// No description provided for @exercise_core_027_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold hollow body position and rock forward and back slightly. Advanced anti-extension core drill popular in gymnastics training.'**
+  String get exercise_core_027_description;
+
+  /// No description provided for @exercise_core_027_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Master hollow hold first. Keep lower back pressed toward the floor.'**
+  String get exercise_core_027_beginner_tips;
+
+  /// No description provided for @exercise_core_028_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuck Front Lever Hold'**
+  String get exercise_core_028_name;
+
+  /// No description provided for @exercise_core_028_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hang from a bar, tuck knees, and depress shoulders to lift torso nearly horizontal. Advanced straight-arm back and core strength.'**
+  String get exercise_core_028_description;
+
+  /// No description provided for @exercise_core_028_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with short tuck holds. Focus on pushing shoulders down away from ears.'**
+  String get exercise_core_028_beginner_tips;
+
+  /// No description provided for @exercise_legs_026_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Squat Pulse'**
+  String get exercise_legs_026_name;
+
+  /// No description provided for @exercise_legs_026_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold the bottom of a squat and pulse up and down a few inches. Builds quad and glute endurance without equipment.'**
+  String get exercise_legs_026_description;
+
+  /// No description provided for @exercise_legs_026_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep chest up and knees tracking over toes. Use a shallow range if needed.'**
+  String get exercise_legs_026_beginner_tips;
+
+  /// No description provided for @exercise_legs_027_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sissy Squat Hold'**
+  String get exercise_legs_027_name;
+
+  /// No description provided for @exercise_legs_027_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Lean back slightly while bending knees forward, keeping hips extended. Intense quad isolation using bodyweight only.'**
+  String get exercise_legs_027_description;
+
+  /// No description provided for @exercise_legs_027_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold a wall or door frame lightly for balance. Use a small range until strength improves.'**
+  String get exercise_legs_027_beginner_tips;
+
+  /// No description provided for @exercise_legs_030_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Sliding Hamstring Curl'**
+  String get exercise_legs_030_name;
+
+  /// No description provided for @exercise_legs_030_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Lie on your back, heels on a towel or socks on smooth floor, curl heels toward glutes. Hamstring curl without machines.'**
+  String get exercise_legs_030_description;
+
+  /// No description provided for @exercise_legs_030_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Lift hips as you curl in. Control the slide back to start.'**
+  String get exercise_legs_030_beginner_tips;
+
+  /// No description provided for @exercise_legs_031_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Nordic Curl Negative'**
+  String get exercise_legs_031_name;
+
+  /// No description provided for @exercise_legs_031_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Kneel with ankles anchored under a couch or partner, lower torso forward slowly, catch with hands. Advanced hamstring eccentric.'**
+  String get exercise_legs_031_description;
+
+  /// No description provided for @exercise_legs_031_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep hips extended. Lower only as far as you can control—use hands to assist at the bottom.'**
+  String get exercise_legs_031_beginner_tips;
+
+  /// No description provided for @exercise_legs_033_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Frog Pump'**
+  String get exercise_legs_033_name;
+
+  /// No description provided for @exercise_legs_033_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Lie on your back with soles together and knees open. Drive hips up by squeezing glutes for high-rep glute activation.'**
+  String get exercise_legs_033_description;
+
+  /// No description provided for @exercise_legs_033_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not arch the lower back excessively. Pause briefly at the top of each rep.'**
+  String get exercise_legs_033_beginner_tips;
+
+  /// No description provided for @exercise_legs_034_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Curtsy Lunge'**
+  String get exercise_legs_034_name;
+
+  /// No description provided for @exercise_legs_034_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Step one leg diagonally behind the other into a curtsy position and return. Emphasizes glutes and outer hip stability.'**
+  String get exercise_legs_034_description;
+
+  /// No description provided for @exercise_legs_034_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep front knee aligned over the ankle. Touch the back knee toward the floor lightly.'**
+  String get exercise_legs_034_beginner_tips;
+
+  /// No description provided for @exercise_legs_035_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodyweight Hip Thrust'**
+  String get exercise_legs_035_name;
+
+  /// No description provided for @exercise_legs_035_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper back on the floor, feet flat, drive hips to full extension. One of the most effective glute builders without weights.'**
+  String get exercise_legs_035_description;
+
+  /// No description provided for @exercise_legs_035_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuck chin slightly and push through heels. Squeeze glutes hard at the top.'**
+  String get exercise_legs_035_beginner_tips;
+
+  /// No description provided for @exercise_legs_036_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Standing Glute Kickback'**
+  String get exercise_legs_036_name;
+
+  /// No description provided for @exercise_legs_036_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Stand on one leg and drive the other leg straight back. Isolates glutes and improves hip extension strength.'**
+  String get exercise_legs_036_description;
+
+  /// No description provided for @exercise_legs_036_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Squeeze glute at end range. Hold a wall for balance if needed.'**
+  String get exercise_legs_036_beginner_tips;
+
+  /// No description provided for @exercise_legs_037_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Seated Calf Raise'**
+  String get exercise_legs_037_name;
+
+  /// No description provided for @exercise_legs_037_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Sit with knees bent at 90 degrees and lift heels off the floor. Targets soleus and gastrocnemius without a step.'**
+  String get exercise_legs_037_description;
+
+  /// No description provided for @exercise_legs_037_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause at the top. Place hands on knees for light resistance if desired.'**
+  String get exercise_legs_037_beginner_tips;
+
+  /// No description provided for @exercise_legs_038_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Shrimp Squat'**
+  String get exercise_legs_038_name;
+
+  /// No description provided for @exercise_legs_038_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-leg squat reaching the back knee behind you while holding the rear foot. Advanced quad and balance challenge.'**
+  String get exercise_legs_038_description;
+
+  /// No description provided for @exercise_legs_038_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a wall for balance. Progress from partial range to full depth over weeks.'**
+  String get exercise_legs_038_beginner_tips;
+
+  /// No description provided for @exercise_legs_039_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Lateral Lunge Pulse'**
+  String get exercise_legs_039_name;
+
+  /// No description provided for @exercise_legs_039_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Step wide to one side, stay low, and pulse in the bottom position. Targets quads, glutes, and inner thighs.'**
+  String get exercise_legs_039_description;
+
+  /// No description provided for @exercise_legs_039_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the bent knee over the foot. Chest stays lifted throughout pulses.'**
+  String get exercise_legs_039_beginner_tips;
+
+  /// No description provided for @exercise_pull_021_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Prone Cobra'**
+  String get exercise_pull_021_name;
+
+  /// No description provided for @exercise_pull_021_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Back extension hold lying face down. Lift chest and arms slightly to strengthen the lower back and glutes with minimal spinal compression.'**
+  String get exercise_pull_021_description;
+
+  /// No description provided for @exercise_pull_021_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Lift only as high as comfortable. Hold 2–3 seconds and lower with control.'**
+  String get exercise_pull_021_beginner_tips;
+
+  /// No description provided for @exercise_pull_022_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodyweight Good Morning'**
+  String get exercise_pull_022_name;
+
+  /// No description provided for @exercise_pull_022_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hands behind head, hinge at hips with a flat back, then return upright. Strengthens hamstrings, glutes, and erectors.'**
+  String get exercise_pull_022_description;
+
+  /// No description provided for @exercise_pull_022_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Push hips back as if closing a door with your glutes. Stop when torso is near parallel to the floor.'**
+  String get exercise_pull_022_beginner_tips;
+
+  /// No description provided for @exercise_pull_024_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Chin-Up Negative'**
+  String get exercise_pull_024_name;
+
+  /// No description provided for @exercise_pull_024_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Underhand grip at the top of a chin-up, lower slowly for 3–5 seconds. Builds biceps and lat strength for full chin-ups.'**
+  String get exercise_pull_024_description;
+
+  /// No description provided for @exercise_pull_024_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a sturdy bar. Jump or step to the top position and control the descent.'**
+  String get exercise_pull_024_beginner_tips;
+
+  /// No description provided for @exercise_pull_025_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead Hang'**
+  String get exercise_pull_025_name;
+
+  /// No description provided for @exercise_pull_025_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hang from a sturdy bar or ledge with arms straight. Builds grip, forearms, and decompresses the spine while preparing for pull-up strength.'**
+  String get exercise_pull_025_description;
+
+  /// No description provided for @exercise_pull_025_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack shoulders down slightly. Start with 10–20 seconds and add time gradually.'**
+  String get exercise_pull_025_beginner_tips;
+
+  /// No description provided for @exercise_pull_026_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse Grip Hang Hold'**
+  String get exercise_pull_026_name;
+
+  /// No description provided for @exercise_pull_026_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Hang with underhand grip at the top of a chin-up position. Isometric hold for biceps and grip endurance.'**
+  String get exercise_pull_026_description;
+
+  /// No description provided for @exercise_pull_026_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a box to reach the top position if needed. Keep shoulders engaged, not fully relaxed.'**
+  String get exercise_pull_026_beginner_tips;
+
+  /// No description provided for @exercise_pull_027_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Fist Plank Hold'**
+  String get exercise_pull_027_name;
+
+  /// No description provided for @exercise_pull_027_description.
+  ///
+  /// In en, this message translates to:
+  /// **'High plank performed on closed fists. Increases wrist and forearm demand while maintaining core tension.'**
+  String get exercise_pull_027_description;
+
+  /// No description provided for @exercise_pull_027_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Align wrists under shoulders. Stop if you feel sharp wrist pain.'**
+  String get exercise_pull_027_beginner_tips;
+
+  /// No description provided for @exercise_pull_028_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Scapular Push-up'**
+  String get exercise_pull_028_name;
+
+  /// No description provided for @exercise_pull_028_description.
+  ///
+  /// In en, this message translates to:
+  /// **'From a high plank, protract and retract the shoulder blades without bending elbows. Trains serratus and mid-back control for healthier pressing.'**
+  String get exercise_pull_028_description;
+
+  /// No description provided for @exercise_pull_028_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep arms straight throughout. Move only at the shoulder blades.'**
+  String get exercise_pull_028_beginner_tips;
+
+  /// No description provided for @exercise_pull_029_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Renegade Row'**
+  String get exercise_pull_029_name;
+
+  /// No description provided for @exercise_pull_029_description.
+  ///
+  /// In en, this message translates to:
+  /// **'From a high plank, row one hand to the hip while balancing on the other. Combines core stability with back and bicep pulling.'**
+  String get exercise_pull_029_description;
+
+  /// No description provided for @exercise_pull_029_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Widen foot stance for stability. Prevent hips from rotating as you row.'**
+  String get exercise_pull_029_beginner_tips;
+
+  /// No description provided for @exercise_pull_030_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Archer Inverted Row'**
+  String get exercise_pull_030_name;
+
+  /// No description provided for @exercise_pull_030_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Under a table, row toward one hand with the other arm extended. Unilateral back and bicep strength without a pull-up bar.'**
+  String get exercise_pull_030_description;
+
+  /// No description provided for @exercise_pull_030_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep body rigid. Pull chest to the working hand each rep.'**
+  String get exercise_pull_030_beginner_tips;
+
+  /// No description provided for @exercise_push_021_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Staggered Push-up'**
+  String get exercise_push_021_name;
+
+  /// No description provided for @exercise_push_021_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-up with one hand slightly forward and one back. Builds unilateral pressing strength and core stability while training chest and arms.'**
+  String get exercise_push_021_description;
+
+  /// No description provided for @exercise_push_021_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep hips square to the floor. Alternate which hand is forward each set.'**
+  String get exercise_push_021_beginner_tips;
+
+  /// No description provided for @exercise_push_022_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo Push-up'**
+  String get exercise_push_022_name;
+
+  /// No description provided for @exercise_push_022_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-up with a slow 3-second lowering phase and explosive press up. Increases time under tension for chest and triceps.'**
+  String get exercise_push_022_description;
+
+  /// No description provided for @exercise_push_022_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Count three seconds down, one second up. Maintain a rigid plank throughout.'**
+  String get exercise_push_022_beginner_tips;
+
+  /// No description provided for @exercise_push_023_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Close-Hand Push-up'**
+  String get exercise_push_023_name;
+
+  /// No description provided for @exercise_push_023_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-up with hands shoulder-width or slightly narrower. Shifts emphasis toward triceps while still loading the chest.'**
+  String get exercise_push_023_description;
+
+  /// No description provided for @exercise_push_023_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep elbows closer to the body than a standard push-up. Do not let hips sag.'**
+  String get exercise_push_023_beginner_tips;
+
+  /// No description provided for @exercise_push_024_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Arm Circles'**
+  String get exercise_push_024_name;
+
+  /// No description provided for @exercise_push_024_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoulder mobility and endurance drill. Extend arms to the sides and draw controlled circles to warm up and strengthen the deltoids.'**
+  String get exercise_push_024_description;
+
+  /// No description provided for @exercise_push_024_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with small circles and gradually enlarge them. Reverse direction halfway through the set.'**
+  String get exercise_push_024_beginner_tips;
+
+  /// No description provided for @exercise_push_025_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Prone I Raise'**
+  String get exercise_push_025_name;
+
+  /// No description provided for @exercise_push_025_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Lie face down and lift straight arms overhead forming an I shape. Targets rear delts and upper back for posture and shoulder health.'**
+  String get exercise_push_025_description;
+
+  /// No description provided for @exercise_push_025_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep thumbs pointing up. Squeeze shoulder blades at the top without shrugging.'**
+  String get exercise_push_025_beginner_tips;
+
+  /// No description provided for @exercise_push_027_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Body Saw'**
+  String get exercise_push_027_name;
+
+  /// No description provided for @exercise_push_027_description.
+  ///
+  /// In en, this message translates to:
+  /// **'From forearm plank, rock body forward and back using shoulders. Challenges core anti-extension and triceps endurance.'**
+  String get exercise_push_027_description;
+
+  /// No description provided for @exercise_push_027_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Move in a small range at first. Keep glutes engaged to protect the lower back.'**
+  String get exercise_push_027_beginner_tips;
+
+  /// No description provided for @exercise_push_029_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Typewriter Push-up'**
+  String get exercise_push_029_name;
+
+  /// No description provided for @exercise_push_029_description.
+  ///
+  /// In en, this message translates to:
+  /// **'At the bottom of a push-up, shift body weight side to side before pressing up. Extreme chest and tricep tension with core demand.'**
+  String get exercise_push_029_description;
+
+  /// No description provided for @exercise_push_029_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay low—move horizontally at the bottom only. Master archer push-ups first.'**
+  String get exercise_push_029_beginner_tips;
+
+  /// No description provided for @exercise_rest_001_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Meditation & Deep Breathing'**
+  String get exercise_rest_001_name;
+
+  /// No description provided for @exercise_rest_001_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Focused mindfulness session. Sit or lie still, close your eyes, and practise box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s. Reduces cortisol and accelerates recovery.'**
+  String get exercise_rest_001_description;
+
+  /// No description provided for @exercise_rest_001_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with 5-minute sessions. A wandering mind is normal — gently redirect to the breath without judgement.'**
+  String get exercise_rest_001_beginner_tips;
+
+  /// No description provided for @exercise_rest_002_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy Jog / Brisk Walk'**
+  String get exercise_rest_002_name;
+
+  /// No description provided for @exercise_rest_002_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-intensity steady-state cardio. Keep pace conversational — you should complete full sentences without gasping. Promotes blood flow and active recovery without adding training stress.'**
+  String get exercise_rest_002_description;
+
+  /// No description provided for @exercise_rest_002_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'If your heart rate exceeds 130 bpm, slow to a walk. The goal is circulation, not intensity.'**
+  String get exercise_rest_002_beginner_tips;
+
+  /// No description provided for @exercise_rest_003_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Body Mobility Flow'**
+  String get exercise_rest_003_name;
+
+  /// No description provided for @exercise_rest_003_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic and static stretching targeting major muscle groups in sequence. Improves range of motion, reduces soreness, and primes the body for the next training day.'**
+  String get exercise_rest_003_description;
+
+  /// No description provided for @exercise_rest_003_beginner_tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Move at breath pace. Never bounce into a stretch. Work from ankles upward: ankles to hips to thoracic spine to shoulders to neck.'**
+  String get exercise_rest_003_beginner_tips;
 }
 
 class _AppLocalizationsDelegate

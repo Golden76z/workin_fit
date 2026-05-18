@@ -753,6 +753,373 @@
     "beginnerTipsKey": "exercise_cardio_014_beginner_tips"
   },
   {
+    "id": "push_021",
+    "name": "Staggered Push-up",
+    "description": "Push-up with one hand slightly forward and one back. Builds unilateral pressing strength and core stability while training chest and arms.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "shoulders",
+      "triceps"
+    ],
+    "muscleActivation": {
+      "chest": 3,
+      "shoulders": 2,
+      "triceps": 2
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep hips square to the floor. Alternate which hand is forward each set.",
+    "equipment": [],
+    "nameKey": "exercise_push_021_name",
+    "descriptionKey": "exercise_push_021_description",
+    "beginnerTipsKey": "exercise_push_021_beginner_tips"
+  },
+  {
+    "id": "push_024",
+    "name": "Arm Circles",
+    "description": "Shoulder mobility and endurance drill. Extend arms to the sides and draw controlled circles to warm up and strengthen the deltoids.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "shoulders": 3
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Start with small circles and gradually enlarge them. Reverse direction halfway through the set.",
+    "equipment": [],
+    "nameKey": "exercise_push_024_name",
+    "descriptionKey": "exercise_push_024_description",
+    "beginnerTipsKey": "exercise_push_024_beginner_tips"
+  },
+  {
+    "id": "push_025",
+    "name": "Prone I Raise",
+    "description": "Lie face down and lift straight arms overhead forming an I shape. Targets rear delts and upper back for posture and shoulder health.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "shoulders",
+      "back"
+    ],
+    "muscleActivation": {
+      "shoulders": 3,
+      "back": 2
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep thumbs pointing up. Squeeze shoulder blades at the top without shrugging.",
+    "equipment": [],
+    "nameKey": "exercise_push_025_name",
+    "descriptionKey": "exercise_push_025_description",
+    "beginnerTipsKey": "exercise_push_025_beginner_tips"
+  },
+  {
+    "id": "pull_021",
+    "name": "Prone Cobra",
+    "description": "Back extension hold lying face down. Lift chest and arms slightly to strengthen the lower back and glutes with minimal spinal compression.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "lowerBack",
+      "back",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "lowerBack": 3,
+      "back": 2,
+      "glutes": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Lift only as high as comfortable. Hold 2–3 seconds and lower with control.",
+    "equipment": [],
+    "nameKey": "exercise_pull_021_name",
+    "descriptionKey": "exercise_pull_021_description",
+    "beginnerTipsKey": "exercise_pull_021_beginner_tips"
+  },
+  {
+    "id": "pull_025",
+    "name": "Dead Hang",
+    "description": "Hang from a sturdy bar or ledge with arms straight. Builds grip, forearms, and decompresses the spine while preparing for pull-up strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "forearms",
+      "back",
+      "biceps"
+    ],
+    "muscleActivation": {
+      "forearms": 3,
+      "back": 2,
+      "biceps": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Pack shoulders down slightly. Start with 10–20 seconds and add time gradually.",
+    "equipment": [],
+    "nameKey": "exercise_pull_025_name",
+    "descriptionKey": "exercise_pull_025_description",
+    "beginnerTipsKey": "exercise_pull_025_beginner_tips"
+  },
+  {
+    "id": "pull_027",
+    "name": "Fist Plank Hold",
+    "description": "High plank performed on closed fists. Increases wrist and forearm demand while maintaining core tension.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "forearms",
+      "abs",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "forearms": 3,
+      "abs": 2,
+      "shoulders": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Align wrists under shoulders. Stop if you feel sharp wrist pain.",
+    "equipment": [],
+    "nameKey": "exercise_pull_027_name",
+    "descriptionKey": "exercise_pull_027_description",
+    "beginnerTipsKey": "exercise_pull_027_beginner_tips"
+  },
+  {
+    "id": "pull_028",
+    "name": "Scapular Push-up",
+    "description": "From a high plank, protract and retract the shoulder blades without bending elbows. Trains serratus and mid-back control for healthier pressing.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "shoulders",
+      "chest"
+    ],
+    "muscleActivation": {
+      "back": 3,
+      "shoulders": 2,
+      "chest": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep arms straight throughout. Move only at the shoulder blades.",
+    "equipment": [],
+    "nameKey": "exercise_pull_028_name",
+    "descriptionKey": "exercise_pull_028_description",
+    "beginnerTipsKey": "exercise_pull_028_beginner_tips"
+  },
+  {
+    "id": "legs_026",
+    "name": "Squat Pulse",
+    "description": "Hold the bottom of a squat and pulse up and down a few inches. Builds quad and glute endurance without equipment.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "quads": 3,
+      "glutes": 2
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep chest up and knees tracking over toes. Use a shallow range if needed.",
+    "equipment": [],
+    "nameKey": "exercise_legs_026_name",
+    "descriptionKey": "exercise_legs_026_description",
+    "beginnerTipsKey": "exercise_legs_026_beginner_tips"
+  },
+  {
+    "id": "legs_033",
+    "name": "Frog Pump",
+    "description": "Lie on your back with soles together and knees open. Drive hips up by squeezing glutes for high-rep glute activation.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "hamstrings"
+    ],
+    "muscleActivation": {
+      "glutes": 3,
+      "hamstrings": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Do not arch the lower back excessively. Pause briefly at the top of each rep.",
+    "equipment": [],
+    "nameKey": "exercise_legs_033_name",
+    "descriptionKey": "exercise_legs_033_description",
+    "beginnerTipsKey": "exercise_legs_033_beginner_tips"
+  },
+  {
+    "id": "legs_034",
+    "name": "Curtsy Lunge",
+    "description": "Step one leg diagonally behind the other into a curtsy position and return. Emphasizes glutes and outer hip stability.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "quads"
+    ],
+    "muscleActivation": {
+      "glutes": 3,
+      "quads": 2
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep front knee aligned over the ankle. Touch the back knee toward the floor lightly.",
+    "equipment": [],
+    "nameKey": "exercise_legs_034_name",
+    "descriptionKey": "exercise_legs_034_description",
+    "beginnerTipsKey": "exercise_legs_034_beginner_tips"
+  },
+  {
+    "id": "legs_035",
+    "name": "Bodyweight Hip Thrust",
+    "description": "Upper back on the floor, feet flat, drive hips to full extension. One of the most effective glute builders without weights.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "hamstrings"
+    ],
+    "muscleActivation": {
+      "glutes": 3,
+      "hamstrings": 2
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Tuck chin slightly and push through heels. Squeeze glutes hard at the top.",
+    "equipment": [],
+    "nameKey": "exercise_legs_035_name",
+    "descriptionKey": "exercise_legs_035_description",
+    "beginnerTipsKey": "exercise_legs_035_beginner_tips"
+  },
+  {
+    "id": "legs_037",
+    "name": "Seated Calf Raise",
+    "description": "Sit with knees bent at 90 degrees and lift heels off the floor. Targets soleus and gastrocnemius without a step.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "calves"
+    ],
+    "muscleActivation": {
+      "calves": 3
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Pause at the top. Place hands on knees for light resistance if desired.",
+    "equipment": [],
+    "nameKey": "exercise_legs_037_name",
+    "descriptionKey": "exercise_legs_037_description",
+    "beginnerTipsKey": "exercise_legs_037_beginner_tips"
+  },
+  {
+    "id": "core_021",
+    "name": "Heel Taps",
+    "description": "Lie on your back, crunch up slightly, and alternate tapping heels to the floor. Trains abs with light oblique engagement.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "obliques"
+    ],
+    "muscleActivation": {
+      "abs": 3,
+      "obliques": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Press lower back gently into the floor. Move slowly—do not rush the taps.",
+    "equipment": [],
+    "nameKey": "exercise_core_021_name",
+    "descriptionKey": "exercise_core_021_description",
+    "beginnerTipsKey": "exercise_core_021_beginner_tips"
+  },
+  {
+    "id": "core_023",
+    "name": "Sit-up",
+    "description": "Classic abdominal exercise. Curl torso up from the floor with feet anchored or bent, then lower with control.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "muscleActivation": {
+      "abs": 3
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Exhale on the way up. If your neck strains, support your head lightly with your hands.",
+    "equipment": [],
+    "nameKey": "exercise_core_023_name",
+    "descriptionKey": "exercise_core_023_description",
+    "beginnerTipsKey": "exercise_core_023_beginner_tips"
+  },
+  {
+    "id": "core_025",
+    "name": "Standing Side Crunch",
+    "description": "Stand tall and crunch sideways bringing elbow toward hip. Isolates obliques without lying on the floor.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "obliques",
+      "abs"
+    ],
+    "muscleActivation": {
+      "obliques": 3,
+      "abs": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Keep hips level—avoid leaning the whole body. Contract the side you are crunching toward.",
+    "equipment": [],
+    "nameKey": "exercise_core_025_name",
+    "descriptionKey": "exercise_core_025_description",
+    "beginnerTipsKey": "exercise_core_025_beginner_tips"
+  },
+  {
+    "id": "cardio_016",
+    "name": "Broad Jump",
+    "description": "Explosive forward jump landing softly in an athletic stance. Develops power in legs and spikes heart rate for conditioning.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "muscleActivation": {
+      "cardio": 3,
+      "quads": 2,
+      "glutes": 2,
+      "calves": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Swing arms for momentum. Bend knees on landing to absorb impact.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_016_name",
+    "descriptionKey": "exercise_cardio_016_description",
+    "beginnerTipsKey": "exercise_cardio_016_beginner_tips"
+  },
+  {
+    "id": "cardio_019",
+    "name": "Boxer Shuffle",
+    "description": "Rapid weight shifts side to side on the balls of the feet with light punches optional. Low-impact cardio finisher.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "calves",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "cardio": 3,
+      "calves": 2,
+      "shoulders": 1
+    },
+    "difficulty": "beginner",
+    "beginnerTips": "Stay on the balls of your feet. Keep movements small and rhythm steady.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_019_name",
+    "descriptionKey": "exercise_cardio_019_description",
+    "beginnerTipsKey": "exercise_cardio_019_beginner_tips"
+  },
+  {
     "id": "rest_001",
     "name": "Meditation & Deep Breathing",
     "nameKey": "exercise_rest_001_name",

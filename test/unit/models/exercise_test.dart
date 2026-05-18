@@ -93,6 +93,23 @@ void main() {
       expect(exercise.muscleGroups, [MuscleGroup.abs]);
     });
 
+    test('fromJson without muscleActivation defaults groups to level 3', () {
+      final exercise = Exercise.fromJson({
+        'id': 'ex1',
+        'name': 'Test',
+        'description': 'desc',
+        'imageMuscleUrl': '',
+        'imageTutorialUrl': '',
+        'muscleGroups': ['chest', 'triceps'],
+        'difficulty': 'beginner',
+        'equipment': <dynamic>[],
+      });
+      expect(exercise.resolvedMuscleActivation, {
+        MuscleGroup.chest: 3,
+        MuscleGroup.triceps: 3,
+      });
+    });
+
     test('fromJson uses fallback for unknown difficulty', () {
       final json = {
         'id': 'ex1',

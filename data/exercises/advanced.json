@@ -180,5 +180,120 @@
     "nameKey": "exercise_core_017_name",
     "descriptionKey": "exercise_core_017_description",
     "beginnerTipsKey": "exercise_core_017_beginner_tips"
+  },
+  {
+    "id": "push_029",
+    "name": "Typewriter Push-up",
+    "description": "At the bottom of a push-up, shift body weight side to side before pressing up. Extreme chest and tricep tension with core demand.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "triceps",
+      "abs"
+    ],
+    "muscleActivation": {
+      "chest": 3,
+      "triceps": 2,
+      "abs": 2
+    },
+    "difficulty": "advanced",
+    "beginnerTips": "Stay low—move horizontally at the bottom only. Master archer push-ups first.",
+    "equipment": [],
+    "nameKey": "exercise_push_029_name",
+    "descriptionKey": "exercise_push_029_description",
+    "beginnerTipsKey": "exercise_push_029_beginner_tips"
+  },
+  {
+    "id": "pull_030",
+    "name": "Archer Inverted Row",
+    "description": "Under a table, row toward one hand with the other arm extended. Unilateral back and bicep strength without a pull-up bar.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps",
+      "forearms"
+    ],
+    "muscleActivation": {
+      "back": 3,
+      "biceps": 3,
+      "forearms": 2
+    },
+    "difficulty": "advanced",
+    "beginnerTips": "Keep body rigid. Pull chest to the working hand each rep.",
+    "equipment": [],
+    "nameKey": "exercise_pull_030_name",
+    "descriptionKey": "exercise_pull_030_description",
+    "beginnerTipsKey": "exercise_pull_030_beginner_tips"
+  },
+  {
+    "id": "legs_038",
+    "name": "Shrimp Squat",
+    "description": "Single-leg squat reaching the back knee behind you while holding the rear foot. Advanced quad and balance challenge.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "quads": 3,
+      "glutes": 2
+    },
+    "difficulty": "advanced",
+    "beginnerTips": "Use a wall for balance. Progress from partial range to full depth over weeks.",
+    "equipment": [],
+    "nameKey": "exercise_legs_038_name",
+    "descriptionKey": "exercise_legs_038_description",
+    "beginnerTipsKey": "exercise_legs_038_beginner_tips"
+  },
+  {
+    "id": "core_028",
+    "name": "Tuck Front Lever Hold",
+    "description": "Hang from a bar, tuck knees, and depress shoulders to lift torso nearly horizontal. Advanced straight-arm back and core strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "back",
+      "biceps"
+    ],
+    "muscleActivation": {
+      "abs": 3,
+      "back": 3,
+      "biceps": 2
+    },
+    "difficulty": "advanced",
+    "beginnerTips": "Start with short tuck holds. Focus on pushing shoulders down away from ears.",
+    "equipment": [],
+    "nameKey": "exercise_core_028_name",
+    "descriptionKey": "exercise_core_028_description",
+    "beginnerTipsKey": "exercise_core_028_beginner_tips"
+  },
+  {
+    "id": "cardio_018",
+    "name": "Power Skips",
+    "description": "Exaggerated skipping with explosive knee drive and arm swing. Develops single-leg power and high-intensity conditioning.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "glutes",
+      "calves"
+    ],
+    "muscleActivation": {
+      "cardio": 3,
+      "quads": 2,
+      "glutes": 2,
+      "calves": 2
+    },
+    "difficulty": "advanced",
+    "beginnerTips": "Drive the opposite arm and leg together. Land softly on the ball of the foot.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_018_name",
+    "descriptionKey": "exercise_cardio_018_description",
+    "beginnerTipsKey": "exercise_cardio_018_beginner_tips"
   }
 ]
