@@ -95,6 +95,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/exercises/movements/
+    - assets/exercises/movements/core_007/tutorial.png
     # - assets/animations/
     - lib/l10n/
   fonts:

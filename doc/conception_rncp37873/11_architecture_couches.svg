@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 860" width="1180" height="860" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="arrowb" markerWidth="11" markerHeight="11" refX="2" refY="4" orient="auto"><path d="M9 0 L0 4 L9 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+</defs>
+<rect x="0" y="0" width="1180" height="860" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Architecture en couches (pattern MVVM / Riverpod)</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873</text>
+<rect x="120" y="120" width="940" height="110" rx="12" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<rect x="120" y="120" width="260" height="110" rx="12" fill="#242424" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="250" y="170" font-family="Inter, Arial, sans-serif" font-size="13" fill="#7C67D8" text-anchor="middle" font-weight="700" font-style="normal">PRESENTATION</text>
+<text x="250" y="194" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Couche 1</text>
+<text x="410" y="168" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700" font-style="normal">Views + Widgets (UI)</text>
+<text x="410" y="196" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">Ecrans, composants reutilisables, navigation</text>
+<line x1="590" y1="230" x2="590" y2="250" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="650" y1="250" x2="650" y2="230" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrowb)"/>
+<rect x="120" y="260" width="940" height="110" rx="12" fill="#1C1C1C" stroke="#D8C9FF" stroke-width="1.5"/>
+<rect x="120" y="260" width="260" height="110" rx="12" fill="#242424" stroke="#D8C9FF" stroke-width="1.5"/>
+<text x="250" y="310" font-family="Inter, Arial, sans-serif" font-size="13" fill="#D8C9FF" text-anchor="middle" font-weight="700" font-style="normal">ETAT / VUE-MODELE</text>
+<text x="250" y="334" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Couche 2</text>
+<text x="410" y="308" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700" font-style="normal">Providers Riverpod</text>
+<text x="410" y="336" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">StateNotifier, FutureProvider, gestion reactive</text>
+<line x1="590" y1="370" x2="590" y2="390" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="650" y1="390" x2="650" y2="370" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrowb)"/>
+<rect x="120" y="400" width="940" height="110" rx="12" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<rect x="120" y="400" width="260" height="110" rx="12" fill="#242424" stroke="#5E2BFF" stroke-width="1.5"/>
+<text x="250" y="450" font-family="Inter, Arial, sans-serif" font-size="13" fill="#5E2BFF" text-anchor="middle" font-weight="700" font-style="normal">DOMAINE / METIER</text>
+<text x="250" y="474" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Couche 3</text>
+<text x="410" y="448" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700" font-style="normal">Services</text>
+<text x="410" y="476" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">Regles metier : workout, achievements, friends, chat, sync</text>
+<line x1="590" y1="510" x2="590" y2="530" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="650" y1="530" x2="650" y2="510" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrowb)"/>
+<rect x="120" y="540" width="940" height="110" rx="12" fill="#1C1C1C" stroke="#FF9800" stroke-width="1.5"/>
+<rect x="120" y="540" width="260" height="110" rx="12" fill="#242424" stroke="#FF9800" stroke-width="1.5"/>
+<text x="250" y="590" font-family="Inter, Arial, sans-serif" font-size="13" fill="#FF9800" text-anchor="middle" font-weight="700" font-style="normal">DONNEES</text>
+<text x="250" y="614" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Couche 4</text>
+<text x="410" y="588" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700" font-style="normal">Repositories + Models</text>
+<text x="410" y="616" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">Mapping JSON/Firestore, modeles immuables</text>
+<line x1="590" y1="650" x2="590" y2="670" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="650" y1="670" x2="650" y2="650" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrowb)"/>
+<rect x="120" y="680" width="940" height="110" rx="12" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<rect x="120" y="680" width="260" height="110" rx="12" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="250" y="730" font-family="Inter, Arial, sans-serif" font-size="13" fill="#4CAF50" text-anchor="middle" font-weight="700" font-style="normal">INFRASTRUCTURE</text>
+<text x="250" y="754" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Couche 5</text>
+<text x="410" y="728" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700" font-style="normal">Firebase SDK + Hive</text>
+<text x="410" y="756" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">Auth, Firestore, Storage, cache local offline</text>
+<text x="590" y="825" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Dependances dirigees vers le bas · remontees d&#x27;etat reactives vers le haut</text>
+</svg>

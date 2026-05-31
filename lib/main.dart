@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/core/constants/exercise_assets.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_theme.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
@@ -38,6 +39,8 @@ void main() async {
   Hive.registerAdapter(CircuitConfigAdapter());
   Hive.registerAdapter(SessionAdapter());
   Hive.registerAdapter(ProgramAdapter());
+
+  await ExerciseAssets.warmMovementAssetIndex();
 
   runApp(
     const ProviderScope(

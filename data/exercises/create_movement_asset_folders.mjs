@@ -9,8 +9,9 @@ const movementsRoot = join(root, 'assets', 'exercises', 'movements');
 const exercises = JSON.parse(readFileSync(allJson, 'utf8'));
 mkdirSync(movementsRoot, { recursive: true });
 
-const readme = `# Place tutorial.gif in this folder (1080×608 recommended).
-# App path: assets/exercises/movements/{id}/tutorial.gif
+const readme = `# Place tutorial.png in this folder (1080×608 recommended).
+# App path: assets/exercises/movements/{id}/tutorial.png
+# Also supported: tutorial.jpg, tutorial.jpeg, tutorial.webp, tutorial.gif
 `;
 
 let count = 0;

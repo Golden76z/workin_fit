@@ -1,6 +1,3 @@
-import 'dart:math' as math;
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
@@ -8,6 +5,8 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_detail_screen.dart';
+import 'package:workin_fit/core/constants/exercise_assets.dart';
+import 'package:workin_fit/features/workout/presentation/widgets/exercise_movement_thumbnail.dart';
 import 'package:workin_fit/features/workout/presentation/utils/exercise_ui_helpers.dart';
 import 'package:workin_fit/l10n/app_localizations_en.dart';
 import 'package:workin_fit/l10n/app_localizations_fr.dart';
@@ -15,7 +14,6 @@ import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/exercise_localization_helper.dart';
-import 'package:workin_fit/providers/home_navigation_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 
 class ExerciseListScreen extends ConsumerStatefulWidget {
@@ -27,8 +25,6 @@ class ExerciseListScreen extends ConsumerStatefulWidget {
 
 class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     with AutomaticKeepAliveClientMixin<ExerciseListScreen> {
-  static const int _listPageSize = 12;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -37,13 +33,12 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
 
   final TextEditingController _searchController = TextEditingController();
   MuscleGroup? _selectedMuscleGroup;
+  bool _compactMode = false;
 
-  int _renderedItemCount = _listPageSize;
   List<Exercise>? _filteredCache;
   List<Exercise>? _filteredSource;
   String _filteredQuery = '';
   MuscleGroup? _filteredMuscle;
-  bool _progressiveGrowScheduled = false;
 
   @override
   void dispose() {
@@ -55,37 +50,12 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     setState(() {
       update();
       _invalidateFilteredCache();
-      _renderedItemCount = _listPageSize;
     });
-    _scheduleProgressiveGrow();
   }
 
   void _invalidateFilteredCache() {
     _filteredCache = null;
     _filteredSource = null;
-  }
-
-  void _scheduleProgressiveGrow() {
-    if (_progressiveGrowScheduled) return;
-    _progressiveGrowScheduled = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _progressiveGrowScheduled = false;
-      if (!mounted) return;
-      final AsyncValue<List<Exercise>> exercisesAsync =
-          ref.read(exercisesProvider);
-      final List<Exercise>? exercises = exercisesAsync.valueOrNull;
-      if (exercises == null) return;
-      final int total =
-          _filteredExercises(context: context, exercises: exercises).length;
-      if (_renderedItemCount >= total) return;
-      setState(() {
-        _renderedItemCount =
-            math.min(_renderedItemCount + _listPageSize, total);
-      });
-      if (_renderedItemCount < total) {
-        _scheduleProgressiveGrow();
-      }
-    });
   }
 
   List<Widget> _buildHeaderSlivers({
@@ -94,6 +64,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     required Color selectedFilterBorderColor,
     required Color unselectedFilterBorderColor,
   }) {
+
     const Color selectedFilterLabelColor = AppColors.primary;
     const Color unselectedFilterLabelColor = AppColors.neutral0;
     const Color selectedFilterCheckColor = AppColors.primary;
@@ -118,17 +89,32 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                         letterSpacing: -0.3,
                       ),
                     ),
+                    actions: <Widget>[
+                      IconButton(
+                        onPressed: () => setState(() => _compactMode = !_compactMode),
+                        tooltip: _compactMode
+                            ? (isFrench ? 'Vue normale' : 'Normal view')
+                            : (isFrench ? 'Vue compacte' : 'Compact view'),
+                        icon: Icon(
+                          _compactMode
+                              ? Icons.view_agenda_rounded
+                              : Icons.view_headline_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ],
                     bottom: PreferredSize(
                       preferredSize: const Size.fromHeight(116),
-                      child: Container(
-                        color: Colors.transparent,
+                      child: AppTopBarBackground(
+                        child: Padding(
                         padding:
                             const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.sm),
                         child: Column(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: AppLayout.pageMargin,
+                                horizontal: AppLayout.pageMarginNarrow,
                               ),
                               child: TextField(
                                 controller: _searchController,
@@ -207,14 +193,14 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
-                                  const SizedBox(width: AppLayout.pageMargin),
+                                  const SizedBox(width: AppLayout.pageMarginNarrow),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       right: AppSpacing.xs,
                                     ),
                                     child: ChoiceChip(
                                       label: Text(
-                                        isFrench ? 'Tout' : 'All muscles',
+                                        isFrench ? 'Tous' : 'All muscles',
                                       ),
                                       selected: _selectedMuscleGroup == null,
                                       checkmarkColor: selectedFilterCheckColor,
@@ -283,11 +269,12 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(width: AppLayout.pageMargin),
+                                  const SizedBox(width: AppLayout.pageMarginNarrow),
                                 ],
                               ),
                             ),
                           ],
+                        ),
                         ),
                       ),
                     ),
@@ -298,20 +285,13 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
   List<Widget> _buildBodySlivers({
     required BuildContext context,
     required bool isFrench,
-    required bool reduceEffects,
     required AsyncValue<List<Exercise>> exercisesAsync,
+    required bool compactMode,
   }) {
     return exercisesAsync.when(
       data: (List<Exercise> exercises) {
         final List<Exercise> filtered =
             _filteredExercises(context: context, exercises: exercises);
-        final int visibleCount =
-            math.min(_renderedItemCount, filtered.length);
-        if (visibleCount < filtered.length) {
-          _scheduleProgressiveGrow();
-        }
-        const Offset velocity = Offset(42, 12);
-
         if (filtered.isEmpty) {
           return <Widget>[
             SliverFillRemaining(
@@ -340,13 +320,13 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
         return <Widget>[
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
-              AppLayout.pageMargin,
+              AppLayout.pageMarginNarrow,
               AppSpacing.md,
-              AppLayout.pageMargin,
+              AppLayout.pageMarginNarrow,
               104,
             ),
             sliver: SliverList.builder(
-              itemCount: visibleCount,
+              itemCount: filtered.length,
               itemBuilder: (BuildContext context, int index) {
                 final Exercise exercise = filtered[index];
                 return RepaintBoundary(
@@ -362,8 +342,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                           .join(', '),
                       difficulty: exercise.difficulty,
                       isFrench: isFrench,
-                      shaderVelocity: velocity,
-                      applyShader: !reduceEffects,
+                      compact: compactMode,
                       onTap: () => Navigator.of(context).push(
                         ExerciseDetailScreen.route(exercise: exercise),
                       ),
@@ -425,7 +404,6 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
         .languageCode
         .toLowerCase()
         .startsWith('fr');
-    final bool reduceEffects = ref.watch(homeTabPageTransitionActiveProvider);
     final Color selectedFilterColor = Colors.white.withValues(alpha: 0.98);
     final Color selectedFilterBorderColor = AppColors.primary.withValues(
       alpha: 0.92,
@@ -435,17 +413,12 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
     );
     final AsyncValue<List<Exercise>> exercisesAsync =
         ref.watch(exercisesProvider);
-
     ref.listen<AsyncValue<List<Exercise>>>(exercisesProvider, (
       AsyncValue<List<Exercise>>? previous,
       AsyncValue<List<Exercise>> next,
     ) {
       if (next.hasValue && previous?.valueOrNull != next.valueOrNull) {
-        setState(() {
-          _invalidateFilteredCache();
-          _renderedItemCount = _listPageSize;
-        });
-        _scheduleProgressiveGrow();
+        setState(_invalidateFilteredCache);
       }
     });
 
@@ -456,21 +429,33 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
         body: SafeArea(
           top: false,
           bottom: false,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              ..._buildHeaderSlivers(
-                isFrench: isFrench,
-                selectedFilterColor: selectedFilterColor,
-                selectedFilterBorderColor: selectedFilterBorderColor,
-                unselectedFilterBorderColor: unselectedFilterBorderColor,
-              ),
+          child: RefreshIndicator(
+            color: AppColors.primary,
+            backgroundColor: AppColors.surface,
+            onRefresh: () async {
+              await ref.read(syncServiceProvider).refreshExercises();
+              ExerciseAssets.clearMovementAssetIndexCache();
+              await ExerciseAssets.warmMovementAssetIndex();
+              ref.invalidate(exercisesProvider);
+              await ref.read(exercisesProvider.future);
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: <Widget>[
+                ..._buildHeaderSlivers(
+                  isFrench: isFrench,
+                  selectedFilterColor: selectedFilterColor,
+                  selectedFilterBorderColor: selectedFilterBorderColor,
+                  unselectedFilterBorderColor: unselectedFilterBorderColor,
+                ),
               ..._buildBodySlivers(
                 context: context,
                 isFrench: isFrench,
-                reduceEffects: reduceEffects,
                 exercisesAsync: exercisesAsync,
+                compactMode: _compactMode,
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -498,15 +483,12 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
       return _matchesSearch(context: context, exercise: exercise, query: query);
     }).toList(growable: false);
 
-    filtered.sort((Exercise a, Exercise b) {
-      final int dc =
-          difficultyRank(a.difficulty).compareTo(difficultyRank(b.difficulty));
-      if (dc != 0) return dc;
-      return a
+    filtered.sort(
+      (Exercise a, Exercise b) => a
           .getLocalizedName(context)
           .toLowerCase()
-          .compareTo(b.getLocalizedName(context).toLowerCase());
-    });
+          .compareTo(b.getLocalizedName(context).toLowerCase()),
+    );
 
     _filteredSource = exercises;
     _filteredQuery = query;
@@ -625,8 +607,7 @@ class _ExerciseCard extends StatelessWidget {
   final String muscleSummary;
   final DifficultyLevel difficulty;
   final bool isFrench;
-  final Offset shaderVelocity;
-  final bool applyShader;
+  final bool compact;
   final VoidCallback onTap;
 
   const _ExerciseCard({
@@ -636,8 +617,7 @@ class _ExerciseCard extends StatelessWidget {
     required this.muscleSummary,
     required this.difficulty,
     required this.isFrench,
-    required this.shaderVelocity,
-    this.applyShader = true,
+    required this.compact,
     required this.onTap,
   });
 
@@ -654,106 +634,153 @@ class _ExerciseCard extends StatelessWidget {
             color: AppColors.surface,
             border: Border.all(color: AppColors.neutral300),
           ),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              final double cardWidth = constraints.maxWidth.isFinite
-                  ? constraints.maxWidth
-                  : MediaQuery.sizeOf(context).width;
-              final double mediaWidth = (cardWidth * 0.36).clamp(118.0, 156.0);
-              final double mediaHeight = mediaWidth * 0.64;
+          child: compact ? _buildCompactContent() : _buildFullContent(),
+        ),
+      ),
+    );
+  }
 
-              return Padding(
-                padding: const EdgeInsets.all(AppSpacing.xs),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'AppFontMedium',
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        ExerciseDifficultyBadge(
-                          difficulty: difficulty,
-                          isFrench: isFrench,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.xxs),
-                    Container(
-                      height: 1,
+  Widget _buildCompactContent() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.xxs,
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'AppFontMedium',
+                  ),
+                ),
+                if (muscleSummary.trim().isNotEmpty) ...<Widget>[
+                  const SizedBox(height: 2),
+                  Text(
+                    muscleSummary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
                       color: AppColors.primaryLight.withValues(
-                        alpha: AppOpacity.moderate,
+                        alpha: AppOpacity.bold,
+                      ),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.xs),
+          ExerciseDifficultyBadge(difficulty: difficulty, isFrench: isFrench),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFullContent() {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double cardWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final double mediaWidth = (cardWidth * AppSizes.exerciseListImageRatio)
+            .clamp(AppSizes.exerciseListImageMinWidth, AppSizes.exerciseListImageMaxWidth);
+        const double mediaHeight = AppSizes.exerciseListImageHeight;
+
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.xs),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'AppFontMedium',
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xs),
+                  ),
+                  const SizedBox(width: AppSpacing.xs),
+                  ExerciseDifficultyBadge(difficulty: difficulty, isFrench: isFrench),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xxs),
+              Container(
+                height: 1,
+                color: AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              SizedBox(
+                height: mediaHeight,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     SizedBox(
+                      width: mediaWidth,
                       height: mediaHeight,
-                      child: Row(
+                      child: _ExerciseImage(
+                        exerciseId: exercise.id,
+                        imageUrl: exercise.imageTutorialUrl,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Container(
+                      width: 1,
+                      height: mediaHeight,
+                      color: AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
+                    ),
+                    const SizedBox(width: AppSpacing.xs),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          SizedBox(
-                            width: mediaWidth,
-                            height: mediaHeight,
-                            child: _ExerciseImage(
-                              imageUrl: exercise.imageTutorialUrl,
-                              shaderVelocity: shaderVelocity,
-                              applyShader: applyShader,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Container(
-                            width: 1,
-                            height: mediaHeight,
-                            color: AppColors.primaryLight.withValues(
-                              alpha: AppOpacity.moderate,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                if (muscleSummary.trim().isNotEmpty) ...[
-                                  Text(
-                                    muscleSummary,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: AppColors.primaryLight.withValues(
-                                        alpha: AppOpacity.bold,
-                                      ),
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  const SizedBox(height: AppSpacing.xxs),
-                                ],
-                                Expanded(
-                                  child: Text(
-                                    description,
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 12,
-                                      height: 1.28,
-                                    ),
-                                  ),
+                          if (muscleSummary.trim().isNotEmpty) ...<Widget>[
+                            Text(
+                              muscleSummary,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: AppColors.primaryLight.withValues(
+                                  alpha: AppOpacity.bold,
                                 ),
-                              ],
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xxs),
+                          ],
+                          Expanded(
+                            child: Text(
+                              description,
+                              maxLines: 5,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 12,
+                                height: 1.28,
+                              ),
                             ),
                           ),
                         ],
@@ -761,55 +788,9 @@ class _ExerciseCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Image + shader
-// ---------------------------------------------------------------------------
-
-class _ExerciseWaveFilter extends StatefulWidget {
-  final Widget child;
-  final Offset velocity;
-
-  const _ExerciseWaveFilter({required this.child, required this.velocity});
-
-  @override
-  State<_ExerciseWaveFilter> createState() => _ExerciseWaveFilterState();
-}
-
-class _ExerciseWaveFilterState extends State<_ExerciseWaveFilter> {
-  static final Future<ui.FragmentProgram> _programFuture =
-      ui.FragmentProgram.fromAsset('assets/shaders/exercise_wave.frag');
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<ui.FragmentProgram>(
-      future: _programFuture,
-      builder: (BuildContext context, AsyncSnapshot<ui.FragmentProgram> snap) {
-        if (!snap.hasData) return widget.child;
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            final double width =
-                constraints.maxWidth.isFinite ? constraints.maxWidth : 1;
-            final double height =
-                constraints.maxHeight.isFinite ? constraints.maxHeight : 1;
-            final ui.FragmentShader shader = snap.data!.fragmentShader();
-            shader.setFloat(0, width.clamp(1, 2000).toDouble());
-            shader.setFloat(1, height.clamp(1, 2000).toDouble());
-            shader.setFloat(2, widget.velocity.dx);
-            shader.setFloat(3, widget.velocity.dy);
-            return ImageFiltered(
-              imageFilter: ui.ImageFilter.shader(shader),
-              child: widget.child,
-            );
-          },
         );
       },
     );
@@ -817,54 +798,30 @@ class _ExerciseWaveFilterState extends State<_ExerciseWaveFilter> {
 }
 
 class _ExerciseImage extends StatelessWidget {
+  final String exerciseId;
   final String imageUrl;
-  final Offset shaderVelocity;
-  final bool applyShader;
 
   const _ExerciseImage({
+    required this.exerciseId,
     required this.imageUrl,
-    required this.shaderVelocity,
-    this.applyShader = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String trimmed = imageUrl.trim();
-    if (trimmed.isEmpty) return const _MissingExerciseImage();
-
     final int cacheHeight =
         (100 * MediaQuery.devicePixelRatioOf(context)).round();
 
-    final Widget image = trimmed.startsWith('assets/')
-        ? Image.asset(
-            trimmed,
-            fit: BoxFit.cover,
-            cacheHeight: cacheHeight,
-            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-          )
-        : Image.network(
-            trimmed,
-            fit: BoxFit.cover,
-            cacheHeight: cacheHeight,
-            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-          );
-
-    final Widget displayed = applyShader
-        ? _ExerciseWaveFilter(velocity: shaderVelocity, child: image)
-        : image;
-
-    return Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        const _MissingExerciseImage(),
-        displayed,
-      ],
+    return ExerciseMovementThumbnail(
+      exerciseId: exerciseId,
+      imageUrl: imageUrl,
+      cacheHeight: cacheHeight,
+      placeholder: const _ListThumbnailPlaceholder(),
     );
   }
 }
 
-class _MissingExerciseImage extends StatelessWidget {
-  const _MissingExerciseImage();
+class _ListThumbnailPlaceholder extends StatelessWidget {
+  const _ListThumbnailPlaceholder();
 
   @override
   Widget build(BuildContext context) {
@@ -878,13 +835,7 @@ class _MissingExerciseImage extends StatelessWidget {
             AppColors.background.withValues(alpha: 0.92),
           ],
         ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.neutral300,
-          ),
-        ),
+        border: Border.all(color: AppColors.neutral300),
       ),
     );
   }

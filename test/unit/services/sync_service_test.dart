@@ -211,14 +211,13 @@ void main() {
   });
 
   group('getExercises', () {
-    test('with cache: returns local immediately and merges missing remotely',
+    test('returns cache immediately; background merge only adds new ids',
         () async {
       final cached = [makeExercise('e1')];
       final remote = [makeExercise('e1'), makeExercise('e2')];
       when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
-      stubOnline();
       when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
-      when(mockStorage.mergeCachedExercises(any)).thenAnswer((_) async => 1);
+      when(mockStorage.mergeCachedExercises(remote)).thenAnswer((_) async => 1);
 
       final result = await syncService.getExercises();
       expect(result, cached);
@@ -226,18 +225,38 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       await Future<void>.delayed(Duration.zero);
 
-      verifyNever(mockStorage.cacheExercises(any));
       verify(mockFirestore.getExercises()).called(1);
-      verify(mockStorage.mergeCachedExercises(
-        argThat(
-          predicate<List<Exercise>>(
-            (list) => list.length == 1 && list.first.id == 'e2',
-          ),
-        ),
-      )).called(1);
+      verify(mockStorage.mergeCachedExercises(remote)).called(1);
+      verifyNever(mockStorage.cacheExercises(any));
+
+      // Second call within throttle window should not hit Firestore again.
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => remote);
+      await syncService.getExercises();
+      await Future<void>.delayed(Duration.zero);
+      verifyNoMoreInteractions(mockFirestore);
     });
 
-    test('empty cache: loads full list from Firestore', () async {
+    test('background sync does not shrink cache when Firestore has fewer docs',
+        () async {
+      final cached = [
+        makeExercise('e1'),
+        makeExercise('e2'),
+        makeExercise('e3'),
+      ];
+      final remote = [makeExercise('e1')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
+      when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
+
+      await syncService.getExercises();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockFirestore.getExercises()).called(1);
+      verifyNever(mockStorage.cacheExercises(any));
+      verifyNever(mockStorage.mergeCachedExercises(any));
+    });
+
+    test('empty cache: fetches Firestore before returning', () async {
       final remote = [makeExercise('e1'), makeExercise('e2')];
       when(mockStorage.getCachedExercises()).thenAnswer((_) async => []);
       when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
@@ -247,7 +266,16 @@ void main() {
 
       expect(result, remote);
       verify(mockStorage.cacheExercises(remote)).called(1);
-      verifyNever(mockStorage.mergeCachedExercises(any));
+    });
+
+    test('returns cache when Firestore fails and cache exists', () async {
+      final cached = [makeExercise('e1')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
+      when(mockFirestore.getExercises()).thenThrow(Exception('network'));
+
+      final result = await syncService.getExercises();
+
+      expect(result, cached);
     });
   });
 

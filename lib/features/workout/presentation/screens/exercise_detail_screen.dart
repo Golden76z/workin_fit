@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:workin_fit/core/constants/exercise_assets.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_difficulty.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
@@ -7,6 +6,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/data/muscle_atlas_mapper.dart';
 import 'package:workin_fit/models/muscle_activation.dart';
 import 'package:workin_fit/features/workout/presentation/utils/exercise_ui_helpers.dart';
+import 'package:workin_fit/features/workout/presentation/widgets/exercise_movement_thumbnail.dart';
 import 'package:workin_fit/features/workout/presentation/widgets/exercise_muscle_atlas.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
@@ -131,11 +131,14 @@ class ExerciseDetailScreen extends StatelessWidget {
                                   ? 'Muscles ciblés'
                                   : 'Targeted Muscles',
                             ),
-                      child: Wrap(
-                        spacing: AppSpacing.xs,
-                        runSpacing: AppSpacing.xs,
-                        alignment: WrapAlignment.center,
-                        children: muscleActivation.entries
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          spacing: AppSpacing.xs,
+                          runSpacing: AppSpacing.xs,
+                          alignment: WrapAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          children: muscleActivation.entries
                             .map(
                               (MapEntry<MuscleGroup, int> entry) =>
                                   _MuscleChip(
@@ -144,6 +147,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                               ),
                             )
                             .toList(growable: false),
+                        ),
                       ),
                     ),
                     const SizedBox(height: AppExerciseDetailLayout.sectionGap),
@@ -155,7 +159,8 @@ class ExerciseDetailScreen extends StatelessWidget {
                           ? 'Description du mouvement'
                           : 'Movement Description',
                       fullWidthBottom: _SectionImage(
-                        imageUrl: _movementMediaUrl(exercise),
+                        imageUrl: exercise.imageTutorialUrl,
+                        exerciseId: exercise.id,
                         label: isFrench ? 'Mouvement' : 'Movement',
                       ),
                       child: Text(
@@ -210,12 +215,6 @@ class ExerciseDetailScreen extends StatelessWidget {
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
-
-  String _movementMediaUrl(Exercise exercise) {
-    final String url = exercise.imageTutorialUrl.trim();
-    if (url.isNotEmpty) return url;
-    return ExerciseAssets.movementPath(exercise.id);
-  }
 
   String _tipsFallback({required String? tips, required bool isFrench}) {
     final String value = tips?.trim() ?? '';
@@ -314,9 +313,14 @@ class _SectionCard extends StatelessWidget {
 
 class _SectionImage extends StatelessWidget {
   final String imageUrl;
+  final String? exerciseId;
   final String label;
 
-  const _SectionImage({required this.imageUrl, required this.label});
+  const _SectionImage({
+    required this.imageUrl,
+    this.exerciseId,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +329,10 @@ class _SectionImage extends StatelessWidget {
         SizedBox(
           height: AppSizes.exerciseMovementMediaHeight,
           width: double.infinity,
-          child: _ExerciseMedia(url: imageUrl),
+          child: _ExerciseMedia(
+            imageUrl: imageUrl,
+            exerciseId: exerciseId ?? '',
+          ),
         ),
         Positioned(
           left: AppExerciseDetailLayout.cardPadding,
@@ -476,24 +483,29 @@ class _MuscleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color fill = MuscleActivationLevel.highlightColor(level);
+    final Color accent = MuscleActivationLevel.highlightColor(
+      level,
+      base: AppColors.primaryLight,
+    );
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.xs,
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: fill.withValues(alpha: AppOpacity.faint),
+        color: AppColors.primaryLight.withValues(alpha: AppOpacity.whisper),
         borderRadius: BorderRadius.circular(AppExerciseDetailLayout.chipRadius),
-        border: Border.all(color: fill),
+        border: Border.all(
+          color: accent.withValues(alpha: AppOpacity.firm),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             label,
-            style: TextStyle(
-              color: fill,
+            style: const TextStyle(
+              color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
@@ -504,7 +516,7 @@ class _MuscleChip extends StatelessWidget {
             height: 18,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: fill,
+              color: accent,
               shape: BoxShape.circle,
             ),
             child: Text(
@@ -549,44 +561,27 @@ class _DifficultyBadge extends StatelessWidget {
 // ─── Exercise media ───────────────────────────────────────────────────────────
 
 class _ExerciseMedia extends StatelessWidget {
-  final String url;
+  final String imageUrl;
+  final String exerciseId;
 
-  const _ExerciseMedia({required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    final String trimmed = url.trim();
-
-    if (trimmed.isEmpty) return const _MissingExerciseMedia();
-
-    if (trimmed.startsWith('assets/')) {
-      return Image.asset(
-        trimmed,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => const _MissingExerciseMedia(),
-      );
-    }
-
-    return Image.network(
-      trimmed,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => const _MissingExerciseMedia(),
-    );
-  }
-}
-
-class _MissingExerciseMedia extends StatelessWidget {
-  const _MissingExerciseMedia();
+  const _ExerciseMedia({
+    required this.imageUrl,
+    required this.exerciseId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: AppColors.mediaCanvas,
-      child: Center(
-        child: Icon(
-          Icons.fitness_center_rounded,
-          color: AppColors.frostedCyan,
-          size: 56,
+    return ExerciseMovementThumbnail(
+      exerciseId: exerciseId,
+      imageUrl: imageUrl,
+      placeholder: const ColoredBox(
+        color: AppColors.mediaCanvas,
+        child: Center(
+          child: Icon(
+            Icons.fitness_center_rounded,
+            color: AppColors.frostedCyan,
+            size: 56,
+          ),
         ),
       ),
     );

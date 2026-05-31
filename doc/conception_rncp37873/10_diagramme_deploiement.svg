@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 840" width="1280" height="840" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="arrowb" markerWidth="11" markerHeight="11" refX="2" refY="4" orient="auto"><path d="M9 0 L0 4 L9 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+</defs>
+<rect x="0" y="0" width="1280" height="840" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Diagramme de deploiement</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873</text>
+<rect x="60" y="130" width="420" height="560" rx="14" fill="#181527" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="270" y="160" font-family="Inter, Arial, sans-serif" font-size="13" fill="#7C67D8" text-anchor="middle" font-weight="700" font-style="normal">&lt;&lt;device&gt;&gt;  Smartphone (Android / iOS)</text>
+<rect x="95" y="190" width="350" height="460" rx="12" fill="#1C1C1C" stroke="#4A4A4A" stroke-width="1.5"/>
+<text x="270" y="215" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">&lt;&lt;runtime&gt;&gt; Moteur Flutter</text>
+<rect x="120" y="240" width="300" height="80" rx="10" fill="#242424" stroke="#5E2BFF" stroke-width="1.5"/>
+<text x="270.0" y="276.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">App Workin Fit</text>
+<text x="270.0" y="295.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">APK / IPA — Dart compile AOT</text>
+<rect x="120" y="345" width="300" height="70" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="270.0" y="376.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Cache local Hive</text>
+<text x="270.0" y="395.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Sessions &amp; programmes offline</text>
+<rect x="120" y="440" width="300" height="70" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="270.0" y="471.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">SQLite (sqflite)</text>
+<text x="270.0" y="490.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Donnees structurees locales</text>
+<rect x="120" y="535" width="300" height="70" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="270.0" y="566.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">SecureStorage / Prefs</text>
+<text x="270.0" y="585.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Tokens &amp; preferences</text>
+<rect x="640" y="130" width="580" height="620" rx="14" fill="#181527" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="930" y="160" font-family="Inter, Arial, sans-serif" font-size="13" fill="#4CAF50" text-anchor="middle" font-weight="700" font-style="normal">&lt;&lt;cloud&gt;&gt;  Firebase / Google Cloud</text>
+<rect x="680" y="200" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="795.0" y="236.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Firebase Auth</text>
+<text x="795.0" y="255.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Identite multi-provider</text>
+<rect x="950" y="200" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="1065.0" y="236.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Cloud Firestore</text>
+<text x="1065.0" y="255.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">BDD NoSQL temps reel</text>
+<rect x="680" y="310" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="795.0" y="346.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Firebase Storage</text>
+<text x="795.0" y="365.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Images exercices / avatars</text>
+<rect x="950" y="310" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="1065.0" y="346.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Cloud Functions</text>
+<text x="1065.0" y="365.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Logique serveur / triggers</text>
+<rect x="680" y="420" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="795.0" y="456.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">FCM</text>
+<text x="795.0" y="475.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Notifications push</text>
+<rect x="950" y="420" width="230" height="80" rx="10" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="1065.0" y="456.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Crashlytics / Analytics</text>
+<text x="1065.0" y="475.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Supervision</text>
+<rect x="815" y="540" width="250" height="70" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="940.0" y="571.0" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="middle" font-weight="600" font-style="normal">Identity Providers</text>
+<text x="940.0" y="590.0" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Google · Apple · GitHub</text>
+<line x1="930" y1="500" x2="930" y2="540" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M480 410 C 560 410, 560 300, 640 300" fill="none" stroke="#7C67D8" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M640 320 C 560 320, 560 430, 480 430" fill="none" stroke="#7C67D8" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="560" y="360" font-family="Inter, Arial, sans-serif" font-size="11" fill="#7C67D8" text-anchor="middle" font-weight="400" font-style="normal">HTTPS / TLS
+Firebase SDK</text>
+<text x="560" y="795" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">Protocole : REST/gRPC sur HTTPS · authentification par token JWT Firebase</text>
+</svg>

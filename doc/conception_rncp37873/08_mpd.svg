@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 940" width="1400" height="940" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="one" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M6 1 L6 11" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="crow" markerWidth="18" markerHeight="16" refX="2" refY="6" orient="auto"><path d="M14 1 L2 6 L14 11 M2 6 L14 6" fill="none" stroke="#AAAAAA" stroke-width="1.4"/></marker>
+</defs>
+<rect x="0" y="0" width="1400" height="940" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Modele Physique de Donnees (MPD)</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873</text>
+<rect x="60" y="140" width="270" height="182" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M61 150 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="195.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">utilisateur</text>
+<text x="72" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">uid           VARCHAR(28) PK</text>
+<text x="72" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">username      VARCHAR(40)</text>
+<text x="72" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">email         VARCHAR(120)</text>
+<text x="72" y="249" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">photo_url     TEXT</text>
+<text x="72" y="269" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">streak        INT</text>
+<text x="72" y="289" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">total_points  INT</text>
+<text x="72" y="309" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">created_at    TIMESTAMP</text>
+<rect x="60" y="540" width="270" height="182" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M61 550 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="195.0" y="562" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">programme</text>
+<text x="72" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_programme  VARCHAR(36) PK</text>
+<text x="72" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom           VARCHAR(80)</text>
+<text x="72" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">duree_sem     INT</text>
+<text x="72" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">jours_sem     INT</text>
+<text x="72" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte    ENUM</text>
+<text x="72" y="689" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">est_custom    BOOLEAN</text>
+<text x="72" y="709" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid           VARCHAR(28) FK</text>
+<rect x="420" y="540" width="270" height="162" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M421 550 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="555.0" y="562" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">seance</text>
+<text x="432" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_seance     VARCHAR(36) PK</text>
+<text x="432" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom           VARCHAR(80)</text>
+<text x="432" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte    ENUM</text>
+<text x="432" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">repos_exos    INT</text>
+<text x="432" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">transition    INT</text>
+<text x="432" y="689" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid           VARCHAR(28) FK</text>
+<rect x="420" y="140" width="270" height="102" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M421 150 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="555.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">programme_seance</text>
+<text x="432" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_programme  VARCHAR(36) FK</text>
+<text x="432" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_seance     VARCHAR(36) FK</text>
+<text x="432" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">ordre         INT</text>
+<rect x="780" y="540" width="270" height="182" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M781 550 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="915.0" y="562" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">workout_config</text>
+<text x="792" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_config     VARCHAR(36) PK</text>
+<text x="792" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_seance     VARCHAR(36) FK</text>
+<text x="792" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_exercice   VARCHAR(36) FK</text>
+<text x="792" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">type          ENUM</text>
+<text x="792" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">sets          INT</text>
+<text x="792" y="689" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">reps          INT</text>
+<text x="792" y="709" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">rest_time     INT</text>
+<rect x="780" y="140" width="270" height="142" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M781 150 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="915.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">exercice</text>
+<text x="792" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_exercice   VARCHAR(36) PK</text>
+<text x="792" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom           VARCHAR(80)</text>
+<text x="792" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">description   TEXT</text>
+<text x="792" y="249" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte    ENUM</text>
+<text x="792" y="269" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">equipement    JSON</text>
+<rect x="1120" y="140" width="270" height="142" rx="10" fill="#1C1C1C" stroke="#4CAF50" stroke-width="1.5"/>
+<path d="M1121 150 q0 -9 9 -9 h250 q9 0 9 9 v22 h-268 z" fill="#4CAF50" opacity="0.92"/>
+<text x="1255.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">session_history</text>
+<text x="1132" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_hist       VARCHAR(36) PK</text>
+<text x="1132" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid           VARCHAR(28) FK</text>
+<text x="1132" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_seance     VARCHAR(36)</text>
+<text x="1132" y="249" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">duree         INT</text>
+<text x="1132" y="269" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">completed_at  TIMESTAMP</text>
+<text x="60" y="900" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">NB : backend NoSQL (Cloud Firestore). Le MPD ci-dessus = projection relationnelle equivalente (types SQL indicatifs).</text>
+</svg>
