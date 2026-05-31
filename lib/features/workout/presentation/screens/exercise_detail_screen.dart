@@ -263,24 +263,32 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
+      color: AppColors.mediaCanvas,
       elevation: 2,
       shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppExerciseDetailLayout.cardRadius),
+        side: BorderSide(
+          color: Colors.white.withValues(alpha: AppOpacity.faint),
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // Primary-blue header band matching the appbar
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
               horizontal: AppExerciseDetailLayout.cardHeaderPaddingH,
               vertical: AppExerciseDetailLayout.cardHeaderPaddingV,
             ),
-            color: AppChrome.topSurface,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.white.withValues(alpha: AppOpacity.faint),
+                ),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -302,7 +310,13 @@ class _SectionCard extends StatelessWidget {
             padding: const EdgeInsets.all(AppExerciseDetailLayout.cardPadding),
             child: child,
           ),
-          if (fullWidthBottom != null) fullWidthBottom!,
+          if (fullWidthBottom != null) ...<Widget>[
+            Container(
+              height: 1,
+              color: Colors.white.withValues(alpha: AppOpacity.faint),
+            ),
+            fullWidthBottom!,
+          ],
         ],
       ),
     );
@@ -389,7 +403,7 @@ class _StepRow extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(99),
+              borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               '$number',

@@ -77,6 +77,10 @@ class ExerciseMuscleAtlas extends StatelessWidget {
             ],
           ),
         ),
+        Container(
+          height: 1,
+          color: Colors.white.withValues(alpha: AppOpacity.faint),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppExerciseDetailLayout.atlasAttributionPaddingH,
