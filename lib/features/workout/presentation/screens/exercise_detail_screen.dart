@@ -268,9 +268,7 @@ class _SectionCard extends StatelessWidget {
       shadowColor: AppColors.primary.withValues(alpha: AppOpacity.whisper),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppExerciseDetailLayout.cardRadius),
-        side: BorderSide(
-          color: Colors.white.withValues(alpha: AppOpacity.faint),
-        ),
+        side: const BorderSide(color: AppColors.neutral300, width: 2),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -286,6 +284,7 @@ class _SectionCard extends StatelessWidget {
               border: Border(
                 bottom: BorderSide(
                   color: Colors.white.withValues(alpha: AppOpacity.faint),
+                  width: 2,
                 ),
               ),
             ),
@@ -312,7 +311,7 @@ class _SectionCard extends StatelessWidget {
           ),
           if (fullWidthBottom != null) ...<Widget>[
             Container(
-              height: 1,
+              height: 2,
               color: Colors.white.withValues(alpha: AppOpacity.faint),
             ),
             fullWidthBottom!,

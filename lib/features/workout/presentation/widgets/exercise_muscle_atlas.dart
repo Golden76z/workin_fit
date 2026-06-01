@@ -78,7 +78,7 @@ class ExerciseMuscleAtlas extends StatelessWidget {
           ),
         ),
         Container(
-          height: 1,
+          height: 2,
           color: Colors.white.withValues(alpha: AppOpacity.faint),
         ),
         Padding(
