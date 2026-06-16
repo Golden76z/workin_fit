@@ -1,4 +1,7 @@
+import 'dart:math' show min;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_difficulty.dart';
@@ -422,7 +425,21 @@ class _SessionsListViewState extends ConsumerState<_SessionsListView> {
                   onTap: () => Navigator.of(context).push(
                     SessionDetailScreen.route(session: session),
                   ),
-                ),
+                )
+                    .animate(
+                      delay: Duration(
+                        milliseconds:
+                            min(index, AppAnimations.staggerMaxItems) *
+                                AppAnimations.staggerMs,
+                      ),
+                    )
+                    .fadeIn(duration: AppAnimations.fast)
+                    .slideY(
+                      begin: 0.06,
+                      end: 0,
+                      duration: AppAnimations.fast,
+                      curve: AppAnimations.defaultIn,
+                    ),
               );
             },
           );
@@ -513,7 +530,21 @@ class _ProgramsListViewState extends ConsumerState<_ProgramsListView> {
                   onTap: () => Navigator.of(context).push(
                     ProgramDetailScreen.route(program: program),
                   ),
-                ),
+                )
+                    .animate(
+                      delay: Duration(
+                        milliseconds:
+                            min(index, AppAnimations.staggerMaxItems) *
+                                AppAnimations.staggerMs,
+                      ),
+                    )
+                    .fadeIn(duration: AppAnimations.fast)
+                    .slideY(
+                      begin: 0.06,
+                      end: 0,
+                      duration: AppAnimations.fast,
+                      curve: AppAnimations.defaultIn,
+                    ),
               );
             },
           );

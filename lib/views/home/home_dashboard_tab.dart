@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_difficulty.dart';
@@ -118,11 +119,35 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                     _SessionHeroCard(
                       isFrench: isFrench,
                       onSelectProgram: _scrollToProgramsSection,
-                    ),
+                    )
+                        .animate(
+                          delay: const Duration(
+                            milliseconds: 0 * AppAnimations.staggerMs,
+                          ),
+                        )
+                        .fadeIn(duration: AppAnimations.medium)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          duration: AppAnimations.medium,
+                          curve: AppAnimations.defaultIn,
+                        ),
                     const SizedBox(height: AppSpacing.md),
 
                     // Daily Challenge
-                    _DailyChallengeCard(isFrench: isFrench),
+                    _DailyChallengeCard(isFrench: isFrench)
+                        .animate(
+                          delay: const Duration(
+                            milliseconds: 1 * AppAnimations.staggerMs,
+                          ),
+                        )
+                        .fadeIn(duration: AppAnimations.medium)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          duration: AppAnimations.medium,
+                          curve: AppAnimations.defaultIn,
+                        ),
                     const SizedBox(height: AppSpacing.lg),
 
                     // Warmup Selector
@@ -131,7 +156,19 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                       subtitle: isFrench ? 'Commencez doucement' : 'Start easy',
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    _WarmupSelector(isFrench: isFrench),
+                    _WarmupSelector(isFrench: isFrench)
+                        .animate(
+                          delay: const Duration(
+                            milliseconds: 2 * AppAnimations.staggerMs,
+                          ),
+                        )
+                        .fadeIn(duration: AppAnimations.medium)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          duration: AppAnimations.medium,
+                          curve: AppAnimations.defaultIn,
+                        ),
                     const SizedBox(height: AppSpacing.lg),
 
                     // Programs Carousel
@@ -144,7 +181,19 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                       actionLabel: isFrench ? 'Voir tout' : 'See all',
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    const _ProgramsCarousel(),
+                    const _ProgramsCarousel()
+                        .animate(
+                          delay: const Duration(
+                            milliseconds: 3 * AppAnimations.staggerMs,
+                          ),
+                        )
+                        .fadeIn(duration: AppAnimations.medium)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          duration: AppAnimations.medium,
+                          curve: AppAnimations.defaultIn,
+                        ),
                     const SizedBox(height: AppSpacing.lg),
 
                     // Sessions Carousel
@@ -156,7 +205,19 @@ class _HomeDashboardTabState extends ConsumerState<HomeDashboardTab>
                       actionLabel: isFrench ? 'Voir tout' : 'See all',
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    _SessionsCarousel(isFrench: isFrench),
+                    _SessionsCarousel(isFrench: isFrench)
+                        .animate(
+                          delay: const Duration(
+                            milliseconds: 4 * AppAnimations.staggerMs,
+                          ),
+                        )
+                        .fadeIn(duration: AppAnimations.medium)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          duration: AppAnimations.medium,
+                          curve: AppAnimations.defaultIn,
+                        ),
                     const SizedBox(height: AppSpacing.md),
 
                     // Bottom padding — floating nav bar clearance

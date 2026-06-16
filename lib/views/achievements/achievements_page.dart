@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
@@ -153,15 +154,20 @@ class _SummaryBanner extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadii.sm),
-                  child: LinearProgressIndicator(
-                    value: pct,
-                    minHeight: 6,
-                    backgroundColor:
-                        Colors.white.withValues(alpha: AppOpacity.medium),
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.white),
+                TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: pct),
+                  duration: AppAnimations.progressBar,
+                  curve: AppAnimations.defaultIn,
+                  builder: (context, value, _) => ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadii.sm),
+                    child: LinearProgressIndicator(
+                      value: value,
+                      minHeight: 6,
+                      backgroundColor:
+                          Colors.white.withValues(alpha: AppOpacity.medium),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxs),
@@ -226,7 +232,8 @@ class _CategorySection extends StatelessWidget {
     // Sort: bronze → silver → gold
     final sorted = List<Achievement>.from(achievements)
       ..sort(
-          (a, b) => a.definition.rank.index.compareTo(b.definition.rank.index));
+          (a, b) => a.definition.rank.index.compareTo(b.definition.rank.index),
+        );
 
     // Find the next locked achievement to highlight progress
     final nextLocked = sorted.where((a) => !a.isUnlocked).firstOrNull;
@@ -319,15 +326,20 @@ class _ProgressBar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadii.sm),
-            child: LinearProgressIndicator(
-              value: pct,
-              minHeight: 5,
-              backgroundColor:
-                  AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(AppColors.primary),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0, end: pct),
+            duration: AppAnimations.progressBar,
+            curve: AppAnimations.defaultIn,
+            builder: (context, value, _) => ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadii.sm),
+              child: LinearProgressIndicator(
+                value: value,
+                minHeight: 5,
+                backgroundColor:
+                    AppColors.babyBlueIce.withValues(alpha: AppOpacity.mild),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
             ),
           ),
           const SizedBox(height: 2),
@@ -391,7 +403,7 @@ class _TrophyCard extends StatelessWidget {
     final bool unlocked = achievement.isUnlocked;
     final Color rankColor = _rankColor;
 
-    return AnimatedContainer(
+    final card = AnimatedContainer(
       duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
         color: unlocked ? AppColors.surface : AppColors.surfaceVariant,
@@ -501,5 +513,21 @@ class _TrophyCard extends StatelessWidget {
         ),
       ),
     );
+
+    if (!unlocked) return card;
+
+    return card
+        .animate()
+        .scale(
+          begin: const Offset(0.88, 0.88),
+          end: const Offset(1, 1),
+          duration: AppAnimations.medium,
+          curve: AppAnimations.defaultIn,
+        )
+        .shimmer(
+          delay: AppAnimations.medium,
+          duration: AppAnimations.slow,
+          color: rankColor.withValues(alpha: 0.3),
+        );
   }
 }

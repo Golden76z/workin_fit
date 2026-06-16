@@ -162,6 +162,9 @@ class ExerciseDetailScreen extends StatelessWidget {
                         imageUrl: exercise.imageTutorialUrl,
                         exerciseId: exercise.id,
                         label: isFrench ? 'Mouvement' : 'Movement',
+                        heroTag: exercise.imageTutorialUrl.isNotEmpty
+                            ? 'exercise-img-${exercise.imageTutorialUrl}'
+                            : 'exercise-img-${exercise.id}',
                       ),
                       child: Text(
                         localizedDescription,
@@ -328,25 +331,25 @@ class _SectionImage extends StatelessWidget {
   final String imageUrl;
   final String? exerciseId;
   final String label;
+  final String? heroTag;
 
   const _SectionImage({
     required this.imageUrl,
-    this.exerciseId,
     required this.label,
+    this.heroTag,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Widget media = SizedBox(
+      height: 200,
+      width: double.infinity,
+      child: _ExerciseMedia(url: imageUrl),
+    );
+
     return Stack(
       children: <Widget>[
-        SizedBox(
-          height: AppSizes.exerciseMovementMediaHeight,
-          width: double.infinity,
-          child: _ExerciseMedia(
-            imageUrl: imageUrl,
-            exerciseId: exerciseId ?? '',
-          ),
-        ),
+        heroTag != null ? Hero(tag: heroTag!, child: media) : media,
         Positioned(
           left: AppExerciseDetailLayout.cardPadding,
           bottom: AppExerciseDetailLayout.cardPadding,
