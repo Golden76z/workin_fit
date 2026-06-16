@@ -1,0 +1,564 @@
+ID: cardio_001
+Name: Jumping Jacks
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jumping jacks, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_002
+Name: High Knees
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a high knees, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_003
+Name: Butt Kicks
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a butt kicks, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_004
+Name: Burpees
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a burpees, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_005
+Name: Skater Jumps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a skater jumps, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_006
+Name: Star Jumps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a star jumps, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_007
+Name: Tuck Jumps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a tuck jumps, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_008
+Name: Inchworms
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a inchworms, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_009
+Name: Shadow Boxing
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a shadow boxing, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_010
+Name: Jump Rope (No Rope)
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jump rope (no rope), side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_011
+Name: Fast Feet
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a fast feet, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_012
+Name: Squat Jumps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a squat jumps, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_013
+Name: Lunge Jumps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a lunge jumps, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_014
+Name: Dancing in Place
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a dancing in place, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_015
+Name: Jumping Lunges
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jumping lunges, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_016
+Name: Broad Jump
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a broad jump, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_017
+Name: Sprawl
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a sprawl, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_018
+Name: Power Skips
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a power skips, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: cardio_019
+Name: Boxer Shuffle
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a boxer shuffle, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_001
+Name: Plank
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a plank, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_002
+Name: Side Plank
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a side plank, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_003
+Name: Mountain Climbers
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a mountain climbers, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_004
+Name: Bicycle Crunches
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bicycle crunches, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_005
+Name: Russian Twists
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a russian twists, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_006
+Name: Flutter Kicks
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a flutter kicks, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_007
+Name: Dead Bug
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a dead bug, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_008
+Name: Bird Dog
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bird dog, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_009
+Name: Hollow Body Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a hollow body hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_010
+Name: V-Ups
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a v-ups, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_011
+Name: Toe Touches
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a toe touches, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_012
+Name: Reverse Crunches
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse crunches, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_013
+Name: Plank Jacks
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a plank jacks, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_014
+Name: Bear Crawl
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bear crawl, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_015
+Name: Crab Walk
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a crab walk, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_016
+Name: Windshield Wipers
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a windshield wipers, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_017
+Name: L-Sit
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a l-sit, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_018
+Name: Plank to Downward Dog
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a plank to downward dog, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_019
+Name: Side Plank with Leg Lift
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a side plank with leg lift, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_020
+Name: Plank Up-Downs
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a plank up-downs, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_021
+Name: Heel Taps
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a heel taps, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_022
+Name: Knee Pull-In
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a knee pull-in, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_023
+Name: Sit-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a sit-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_025
+Name: Standing Side Crunch
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a standing side crunch, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_026
+Name: Cross-Body Mountain Climber
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a cross-body mountain climber, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_027
+Name: Hollow Rock
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a hollow rock, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: core_028
+Name: Tuck Front Lever Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a tuck front lever hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_001
+Name: Bodyweight Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bodyweight squat, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_002
+Name: Jump Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jump squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_003
+Name: Pistol Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a pistol squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_004
+Name: Bulgarian Split Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bulgarian split squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_005
+Name: Forward Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a forward lunge, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_006
+Name: Reverse Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse lunge, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_007
+Name: Walking Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a walking lunge, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_008
+Name: Jumping Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jumping lunge, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_009
+Name: Side Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a side lunge, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_010
+Name: Calf Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a calf raise, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_011
+Name: Single Leg Calf Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a single leg calf raise, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_012
+Name: Glute Bridge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a glute bridge, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_013
+Name: Single Leg Glute Bridge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a single leg glute bridge, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_014
+Name: Donkey Kicks
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a donkey kicks, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_015
+Name: Fire Hydrants
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a fire hydrants, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_016
+Name: Clamshells
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a clamshells, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_017
+Name: Leg Raises
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a leg raises, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_018
+Name: Single Leg Deadlift
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a single leg deadlift, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_019
+Name: Skater Squats
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a skater squats, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_020
+Name: Step-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a step-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_021
+Name: Sumo Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a sumo squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_022
+Name: Single Leg Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a single leg squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_023
+Name: Cossack Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a cossack squat, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_024
+Name: Jump Squat to Tuck
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a jump squat to tuck, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_025
+Name: Wall Sit Pulse
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wall sit pulse, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_026
+Name: Squat Pulse
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a squat pulse, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_027
+Name: Sissy Squat Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a sissy squat hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_030
+Name: Sliding Hamstring Curl
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a sliding hamstring curl, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_031
+Name: Nordic Curl Negative
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a nordic curl negative, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_033
+Name: Frog Pump
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a frog pump, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_034
+Name: Curtsy Lunge
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a curtsy lunge, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_035
+Name: Bodyweight Hip Thrust
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bodyweight hip thrust, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_036
+Name: Standing Glute Kickback
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a standing glute kickback, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_037
+Name: Seated Calf Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a seated calf raise, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_038
+Name: Shrimp Squat
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a shrimp squat, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: legs_039
+Name: Lateral Lunge Pulse
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a lateral lunge pulse, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_001
+Name: Inverted Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a inverted row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_002
+Name: Superman
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a superman, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_003
+Name: Reverse Snow Angels
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse snow angels, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_004
+Name: Y-T-W Raises
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a y-t-w raises, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_005
+Name: Wall Angels
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wall angels, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_006
+Name: Prone Y Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a prone y raise, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_007
+Name: Prone T Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a prone t raise, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_008
+Name: Prone W Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a prone w raise, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_009
+Name: Reverse Plank
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse plank, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_010
+Name: Scapular Wall Slides
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a scapular wall slides, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_011
+Name: Isometric Pull Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a isometric pull hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_012
+Name: Reverse Plank Walk
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse plank walk, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_013
+Name: Single Arm Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a single arm row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_014
+Name: Towel Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a towel row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_015
+Name: Doorway Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a doorway row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_016
+Name: Australian Pull-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a australian pull-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_017
+Name: Pull-up Negative
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a pull-up negative, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_018
+Name: Reverse Fly
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse fly, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_019
+Name: Wide Grip Inverted Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wide grip inverted row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_020
+Name: Close Grip Inverted Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a close grip inverted row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_021
+Name: Prone Cobra
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a prone cobra, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_022
+Name: Bodyweight Good Morning
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a bodyweight good morning, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_024
+Name: Chin-Up Negative
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a chin-up negative, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_025
+Name: Dead Hang
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a dead hang, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_026
+Name: Reverse Grip Hang Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a reverse grip hang hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_027
+Name: Fist Plank Hold
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a fist plank hold, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_028
+Name: Scapular Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a scapular push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_029
+Name: Renegade Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a renegade row, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: pull_030
+Name: Archer Inverted Row
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a archer inverted row, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_001
+Name: Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_002
+Name: Incline Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a incline push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_003
+Name: Decline Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a decline push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_004
+Name: Diamond Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a diamond push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_005
+Name: Wide Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wide push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_006
+Name: Pike Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a pike push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_007
+Name: Wall Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wall push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_008
+Name: Knee Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a knee push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_009
+Name: Archer Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a archer push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_010
+Name: Hindu Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a hindu push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_011
+Name: Spiderman Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a spiderman push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_012
+Name: Shoulder Tap Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a shoulder tap push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_013
+Name: Tricep Dips
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a tricep dips, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_014
+Name: Diamond Tricep Dips
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a diamond tricep dips, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_015
+Name: Wall Sit
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a wall sit, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_016
+Name: Pseudo Planche Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a pseudo planche push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_017
+Name: Clapping Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a clapping push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_018
+Name: One-Arm Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a one-arm push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_019
+Name: Handstand Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a handstand push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_020
+Name: Dive Bomber Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a dive bomber push-up, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_021
+Name: Staggered Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a staggered push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_022
+Name: Tempo Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a tempo push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_023
+Name: Close-Hand Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a close-hand push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_024
+Name: Arm Circles
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a arm circles, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_025
+Name: Prone I Raise
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a prone i raise, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_027
+Name: Body Saw
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a body saw, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: push_029
+Name: Typewriter Push-up
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a typewriter push-up, side-by-side progression showing start position on the left and finish position on the right. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: rest_001
+Name: Meditation & Deep Breathing
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a meditation & deep breathing, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: rest_002
+Name: Easy Jog / Brisk Walk
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a easy jog / brisk walk, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------
+ID: rest_003
+Name: Full Body Mobility Flow
+Prompt: Flat 2D vector infographic illustration of an athletic mannequin silhouette performing a full body mobility flow, side profile view showing perfect hold alignment. The mannequin has a solid light-grey filled body with clean black outlines, identical to the style of a muscle anatomy diagram. The active joints or movement trajectory are indicated by a flat, solid purple (#5E2BFF) arrow. No glowing effects, no neon, no shadows, no gradients. Solid flat black background (#111111). Clean and technical fitness app asset, 16:9 aspect ratio.
+--------------------------------------------------------------------------------

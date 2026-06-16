@@ -87,14 +87,25 @@ flutter:
   
   uses-material-design: true
   
-  shaders:
-    - assets/shaders/workout_wave.frag
-    - assets/shaders/exercise_wave.frag
+  # shaders:
+  #   - assets/shaders/workout_wave.frag
+  #   - assets/shaders/exercise_wave.frag
 
   assets:
     - assets/images/
     - assets/icons/
     - assets/exercises/movements/
+    - assets/exercises/movements/push_001/
+    - assets/exercises/movements/legs_001/
+    - assets/exercises/movements/core_001/
+    - assets/exercises/movements/cardio_001/
+    - assets/exercises/movements/cardio_002/
+    - assets/exercises/movements/cardio_003/
+    - assets/exercises/movements/cardio_004/
+    - assets/exercises/movements/cardio_005/
+    - assets/exercises/movements/cardio_006/
+    - assets/exercises/movements/cardio_007/
+    - assets/exercises/movements/cardio_008/
     - assets/exercises/movements/core_007/tutorial.png
     # - assets/animations/
     - lib/l10n/
