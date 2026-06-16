@@ -336,6 +336,7 @@ class _SectionImage extends StatelessWidget {
   const _SectionImage({
     required this.imageUrl,
     required this.label,
+    this.exerciseId,
     this.heroTag,
   });
 
@@ -344,7 +345,10 @@ class _SectionImage extends StatelessWidget {
     final Widget media = SizedBox(
       height: 200,
       width: double.infinity,
-      child: _ExerciseMedia(url: imageUrl),
+      child: _ExerciseMedia(
+        imageUrl: imageUrl,
+        exerciseId: exerciseId ?? '',
+      ),
     );
 
     return Stack(

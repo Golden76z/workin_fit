@@ -1,9 +1,7 @@
 import 'dart:math' show min;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/core/theme/app_chrome.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
@@ -284,101 +282,7 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
                       ),
                     ),
                   ),
-                  if (filtered.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.xl),
-                          child: Text(
-                            _emptyStateMessage(
-                              isFrench: isFrench,
-                              hasActiveFilters: _selectedMuscleGroup != null ||
-                                  _searchController.text.trim().isNotEmpty,
-                              hasAnyExercise: exercises.isNotEmpty,
-                            ),
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(
-                        AppLayout.pageMargin,
-                        AppSpacing.md,
-                        AppLayout.pageMargin,
-                        104,
-                      ),
-                      sliver: SliverList.builder(
-                        itemCount: filtered.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final Exercise exercise = filtered[index];
-                          return Padding(
-                            padding:
-                                const EdgeInsets.only(bottom: AppSpacing.xxs),
-                            child: _ExerciseCard(
-                              exercise: exercise,
-                              title: exercise.getLocalizedName(context),
-                              description:
-                                  exercise.getLocalizedDescription(context),
-                              muscleSummary: exercise.muscleGroups
-                                  .map((m) => muscleGroupLabel(m, isFrench))
-                                  .join(', '),
-                              difficulty: exercise.difficulty,
-                              isFrench: isFrench,
-                              shaderVelocity: velocity,
-                              onTap: () => Navigator.of(context).push(
-                                ExerciseDetailScreen.route(exercise: exercise),
-                              ),
-                            )
-                                .animate(
-                                  delay: Duration(
-                                    milliseconds:
-                                        min(index, AppAnimations.staggerMaxItems) *
-                                            AppAnimations.staggerMs,
-                                  ),
-                                )
-                                .fadeIn(duration: AppAnimations.fast)
-                                .slideY(
-                                  begin: 0.06,
-                                  end: 0,
-                                  duration: AppAnimations.fast,
-                                  curve: AppAnimations.defaultIn,
-                                ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ];
-      },
-      loading: () => _buildSkeletonSlivers(),
-      error: (Object error, StackTrace stackTrace) => <Widget>[
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Text(
-                isFrench
-                    ? 'Impossible de charger les exercices: $error'
-                    : 'Failed to load exercises: $error',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.error, fontSize: 14),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+    ];
   }
 
   List<Widget> _buildSkeletonSlivers() {
@@ -445,51 +349,118 @@ class _ExerciseListScreenState extends ConsumerState<ExerciseListScreen>
               ref.invalidate(exercisesProvider);
               await ref.read(exercisesProvider.future);
             },
-            loading: () => CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppLayout.pageMargin,
-                    AppSpacing.md,
-                    AppLayout.pageMargin,
-                    104,
-                  ),
-                  sliver: SliverList.builder(
-                    itemCount: 5,
-                    itemBuilder: (_, __) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.xxs),
-                      child: Shimmer.fromColors(
-                        baseColor: AppColors.surface,
-                        highlightColor: AppColors.surfaceVariant,
-                        child: Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(4),
+            child: CustomScrollView(
+              slivers: <Widget>[
+                ..._buildHeaderSlivers(
+                  isFrench: isFrench,
+                  selectedFilterColor: selectedFilterColor,
+                  selectedFilterBorderColor: selectedFilterBorderColor,
+                  unselectedFilterBorderColor: unselectedFilterBorderColor,
+                ),
+                ...exercisesAsync.when(
+                  data: (List<Exercise> exercises) {
+                    final List<Exercise> filtered = _filteredExercises(
+                      context: context,
+                      exercises: exercises,
+                    );
+
+                    if (filtered.isEmpty) {
+                      return <Widget>[
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(AppSpacing.xl),
+                              child: Text(
+                                _emptyStateMessage(
+                                  isFrench: isFrench,
+                                  hasActiveFilters: _selectedMuscleGroup != null ||
+                                      _searchController.text.trim().isNotEmpty,
+                                  hasAnyExercise: exercises.isNotEmpty,
+                                ),
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ];
+                    }
+
+                    return <Widget>[
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppLayout.pageMargin,
+                          AppSpacing.md,
+                          AppLayout.pageMargin,
+                          104,
+                        ),
+                        sliver: SliverList.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final Exercise exercise = filtered[index];
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: AppSpacing.xxs),
+                              child: _ExerciseCard(
+                                exercise: exercise,
+                                title: exercise.getLocalizedName(context),
+                                description:
+                                    exercise.getLocalizedDescription(context),
+                                muscleSummary: exercise.muscleGroups
+                                    .map((m) => muscleGroupLabel(m, isFrench))
+                                    .join(', '),
+                                difficulty: exercise.difficulty,
+                                isFrench: isFrench,
+                                compact: _compactMode,
+                                onTap: () => Navigator.of(context).push(
+                                  ExerciseDetailScreen.route(exercise: exercise),
+                                ),
+                              )
+                                  .animate(
+                                    delay: Duration(
+                                      milliseconds:
+                                          min(index, AppAnimations.staggerMaxItems) *
+                                              AppAnimations.staggerMs,
+                                    ),
+                                  )
+                                  .fadeIn(duration: AppAnimations.fast)
+                                  .slideY(
+                                    begin: 0.06,
+                                    end: 0,
+                                    duration: AppAnimations.fast,
+                                    curve: AppAnimations.defaultIn,
+                                  ),
+                            );
+                          },
+                        ),
+                      ),
+                    ];
+                  },
+                  loading: () => _buildSkeletonSlivers(),
+                  error: (Object error, StackTrace stackTrace) => <Widget>[
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.xl),
+                          child: Text(
+                            isFrench
+                                ? 'Impossible de charger les exercices: $error'
+                                : 'Failed to load exercises: $error',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: AppColors.error,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            error: (Object error, StackTrace stackTrace) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Text(
-                  isFrench
-                      ? 'Impossible de charger les exercices: $error'
-                      : 'Failed to load exercises: $error',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.error, fontSize: 14),
-                ),
-              ..._buildBodySlivers(
-                context: context,
-                isFrench: isFrench,
-                exercisesAsync: exercisesAsync,
-                compactMode: _compactMode,
-              ),
               ],
             ),
           ),
@@ -772,12 +743,20 @@ class _ExerciseCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(
-                      width: mediaWidth,
-                      height: mediaHeight,
-                      child: _ExerciseImage(
-                        exerciseId: exercise.id,
-                        imageUrl: exercise.imageTutorialUrl,
+                    Hero(
+                      tag: exercise.imageTutorialUrl.isNotEmpty
+                          ? 'exercise-img-${exercise.imageTutorialUrl}'
+                          : 'exercise-img-${exercise.id}',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadii.sm),
+                        child: SizedBox(
+                          width: mediaWidth,
+                          height: mediaHeight,
+                          child: _ExerciseImage(
+                            exerciseId: exercise.id,
+                            imageUrl: exercise.imageTutorialUrl,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.xs),
@@ -791,23 +770,6 @@ class _ExerciseCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Hero(
-                            tag: exercise.imageTutorialUrl.isNotEmpty
-                                ? 'exercise-img-${exercise.imageTutorialUrl}'
-                                : 'exercise-img-${exercise.id}',
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(AppRadii.sm),
-                              child: SizedBox(
-                                width: mediaWidth,
-                                height: mediaHeight,
-                                child: _ExerciseImage(
-                                  imageUrl: exercise.imageTutorialUrl,
-                                  shaderVelocity: shaderVelocity,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xxs),
-                          ],
                           Expanded(
                             child: Text(
                               description,
