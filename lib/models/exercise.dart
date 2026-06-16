@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:workin_fit/models/muscle_activation.dart';
 import 'package:workin_fit/models/enums.dart';
 
 part 'exercise.g.dart';
@@ -25,6 +26,10 @@ class Exercise {
   /// List of muscle groups this exercise targets
   @HiveField(5)
   final List<MuscleGroup> muscleGroups;
+
+  /// Per-group engagement level (1 = light, 3 = primary). Keys are [MuscleGroup.name].
+  @HiveField(9)
+  final Map<String, int>? muscleActivationLevels;
   
   /// Difficulty level
   @HiveField(6)
@@ -46,12 +51,18 @@ class Exercise {
     required this.imageTutorialUrl,
     required this.muscleGroups,
     required this.difficulty,
+    this.muscleActivationLevels,
     this.beginnerTips,
     this.equipment = const [],
   });
 
   // Helper methods
   bool get isBodyweight => equipment.isEmpty;
+
+  Map<MuscleGroup, int> get resolvedMuscleActivation => MuscleActivationLevel.resolve(
+        muscleGroups: muscleGroups,
+        storedLevels: muscleActivationLevels,
+      );
   
   String get muscleGroupsDisplay => 
       muscleGroups.map((m) => m.name).join(', ');
@@ -73,6 +84,7 @@ class Exercise {
             );
           })
           .toList(),
+      muscleActivationLevels: _parseMuscleActivationLevels(json['muscleActivation']),
       difficulty: DifficultyLevel.values.firstWhere(
         (d) => d.name == (json['difficulty'] as String),
         orElse: () => DifficultyLevel.beginner,
@@ -93,10 +105,23 @@ class Exercise {
       'imageMuscleUrl': imageMuscleUrl,
       'imageTutorialUrl': imageTutorialUrl,
       'muscleGroups': muscleGroups.map((m) => m.name).toList(),
+      if (muscleActivationLevels != null && muscleActivationLevels!.isNotEmpty)
+        'muscleActivation': muscleActivationLevels,
       'difficulty': difficulty.name,
       'beginnerTips': beginnerTips,
       'equipment': equipment,
     };
+  }
+
+  static Map<String, int>? _parseMuscleActivationLevels(dynamic raw) {
+    if (raw is! Map) return null;
+    final Map<String, int> levels = <String, int>{};
+    raw.forEach((dynamic key, dynamic value) {
+      final int? level = value is int ? value : int.tryParse(value.toString());
+      if (level == null) return;
+      levels[key.toString()] = MuscleActivationLevel.clampLevel(level);
+    });
+    return levels.isEmpty ? null : levels;
   }
 }
 

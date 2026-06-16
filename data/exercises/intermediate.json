@@ -831,5 +831,359 @@
     "nameKey": "exercise_cardio_015_name",
     "descriptionKey": "exercise_cardio_015_description",
     "beginnerTipsKey": "exercise_cardio_015_beginner_tips"
+  },
+  {
+    "id": "push_022",
+    "name": "Tempo Push-up",
+    "description": "Push-up with a slow 3-second lowering phase and explosive press up. Increases time under tension for chest and triceps.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "triceps",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "chest": 3,
+      "triceps": 2,
+      "shoulders": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Count three seconds down, one second up. Maintain a rigid plank throughout.",
+    "equipment": [],
+    "nameKey": "exercise_push_022_name",
+    "descriptionKey": "exercise_push_022_description",
+    "beginnerTipsKey": "exercise_push_022_beginner_tips"
+  },
+  {
+    "id": "push_023",
+    "name": "Close-Hand Push-up",
+    "description": "Push-up with hands shoulder-width or slightly narrower. Shifts emphasis toward triceps while still loading the chest.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "chest",
+      "triceps"
+    ],
+    "muscleActivation": {
+      "chest": 2,
+      "triceps": 3
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep elbows closer to the body than a standard push-up. Do not let hips sag.",
+    "equipment": [],
+    "nameKey": "exercise_push_023_name",
+    "descriptionKey": "exercise_push_023_description",
+    "beginnerTipsKey": "exercise_push_023_beginner_tips"
+  },
+  {
+    "id": "push_027",
+    "name": "Body Saw",
+    "description": "From forearm plank, rock body forward and back using shoulders. Challenges core anti-extension and triceps endurance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "triceps",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "abs": 3,
+      "triceps": 2,
+      "shoulders": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Move in a small range at first. Keep glutes engaged to protect the lower back.",
+    "equipment": [],
+    "nameKey": "exercise_push_027_name",
+    "descriptionKey": "exercise_push_027_description",
+    "beginnerTipsKey": "exercise_push_027_beginner_tips"
+  },
+  {
+    "id": "pull_022",
+    "name": "Bodyweight Good Morning",
+    "description": "Hands behind head, hinge at hips with a flat back, then return upright. Strengthens hamstrings, glutes, and erectors.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "hamstrings",
+      "lowerBack",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "hamstrings": 3,
+      "lowerBack": 2,
+      "glutes": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Push hips back as if closing a door with your glutes. Stop when torso is near parallel to the floor.",
+    "equipment": [],
+    "nameKey": "exercise_pull_022_name",
+    "descriptionKey": "exercise_pull_022_description",
+    "beginnerTipsKey": "exercise_pull_022_beginner_tips"
+  },
+  {
+    "id": "pull_024",
+    "name": "Chin-Up Negative",
+    "description": "Underhand grip at the top of a chin-up, lower slowly for 3–5 seconds. Builds biceps and lat strength for full chin-ups.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "biceps",
+      "back",
+      "forearms"
+    ],
+    "muscleActivation": {
+      "biceps": 3,
+      "back": 3,
+      "forearms": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Use a sturdy bar. Jump or step to the top position and control the descent.",
+    "equipment": [],
+    "nameKey": "exercise_pull_024_name",
+    "descriptionKey": "exercise_pull_024_description",
+    "beginnerTipsKey": "exercise_pull_024_beginner_tips"
+  },
+  {
+    "id": "pull_026",
+    "name": "Reverse Grip Hang Hold",
+    "description": "Hang with underhand grip at the top of a chin-up position. Isometric hold for biceps and grip endurance.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "biceps",
+      "forearms",
+      "back"
+    ],
+    "muscleActivation": {
+      "biceps": 3,
+      "forearms": 2,
+      "back": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Use a box to reach the top position if needed. Keep shoulders engaged, not fully relaxed.",
+    "equipment": [],
+    "nameKey": "exercise_pull_026_name",
+    "descriptionKey": "exercise_pull_026_description",
+    "beginnerTipsKey": "exercise_pull_026_beginner_tips"
+  },
+  {
+    "id": "pull_029",
+    "name": "Renegade Row",
+    "description": "From a high plank, row one hand to the hip while balancing on the other. Combines core stability with back and bicep pulling.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "back",
+      "biceps",
+      "abs",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "back": 3,
+      "biceps": 2,
+      "abs": 2,
+      "shoulders": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Widen foot stance for stability. Prevent hips from rotating as you row.",
+    "equipment": [],
+    "nameKey": "exercise_pull_029_name",
+    "descriptionKey": "exercise_pull_029_description",
+    "beginnerTipsKey": "exercise_pull_029_beginner_tips"
+  },
+  {
+    "id": "legs_027",
+    "name": "Sissy Squat Hold",
+    "description": "Lean back slightly while bending knees forward, keeping hips extended. Intense quad isolation using bodyweight only.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads"
+    ],
+    "muscleActivation": {
+      "quads": 3
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Hold a wall or door frame lightly for balance. Use a small range until strength improves.",
+    "equipment": [],
+    "nameKey": "exercise_legs_027_name",
+    "descriptionKey": "exercise_legs_027_description",
+    "beginnerTipsKey": "exercise_legs_027_beginner_tips"
+  },
+  {
+    "id": "legs_030",
+    "name": "Sliding Hamstring Curl",
+    "description": "Lie on your back, heels on a towel or socks on smooth floor, curl heels toward glutes. Hamstring curl without machines.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "hamstrings",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "hamstrings": 3,
+      "glutes": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Lift hips as you curl in. Control the slide back to start.",
+    "equipment": [],
+    "nameKey": "exercise_legs_030_name",
+    "descriptionKey": "exercise_legs_030_description",
+    "beginnerTipsKey": "exercise_legs_030_beginner_tips"
+  },
+  {
+    "id": "legs_031",
+    "name": "Nordic Curl Negative",
+    "description": "Kneel with ankles anchored under a couch or partner, lower torso forward slowly, catch with hands. Advanced hamstring eccentric.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "hamstrings",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "hamstrings": 3,
+      "glutes": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep hips extended. Lower only as far as you can control—use hands to assist at the bottom.",
+    "equipment": [],
+    "nameKey": "exercise_legs_031_name",
+    "descriptionKey": "exercise_legs_031_description",
+    "beginnerTipsKey": "exercise_legs_031_beginner_tips"
+  },
+  {
+    "id": "legs_036",
+    "name": "Standing Glute Kickback",
+    "description": "Stand on one leg and drive the other leg straight back. Isolates glutes and improves hip extension strength.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "glutes",
+      "hamstrings"
+    ],
+    "muscleActivation": {
+      "glutes": 3,
+      "hamstrings": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Squeeze glute at end range. Hold a wall for balance if needed.",
+    "equipment": [],
+    "nameKey": "exercise_legs_036_name",
+    "descriptionKey": "exercise_legs_036_description",
+    "beginnerTipsKey": "exercise_legs_036_beginner_tips"
+  },
+  {
+    "id": "legs_039",
+    "name": "Lateral Lunge Pulse",
+    "description": "Step wide to one side, stay low, and pulse in the bottom position. Targets quads, glutes, and inner thighs.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "quads",
+      "glutes"
+    ],
+    "muscleActivation": {
+      "quads": 3,
+      "glutes": 2
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep the bent knee over the foot. Chest stays lifted throughout pulses.",
+    "equipment": [],
+    "nameKey": "exercise_legs_039_name",
+    "descriptionKey": "exercise_legs_039_description",
+    "beginnerTipsKey": "exercise_legs_039_beginner_tips"
+  },
+  {
+    "id": "core_022",
+    "name": "Knee Pull-In",
+    "description": "Seated or on hands, draw knees toward chest and extend legs. Dynamic ab exercise scaling from beginner to advanced.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs"
+    ],
+    "muscleActivation": {
+      "abs": 3
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Round lower back slightly as knees come in. Move slowly to avoid momentum.",
+    "equipment": [],
+    "nameKey": "exercise_core_022_name",
+    "descriptionKey": "exercise_core_022_description",
+    "beginnerTipsKey": "exercise_core_022_beginner_tips"
+  },
+  {
+    "id": "core_026",
+    "name": "Cross-Body Mountain Climber",
+    "description": "In high plank, drive knee toward opposite elbow. Adds rotation to mountain climbers for obliques and cardio.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "obliques",
+      "abs",
+      "cardio",
+      "shoulders"
+    ],
+    "muscleActivation": {
+      "obliques": 3,
+      "abs": 2,
+      "cardio": 2,
+      "shoulders": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Keep shoulders over wrists. Quality beats speed—alternate sides with control.",
+    "equipment": [],
+    "nameKey": "exercise_core_026_name",
+    "descriptionKey": "exercise_core_026_description",
+    "beginnerTipsKey": "exercise_core_026_beginner_tips"
+  },
+  {
+    "id": "core_027",
+    "name": "Hollow Rock",
+    "description": "Hold hollow body position and rock forward and back slightly. Advanced anti-extension core drill popular in gymnastics training.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "abs",
+      "lowerBack"
+    ],
+    "muscleActivation": {
+      "abs": 3,
+      "lowerBack": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Master hollow hold first. Keep lower back pressed toward the floor.",
+    "equipment": [],
+    "nameKey": "exercise_core_027_name",
+    "descriptionKey": "exercise_core_027_description",
+    "beginnerTipsKey": "exercise_core_027_beginner_tips"
+  },
+  {
+    "id": "cardio_017",
+    "name": "Sprawl",
+    "description": "Drop hips back, shoot legs out to plank, jump feet in, stand up. Burpee without the push-up—pure conditioning.",
+    "imageMuscleUrl": "",
+    "imageTutorialUrl": "",
+    "muscleGroups": [
+      "cardio",
+      "quads",
+      "shoulders",
+      "abs"
+    ],
+    "muscleActivation": {
+      "cardio": 3,
+      "quads": 2,
+      "shoulders": 1,
+      "abs": 1
+    },
+    "difficulty": "intermediate",
+    "beginnerTips": "Step feet back one at a time if jumping is too intense. Stand fully between reps.",
+    "equipment": [],
+    "nameKey": "exercise_cardio_017_name",
+    "descriptionKey": "exercise_cardio_017_description",
+    "beginnerTipsKey": "exercise_cardio_017_beginner_tips"
   }
 ]

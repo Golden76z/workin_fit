@@ -85,6 +85,25 @@ void main() {
       expect(cached.length, 1);
       expect(cached.first.id, 'e3');
     });
+
+    test('mergeCachedExercises adds only new ids', () async {
+      await service.cacheExercises([_makeExercise('e1')]);
+      final added = await service.mergeCachedExercises([
+        _makeExercise('e1'),
+        _makeExercise('e2'),
+        _makeExercise('e3'),
+      ]);
+      expect(added, 2);
+      final cached = await service.getCachedExercises();
+      expect(cached.map((e) => e.id).toSet(), {'e1', 'e2', 'e3'});
+    });
+
+    test('mergeCachedExercises returns 0 when nothing new', () async {
+      await service.cacheExercises([_makeExercise('e1')]);
+      final added = await service.mergeCachedExercises([_makeExercise('e1')]);
+      expect(added, 0);
+      expect((await service.getCachedExercises()).length, 1);
+    });
   });
 
   group('Session operations', () {

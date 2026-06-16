@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 1120" width="1480" height="1120" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="tri" markerWidth="18" markerHeight="16" refX="15" refY="6" orient="auto"><path d="M1 1 L15 6 L1 11 z" fill="#111111" stroke="#AAAAAA" stroke-width="1.4"/></marker>
+<marker id="diamond" markerWidth="20" markerHeight="14" refX="16" refY="6" orient="auto"><path d="M1 6 L8 1 L16 6 L8 11 z" fill="#242424" stroke="#D8C9FF" stroke-width="1.3"/></marker>
+</defs>
+<rect x="0" y="0" width="1480" height="1120" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Diagramme de classes (modele du domaine)</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873 (Concepteur Developpeur Applications)</text>
+<rect x="60" y="110" width="250" height="176" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M60 118 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="185.0" y="131" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">User</text>
+<line x1="60" y1="140" x2="310" y2="140" stroke="#5E2BFF" stroke-width="1"/>
+<text x="70" y="158" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- uid: String</text>
+<text x="70" y="176" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- username: String</text>
+<text x="70" y="194" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- email: String</text>
+<text x="70" y="212" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- photoUrl: String</text>
+<text x="70" y="230" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- createdAt: DateTime</text>
+<text x="70" y="248" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- streak: int</text>
+<text x="70" y="266" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- totalPoints: int</text>
+<rect x="60" y="430" width="250" height="194" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M60 438 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="185.0" y="451" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">Program</text>
+<line x1="60" y1="460" x2="310" y2="460" stroke="#5E2BFF" stroke-width="1"/>
+<text x="70" y="478" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="70" y="496" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- name: String</text>
+<text x="70" y="514" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- durationWeeks: int</text>
+<text x="70" y="532" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- daysPerWeek: int</text>
+<text x="70" y="550" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- difficulty: Difficulty</text>
+<text x="70" y="568" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- goals: List&lt;String&gt;</text>
+<text x="70" y="586" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- isCustom: bool</text>
+<text x="70" y="604" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- userId: String?</text>
+<rect x="400" y="430" width="270" height="218" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M400 438 q0 -8 8 -8 h254 q8 0 8 8 v22 h-270 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="535.0" y="451" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">Session</text>
+<line x1="400" y1="460" x2="670" y2="460" stroke="#5E2BFF" stroke-width="1"/>
+<text x="410" y="478" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="410" y="496" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- name: String</text>
+<text x="410" y="514" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- difficulty: Difficulty</text>
+<text x="410" y="532" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- restBetweenExercises: int</text>
+<text x="410" y="550" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- transitionTime: int</text>
+<text x="410" y="568" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- isCustom: bool</text>
+<text x="410" y="586" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- userId: String?</text>
+<line x1="400" y1="594" x2="670" y2="594" stroke="#4A4A4A" stroke-width="1"/>
+<text x="410" y="606" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#7C67D8" text-anchor="start" font-weight="400" font-style="normal">+ estimatedDuration():int</text>
+<text x="410" y="624" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#7C67D8" text-anchor="start" font-weight="400" font-style="normal">+ exerciseIds():List</text>
+<rect x="760" y="450" width="250" height="140" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M760 458 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="885.0" y="471" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">WorkoutConfig</text>
+<line x1="760" y1="480" x2="1010" y2="480" stroke="#5E2BFF" stroke-width="1"/>
+<text x="770" y="498" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- type: WorkoutType</text>
+<text x="770" y="516" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- exerciseId: String</text>
+<text x="770" y="534" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- sets / reps: int</text>
+<text x="770" y="552" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- restTime: int</text>
+<text x="770" y="570" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- workSeconds: int</text>
+<rect x="760" y="700" width="260" height="140" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M760 708 q0 -8 8 -8 h244 q8 0 8 8 v22 h-260 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="890.0" y="721" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">Exercise</text>
+<line x1="760" y1="730" x2="1020" y2="730" stroke="#5E2BFF" stroke-width="1"/>
+<text x="770" y="748" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="770" y="766" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- name: String</text>
+<text x="770" y="784" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- muscleGroups: List</text>
+<text x="770" y="802" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- difficulty: Difficulty</text>
+<text x="770" y="820" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- equipment: List&lt;String&gt;</text>
+<rect x="60" y="830" width="250" height="122" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M60 838 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="185.0" y="851" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">SessionHistoryEntry</text>
+<line x1="60" y1="860" x2="310" y2="860" stroke="#5E2BFF" stroke-width="1"/>
+<text x="70" y="878" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- sessionId: String</text>
+<text x="70" y="896" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- sessionName: String</text>
+<text x="70" y="914" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- durationDisplay: String</text>
+<text x="70" y="932" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- completedAt: DateTime</text>
+<rect x="400" y="830" width="250" height="104" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M400 838 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="525.0" y="851" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">Achievement</text>
+<line x1="400" y1="860" x2="650" y2="860" stroke="#5E2BFF" stroke-width="1"/>
+<text x="410" y="878" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- definition: AchievementDef</text>
+<text x="410" y="896" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- isUnlocked: bool</text>
+<text x="410" y="914" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- unlockedAt: DateTime?</text>
+<rect x="1090" y="110" width="250" height="122" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M1090 118 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="1215.0" y="131" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">Friend</text>
+<line x1="1090" y1="140" x2="1340" y2="140" stroke="#5E2BFF" stroke-width="1"/>
+<text x="1100" y="158" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- userId: String</text>
+<text x="1100" y="176" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- username: String</text>
+<text x="1100" y="194" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- photoUrl: String?</text>
+<text x="1100" y="212" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- addedAt: DateTime</text>
+<rect x="1090" y="320" width="250" height="122" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M1090 328 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="1215.0" y="341" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">FriendRequest</text>
+<line x1="1090" y1="350" x2="1340" y2="350" stroke="#5E2BFF" stroke-width="1"/>
+<text x="1100" y="368" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- fromUserId: String</text>
+<text x="1100" y="386" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- toUserId: String</text>
+<text x="1100" y="404" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- status: RequestStatus</text>
+<text x="1100" y="422" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- createdAt: DateTime</text>
+<rect x="1090" y="520" width="260" height="122" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M1090 528 q0 -8 8 -8 h244 q8 0 8 8 v22 h-260 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="1220.0" y="541" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">ChatConversation</text>
+<line x1="1090" y1="550" x2="1350" y2="550" stroke="#5E2BFF" stroke-width="1"/>
+<text x="1100" y="568" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="1100" y="586" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- participants: List</text>
+<text x="1100" y="604" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- lastMessage: String</text>
+<text x="1100" y="622" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- unreadCounts: Map</text>
+<rect x="1090" y="730" width="260" height="140" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M1090 738 q0 -8 8 -8 h244 q8 0 8 8 v22 h-260 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="1220.0" y="751" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">ChatMessage</text>
+<line x1="1090" y1="760" x2="1350" y2="760" stroke="#5E2BFF" stroke-width="1"/>
+<text x="1100" y="778" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="1100" y="796" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- senderId: String</text>
+<text x="1100" y="814" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- type: ChatMessageType</text>
+<text x="1100" y="832" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- content: String</text>
+<text x="1100" y="850" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- createdAt: DateTime</text>
+<rect x="400" y="110" width="250" height="158" rx="8" fill="#1C1C1C" stroke="#5E2BFF" stroke-width="1.5"/>
+<path d="M400 118 q0 -8 8 -8 h234 q8 0 8 8 v22 h-250 z" fill="#5E2BFF" opacity="0.92"/>
+<text x="525.0" y="131" font-family="Inter, Arial, sans-serif" font-size="13" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">DailyChallenge</text>
+<line x1="400" y1="140" x2="650" y2="140" stroke="#5E2BFF" stroke-width="1"/>
+<text x="410" y="158" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- id: String</text>
+<text x="410" y="176" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- title: String</text>
+<text x="410" y="194" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- type: ChallengeType</text>
+<text x="410" y="212" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- difficulty: Difficulty</text>
+<text x="410" y="230" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- target: int</text>
+<text x="410" y="248" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">- rewardPoints: int</text>
+<path d="M185.0 286 C 185.0 358.0, 185.0 358.0, 185.0 430" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="185.0" y="358.0" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">1   *  cree</text>
+<path d="M185.0 624 C 185.0 527.0, 535.0 527.0, 535.0 430" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="360.0" y="527.0" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">1   *</text>
+<path d="M670 475 C 720 475, 720 485, 760 485" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="715" y="468" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">1  *</text>
+<path d="M890 590 L890 700" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#open)"/>
+<text x="905" y="650" font-family="Inter, Arial, sans-serif" font-size="10" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">reference</text>
+<path d="M185.0 286 C 185.0 558.0, 185.0 558.0, 185.0 830" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="185.0" y="558.0" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">1   *</text>
+<path d="M185.0 286 C 185.0 558.0, 525.0 558.0, 525.0 830" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="355.0" y="558.0" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">1   *</text>
+<path d="M310 150 L1090 150" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="700" y="142" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">1  *  amis</text>
+<path d="M1215 240 L1215 320" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#open)"/>
+<text x="1230" y="285" font-family="Inter, Arial, sans-serif" font-size="10" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">envoie</text>
+<path d="M1220.0 642 C 1220.0 686.0, 1220.0 686.0, 1220.0 730" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#diamond)"/>
+<text x="1220.0" y="686.0" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">1   *</text>
+</svg>

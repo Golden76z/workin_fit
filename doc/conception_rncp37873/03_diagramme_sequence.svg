@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 980" width="1280" height="980" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="tri" markerWidth="18" markerHeight="16" refX="15" refY="6" orient="auto"><path d="M1 1 L15 6 L1 11 z" fill="#111111" stroke="#AAAAAA" stroke-width="1.4"/></marker>
+<marker id="diamond" markerWidth="20" markerHeight="14" refX="16" refY="6" orient="auto"><path d="M1 6 L8 1 L16 6 L8 11 z" fill="#242424" stroke="#D8C9FF" stroke-width="1.3"/></marker>
+</defs>
+<rect x="0" y="0" width="1280" height="980" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Diagramme de sequence — Executer une seance</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873 (Concepteur Developpeur Applications)</text>
+<rect x="60" y="150" width="180" height="52" rx="8" fill="#242424" stroke="#5E2BFF" stroke-width="1.5"/>
+<text x="150" y="181" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#F0F0F0" text-anchor="middle" font-weight="700" font-style="normal">Utilisateur</text>
+<line x1="150" y1="202" x2="150" y2="900" stroke="#4A4A4A" stroke-width="1.6" stroke-dasharray="4 5"/>
+<rect x="310" y="150" width="180" height="52" rx="8" fill="#242424" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="400" y="172" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#F0F0F0" text-anchor="middle" font-weight="700" font-style="normal">SessionView</text>
+<text x="400" y="190" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">(UI)</text>
+<line x1="400" y1="202" x2="400" y2="900" stroke="#4A4A4A" stroke-width="1.6" stroke-dasharray="4 5"/>
+<rect x="550" y="150" width="180" height="52" rx="8" fill="#242424" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="640" y="172" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#F0F0F0" text-anchor="middle" font-weight="700" font-style="normal">WorkoutProvider</text>
+<text x="640" y="190" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">(Riverpod)</text>
+<line x1="640" y1="202" x2="640" y2="900" stroke="#4A4A4A" stroke-width="1.6" stroke-dasharray="4 5"/>
+<rect x="800" y="150" width="180" height="52" rx="8" fill="#242424" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="890" y="181" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#F0F0F0" text-anchor="middle" font-weight="700" font-style="normal">FirestoreService</text>
+<line x1="890" y1="202" x2="890" y2="900" stroke="#4A4A4A" stroke-width="1.6" stroke-dasharray="4 5"/>
+<rect x="1040" y="150" width="180" height="52" rx="8" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="1130" y="172" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="#F0F0F0" text-anchor="middle" font-weight="700" font-style="normal">Firebase</text>
+<text x="1130" y="190" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="middle" font-weight="400" font-style="normal">Firestore</text>
+<line x1="1130" y1="202" x2="1130" y2="900" stroke="#4A4A4A" stroke-width="1.6" stroke-dasharray="4 5"/>
+<line x1="150" y1="240" x2="400" y2="240" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="275.0" y="233" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">Selectionne une seance</text>
+<rect x="393" y="240" width="14" height="620" rx="3" fill="#242424" stroke="#7C67D8" stroke-width="1.2"/>
+<line x1="400" y1="286" x2="640" y2="286" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="520.0" y="279" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">startSession(sessionId)</text>
+<rect x="633" y="286" width="14" height="524" rx="3" fill="#242424" stroke="#7C67D8" stroke-width="1.2"/>
+<line x1="640" y1="332" x2="890" y2="332" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="765.0" y="325" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">loadExercises(ids)</text>
+<rect x="883" y="332" width="14" height="408" rx="3" fill="#242424" stroke="#7C67D8" stroke-width="1.2"/>
+<line x1="890" y1="378" x2="1130" y2="378" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="1010.0" y="371" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">get exercises</text>
+<rect x="1123" y="378" width="14" height="322" rx="3" fill="#242424" stroke="#7C67D8" stroke-width="1.2"/>
+<line x1="1130" y1="424" x2="890" y2="424" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="1010.0" y="417" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">exercises[]</text>
+<line x1="890" y1="470" x2="640" y2="470" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="765.0" y="463" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">return data</text>
+<line x1="640" y1="516" x2="400" y2="516" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="520.0" y="509" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">timer + UI state</text>
+<rect x="360" y="570" width="560" height="150" rx="8" fill="none" stroke="#FF9800" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="372" y="588" font-family="Inter, Arial, sans-serif" font-size="11" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">loop  [pour chaque exercice]</text>
+<line x1="150" y1="614" x2="400" y2="614" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="275.0" y="607" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">Valide la serie</text>
+<line x1="400" y1="660" x2="640" y2="660" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="520.0" y="653" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">nextStep() / rest</text>
+<line x1="640" y1="706" x2="400" y2="706" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="520.0" y="699" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">maj timer</text>
+<line x1="640" y1="740" x2="890" y2="740" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="765.0" y="733" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">saveHistory(entry)</text>
+<rect x="883" y="740" width="14" height="-694" rx="3" fill="#242424" stroke="#7C67D8" stroke-width="1.2"/>
+<line x1="890" y1="786" x2="1130" y2="786" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="1010.0" y="779" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">write session_history</text>
+<line x1="1130" y1="832" x2="640" y2="832" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="885.0" y="825" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">achievements maj</text>
+<line x1="640" y1="878" x2="150" y2="878" stroke="#D8C9FF" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+<text x="395.0" y="871" font-family="Inter, Arial, sans-serif" font-size="11" fill="#F0F0F0" text-anchor="middle" font-weight="400" font-style="normal">Affiche resume + trophees</text>
+</svg>

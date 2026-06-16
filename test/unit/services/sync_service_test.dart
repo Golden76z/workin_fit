@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:workin_fit/models/enums.dart';
+import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
@@ -23,6 +24,16 @@ void main() {
         id: id,
         name: 'Session $id',
         workouts: [SetsConfig(exerciseId: 'e1', sets: 3, reps: 10)],
+        difficulty: DifficultyLevel.beginner,
+      );
+
+  Exercise makeExercise(String id) => Exercise(
+        id: id,
+        name: 'Exercise $id',
+        description: 'desc',
+        imageMuscleUrl: '',
+        imageTutorialUrl: '',
+        muscleGroups: [MuscleGroup.chest],
         difficulty: DifficultyLevel.beginner,
       );
 
@@ -196,6 +207,75 @@ void main() {
 
       verify(mockStorage.deleteLocalSession('s1')).called(1);
       verifyNever(mockFirestore.deleteSession(any, any));
+    });
+  });
+
+  group('getExercises', () {
+    test('returns cache immediately; background merge only adds new ids',
+        () async {
+      final cached = [makeExercise('e1')];
+      final remote = [makeExercise('e1'), makeExercise('e2')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
+      when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
+      when(mockStorage.mergeCachedExercises(remote)).thenAnswer((_) async => 1);
+
+      final result = await syncService.getExercises();
+      expect(result, cached);
+
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockFirestore.getExercises()).called(1);
+      verify(mockStorage.mergeCachedExercises(remote)).called(1);
+      verifyNever(mockStorage.cacheExercises(any));
+
+      // Second call within throttle window should not hit Firestore again.
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => remote);
+      await syncService.getExercises();
+      await Future<void>.delayed(Duration.zero);
+      verifyNoMoreInteractions(mockFirestore);
+    });
+
+    test('background sync does not shrink cache when Firestore has fewer docs',
+        () async {
+      final cached = [
+        makeExercise('e1'),
+        makeExercise('e2'),
+        makeExercise('e3'),
+      ];
+      final remote = [makeExercise('e1')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
+      when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
+
+      await syncService.getExercises();
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockFirestore.getExercises()).called(1);
+      verifyNever(mockStorage.cacheExercises(any));
+      verifyNever(mockStorage.mergeCachedExercises(any));
+    });
+
+    test('empty cache: fetches Firestore before returning', () async {
+      final remote = [makeExercise('e1'), makeExercise('e2')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => []);
+      when(mockFirestore.getExercises()).thenAnswer((_) async => remote);
+      when(mockStorage.cacheExercises(remote)).thenAnswer((_) async {});
+
+      final result = await syncService.getExercises();
+
+      expect(result, remote);
+      verify(mockStorage.cacheExercises(remote)).called(1);
+    });
+
+    test('returns cache when Firestore fails and cache exists', () async {
+      final cached = [makeExercise('e1')];
+      when(mockStorage.getCachedExercises()).thenAnswer((_) async => cached);
+      when(mockFirestore.getExercises()).thenThrow(Exception('network'));
+
+      final result = await syncService.getExercises();
+
+      expect(result, cached);
     });
   });
 

@@ -601,6 +601,17 @@ class MockLocalStorageService extends _i1.Mock
       ) as _i3.Future<void>);
 
   @override
+  _i3.Future<int> mergeCachedExercises(List<_i5.Exercise>? exercises) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #mergeCachedExercises,
+          [exercises],
+        ),
+        returnValue: _i3.Future<int>.value(0),
+        returnValueForMissingStub: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
+
+  @override
   _i3.Future<List<_i5.Exercise>> getCachedExercises() => (super.noSuchMethod(
         Invocation.method(
           #getCachedExercises,

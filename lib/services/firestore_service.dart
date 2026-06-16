@@ -170,16 +170,27 @@ class FirestoreService {
   /// Get all exercises
   Future<List<Exercise>> getExercises() async {
     try {
+      // Fetch without orderBy so documents missing a `name` field are not excluded.
       final snapshot = await _firestore
           .collection(FirebaseConstants.exercisesCollection)
-          .orderBy('name')
           .get();
 
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        data['id'] = doc.id; // Ensure ID is set
-        return Exercise.fromJson(data);
-      }).toList();
+      final List<Exercise> exercises = <Exercise>[];
+      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+          in snapshot.docs) {
+        try {
+          final Map<String, dynamic> data = doc.data();
+          data['id'] = doc.id;
+          exercises.add(Exercise.fromJson(data));
+        } on Object {
+          // Skip malformed documents instead of failing the whole fetch.
+        }
+      }
+      exercises.sort(
+        (Exercise a, Exercise b) =>
+            a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
+      return exercises;
     } on FirebaseException catch (e) {
       throw FirestoreException(
         'Failed to fetch exercises: ${e.message}',
@@ -240,15 +251,25 @@ class FirestoreService {
   Stream<List<Exercise>> exercisesStream() {
     return _firestore
         .collection(FirebaseConstants.exercisesCollection)
-        .orderBy('name')
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs.map((doc) {
-            final data = doc.data();
-            data['id'] = doc.id;
-            return Exercise.fromJson(data);
-          }).toList(),
-        )
+        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
+          final List<Exercise> exercises = <Exercise>[];
+          for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+              in snapshot.docs) {
+            try {
+              final Map<String, dynamic> data = doc.data();
+              data['id'] = doc.id;
+              exercises.add(Exercise.fromJson(data));
+            } on Object {
+              // Skip malformed documents.
+            }
+          }
+          exercises.sort(
+            (Exercise a, Exercise b) =>
+                a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
+          return exercises;
+        })
         .handleError((error) {
       throw FirestoreException(
         'Error streaming exercises: $error',

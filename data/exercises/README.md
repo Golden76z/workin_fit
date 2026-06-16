@@ -4,10 +4,11 @@ This directory contains exercise data organized by difficulty level for easy man
 
 ## Structure
 
-- `beginner.json` - Beginner-level exercises (44 exercises)
-- `intermediate.json` - Intermediate-level exercises (46 exercises)
-- `advanced.json` - Advanced-level exercises (10 exercises)
-- `all.json` - Combined file with all exercises (100 exercises)
+- `beginner.json` - Beginner-level exercises (61 exercises)
+- `intermediate.json` - Intermediate-level exercises (62 exercises)
+- `advanced.json` - Advanced-level exercises (15 exercises)
+- `all.json` - Combined file with all exercises (141 exercises)
+- `bodyweight_additions.json` - Source batch for equipment-free exercises (merged via `merge_and_localize.mjs`)
 
 ## Localization
 

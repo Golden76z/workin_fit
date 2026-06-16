@@ -5,6 +5,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/workout/presentation/screens/exercise_list_screen.dart';
 import 'package:workin_fit/l10n/app_localizations.dart';
+import 'package:workin_fit/providers/home_navigation_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/views/home/home_dashboard_tab.dart';
 import 'package:workin_fit/views/home/sessions_tab.dart';
@@ -28,6 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.initState();
     _tabIndex = ValueNotifier<int>(0);
     _pageController = PageController();
+    _pageController.addListener(_onPageControllerTick);
     // Pre-warm the exercises data so the first swipe to that tab is lag-free
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -37,8 +39,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
   }
 
+  void _onPageControllerTick() {
+    if (!_pageController.hasClients) return;
+    final double? page = _pageController.page;
+    final bool transitioning =
+        page != null && (page - page.roundToDouble()).abs() > 0.001;
+    final bool current =
+        ref.read(homeTabPageTransitionActiveProvider);
+    if (transitioning != current) {
+      ref.read(homeTabPageTransitionActiveProvider.notifier).state =
+          transitioning;
+    }
+  }
+
   @override
   void dispose() {
+    _pageController.removeListener(_onPageControllerTick);
     _tabIndex.dispose();
     _pageController.dispose();
     super.dispose();

@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 720" width="1080" height="720" font-family="Inter, Arial, sans-serif">
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker></defs>
+<rect x="0" y="0" width="1080" height="720" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Wireframes (2) — Profil · Trophees · Seances</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873</text>
+<rect x="60" y="120" width="300" height="560" rx="30" fill="#1C1C1C" stroke="#3A3A3A" stroke-width="2"/>
+<rect x="160" y="134" width="100" height="16" rx="8" fill="#242424" stroke="none" stroke-width="1.5"/>
+<text x="210.0" y="106" font-family="Inter, Arial, sans-serif" font-size="14" fill="#D8C9FF" text-anchor="middle" font-weight="700">Profil</text>
+<circle cx="210.0" cy="194" r="34" fill="#242424" stroke="#5E2BFF" stroke-width="2"/>
+<text x="210.0" y="248" font-family="Inter, Arial, sans-serif" font-size="16" fill="#F0F0F0" text-anchor="middle" font-weight="700">Damien</text>
+<rect x="176.0" y="262" width="80" height="24" rx="12" fill="#242424" stroke="#5E2BFF" stroke-width="1.5"/>
+<text x="216.0" y="278" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#5E2BFF" text-anchor="middle" font-weight="600">Modifier</text>
+<rect x="84" y="300" width="252" height="40" rx="10" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="104" cy="320" r="10" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="122" y="325" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="start" font-weight="400">damien@email.com</text>
+<rect x="84" y="348" width="252" height="56" rx="12" fill="#242424" stroke="#FF9800" stroke-width="1.5"/>
+<circle cx="106" cy="376" r="13" fill="none" stroke="#FF9800" stroke-width="2"/>
+<text x="130" y="370" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="600">Serie actuelle : 5 jours</text>
+<text x="130" y="390" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="start" font-weight="400">Record : 12 jours</text>
+<text x="126.0" y="432" font-family="Inter, Arial, sans-serif" font-size="16" fill="#D8C9FF" text-anchor="middle" font-weight="700">47</text>
+<text x="126.0" y="450" font-family="Inter, Arial, sans-serif" font-size="9.5" fill="#AAAAAA" text-anchor="middle" font-weight="400">Seances</text>
+<text x="210.0" y="432" font-family="Inter, Arial, sans-serif" font-size="16" fill="#D8C9FF" text-anchor="middle" font-weight="700">3</text>
+<text x="210.0" y="450" font-family="Inter, Arial, sans-serif" font-size="9.5" fill="#AAAAAA" text-anchor="middle" font-weight="400">Programmes</text>
+<text x="294.0" y="432" font-family="Inter, Arial, sans-serif" font-size="16" fill="#D8C9FF" text-anchor="middle" font-weight="700">18h</text>
+<text x="294.0" y="450" font-family="Inter, Arial, sans-serif" font-size="9.5" fill="#AAAAAA" text-anchor="middle" font-weight="400">Temps total</text>
+<line x1="84" y1="466" x2="336" y2="466" stroke="#3A3A3A" stroke-width="1.6"/>
+<circle cx="98" cy="489" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="494" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Statistiques</text>
+<text x="330" y="494" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<circle cx="98" cy="513" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="518" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Trophees</text>
+<text x="330" y="518" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<circle cx="98" cy="537" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="542" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Amis</text>
+<text x="330" y="542" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<circle cx="98" cy="561" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="566" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Langue</text>
+<text x="330" y="566" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<circle cx="98" cy="585" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="590" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Parametres</text>
+<text x="330" y="590" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<circle cx="98" cy="609" r="9" fill="none" stroke="#5E2BFF" stroke-width="1.8"/>
+<text x="116" y="614" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F0F0F0" text-anchor="start" font-weight="400">Confidentialite</text>
+<text x="330" y="614" font-family="Inter, Arial, sans-serif" font-size="15" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<text x="116" y="636" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#F44336" text-anchor="start" font-weight="400">Se deconnecter</text>
+<circle cx="98" cy="631" r="9" fill="none" stroke="#F44336" stroke-width="1.8"/>
+<rect x="74" y="620" width="272" height="46" rx="14" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="108.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="108.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Home</text>
+<circle cx="176.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="176.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Seances</text>
+<circle cx="244.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="244.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Social</text>
+<circle cx="312.0" cy="636" r="7" fill="none" stroke="#5E2BFF" stroke-width="2"/>
+<text x="312.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#5E2BFF" text-anchor="middle" font-weight="700">Profil</text>
+<rect x="420" y="120" width="300" height="560" rx="30" fill="#1C1C1C" stroke="#3A3A3A" stroke-width="2"/>
+<rect x="520" y="134" width="100" height="16" rx="8" fill="#242424" stroke="none" stroke-width="1.5"/>
+<text x="570.0" y="106" font-family="Inter, Arial, sans-serif" font-size="14" fill="#D8C9FF" text-anchor="middle" font-weight="700">Trophees</text>
+<text x="444" y="178" font-family="Inter, Arial, sans-serif" font-size="15" fill="#F0F0F0" text-anchor="start" font-weight="700">Mes trophees</text>
+<rect x="440" y="198" width="260" height="104" rx="12" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<text x="454" y="222" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="700">Total Workouts</text>
+<rect x="454" y="232" width="232" height="8" rx="4" fill="#1C1C1C" stroke="none" stroke-width="1.5"/>
+<rect x="454" y="232" width="162.39999999999998" height="8" rx="4" fill="#5E2BFF" stroke="none" stroke-width="1.5"/>
+<circle cx="492.6666666666667" cy="270" r="15" fill="#CD7F32" stroke="#CD7F32" stroke-width="2"/>
+<text x="492.6666666666667" y="294" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Bronze</text>
+<circle cx="570.0" cy="270" r="15" fill="#A8A9AD" stroke="#A8A9AD" stroke-width="2"/>
+<text x="570.0" y="294" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Argent</text>
+<circle cx="647.3333333333333" cy="270" r="15" fill="#1C1C1C" stroke="#FFD700" stroke-width="2"/>
+<text x="647.3333333333333" y="294" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Or</text>
+<rect x="440" y="312" width="260" height="104" rx="12" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<text x="454" y="336" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="700">Streak Milestones</text>
+<rect x="454" y="346" width="232" height="8" rx="4" fill="#1C1C1C" stroke="none" stroke-width="1.5"/>
+<rect x="454" y="346" width="92.80000000000001" height="8" rx="4" fill="#5E2BFF" stroke="none" stroke-width="1.5"/>
+<circle cx="492.6666666666667" cy="384" r="15" fill="#CD7F32" stroke="#CD7F32" stroke-width="2"/>
+<text x="492.6666666666667" y="408" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Bronze</text>
+<circle cx="570.0" cy="384" r="15" fill="#1C1C1C" stroke="#A8A9AD" stroke-width="2"/>
+<text x="570.0" y="408" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Argent</text>
+<circle cx="647.3333333333333" cy="384" r="15" fill="#1C1C1C" stroke="#FFD700" stroke-width="2"/>
+<text x="647.3333333333333" y="408" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Or</text>
+<rect x="440" y="426" width="260" height="104" rx="12" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<text x="454" y="450" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="700">Exercise Mastery</text>
+<rect x="454" y="460" width="232" height="8" rx="4" fill="#1C1C1C" stroke="none" stroke-width="1.5"/>
+<rect x="454" y="460" width="127.60000000000001" height="8" rx="4" fill="#5E2BFF" stroke="none" stroke-width="1.5"/>
+<circle cx="492.6666666666667" cy="498" r="15" fill="#CD7F32" stroke="#CD7F32" stroke-width="2"/>
+<text x="492.6666666666667" y="522" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Bronze</text>
+<circle cx="570.0" cy="498" r="15" fill="#A8A9AD" stroke="#A8A9AD" stroke-width="2"/>
+<text x="570.0" y="522" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Argent</text>
+<circle cx="647.3333333333333" cy="498" r="15" fill="#1C1C1C" stroke="#FFD700" stroke-width="2"/>
+<text x="647.3333333333333" y="522" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Or</text>
+<rect x="440" y="540" width="260" height="104" rx="12" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<text x="454" y="564" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="700">Programs Completed</text>
+<rect x="454" y="574" width="232" height="8" rx="4" fill="#1C1C1C" stroke="none" stroke-width="1.5"/>
+<rect x="454" y="574" width="58.0" height="8" rx="4" fill="#5E2BFF" stroke="none" stroke-width="1.5"/>
+<circle cx="492.6666666666667" cy="612" r="15" fill="#CD7F32" stroke="#CD7F32" stroke-width="2"/>
+<text x="492.6666666666667" y="636" font-family="Inter, Arial, sans-serif" font-size="9" fill="#F0F0F0" text-anchor="middle" font-weight="400">Bronze</text>
+<circle cx="570.0" cy="612" r="15" fill="#1C1C1C" stroke="#A8A9AD" stroke-width="2"/>
+<text x="570.0" y="636" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Argent</text>
+<circle cx="647.3333333333333" cy="612" r="15" fill="#1C1C1C" stroke="#FFD700" stroke-width="2"/>
+<text x="647.3333333333333" y="636" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Or</text>
+<rect x="780" y="120" width="300" height="560" rx="30" fill="#1C1C1C" stroke="#3A3A3A" stroke-width="2"/>
+<rect x="880" y="134" width="100" height="16" rx="8" fill="#242424" stroke="none" stroke-width="1.5"/>
+<text x="930.0" y="106" font-family="Inter, Arial, sans-serif" font-size="14" fill="#D8C9FF" text-anchor="middle" font-weight="700">Seances</text>
+<text x="854" y="176" font-family="Inter, Arial, sans-serif" font-size="12" fill="#5E2BFF" text-anchor="middle" font-weight="700">Entrainements</text>
+<text x="1010" y="176" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="middle" font-weight="400">Historique</text>
+<line x1="804" y1="186" x2="906" y2="186" stroke="#5E2BFF" stroke-width="2"/>
+<rect x="804" y="200" width="252" height="34" rx="10" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<rect x="806" y="202" width="124.0" height="30" rx="8" fill="#5E2BFF" stroke="none" stroke-width="1.5"/>
+<text x="867.0" y="222" font-family="Inter, Arial, sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Programmes</text>
+<text x="993.0" y="222" font-family="Inter, Arial, sans-serif" font-size="11" fill="#AAAAAA" text-anchor="middle" font-weight="400">Sessions</text>
+<rect x="804" y="246" width="252" height="40" rx="10" fill="none" stroke="#5E2BFF" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="930.0" y="271" font-family="Inter, Arial, sans-serif" font-size="12" fill="#5E2BFF" text-anchor="middle" font-weight="700">+  Creer une session</text>
+<rect x="804" y="298" width="252" height="84" rx="12" fill="#242424" stroke="#5E2BFF" stroke-width="1.5"/>
+<rect x="816" y="310" width="87" height="24" rx="12" fill="#242424" stroke="#7C67D8" stroke-width="1.5"/>
+<text x="859.5" y="326" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#7C67D8" text-anchor="middle" font-weight="600">PROGRAMME</text>
+<rect x="908" y="310" width="59" height="24" rx="12" fill="#242424" stroke="#4CAF50" stroke-width="1.5"/>
+<text x="937.5" y="326" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#4CAF50" text-anchor="middle" font-weight="600">ACTIF</text>
+<text x="816" y="356" font-family="Inter, Arial, sans-serif" font-size="13" fill="#F0F0F0" text-anchor="start" font-weight="700">Full Body Debutant</text>
+<text x="816" y="374" font-family="Inter, Arial, sans-serif" font-size="10.5" fill="#AAAAAA" text-anchor="start" font-weight="400">4 sem. · 3 sessions</text>
+<rect x="804" y="396" width="252" height="48" rx="10" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="826" cy="420" r="13" fill="none" stroke="#5E2BFF" stroke-width="2"/>
+<text x="848" y="418" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="600">Push Day</text>
+<text x="848" y="434" font-family="Inter, Arial, sans-serif" font-size="10" fill="#AAAAAA" text-anchor="start" font-weight="400">6 ex. · Inter.</text>
+<text x="1040" y="426" font-family="Inter, Arial, sans-serif" font-size="16" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<rect x="804" y="454" width="252" height="48" rx="10" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="826" cy="478" r="13" fill="none" stroke="#5E2BFF" stroke-width="2"/>
+<text x="848" y="476" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="600">Pull Day</text>
+<text x="848" y="492" font-family="Inter, Arial, sans-serif" font-size="10" fill="#AAAAAA" text-anchor="start" font-weight="400">5 ex. · Inter.</text>
+<text x="1040" y="484" font-family="Inter, Arial, sans-serif" font-size="16" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<rect x="804" y="512" width="252" height="48" rx="10" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="826" cy="536" r="13" fill="none" stroke="#5E2BFF" stroke-width="2"/>
+<text x="848" y="534" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="600">Leg Day</text>
+<text x="848" y="550" font-family="Inter, Arial, sans-serif" font-size="10" fill="#AAAAAA" text-anchor="start" font-weight="400">7 ex. · Avance</text>
+<text x="1040" y="542" font-family="Inter, Arial, sans-serif" font-size="16" fill="#AAAAAA" text-anchor="middle" font-weight="400">›</text>
+<rect x="794" y="620" width="272" height="46" rx="14" fill="#242424" stroke="#3A3A3A" stroke-width="1.5"/>
+<circle cx="828.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="828.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Home</text>
+<circle cx="896.0" cy="636" r="7" fill="none" stroke="#5E2BFF" stroke-width="2"/>
+<text x="896.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#5E2BFF" text-anchor="middle" font-weight="700">Seances</text>
+<circle cx="964.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="964.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Social</text>
+<circle cx="1032.0" cy="636" r="7" fill="none" stroke="#AAAAAA" stroke-width="2"/>
+<text x="1032.0" y="658" font-family="Inter, Arial, sans-serif" font-size="9" fill="#AAAAAA" text-anchor="middle" font-weight="400">Profil</text>
+</svg>

@@ -110,4 +110,7 @@ class AppColors {
   static const Color nearBlack = neutral0;
   static const Color steelGray = neutral300;
   static const Color snowWhite = neutral600;
+
+  /// Near-black canvas behind exercise media (movement GIF, muscle atlas).
+  static const Color mediaCanvas = neutral0;
 }

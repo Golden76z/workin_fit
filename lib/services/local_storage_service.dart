@@ -11,14 +11,28 @@ class LocalStorageService {
 
   // ===== EXERCISES (CACHE) =====
   
-  /// Cache exercises locally
+  /// Replaces the entire exercise cache (used on first load when empty).
   Future<void> cacheExercises(List<Exercise> exercises) async {
     final box = await Hive.openBox<Exercise>(exercisesBox);
-    
+
     await box.clear();
     for (var exercise in exercises) {
       await box.put(exercise.id, exercise);
     }
+  }
+
+  /// Adds exercises that are not already cached (by id). Existing entries are kept.
+  ///
+  /// Returns how many new exercises were written.
+  Future<int> mergeCachedExercises(List<Exercise> exercises) async {
+    final box = await Hive.openBox<Exercise>(exercisesBox);
+    var added = 0;
+    for (final exercise in exercises) {
+      if (box.containsKey(exercise.id)) continue;
+      await box.put(exercise.id, exercise);
+      added++;
+    }
+    return added;
   }
 
   /// Get cached exercises

@@ -1683,4 +1683,455 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warmup_pick_category => 'Choose focus area';
+
+  @override
+  String get exercise_cardio_016_name => 'Broad Jump';
+
+  @override
+  String get exercise_cardio_016_description =>
+      'Explosive forward jump landing softly in an athletic stance. Develops power in legs and spikes heart rate for conditioning.';
+
+  @override
+  String get exercise_cardio_016_beginner_tips =>
+      'Swing arms for momentum. Bend knees on landing to absorb impact.';
+
+  @override
+  String get exercise_cardio_017_name => 'Sprawl';
+
+  @override
+  String get exercise_cardio_017_description =>
+      'Drop hips back, shoot legs out to plank, jump feet in, stand up. Burpee without the push-up—pure conditioning.';
+
+  @override
+  String get exercise_cardio_017_beginner_tips =>
+      'Step feet back one at a time if jumping is too intense. Stand fully between reps.';
+
+  @override
+  String get exercise_cardio_018_name => 'Power Skips';
+
+  @override
+  String get exercise_cardio_018_description =>
+      'Exaggerated skipping with explosive knee drive and arm swing. Develops single-leg power and high-intensity conditioning.';
+
+  @override
+  String get exercise_cardio_018_beginner_tips =>
+      'Drive the opposite arm and leg together. Land softly on the ball of the foot.';
+
+  @override
+  String get exercise_cardio_019_name => 'Boxer Shuffle';
+
+  @override
+  String get exercise_cardio_019_description =>
+      'Rapid weight shifts side to side on the balls of the feet with light punches optional. Low-impact cardio finisher.';
+
+  @override
+  String get exercise_cardio_019_beginner_tips =>
+      'Stay on the balls of your feet. Keep movements small and rhythm steady.';
+
+  @override
+  String get exercise_core_021_name => 'Heel Taps';
+
+  @override
+  String get exercise_core_021_description =>
+      'Lie on your back, crunch up slightly, and alternate tapping heels to the floor. Trains abs with light oblique engagement.';
+
+  @override
+  String get exercise_core_021_beginner_tips =>
+      'Press lower back gently into the floor. Move slowly—do not rush the taps.';
+
+  @override
+  String get exercise_core_022_name => 'Knee Pull-In';
+
+  @override
+  String get exercise_core_022_description =>
+      'Seated or on hands, draw knees toward chest and extend legs. Dynamic ab exercise scaling from beginner to advanced.';
+
+  @override
+  String get exercise_core_022_beginner_tips =>
+      'Round lower back slightly as knees come in. Move slowly to avoid momentum.';
+
+  @override
+  String get exercise_core_023_name => 'Sit-up';
+
+  @override
+  String get exercise_core_023_description =>
+      'Classic abdominal exercise. Curl torso up from the floor with feet anchored or bent, then lower with control.';
+
+  @override
+  String get exercise_core_023_beginner_tips =>
+      'Exhale on the way up. If your neck strains, support your head lightly with your hands.';
+
+  @override
+  String get exercise_core_025_name => 'Standing Side Crunch';
+
+  @override
+  String get exercise_core_025_description =>
+      'Stand tall and crunch sideways bringing elbow toward hip. Isolates obliques without lying on the floor.';
+
+  @override
+  String get exercise_core_025_beginner_tips =>
+      'Keep hips level—avoid leaning the whole body. Contract the side you are crunching toward.';
+
+  @override
+  String get exercise_core_026_name => 'Cross-Body Mountain Climber';
+
+  @override
+  String get exercise_core_026_description =>
+      'In high plank, drive knee toward opposite elbow. Adds rotation to mountain climbers for obliques and cardio.';
+
+  @override
+  String get exercise_core_026_beginner_tips =>
+      'Keep shoulders over wrists. Quality beats speed—alternate sides with control.';
+
+  @override
+  String get exercise_core_027_name => 'Hollow Rock';
+
+  @override
+  String get exercise_core_027_description =>
+      'Hold hollow body position and rock forward and back slightly. Advanced anti-extension core drill popular in gymnastics training.';
+
+  @override
+  String get exercise_core_027_beginner_tips =>
+      'Master hollow hold first. Keep lower back pressed toward the floor.';
+
+  @override
+  String get exercise_core_028_name => 'Tuck Front Lever Hold';
+
+  @override
+  String get exercise_core_028_description =>
+      'Hang from a bar, tuck knees, and depress shoulders to lift torso nearly horizontal. Advanced straight-arm back and core strength.';
+
+  @override
+  String get exercise_core_028_beginner_tips =>
+      'Start with short tuck holds. Focus on pushing shoulders down away from ears.';
+
+  @override
+  String get exercise_legs_026_name => 'Squat Pulse';
+
+  @override
+  String get exercise_legs_026_description =>
+      'Hold the bottom of a squat and pulse up and down a few inches. Builds quad and glute endurance without equipment.';
+
+  @override
+  String get exercise_legs_026_beginner_tips =>
+      'Keep chest up and knees tracking over toes. Use a shallow range if needed.';
+
+  @override
+  String get exercise_legs_027_name => 'Sissy Squat Hold';
+
+  @override
+  String get exercise_legs_027_description =>
+      'Lean back slightly while bending knees forward, keeping hips extended. Intense quad isolation using bodyweight only.';
+
+  @override
+  String get exercise_legs_027_beginner_tips =>
+      'Hold a wall or door frame lightly for balance. Use a small range until strength improves.';
+
+  @override
+  String get exercise_legs_030_name => 'Sliding Hamstring Curl';
+
+  @override
+  String get exercise_legs_030_description =>
+      'Lie on your back, heels on a towel or socks on smooth floor, curl heels toward glutes. Hamstring curl without machines.';
+
+  @override
+  String get exercise_legs_030_beginner_tips =>
+      'Lift hips as you curl in. Control the slide back to start.';
+
+  @override
+  String get exercise_legs_031_name => 'Nordic Curl Negative';
+
+  @override
+  String get exercise_legs_031_description =>
+      'Kneel with ankles anchored under a couch or partner, lower torso forward slowly, catch with hands. Advanced hamstring eccentric.';
+
+  @override
+  String get exercise_legs_031_beginner_tips =>
+      'Keep hips extended. Lower only as far as you can control—use hands to assist at the bottom.';
+
+  @override
+  String get exercise_legs_033_name => 'Frog Pump';
+
+  @override
+  String get exercise_legs_033_description =>
+      'Lie on your back with soles together and knees open. Drive hips up by squeezing glutes for high-rep glute activation.';
+
+  @override
+  String get exercise_legs_033_beginner_tips =>
+      'Do not arch the lower back excessively. Pause briefly at the top of each rep.';
+
+  @override
+  String get exercise_legs_034_name => 'Curtsy Lunge';
+
+  @override
+  String get exercise_legs_034_description =>
+      'Step one leg diagonally behind the other into a curtsy position and return. Emphasizes glutes and outer hip stability.';
+
+  @override
+  String get exercise_legs_034_beginner_tips =>
+      'Keep front knee aligned over the ankle. Touch the back knee toward the floor lightly.';
+
+  @override
+  String get exercise_legs_035_name => 'Bodyweight Hip Thrust';
+
+  @override
+  String get exercise_legs_035_description =>
+      'Upper back on the floor, feet flat, drive hips to full extension. One of the most effective glute builders without weights.';
+
+  @override
+  String get exercise_legs_035_beginner_tips =>
+      'Tuck chin slightly and push through heels. Squeeze glutes hard at the top.';
+
+  @override
+  String get exercise_legs_036_name => 'Standing Glute Kickback';
+
+  @override
+  String get exercise_legs_036_description =>
+      'Stand on one leg and drive the other leg straight back. Isolates glutes and improves hip extension strength.';
+
+  @override
+  String get exercise_legs_036_beginner_tips =>
+      'Squeeze glute at end range. Hold a wall for balance if needed.';
+
+  @override
+  String get exercise_legs_037_name => 'Seated Calf Raise';
+
+  @override
+  String get exercise_legs_037_description =>
+      'Sit with knees bent at 90 degrees and lift heels off the floor. Targets soleus and gastrocnemius without a step.';
+
+  @override
+  String get exercise_legs_037_beginner_tips =>
+      'Pause at the top. Place hands on knees for light resistance if desired.';
+
+  @override
+  String get exercise_legs_038_name => 'Shrimp Squat';
+
+  @override
+  String get exercise_legs_038_description =>
+      'Single-leg squat reaching the back knee behind you while holding the rear foot. Advanced quad and balance challenge.';
+
+  @override
+  String get exercise_legs_038_beginner_tips =>
+      'Use a wall for balance. Progress from partial range to full depth over weeks.';
+
+  @override
+  String get exercise_legs_039_name => 'Lateral Lunge Pulse';
+
+  @override
+  String get exercise_legs_039_description =>
+      'Step wide to one side, stay low, and pulse in the bottom position. Targets quads, glutes, and inner thighs.';
+
+  @override
+  String get exercise_legs_039_beginner_tips =>
+      'Keep the bent knee over the foot. Chest stays lifted throughout pulses.';
+
+  @override
+  String get exercise_pull_021_name => 'Prone Cobra';
+
+  @override
+  String get exercise_pull_021_description =>
+      'Back extension hold lying face down. Lift chest and arms slightly to strengthen the lower back and glutes with minimal spinal compression.';
+
+  @override
+  String get exercise_pull_021_beginner_tips =>
+      'Lift only as high as comfortable. Hold 2–3 seconds and lower with control.';
+
+  @override
+  String get exercise_pull_022_name => 'Bodyweight Good Morning';
+
+  @override
+  String get exercise_pull_022_description =>
+      'Hands behind head, hinge at hips with a flat back, then return upright. Strengthens hamstrings, glutes, and erectors.';
+
+  @override
+  String get exercise_pull_022_beginner_tips =>
+      'Push hips back as if closing a door with your glutes. Stop when torso is near parallel to the floor.';
+
+  @override
+  String get exercise_pull_024_name => 'Chin-Up Negative';
+
+  @override
+  String get exercise_pull_024_description =>
+      'Underhand grip at the top of a chin-up, lower slowly for 3–5 seconds. Builds biceps and lat strength for full chin-ups.';
+
+  @override
+  String get exercise_pull_024_beginner_tips =>
+      'Use a sturdy bar. Jump or step to the top position and control the descent.';
+
+  @override
+  String get exercise_pull_025_name => 'Dead Hang';
+
+  @override
+  String get exercise_pull_025_description =>
+      'Hang from a sturdy bar or ledge with arms straight. Builds grip, forearms, and decompresses the spine while preparing for pull-up strength.';
+
+  @override
+  String get exercise_pull_025_beginner_tips =>
+      'Pack shoulders down slightly. Start with 10–20 seconds and add time gradually.';
+
+  @override
+  String get exercise_pull_026_name => 'Reverse Grip Hang Hold';
+
+  @override
+  String get exercise_pull_026_description =>
+      'Hang with underhand grip at the top of a chin-up position. Isometric hold for biceps and grip endurance.';
+
+  @override
+  String get exercise_pull_026_beginner_tips =>
+      'Use a box to reach the top position if needed. Keep shoulders engaged, not fully relaxed.';
+
+  @override
+  String get exercise_pull_027_name => 'Fist Plank Hold';
+
+  @override
+  String get exercise_pull_027_description =>
+      'High plank performed on closed fists. Increases wrist and forearm demand while maintaining core tension.';
+
+  @override
+  String get exercise_pull_027_beginner_tips =>
+      'Align wrists under shoulders. Stop if you feel sharp wrist pain.';
+
+  @override
+  String get exercise_pull_028_name => 'Scapular Push-up';
+
+  @override
+  String get exercise_pull_028_description =>
+      'From a high plank, protract and retract the shoulder blades without bending elbows. Trains serratus and mid-back control for healthier pressing.';
+
+  @override
+  String get exercise_pull_028_beginner_tips =>
+      'Keep arms straight throughout. Move only at the shoulder blades.';
+
+  @override
+  String get exercise_pull_029_name => 'Renegade Row';
+
+  @override
+  String get exercise_pull_029_description =>
+      'From a high plank, row one hand to the hip while balancing on the other. Combines core stability with back and bicep pulling.';
+
+  @override
+  String get exercise_pull_029_beginner_tips =>
+      'Widen foot stance for stability. Prevent hips from rotating as you row.';
+
+  @override
+  String get exercise_pull_030_name => 'Archer Inverted Row';
+
+  @override
+  String get exercise_pull_030_description =>
+      'Under a table, row toward one hand with the other arm extended. Unilateral back and bicep strength without a pull-up bar.';
+
+  @override
+  String get exercise_pull_030_beginner_tips =>
+      'Keep body rigid. Pull chest to the working hand each rep.';
+
+  @override
+  String get exercise_push_021_name => 'Staggered Push-up';
+
+  @override
+  String get exercise_push_021_description =>
+      'Push-up with one hand slightly forward and one back. Builds unilateral pressing strength and core stability while training chest and arms.';
+
+  @override
+  String get exercise_push_021_beginner_tips =>
+      'Keep hips square to the floor. Alternate which hand is forward each set.';
+
+  @override
+  String get exercise_push_022_name => 'Tempo Push-up';
+
+  @override
+  String get exercise_push_022_description =>
+      'Push-up with a slow 3-second lowering phase and explosive press up. Increases time under tension for chest and triceps.';
+
+  @override
+  String get exercise_push_022_beginner_tips =>
+      'Count three seconds down, one second up. Maintain a rigid plank throughout.';
+
+  @override
+  String get exercise_push_023_name => 'Close-Hand Push-up';
+
+  @override
+  String get exercise_push_023_description =>
+      'Push-up with hands shoulder-width or slightly narrower. Shifts emphasis toward triceps while still loading the chest.';
+
+  @override
+  String get exercise_push_023_beginner_tips =>
+      'Keep elbows closer to the body than a standard push-up. Do not let hips sag.';
+
+  @override
+  String get exercise_push_024_name => 'Arm Circles';
+
+  @override
+  String get exercise_push_024_description =>
+      'Shoulder mobility and endurance drill. Extend arms to the sides and draw controlled circles to warm up and strengthen the deltoids.';
+
+  @override
+  String get exercise_push_024_beginner_tips =>
+      'Start with small circles and gradually enlarge them. Reverse direction halfway through the set.';
+
+  @override
+  String get exercise_push_025_name => 'Prone I Raise';
+
+  @override
+  String get exercise_push_025_description =>
+      'Lie face down and lift straight arms overhead forming an I shape. Targets rear delts and upper back for posture and shoulder health.';
+
+  @override
+  String get exercise_push_025_beginner_tips =>
+      'Keep thumbs pointing up. Squeeze shoulder blades at the top without shrugging.';
+
+  @override
+  String get exercise_push_027_name => 'Body Saw';
+
+  @override
+  String get exercise_push_027_description =>
+      'From forearm plank, rock body forward and back using shoulders. Challenges core anti-extension and triceps endurance.';
+
+  @override
+  String get exercise_push_027_beginner_tips =>
+      'Move in a small range at first. Keep glutes engaged to protect the lower back.';
+
+  @override
+  String get exercise_push_029_name => 'Typewriter Push-up';
+
+  @override
+  String get exercise_push_029_description =>
+      'At the bottom of a push-up, shift body weight side to side before pressing up. Extreme chest and tricep tension with core demand.';
+
+  @override
+  String get exercise_push_029_beginner_tips =>
+      'Stay low—move horizontally at the bottom only. Master archer push-ups first.';
+
+  @override
+  String get exercise_rest_001_name => 'Meditation & Deep Breathing';
+
+  @override
+  String get exercise_rest_001_description =>
+      'Focused mindfulness session. Sit or lie still, close your eyes, and practise box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s. Reduces cortisol and accelerates recovery.';
+
+  @override
+  String get exercise_rest_001_beginner_tips =>
+      'Start with 5-minute sessions. A wandering mind is normal — gently redirect to the breath without judgement.';
+
+  @override
+  String get exercise_rest_002_name => 'Easy Jog / Brisk Walk';
+
+  @override
+  String get exercise_rest_002_description =>
+      'Low-intensity steady-state cardio. Keep pace conversational — you should complete full sentences without gasping. Promotes blood flow and active recovery without adding training stress.';
+
+  @override
+  String get exercise_rest_002_beginner_tips =>
+      'If your heart rate exceeds 130 bpm, slow to a walk. The goal is circulation, not intensity.';
+
+  @override
+  String get exercise_rest_003_name => 'Full Body Mobility Flow';
+
+  @override
+  String get exercise_rest_003_description =>
+      'Dynamic and static stretching targeting major muscle groups in sequence. Improves range of motion, reduces soreness, and primes the body for the next training day.';
+
+  @override
+  String get exercise_rest_003_beginner_tips =>
+      'Move at breath pace. Never bounce into a stretch. Work from ankles upward: ankles to hips to thoracic spine to shoulders to neck.';
 }

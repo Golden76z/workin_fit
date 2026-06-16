@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:workin_fit/data/preset_program_catalog.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/session.dart';
@@ -8,9 +10,14 @@ import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/services/local_storage_service.dart';
 
 class SyncService {
+  static const Duration _exerciseBackgroundSyncMinInterval = Duration(minutes: 15);
+
   final FirestoreService _firestoreService;
   final LocalStorageService _localService;
   final Connectivity _connectivity;
+
+  bool _exerciseBackgroundSyncInFlight = false;
+  DateTime? _lastExerciseBackgroundSyncAt;
 
   SyncService({
     FirestoreService? firestoreService,
@@ -169,38 +176,110 @@ class SyncService {
 
   // ===== EXERCISES (CACHE-FIRST) =====
 
-  /// Get exercises with cache-first strategy
-  Future<List<Exercise>> getExercises() async {
-    try {
-      // Try local first
-      final cached = await _localService.getCachedExercises();
+  /// Returns Hive cache immediately when available; may refresh from Firestore
+  /// in the background (throttled, only when the catalog actually changed).
+  Future<List<Exercise>> getExercises({void Function()? onCacheUpdated}) async {
+    final List<Exercise> cached = await _localService.getCachedExercises();
+    if (cached.isNotEmpty) {
+      unawaited(
+        _refreshExercisesFromRemoteIfStale(onCacheUpdated: onCacheUpdated),
+      );
+      return cached;
+    }
+    return _fetchExercisesFromRemoteOrCache();
+  }
 
-      if (cached.isNotEmpty) {
-        // Return cached, but fetch fresh in background
-        _refreshExercisesInBackground();
-        return cached;
+  /// Forces a Firestore fetch and cache refresh (e.g. pull-to-refresh).
+  Future<List<Exercise>> refreshExercises() async {
+    _lastExerciseBackgroundSyncAt = DateTime.now();
+    return _fetchExercisesFromRemoteOrCache();
+  }
+
+  Future<List<Exercise>> _fetchExercisesFromRemoteOrCache() async {
+    try {
+      final List<Exercise> remote = await _firestoreService.getExercises();
+      if (remote.isNotEmpty) {
+        await _localService.cacheExercises(remote);
+        if (kDebugMode) {
+          debugPrint(
+            '[SyncService] exercises synced from Firestore (${remote.length})',
+          );
+        }
+        return remote;
+      }
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('[SyncService] Firestore exercises failed: $e\n$st');
+      }
+    }
+    return _localService.getCachedExercises();
+  }
+
+  Future<void> _refreshExercisesFromRemoteIfStale({
+    void Function()? onCacheUpdated,
+  }) async {
+    if (_exerciseBackgroundSyncInFlight) return;
+
+    final DateTime now = DateTime.now();
+    if (_lastExerciseBackgroundSyncAt != null &&
+        now.difference(_lastExerciseBackgroundSyncAt!) <
+            _exerciseBackgroundSyncMinInterval) {
+      return;
+    }
+
+    _exerciseBackgroundSyncInFlight = true;
+    try {
+      final List<Exercise> cached = await _localService.getCachedExercises();
+      final List<Exercise> remote = await _firestoreService.getExercises();
+      if (remote.isEmpty) return;
+
+      _lastExerciseBackgroundSyncAt = now;
+
+      if (!_remoteHasExercisesNotInCache(cached, remote)) {
+        return;
       }
 
-      // No cache, fetch from Firestore
-      final exercises = await _firestoreService.getExercises();
-      await _localService.cacheExercises(exercises);
-      return exercises;
+      final int added = await _localService.mergeCachedExercises(remote);
+      if (added == 0) return;
+
+      if (kDebugMode) {
+        debugPrint('[SyncService] merged $added new exercise(s) from Firestore');
+      }
+      onCacheUpdated?.call();
     } catch (e) {
-      // Fallback to cache on error
-      return await _localService.getCachedExercises();
+      if (kDebugMode) {
+        debugPrint('[SyncService] background exercise sync failed: $e');
+      }
+    } finally {
+      _exerciseBackgroundSyncInFlight = false;
     }
   }
 
+  static bool _remoteHasExercisesNotInCache(
+    List<Exercise> cached,
+    List<Exercise> remote,
+  ) {
+    if (remote.isEmpty) return false;
+    final Set<String> cachedIds =
+        cached.map((Exercise e) => e.id).toSet();
+    return remote.any((Exercise e) => !cachedIds.contains(e.id));
+  }
+
   /// Get exercise by ID
-  Future<Exercise?> getExerciseById(String id) async {
+  Future<Exercise?> getExerciseById(
+    String id, {
+    void Function()? onCacheUpdated,
+  }) async {
     try {
       // Try cache first
       final cached = await _localService.getCachedExercise(id);
       if (cached != null) {
-        // Refresh in background
-        _firestoreService.getExerciseById(id).then((exercise) {
-          if (exercise != null) {
-            _localService.cacheExercises([exercise]);
+        // If missing locally but present remotely, merge in background
+        _firestoreService.getExerciseById(id).then((exercise) async {
+          if (exercise == null) return;
+          final added = await _localService.mergeCachedExercises([exercise]);
+          if (added > 0) {
+            onCacheUpdated?.call();
           }
         }).catchError((_) {
           // Silent fail for background refresh
@@ -211,7 +290,7 @@ class SyncService {
       // Not in cache, fetch from Firestore
       final exercise = await _firestoreService.getExerciseById(id);
       if (exercise != null) {
-        await _localService.cacheExercises([exercise]);
+        await _localService.mergeCachedExercises([exercise]);
       }
       return exercise;
     } catch (e) {
@@ -246,15 +325,6 @@ class SyncService {
         return exercise.name.toLowerCase().contains(lowerQuery) ||
             exercise.muscleGroupsDisplay.toLowerCase().contains(lowerQuery);
       }).toList();
-    }
-  }
-
-  Future<void> _refreshExercisesInBackground() async {
-    try {
-      final exercises = await _firestoreService.getExercises();
-      await _localService.cacheExercises(exercises);
-    } catch (e) {
-      // Silent fail for background refresh
     }
   }
 

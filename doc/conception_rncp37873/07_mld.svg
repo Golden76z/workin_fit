@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 940" width="1400" height="940" font-family="Inter, Arial, sans-serif">
+<defs>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 z" fill="#AAAAAA"/></marker>
+<marker id="open" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto"><path d="M1 1 L11 5 L1 9" fill="none" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="one" markerWidth="14" markerHeight="14" refX="10" refY="6" orient="auto"><path d="M6 1 L6 11" stroke="#AAAAAA" stroke-width="1.5"/></marker>
+<marker id="crow" markerWidth="18" markerHeight="16" refX="2" refY="6" orient="auto"><path d="M14 1 L2 6 L14 11 M2 6 L14 6" fill="none" stroke="#AAAAAA" stroke-width="1.4"/></marker>
+</defs>
+<rect x="0" y="0" width="1400" height="940" fill="#111111"/>
+<text x="32" y="44" font-size="22" font-weight="700" fill="#F0F0F0">Modele Logique de Donnees (MLD)</text>
+<text x="32" y="66" font-size="13" fill="#AAAAAA">Workin Fit — RNCP 37873</text>
+<rect x="60" y="140" width="250" height="182" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M61 150 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="185.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">utilisateur</text>
+<text x="72" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">uid (PK)</text>
+<text x="72" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">username</text>
+<text x="72" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">email</text>
+<text x="72" y="249" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">photo_url</text>
+<text x="72" y="269" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">streak</text>
+<text x="72" y="289" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">total_points</text>
+<text x="72" y="309" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">created_at</text>
+<rect x="60" y="520" width="250" height="182" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M61 530 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="185.0" y="542" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">programme</text>
+<text x="72" y="569" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_programme (PK)</text>
+<text x="72" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom</text>
+<text x="72" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">duree_semaines</text>
+<text x="72" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">jours_semaine</text>
+<text x="72" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte</text>
+<text x="72" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">est_custom</text>
+<text x="72" y="689" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid (FK)</text>
+<rect x="420" y="520" width="250" height="162" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M421 530 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="545.0" y="542" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">seance</text>
+<text x="432" y="569" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_seance (PK)</text>
+<text x="432" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom</text>
+<text x="432" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte</text>
+<text x="432" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">repos_exos</text>
+<text x="432" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">transition</text>
+<text x="432" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid (FK)</text>
+<rect x="420" y="140" width="250" height="102" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M421 150 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="545.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">programme_seance</text>
+<text x="432" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_programme (FK)</text>
+<text x="432" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_seance (FK)</text>
+<text x="432" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">ordre</text>
+<rect x="780" y="520" width="250" height="182" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M781 530 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="905.0" y="542" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">workout_config</text>
+<text x="792" y="569" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_config (PK)</text>
+<text x="792" y="589" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_seance (FK)</text>
+<text x="792" y="609" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_exercice (FK)</text>
+<text x="792" y="629" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">type</text>
+<text x="792" y="649" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">sets</text>
+<text x="792" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">reps</text>
+<text x="792" y="689" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">rest_time</text>
+<rect x="780" y="140" width="250" height="142" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M781 150 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="905.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">exercice</text>
+<text x="792" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_exercice (PK)</text>
+<text x="792" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">nom</text>
+<text x="792" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">description</text>
+<text x="792" y="249" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">difficulte</text>
+<text x="792" y="269" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">equipement</text>
+<rect x="1120" y="140" width="250" height="102" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M1121 150 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="1245.0" y="162" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">exercice_groupe</text>
+<text x="1132" y="189" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_exercice (FK)</text>
+<text x="1132" y="209" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_groupe (FK)</text>
+<text x="1132" y="229" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">niveau</text>
+<rect x="60" y="790" width="250" height="142" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M61 800 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="185.0" y="812" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">session_history</text>
+<text x="72" y="839" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_hist (PK)</text>
+<text x="72" y="859" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">uid (FK)</text>
+<text x="72" y="879" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">id_seance</text>
+<text x="72" y="899" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">duree</text>
+<text x="72" y="919" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">completed_at</text>
+<rect x="420" y="790" width="250" height="102" rx="10" fill="#1C1C1C" stroke="#7C67D8" stroke-width="1.5"/>
+<path d="M421 800 q0 -9 9 -9 h230 q9 0 9 9 v22 h-248 z" fill="#7C67D8" opacity="0.92"/>
+<text x="545.0" y="812" font-family="Inter, Arial, sans-serif" font-size="13.5" fill="#fff" text-anchor="middle" font-weight="700" font-style="normal">trophee_user</text>
+<text x="432" y="839" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">uid (FK)</text>
+<text x="432" y="859" font-family="Inter, Arial, sans-serif" font-size="12" fill="#FF9800" text-anchor="start" font-weight="700" font-style="normal">id_trophee (FK)</text>
+<text x="432" y="879" font-family="Inter, Arial, sans-serif" font-size="12" fill="#F0F0F0" text-anchor="start" font-weight="400" font-style="normal">unlocked_at</text>
+<path d="M185 250 C 185.0 250, 185.0 520, 185 520" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="185" cy="250" r="3" fill="#AAAAAA"/>
+<path d="M310 560 C 365.0 560, 365.0 560, 420 560" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="310" cy="560" r="3" fill="#AAAAAA"/>
+<path d="M545 250 C 545.0 250, 545.0 520, 545 520" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="545" cy="250" r="3" fill="#AAAAAA"/>
+<path d="M670 560 C 725.0 560, 725.0 560, 780 560" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="670" cy="560" r="3" fill="#AAAAAA"/>
+<path d="M905 250 C 905.0 250, 905.0 520, 905 520" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="905" cy="250" r="3" fill="#AAAAAA"/>
+<path d="M1030 180 C 1075.0 180, 1075.0 180, 1120 180" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="1030" cy="180" r="3" fill="#AAAAAA"/>
+<path d="M185 250 C 172.5 250, 172.5 790, 160 790" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="185" cy="250" r="3" fill="#AAAAAA"/>
+<path d="M310 250 C 365.0 250, 365.0 820, 420 820" fill="none" stroke="#AAAAAA" stroke-width="1.6" marker-end="url(#crow)"/>
+<circle cx="310" cy="250" r="3" fill="#AAAAAA"/>
+<text x="720" y="905" font-family="Inter, Arial, sans-serif" font-size="12" fill="#AAAAAA" text-anchor="start" font-weight="400" font-style="normal">PK = cle primaire · FK = cle etrangere · tables d&#x27;association pour les relations *..*</text>
+</svg>
