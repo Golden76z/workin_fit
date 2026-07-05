@@ -608,7 +608,6 @@ class MockLocalStorageService extends _i1.Mock
           [exercises],
         ),
         returnValue: _i3.Future<int>.value(0),
-        returnValueForMissingStub: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
 
   @override

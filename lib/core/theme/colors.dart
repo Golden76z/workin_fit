@@ -11,13 +11,13 @@ class AppColors {
   static const Color brand600 = Color(0xFF260F63); // darkest
 
   // ── Neutral scale — near-black → near-white (no color-name labels) ────────
-  static const Color neutral0 = Color(0xFF111111); // page background
-  static const Color neutral100 = Color(0xFF1C1C1C); // card surface
-  static const Color neutral200 = Color(0xFF242424); // surface variant
-  static const Color neutral300 = Color(0xFF2E2E2E); // elevated / borders
-  static const Color neutral400 = Color(0xFF5A5A5A); // tertiary / disabled
-  static const Color neutral500 = Color(0xFFAAAAAA); // secondary text
-  static const Color neutral600 = Color(0xFFF0F0F0); // primary text
+  static const Color neutral0 = Color(0xFF0A0914); // page background
+  static const Color neutral100 = Color(0xFF161426); // card surface
+  static const Color neutral200 = Color(0xFF0F0E1A); // surface variant
+  static const Color neutral300 = Color(0xFF262438); // elevated / borders
+  static const Color neutral400 = Color(0xFF535170); // tertiary / disabled
+  static const Color neutral500 = Color(0xFF8F8DA8); // secondary text
+  static const Color neutral600 = Color(0xFFECEBFA); // primary text
 
   // ── Backward-compatible brand aliases ─────────────────────────────────────
   // Old blue-scale names repointed to equivalent visual roles in the new

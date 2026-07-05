@@ -633,15 +633,15 @@ class _ExerciseCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         onTap: onTap,
         child: Ink(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(8),
             color: AppColors.surface,
             border: Border.all(color: AppColors.neutral300),
           ),
-          child: compact ? _buildCompactContent() : _buildFullContent(),
+          child: compact ? _buildCompactContent() : _buildFullContent(context),
         ),
       ),
     );
@@ -697,103 +697,148 @@ class _ExerciseCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFullContent() {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        final double cardWidth = constraints.maxWidth.isFinite
-            ? constraints.maxWidth
-            : MediaQuery.sizeOf(context).width;
-        final double mediaWidth = (cardWidth * AppSizes.exerciseListImageRatio)
-            .clamp(AppSizes.exerciseListImageMinWidth, AppSizes.exerciseListImageMaxWidth);
-        const double mediaHeight = AppSizes.exerciseListImageHeight;
+  Widget _buildFullContent(BuildContext context) {
+    final String categoryLabel = getExerciseCategoryLabel(exercise, isFrench);
+    const double mediaWidth = 120.0;
+    const double mediaHeight = 84.0;
 
-        return Padding(
-          padding: const EdgeInsets.all(AppSpacing.xs),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'AppFontMedium',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.xs),
-                  ExerciseDifficultyBadge(difficulty: difficulty, isFrench: isFrench),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.xxs),
-              Container(
-                height: 1,
-                color: AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              SizedBox(
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Thumbnail Image on the left
+          Hero(
+            tag: exercise.imageTutorialUrl.isNotEmpty
+                ? 'exercise-img-${exercise.imageTutorialUrl}'
+                : 'exercise-img-${exercise.id}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                width: mediaWidth,
                 height: mediaHeight,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: _ExerciseImage(
+                  exerciseId: exercise.id,
+                  imageUrl: exercise.imageTutorialUrl,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          // Content on the right
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // Row with Title & Difficulty Badge
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Hero(
-                      tag: exercise.imageTutorialUrl.isNotEmpty
-                          ? 'exercise-img-${exercise.imageTutorialUrl}'
-                          : 'exercise-img-${exercise.id}',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(AppRadii.sm),
-                        child: SizedBox(
-                          width: mediaWidth,
-                          height: mediaHeight,
-                          child: _ExerciseImage(
-                            exerciseId: exercise.id,
-                            imageUrl: exercise.imageTutorialUrl,
-                          ),
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'AppFontMedium',
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Container(
-                      width: 1,
-                      height: mediaHeight,
-                      color: AppColors.primaryLight.withValues(alpha: AppOpacity.moderate),
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              description,
-                              maxLines: 5,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 12,
-                                height: 1.28,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    const SizedBox(width: 8),
+                    ExerciseDifficultyBadge(difficulty: difficulty, isFrench: isFrench),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 6),
+                // Description
+                Text(
+                  description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF8F8DA8), // Muted grayish-purple
+                    fontSize: 12,
+                    height: 1.25,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Category Tag
+                _CategoryBadge(label: categoryLabel),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
+}
+
+class _CategoryBadge extends StatelessWidget {
+  final String label;
+
+  const _CategoryBadge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1D1B36),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Color(0xFF8D8AA6),
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+String getExerciseCategoryLabel(Exercise exercise, bool isFrench) {
+  bool targetsUpper = exercise.muscleGroups.any((m) => 
+    m == MuscleGroup.chest || 
+    m == MuscleGroup.shoulders || 
+    m == MuscleGroup.triceps || 
+    m == MuscleGroup.biceps || 
+    m == MuscleGroup.back || 
+    m == MuscleGroup.forearms
+  );
+  bool targetsLower = exercise.muscleGroups.any((m) => 
+    m == MuscleGroup.quads || 
+    m == MuscleGroup.hamstrings || 
+    m == MuscleGroup.calves || 
+    m == MuscleGroup.glutes
+  );
+  bool targetsCore = exercise.muscleGroups.any((m) => 
+    m == MuscleGroup.abs || 
+    m == MuscleGroup.obliques || 
+    m == MuscleGroup.lowerBack
+  );
+
+  if (targetsUpper && targetsLower && targetsCore) {
+    return isFrench ? 'Corps entier' : 'Full body';
+  }
+  
+  if (targetsCore && !targetsUpper && !targetsLower) {
+    return isFrench ? 'Tronc' : 'Core';
+  }
+  
+  if (exercise.muscleGroups.isNotEmpty) {
+    final primary = exercise.muscleGroups.first;
+    if (primary == MuscleGroup.abs || primary == MuscleGroup.obliques || primary == MuscleGroup.lowerBack) {
+      return isFrench ? 'Tronc' : 'Core';
+    }
+    return muscleGroupLabel(primary, isFrench);
+  }
+  
+  return isFrench ? 'Autre' : 'Other';
 }
 
 class _ExerciseImage extends StatelessWidget {
@@ -824,17 +869,9 @@ class _ListThumbnailPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return const DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            AppColors.surface.withValues(alpha: 0.96),
-            AppColors.background.withValues(alpha: 0.92),
-          ],
-        ),
-        border: Border.all(color: AppColors.neutral300),
+        color: Color(0xFF1E1B30),
       ),
     );
   }

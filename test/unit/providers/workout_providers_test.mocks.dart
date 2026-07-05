@@ -104,19 +104,36 @@ class MockSyncService extends _i1.Mock implements _i2.SyncService {
       ) as _i3.Future<void>);
 
   @override
-  _i3.Future<List<_i5.Exercise>> getExercises() => (super.noSuchMethod(
+  _i3.Future<List<_i5.Exercise>> getExercises(
+          {void Function()? onCacheUpdated}) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getExercises,
+          [],
+          {#onCacheUpdated: onCacheUpdated},
+        ),
+        returnValue: _i3.Future<List<_i5.Exercise>>.value(<_i5.Exercise>[]),
+      ) as _i3.Future<List<_i5.Exercise>>);
+
+  @override
+  _i3.Future<List<_i5.Exercise>> refreshExercises() => (super.noSuchMethod(
+        Invocation.method(
+          #refreshExercises,
           [],
         ),
         returnValue: _i3.Future<List<_i5.Exercise>>.value(<_i5.Exercise>[]),
       ) as _i3.Future<List<_i5.Exercise>>);
 
   @override
-  _i3.Future<_i5.Exercise?> getExerciseById(String? id) => (super.noSuchMethod(
+  _i3.Future<_i5.Exercise?> getExerciseById(
+    String? id, {
+    void Function()? onCacheUpdated,
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getExerciseById,
           [id],
+          {#onCacheUpdated: onCacheUpdated},
         ),
         returnValue: _i3.Future<_i5.Exercise?>.value(),
       ) as _i3.Future<_i5.Exercise?>);

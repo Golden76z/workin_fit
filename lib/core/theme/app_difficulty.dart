@@ -8,18 +8,18 @@ class AppDifficultyTheme {
   AppDifficultyTheme._();
 
   static const AppDifficultyPalette beginner = AppDifficultyPalette(
-    accentColor: AppColors.primaryLight,
-    foregroundColor: AppColors.primaryLight,
+    accentColor: Color(0xFF10B981), // Emerald Green
+    foregroundColor: Color(0xFF10B981),
   );
 
   static const AppDifficultyPalette intermediate = AppDifficultyPalette(
-    accentColor: AppColors.primary,
-    foregroundColor: AppColors.primary,
+    accentColor: Color(0xFFFFA000), // Amber
+    foregroundColor: Color(0xFFFFA000),
   );
 
   static const AppDifficultyPalette advanced = AppDifficultyPalette(
-    accentColor: AppColors.primaryDarkest,
-    foregroundColor: AppColors.primaryLight,
+    accentColor: Color(0xFFFF2D55), // Red/Pink
+    foregroundColor: Color(0xFFFF2D55),
   );
 
   static const double badgeBackgroundOpacity = AppOpacity.light;
@@ -103,7 +103,7 @@ class AppDifficultyBadge extends StatelessWidget {
       vertical: AppDifficultyTheme.regularVerticalPadding,
     ),
     this.borderRadius = const BorderRadius.all(
-      Radius.circular(AppDifficultyTheme.regularRadius),
+      Radius.circular(100.0),
     ),
     this.fontSize = AppDifficultyTheme.regularFontSize,
     this.fontWeight = FontWeight.w700,

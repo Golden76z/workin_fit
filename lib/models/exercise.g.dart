@@ -24,9 +24,9 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       imageTutorialUrl: fields[4] as String,
       muscleGroups: (fields[5] as List).cast<MuscleGroup>(),
       difficulty: fields[6] as DifficultyLevel,
+      muscleActivationLevels: (fields[9] as Map?)?.cast<String, int>(),
       beginnerTips: fields[7] as String?,
       equipment: (fields[8] as List).cast<String>(),
-      muscleActivationLevels: (fields[9] as Map?)?.cast<String, int>(),
     );
   }
 
@@ -46,14 +46,14 @@ class ExerciseAdapter extends TypeAdapter<Exercise> {
       ..write(obj.imageTutorialUrl)
       ..writeByte(5)
       ..write(obj.muscleGroups)
+      ..writeByte(9)
+      ..write(obj.muscleActivationLevels)
       ..writeByte(6)
       ..write(obj.difficulty)
       ..writeByte(7)
       ..write(obj.beginnerTips)
       ..writeByte(8)
-      ..write(obj.equipment)
-      ..writeByte(9)
-      ..write(obj.muscleActivationLevels);
+      ..write(obj.equipment);
   }
 
   @override
