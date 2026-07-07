@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="608" viewBox="0 0 1080 608">
+<rect width="1080" height="608" fill="#111111"/>
+<line x1="60" y1="548" x2="1020" y2="548" stroke="#333333" stroke-width="5" stroke-linecap="round"/>
+<line x1="310" y1="527" x2="321.7" y2="443.8" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="321.7" y1="443.8" x2="401.7" y2="443.8" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="401.7" y1="443.8" x2="430.7" y2="457.3" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="214.1" y1="523.6" x2="275.9" y2="528" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="275.9" y1="528" x2="333.8" y2="532" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="347.7" cy="533" r="7" fill="#7F7F7F"/>
+<line x1="800" y1="496.3" x2="733.8" y2="444.6" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="733.8" y1="444.6" x2="813.5" y2="437.6" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="813.5" y1="437.6" x2="841.2" y2="453.6" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="709.8" y1="529.1" x2="771.6" y2="533.5" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="771.6" y1="533.5" x2="829.5" y2="537.5" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="843.5" cy="538.5" r="7" fill="#7F7F7F"/>
+<line x1="310" y1="527" x2="206.1" y2="523.4" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="233.1" cy="524.3" r="22" fill="#BDBDBD"/>
+<circle cx="310" cy="527" r="20.5" fill="#BDBDBD"/>
+<line x1="206.1" y1="523.4" x2="188.6" y2="521.8" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="171.2" cy="520.3" r="21" fill="#BDBDBD"/>
+<line x1="310" y1="527" x2="321.7" y2="443.8" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="321.7" y1="443.8" x2="401.7" y2="443.8" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="401.7" y1="443.8" x2="430.7" y2="457.3" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="214.1" y1="523.6" x2="275.9" y2="528" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="275.9" y1="528" x2="333.8" y2="532" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="347.7" cy="533" r="7.5" fill="#BDBDBD"/>
+<line x1="291.6" y1="516.4" x2="248" y2="514.8" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<line x1="800" y1="496.3" x2="702.3" y2="531.9" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="727.7" cy="522.6" r="22" fill="#BDBDBD"/>
+<circle cx="800" cy="496.3" r="20.5" fill="#BDBDBD"/>
+<line x1="702.3" y1="531.9" x2="684.9" y2="529.4" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="667.6" cy="527" r="21" fill="#BDBDBD"/>
+<line x1="800" y1="496.3" x2="733.8" y2="444.6" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="733.8" y1="444.6" x2="813.5" y2="437.6" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="813.5" y1="437.6" x2="841.2" y2="453.6" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="709.8" y1="529.1" x2="771.6" y2="533.5" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="771.6" y1="533.5" x2="829.5" y2="537.5" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="843.5" cy="538.5" r="7.5" fill="#BDBDBD"/>
+<line x1="779" y1="493.3" x2="737.9" y2="508.2" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<path d="M 526.8 274 L 547.6 300 L 526.8 326" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 551.5 274 L 572.3 300 L 551.5 326" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 960 420 Q 960 352 914.4 327.7" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 900 320 L 922.9 317.9 L 911 340.2 Z" fill="#ECECEC"/>
+</svg>

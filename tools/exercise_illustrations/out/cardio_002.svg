@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="608" viewBox="0 0 1080 608">
+<rect width="1080" height="608" fill="#111111"/>
+<line x1="60" y1="548" x2="1020" y2="548" stroke="#333333" stroke-width="5" stroke-linecap="round"/>
+<line x1="300" y1="374" x2="300" y2="458" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="300" y1="458" x2="300" y2="538" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="300" y1="538" x2="332" y2="538" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="296.6" y1="278.1" x2="336.5" y2="325.6" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="336.5" y1="325.6" x2="389.1" y2="301" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="401.8" cy="295.1" r="7" fill="#7F7F7F"/>
+<line x1="307.5" y1="388" x2="307.5" y2="443" stroke="#6D51C5" stroke-width="13" stroke-linecap="round"/>
+<line x1="770" y1="374" x2="846.1" y2="338.5" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="846.1" y1="338.5" x2="879.9" y2="411" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="879.9" y1="411" x2="910" y2="421.9" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="766.6" y1="278.1" x2="731.1" y2="328.8" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="731.1" y1="328.8" x2="772.1" y2="369.9" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="782" cy="379.8" r="7" fill="#7F7F7F"/>
+<line x1="785.9" y1="374.9" x2="835.7" y2="351.6" stroke="#6D51C5" stroke-width="13" stroke-linecap="round"/>
+<line x1="300" y1="374" x2="296.4" y2="270.1" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="297.3" cy="297.1" r="22" fill="#BDBDBD"/>
+<circle cx="300" cy="374" r="20.5" fill="#BDBDBD"/>
+<line x1="296.4" y1="270.1" x2="296.4" y2="252.6" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="296.4" cy="235.1" r="21" fill="#BDBDBD"/>
+<line x1="300" y1="374" x2="376.1" y2="338.5" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="376.1" y1="338.5" x2="409.9" y2="411" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="409.9" y1="411" x2="440" y2="421.9" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="296.6" y1="278.1" x2="261.1" y2="328.8" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="261.1" y1="328.8" x2="302.1" y2="369.9" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="312" cy="379.8" r="7.5" fill="#BDBDBD"/>
+<line x1="315.9" y1="374.9" x2="365.7" y2="351.6" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<line x1="770" y1="374" x2="766.4" y2="270.1" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="767.3" cy="297.1" r="22" fill="#BDBDBD"/>
+<circle cx="770" cy="374" r="20.5" fill="#BDBDBD"/>
+<line x1="766.4" y1="270.1" x2="766.4" y2="252.6" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="766.4" cy="235.1" r="21" fill="#BDBDBD"/>
+<line x1="770" y1="374" x2="770" y2="458" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="770" y1="458" x2="770" y2="538" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="770" y1="538" x2="802" y2="538" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="766.6" y1="278.1" x2="806.5" y2="325.6" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="806.5" y1="325.6" x2="859.1" y2="301" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="871.8" cy="295.1" r="7.5" fill="#BDBDBD"/>
+<line x1="777.5" y1="388" x2="777.5" y2="443" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<path d="M 501.8 264 L 522.6 290 L 501.8 316" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 526.5 264 L 547.3 290 L 526.5 316" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 460 450 Q 417.7 383.7 439.3 325.3" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 445 310 L 450.1 332.4 L 426.5 323.6 Z" fill="#ECECEC"/>
+<path d="M 930 450 Q 887.7 383.7 909.3 325.3" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 915 310 L 920.1 332.4 L 896.5 323.6 Z" fill="#ECECEC"/>
+<path d="M 38 76 L 58 76 L 66 54 L 78 98 L 86 76 L 106 76" stroke="#5628E7" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

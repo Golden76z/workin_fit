@@ -1,0 +1,1496 @@
+[
+ {
+  "id": "cardio_001",
+  "name": "Jumping Jacks",
+  "description": "Classic full-body cardio exercise. Jump feet apart while raising arms overhead, then return.",
+  "muscleGroups": [
+   "cardio",
+   "shoulders",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_002",
+  "name": "High Knees",
+  "description": "Running in place bringing knees up high. Excellent cardio exercise that also improves coordination.",
+  "muscleGroups": [
+   "cardio",
+   "quads"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_003",
+  "name": "Butt Kicks",
+  "description": "Running in place kicking heels toward glutes. Targets hamstrings while providing cardio benefits.",
+  "muscleGroups": [
+   "cardio",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_004",
+  "name": "Burpees",
+  "description": "Full-body explosive exercise combining squat, plank, push-up, and jump. Ultimate bodyweight cardio challenge.",
+  "muscleGroups": [
+   "cardio",
+   "chest",
+   "quads",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_005",
+  "name": "Skater Jumps",
+  "description": "Lateral jumping exercise mimicking ice skating motion. Develops power, balance, and cardiovascular fitness.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_006",
+  "name": "Star Jumps",
+  "description": "Explosive jumping exercise forming star shape. Jump up, spread arms and legs wide, then return.",
+  "muscleGroups": [
+   "cardio",
+   "shoulders",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_007",
+  "name": "Tuck Jumps",
+  "description": "Explosive jump bringing knees to chest. Develops power and cardiovascular fitness.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "calves",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_008",
+  "name": "Inchworms",
+  "description": "Full-body movement exercise. Stand, walk hands out to plank, then walk feet back to hands.",
+  "muscleGroups": [
+   "cardio",
+   "shoulders",
+   "abs",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_009",
+  "name": "Shadow Boxing",
+  "description": "Cardio exercise mimicking boxing movements. Throw punches in air, combining cardio with coordination.",
+  "muscleGroups": [
+   "cardio",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_010",
+  "name": "Jump Rope (No Rope)",
+  "description": "Mimic jump rope motion without equipment. Jump lightly on balls of feet, rotating wrists as if holding rope.",
+  "muscleGroups": [
+   "cardio",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_011",
+  "name": "Fast Feet",
+  "description": "High-intensity cardio exercise. Run in place as fast as possible, staying on balls of feet.",
+  "muscleGroups": [
+   "cardio",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_012",
+  "name": "Squat Jumps",
+  "description": "Explosive squat variation with jump. Combines strength training with high-intensity cardio.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_013",
+  "name": "Lunge Jumps",
+  "description": "Explosive lunge variation with jump. Alternates legs while jumping, providing intense cardio workout.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_014",
+  "name": "Dancing in Place",
+  "description": "Fun cardio exercise moving to music. Freestyle dance movements to get heart rate up.",
+  "muscleGroups": [
+   "cardio"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_015",
+  "name": "Jumping Lunges",
+  "description": "High-intensity lunge variation with explosive jumps. Alternates legs while maintaining lunge position.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_016",
+  "name": "Broad Jump",
+  "description": "Explosive forward jump landing softly in an athletic stance. Develops power in legs and spikes heart rate for conditioning.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_017",
+  "name": "Sprawl",
+  "description": "Drop hips back, shoot legs out to plank, jump feet in, stand up. Burpee without the push-up\u2014pure conditioning.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "shoulders",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_018",
+  "name": "Power Skips",
+  "description": "Exaggerated skipping with explosive knee drive and arm swing. Develops single-leg power and high-intensity conditioning.",
+  "muscleGroups": [
+   "cardio",
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "cardio_019",
+  "name": "Boxer Shuffle",
+  "description": "Rapid weight shifts side to side on the balls of the feet with light punches optional. Low-impact cardio finisher.",
+  "muscleGroups": [
+   "cardio",
+   "calves",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_001",
+  "name": "Plank",
+  "description": "Fundamental core exercise. Hold body in straight line supported by forearms and toes. Builds core strength and stability.",
+  "muscleGroups": [
+   "abs",
+   "lowerBack"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_002",
+  "name": "Side Plank",
+  "description": "Unilateral core exercise performed on side. Targets obliques and improves lateral stability.",
+  "muscleGroups": [
+   "obliques",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_003",
+  "name": "Mountain Climbers",
+  "description": "Dynamic core exercise alternating knees to chest. Combines strength with cardiovascular training.",
+  "muscleGroups": [
+   "abs",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_004",
+  "name": "Bicycle Crunches",
+  "description": "Rotational core exercise mimicking bicycle motion. Targets abs and obliques effectively.",
+  "muscleGroups": [
+   "abs",
+   "obliques"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_005",
+  "name": "Russian Twists",
+  "description": "Seated rotational exercise targeting obliques. Sit with knees bent, lean back slightly, rotate torso side to side.",
+  "muscleGroups": [
+   "obliques",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_006",
+  "name": "Flutter Kicks",
+  "description": "Core exercise performed lying on back. Alternately kick legs up and down while keeping core engaged.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_007",
+  "name": "Dead Bug",
+  "description": "Core stability exercise performed on back. Extend opposite arm and leg while maintaining core engagement.",
+  "muscleGroups": [
+   "abs",
+   "lowerBack"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_008",
+  "name": "Bird Dog",
+  "description": "Quadruped core stability exercise. Extend opposite arm and leg while maintaining balance.",
+  "muscleGroups": [
+   "abs",
+   "lowerBack",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_009",
+  "name": "Hollow Body Hold",
+  "description": "Advanced isometric core exercise. Lie on back, lift shoulders and legs, hold position.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_010",
+  "name": "V-Ups",
+  "description": "Advanced core exercise forming V shape. Lie on back, lift torso and legs simultaneously to touch.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_011",
+  "name": "Toe Touches",
+  "description": "Core exercise reaching for toes. Lie on back, lift legs and reach hands toward toes.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_012",
+  "name": "Reverse Crunches",
+  "description": "Core exercise lifting hips. Lie on back, bring knees toward chest, lift hips off ground.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_013",
+  "name": "Plank Jacks",
+  "description": "Dynamic plank variation jumping feet apart and together. Combines core strength with cardio.",
+  "muscleGroups": [
+   "abs",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_014",
+  "name": "Bear Crawl",
+  "description": "Quadruped movement exercise. Crawl forward and backward on hands and feet, keeping knees off ground.",
+  "muscleGroups": [
+   "abs",
+   "shoulders",
+   "quads"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_015",
+  "name": "Crab Walk",
+  "description": "Reverse quadruped movement. Sit with hands behind you, lift hips, walk forward and backward.",
+  "muscleGroups": [
+   "abs",
+   "triceps",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_016",
+  "name": "Windshield Wipers",
+  "description": "Core exercise moving legs side to side. Lie on back, lift legs, rotate them side to side.",
+  "muscleGroups": [
+   "abs",
+   "obliques"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_017",
+  "name": "L-Sit",
+  "description": "Advanced isometric core exercise. Sit with legs extended, lift body off ground using core and arms.",
+  "muscleGroups": [
+   "abs",
+   "triceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "core_018",
+  "name": "Plank to Downward Dog",
+  "description": "Dynamic movement transitioning from plank to downward dog. Combines core strength with mobility.",
+  "muscleGroups": [
+   "abs",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_019",
+  "name": "Side Plank with Leg Lift",
+  "description": "Advanced side plank variation. Hold side plank, lift top leg up and down.",
+  "muscleGroups": [
+   "obliques",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_020",
+  "name": "Plank Up-Downs",
+  "description": "Dynamic plank variation transitioning between high and low plank. Alternates between hands and forearms.",
+  "muscleGroups": [
+   "abs",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_021",
+  "name": "Heel Taps",
+  "description": "Lie on your back, crunch up slightly, and alternate tapping heels to the floor. Trains abs with light oblique engagement.",
+  "muscleGroups": [
+   "abs",
+   "obliques"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_022",
+  "name": "Knee Pull-In",
+  "description": "Seated or on hands, draw knees toward chest and extend legs. Dynamic ab exercise scaling from beginner to advanced.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_023",
+  "name": "Sit-up",
+  "description": "Classic abdominal exercise. Curl torso up from the floor with feet anchored or bent, then lower with control.",
+  "muscleGroups": [
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_025",
+  "name": "Standing Side Crunch",
+  "description": "Stand tall and crunch sideways bringing elbow toward hip. Isolates obliques without lying on the floor.",
+  "muscleGroups": [
+   "obliques",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_026",
+  "name": "Cross-Body Mountain Climber",
+  "description": "In high plank, drive knee toward opposite elbow. Adds rotation to mountain climbers for obliques and cardio.",
+  "muscleGroups": [
+   "obliques",
+   "abs",
+   "cardio",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_027",
+  "name": "Hollow Rock",
+  "description": "Hold hollow body position and rock forward and back slightly. Advanced anti-extension core drill popular in gymnastics training.",
+  "muscleGroups": [
+   "abs",
+   "lowerBack"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "core_028",
+  "name": "Tuck Front Lever Hold",
+  "description": "Hang from a bar, tuck knees, and depress shoulders to lift torso nearly horizontal. Advanced straight-arm back and core strength.",
+  "muscleGroups": [
+   "abs",
+   "back",
+   "biceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_001",
+  "name": "Bodyweight Squat",
+  "description": "Fundamental lower body exercise. Stand with feet shoulder-width, lower down as if sitting in chair, then stand back up.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_002",
+  "name": "Jump Squat",
+  "description": "Explosive squat variation with jump at the top. Develops power and athleticism in lower body.",
+  "muscleGroups": [
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_003",
+  "name": "Pistol Squat",
+  "description": "Advanced single-leg squat. Requires exceptional strength, balance, and mobility. Ultimate leg strength test.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_004",
+  "name": "Bulgarian Split Squat",
+  "description": "Single-leg squat with rear foot elevated on chair. Excellent for building unilateral leg strength.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "legs_005",
+  "name": "Forward Lunge",
+  "description": "Unilateral leg exercise stepping forward. Targets quads, glutes, and improves balance.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_006",
+  "name": "Reverse Lunge",
+  "description": "Lunge variation stepping backward. Easier on knees and emphasizes glutes more than forward lunge.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_007",
+  "name": "Walking Lunge",
+  "description": "Dynamic lunge variation moving forward. Combines strength training with coordination.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_008",
+  "name": "Jumping Lunge",
+  "description": "Explosive lunge variation with jump between reps. Develops power and cardiovascular fitness.",
+  "muscleGroups": [
+   "quads",
+   "glutes",
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_009",
+  "name": "Side Lunge",
+  "description": "Lateral lunge variation stepping to the side. Targets inner thighs and improves hip mobility.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_010",
+  "name": "Calf Raise",
+  "description": "Isolated calf exercise. Stand on balls of feet, rise up onto toes, then lower down slowly.",
+  "muscleGroups": [
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_011",
+  "name": "Single Leg Calf Raise",
+  "description": "Unilateral calf exercise. Performed on one leg to increase difficulty and address imbalances.",
+  "muscleGroups": [
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_012",
+  "name": "Glute Bridge",
+  "description": "Hip extension exercise targeting glutes and hamstrings. Lie on back, lift hips up, squeeze glutes.",
+  "muscleGroups": [
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_013",
+  "name": "Single Leg Glute Bridge",
+  "description": "Advanced glute bridge variation performed on one leg. Significantly increases difficulty and glute activation.",
+  "muscleGroups": [
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_014",
+  "name": "Donkey Kicks",
+  "description": "Quadruped exercise targeting glutes. Start on hands and knees, kick one leg back and up.",
+  "muscleGroups": [
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_015",
+  "name": "Fire Hydrants",
+  "description": "Quadruped exercise lifting leg to the side. Targets glutes and hip abductors.",
+  "muscleGroups": [
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_016",
+  "name": "Clamshells",
+  "description": "Side-lying exercise targeting hip abductors and glutes. Lie on side, lift top knee while keeping feet together.",
+  "muscleGroups": [
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_017",
+  "name": "Leg Raises",
+  "description": "Core and hip flexor exercise. Lie on back, lift legs straight up, then lower down slowly.",
+  "muscleGroups": [
+   "abs",
+   "quads"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_018",
+  "name": "Single Leg Deadlift",
+  "description": "Unilateral hip hinge exercise. Develops balance, hamstring strength, and glute activation.",
+  "muscleGroups": [
+   "hamstrings",
+   "glutes",
+   "lowerBack"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_019",
+  "name": "Skater Squats",
+  "description": "Advanced single-leg squat variation. Requires exceptional balance and leg strength.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_020",
+  "name": "Step-up",
+  "description": "Unilateral leg exercise using chair or step. Step up onto surface, then step back down.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "legs_021",
+  "name": "Sumo Squat",
+  "description": "Wide-stance squat variation. Targets inner thighs and glutes more than standard squat.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_022",
+  "name": "Single Leg Squat",
+  "description": "Advanced unilateral squat. Performed on one leg, requires exceptional strength and balance.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_023",
+  "name": "Cossack Squat",
+  "description": "Lateral squat variation with one leg extended. Improves hip mobility and builds leg strength.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_024",
+  "name": "Jump Squat to Tuck",
+  "description": "Advanced jump squat variation bringing knees to chest in the air. Develops explosive power and core strength.",
+  "muscleGroups": [
+   "quads",
+   "glutes",
+   "calves",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_025",
+  "name": "Wall Sit Pulse",
+  "description": "Dynamic wall sit variation. Hold wall sit position, then pulse up and down slightly.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_026",
+  "name": "Squat Pulse",
+  "description": "Hold the bottom of a squat and pulse up and down a few inches. Builds quad and glute endurance without equipment.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_027",
+  "name": "Sissy Squat Hold",
+  "description": "Lean back slightly while bending knees forward, keeping hips extended. Intense quad isolation using bodyweight only.",
+  "muscleGroups": [
+   "quads"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_030",
+  "name": "Sliding Hamstring Curl",
+  "description": "Lie on your back, heels on a towel or socks on smooth floor, curl heels toward glutes. Hamstring curl without machines.",
+  "muscleGroups": [
+   "hamstrings",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_031",
+  "name": "Nordic Curl Negative",
+  "description": "Kneel with ankles anchored under a couch or partner, lower torso forward slowly, catch with hands. Advanced hamstring eccentric.",
+  "muscleGroups": [
+   "hamstrings",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_033",
+  "name": "Frog Pump",
+  "description": "Lie on your back with soles together and knees open. Drive hips up by squeezing glutes for high-rep glute activation.",
+  "muscleGroups": [
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_034",
+  "name": "Curtsy Lunge",
+  "description": "Step one leg diagonally behind the other into a curtsy position and return. Emphasizes glutes and outer hip stability.",
+  "muscleGroups": [
+   "glutes",
+   "quads"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_035",
+  "name": "Bodyweight Hip Thrust",
+  "description": "Upper back on the floor, feet flat, drive hips to full extension. One of the most effective glute builders without weights.",
+  "muscleGroups": [
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_036",
+  "name": "Standing Glute Kickback",
+  "description": "Stand on one leg and drive the other leg straight back. Isolates glutes and improves hip extension strength.",
+  "muscleGroups": [
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_037",
+  "name": "Seated Calf Raise",
+  "description": "Sit with knees bent at 90 degrees and lift heels off the floor. Targets soleus and gastrocnemius without a step.",
+  "muscleGroups": [
+   "calves"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_038",
+  "name": "Shrimp Squat",
+  "description": "Single-leg squat reaching the back knee behind you while holding the rear foot. Advanced quad and balance challenge.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "legs_039",
+  "name": "Lateral Lunge Pulse",
+  "description": "Step wide to one side, stay low, and pulse in the bottom position. Targets quads, glutes, and inner thighs.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_001",
+  "name": "Inverted Row",
+  "description": "Bodyweight rowing exercise using a table or sturdy surface. Excellent for building back and bicep strength without equipment.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "pull_002",
+  "name": "Superman",
+  "description": "Prone exercise targeting lower back and glutes. Lie face down, lift arms and legs simultaneously, hold briefly.",
+  "muscleGroups": [
+   "lowerBack",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_003",
+  "name": "Reverse Snow Angels",
+  "description": "Prone exercise where you move arms in snow angel motion. Strengthens posterior deltoids and upper back.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_004",
+  "name": "Y-T-W Raises",
+  "description": "Prone exercise series forming Y, T, and W shapes with arms. Targets entire upper back and rear deltoids.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_005",
+  "name": "Wall Angels",
+  "description": "Standing exercise against wall mimicking snow angels. Improves posture and strengthens upper back muscles.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_006",
+  "name": "Prone Y Raise",
+  "description": "Prone exercise lifting arms in Y position. Targets upper traps and rear deltoids.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_007",
+  "name": "Prone T Raise",
+  "description": "Prone exercise lifting arms straight out to sides forming T shape. Strengthens rear deltoids and mid traps.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_008",
+  "name": "Prone W Raise",
+  "description": "Prone exercise with arms bent forming W shape. Targets rhomboids and rear deltoids.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_009",
+  "name": "Reverse Plank",
+  "description": "Bodyweight exercise performed face-up. Strengthens posterior chain including back, glutes, and hamstrings.",
+  "muscleGroups": [
+   "back",
+   "glutes",
+   "hamstrings",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_010",
+  "name": "Scapular Wall Slides",
+  "description": "Posture exercise performed against wall. Strengthens upper back and improves shoulder mobility.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_011",
+  "name": "Isometric Pull Hold",
+  "description": "Static hold exercise mimicking pull-up position. Builds grip strength and back endurance.",
+  "muscleGroups": [
+   "back",
+   "biceps",
+   "forearms"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_012",
+  "name": "Reverse Plank Walk",
+  "description": "Dynamic reverse plank variation. Walk hands backward while maintaining reverse plank position.",
+  "muscleGroups": [
+   "back",
+   "shoulders",
+   "glutes",
+   "hamstrings"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_013",
+  "name": "Single Arm Row",
+  "description": "Unilateral rowing exercise using bodyweight. Can be performed with towel or resistance band if available.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_014",
+  "name": "Towel Row",
+  "description": "Rowing exercise using a towel for grip. Wrap towel around door handle or sturdy anchor and row.",
+  "muscleGroups": [
+   "back",
+   "biceps",
+   "forearms"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_015",
+  "name": "Doorway Row",
+  "description": "Rowing exercise using doorway frame. Stand in doorway, pull body toward frame using back muscles.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_016",
+  "name": "Australian Pull-up",
+  "description": "Horizontal pulling exercise using table or bar. Body positioned horizontally, pull chest to surface.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "pull_017",
+  "name": "Pull-up Negative",
+  "description": "Eccentric phase of pull-up. Jump or step up to top position, then lower slowly. Builds strength for full pull-ups.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "pull_018",
+  "name": "Reverse Fly",
+  "description": "Prone exercise mimicking reverse fly motion. Strengthens rear deltoids and upper back without weights.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_019",
+  "name": "Wide Grip Inverted Row",
+  "description": "Inverted row with hands placed wider than shoulder-width. Emphasizes outer back and rear deltoids.",
+  "muscleGroups": [
+   "back",
+   "shoulders"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "pull_020",
+  "name": "Close Grip Inverted Row",
+  "description": "Inverted row with hands close together. Increases bicep emphasis and difficulty.",
+  "muscleGroups": [
+   "back",
+   "biceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "pull_021",
+  "name": "Prone Cobra",
+  "description": "Back extension hold lying face down. Lift chest and arms slightly to strengthen the lower back and glutes with minimal spinal compression.",
+  "muscleGroups": [
+   "lowerBack",
+   "back",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_022",
+  "name": "Bodyweight Good Morning",
+  "description": "Hands behind head, hinge at hips with a flat back, then return upright. Strengthens hamstrings, glutes, and erectors.",
+  "muscleGroups": [
+   "hamstrings",
+   "lowerBack",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_024",
+  "name": "Chin-Up Negative",
+  "description": "Underhand grip at the top of a chin-up, lower slowly for 3\u20135 seconds. Builds biceps and lat strength for full chin-ups.",
+  "muscleGroups": [
+   "biceps",
+   "back",
+   "forearms"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_025",
+  "name": "Dead Hang",
+  "description": "Hang from a sturdy bar or ledge with arms straight. Builds grip, forearms, and decompresses the spine while preparing for pull-up strength.",
+  "muscleGroups": [
+   "forearms",
+   "back",
+   "biceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_026",
+  "name": "Reverse Grip Hang Hold",
+  "description": "Hang with underhand grip at the top of a chin-up position. Isometric hold for biceps and grip endurance.",
+  "muscleGroups": [
+   "biceps",
+   "forearms",
+   "back"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_027",
+  "name": "Fist Plank Hold",
+  "description": "High plank performed on closed fists. Increases wrist and forearm demand while maintaining core tension.",
+  "muscleGroups": [
+   "forearms",
+   "abs",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_028",
+  "name": "Scapular Push-up",
+  "description": "From a high plank, protract and retract the shoulder blades without bending elbows. Trains serratus and mid-back control for healthier pressing.",
+  "muscleGroups": [
+   "back",
+   "shoulders",
+   "chest"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_029",
+  "name": "Renegade Row",
+  "description": "From a high plank, row one hand to the hip while balancing on the other. Combines core stability with back and bicep pulling.",
+  "muscleGroups": [
+   "back",
+   "biceps",
+   "abs",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "pull_030",
+  "name": "Archer Inverted Row",
+  "description": "Under a table, row toward one hand with the other arm extended. Unilateral back and bicep strength without a pull-up bar.",
+  "muscleGroups": [
+   "back",
+   "biceps",
+   "forearms"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_001",
+  "name": "Push-up",
+  "description": "Classic bodyweight exercise targeting chest, shoulders, and triceps. Start in plank position, lower body until chest nearly touches floor, then push back up.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_002",
+  "name": "Incline Push-up",
+  "description": "Easier variation of push-up performed with hands elevated on a chair or wall. Reduces bodyweight load, perfect for beginners.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "push_003",
+  "name": "Decline Push-up",
+  "description": "Advanced push-up variation with feet elevated on a chair. Increases difficulty by shifting more weight to upper body.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "push_004",
+  "name": "Diamond Push-up",
+  "description": "Push-up variation with hands forming a diamond shape. Emphasizes triceps and inner chest muscles.",
+  "muscleGroups": [
+   "chest",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_005",
+  "name": "Wide Push-up",
+  "description": "Push-up with hands placed wider than shoulder-width. Targets outer chest and shoulders more than standard push-up.",
+  "muscleGroups": [
+   "chest",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_006",
+  "name": "Pike Push-up",
+  "description": "Push-up performed in downward dog position. Excellent for building shoulder strength and preparing for handstand push-ups.",
+  "muscleGroups": [
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_007",
+  "name": "Wall Push-up",
+  "description": "Beginner-friendly push-up performed standing against a wall. Perfect for those building upper body strength.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_008",
+  "name": "Knee Push-up",
+  "description": "Modified push-up performed on knees instead of toes. Reduces bodyweight load significantly.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_009",
+  "name": "Archer Push-up",
+  "description": "Advanced unilateral push-up variation. Shifts weight to one arm while the other arm extends, building incredible strength.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_010",
+  "name": "Hindu Push-up",
+  "description": "Dynamic push-up variation with flowing movement. Combines strength training with mobility work.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "back"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_011",
+  "name": "Spiderman Push-up",
+  "description": "Push-up variation where you bring knee to elbow during the lowering phase. Adds core engagement and hip mobility.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "abs",
+   "obliques"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_012",
+  "name": "Shoulder Tap Push-up",
+  "description": "Push-up variation where you tap opposite shoulder at the top of each rep. Challenges stability and core strength.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_013",
+  "name": "Tricep Dips",
+  "description": "Upper body exercise using a chair. Targets triceps, shoulders, and chest. Sit on edge of chair, lower body, then push up.",
+  "muscleGroups": [
+   "triceps",
+   "shoulders",
+   "chest"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "push_014",
+  "name": "Diamond Tricep Dips",
+  "description": "Tricep dips with hands close together in diamond position. Increases tricep emphasis and difficulty.",
+  "muscleGroups": [
+   "triceps",
+   "shoulders"
+  ],
+  "equipment": [
+   "chair"
+  ]
+ },
+ {
+  "id": "push_015",
+  "name": "Wall Sit",
+  "description": "Isometric leg exercise performed against a wall. Builds quadriceps and glute endurance.",
+  "muscleGroups": [
+   "quads",
+   "glutes"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_016",
+  "name": "Pseudo Planche Push-up",
+  "description": "Advanced push-up with hands positioned further back toward waist. Extremely challenging variation that builds incredible strength.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_017",
+  "name": "Clapping Push-up",
+  "description": "Explosive push-up variation where you clap hands together at the top. Develops power and upper body explosiveness.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_018",
+  "name": "One-Arm Push-up",
+  "description": "Ultimate push-up challenge performed with one arm. Requires exceptional strength, stability, and core control.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "abs",
+   "obliques"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_019",
+  "name": "Handstand Push-up",
+  "description": "Advanced exercise performed in handstand position. Ultimate test of shoulder strength and stability.",
+  "muscleGroups": [
+   "shoulders",
+   "triceps",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_020",
+  "name": "Dive Bomber Push-up",
+  "description": "Dynamic push-up variation combining downward dog, low push-up, and upward dog positions in one fluid motion.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps",
+   "back"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_021",
+  "name": "Staggered Push-up",
+  "description": "Push-up with one hand slightly forward and one back. Builds unilateral pressing strength and core stability while training chest and arms.",
+  "muscleGroups": [
+   "chest",
+   "shoulders",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_022",
+  "name": "Tempo Push-up",
+  "description": "Push-up with a slow 3-second lowering phase and explosive press up. Increases time under tension for chest and triceps.",
+  "muscleGroups": [
+   "chest",
+   "triceps",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_023",
+  "name": "Close-Hand Push-up",
+  "description": "Push-up with hands shoulder-width or slightly narrower. Shifts emphasis toward triceps while still loading the chest.",
+  "muscleGroups": [
+   "chest",
+   "triceps"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_024",
+  "name": "Arm Circles",
+  "description": "Shoulder mobility and endurance drill. Extend arms to the sides and draw controlled circles to warm up and strengthen the deltoids.",
+  "muscleGroups": [
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_025",
+  "name": "Prone I Raise",
+  "description": "Lie face down and lift straight arms overhead forming an I shape. Targets rear delts and upper back for posture and shoulder health.",
+  "muscleGroups": [
+   "shoulders",
+   "back"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_027",
+  "name": "Body Saw",
+  "description": "From forearm plank, rock body forward and back using shoulders. Challenges core anti-extension and triceps endurance.",
+  "muscleGroups": [
+   "abs",
+   "triceps",
+   "shoulders"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "push_029",
+  "name": "Typewriter Push-up",
+  "description": "At the bottom of a push-up, shift body weight side to side before pressing up. Extreme chest and tricep tension with core demand.",
+  "muscleGroups": [
+   "chest",
+   "triceps",
+   "abs"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "rest_001",
+  "name": "Meditation & Deep Breathing",
+  "description": "Focused mindfulness session. Sit or lie still, close your eyes, and practise box breathing: inhale 4s, hold 4s, exhale 4s, hold 4s. Reduces cortisol and accelerates recovery.",
+  "muscleGroups": [
+   "cardio"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "rest_002",
+  "name": "Easy Jog / Brisk Walk",
+  "description": "Low-intensity steady-state cardio. Keep pace conversational \u2014 you should complete full sentences without gasping. Promotes blood flow and active recovery without adding training stress.",
+  "muscleGroups": [
+   "cardio"
+  ],
+  "equipment": []
+ },
+ {
+  "id": "rest_003",
+  "name": "Full Body Mobility Flow",
+  "description": "Dynamic and static stretching targeting major muscle groups in sequence. Improves range of motion, reduces soreness, and primes the body for the next training day.",
+  "muscleGroups": [
+   "cardio"
+  ],
+  "equipment": []
+ }
+]

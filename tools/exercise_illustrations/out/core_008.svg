@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="608" viewBox="0 0 1080 608">
+<rect width="1080" height="608" fill="#111111"/>
+<line x1="60" y1="548" x2="1020" y2="548" stroke="#333333" stroke-width="5" stroke-linecap="round"/>
+<line x1="500" y1="422" x2="401.4" y2="442.9" stroke="#7F7F7F" stroke-width="32.4" stroke-linecap="round"/>
+<line x1="401.4" y1="442.9" x2="306.9" y2="459.6" stroke="#7F7F7F" stroke-width="24" stroke-linecap="round"/>
+<line x1="306.9" y1="459.6" x2="268.8" y2="464.9" stroke="#7F7F7F" stroke-width="14.4" stroke-linecap="round"/>
+<line x1="606.8" y1="378.8" x2="673.1" y2="345" stroke="#7F7F7F" stroke-width="22.8" stroke-linecap="round"/>
+<line x1="673.1" y1="345" x2="735.1" y2="313.4" stroke="#7F7F7F" stroke-width="18" stroke-linecap="round"/>
+<circle cx="750.1" cy="305.8" r="8.4" fill="#7F7F7F"/>
+<line x1="500" y1="422" x2="615.7" y2="375.2" stroke="#BDBDBD" stroke-width="48" stroke-linecap="round"/>
+<circle cx="585.6" cy="387.4" r="26.4" fill="#BDBDBD"/>
+<circle cx="500" cy="422" r="24.6" fill="#BDBDBD"/>
+<line x1="615.7" y1="375.2" x2="636.4" y2="371.6" stroke="#BDBDBD" stroke-width="15.6" stroke-linecap="round"/>
+<circle cx="657.1" cy="367.9" r="25.2" fill="#BDBDBD"/>
+<line x1="500" y1="422" x2="482.5" y2="521.2" stroke="#BDBDBD" stroke-width="32.4" stroke-linecap="round"/>
+<line x1="482.5" y1="521.2" x2="386.9" y2="512.9" stroke="#BDBDBD" stroke-width="24" stroke-linecap="round"/>
+<line x1="386.9" y1="512.9" x2="357.4" y2="537.6" stroke="#BDBDBD" stroke-width="14.4" stroke-linecap="round"/>
+<line x1="606.8" y1="378.8" x2="613.3" y2="452.9" stroke="#BDBDBD" stroke-width="22.8" stroke-linecap="round"/>
+<line x1="613.3" y1="452.9" x2="619.4" y2="522.3" stroke="#BDBDBD" stroke-width="18" stroke-linecap="round"/>
+<circle cx="620.8" cy="539" r="9" fill="#BDBDBD"/>
+<line x1="525.3" y1="424.7" x2="573.9" y2="405" stroke="#5E2BFF" stroke-width="15.6" stroke-linecap="round"/>
+<line x1="507.1" y1="406.2" x2="544.1" y2="391.2" stroke="#7C5AEA" stroke-width="14.4" stroke-linecap="round"/>
+<circle cx="499.2" cy="406.7" r="15.6" fill="#7C5AEA"/>
+<path d="M 850 320 Q 885 317.5 903.7 316.2" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 920 315 L 901.7 328.9 L 900 303.8 Z" fill="#ECECEC"/>
+<path d="M 190 400 Q 155 402.5 136.3 403.8" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 120 405 L 138.3 391.1 L 140 416.2 Z" fill="#ECECEC"/>
+</svg>

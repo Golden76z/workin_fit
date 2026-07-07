@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="608" viewBox="0 0 1080 608">
+<rect width="1080" height="608" fill="#111111"/>
+<line x1="60" y1="548" x2="1020" y2="548" stroke="#333333" stroke-width="5" stroke-linecap="round"/>
+<line x1="310" y1="525" x2="349.4" y2="450.8" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="349.4" y1="450.8" x2="366.1" y2="529.1" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="366.1" y1="529.1" x2="396.1" y2="540" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="214" y1="526.6" x2="253.9" y2="479.2" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="253.9" y1="479.2" x2="301.4" y2="512.4" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="312.8" cy="520.4" r="7" fill="#7F7F7F"/>
+<line x1="790" y1="525" x2="829.4" y2="450.8" stroke="#7F7F7F" stroke-width="27" stroke-linecap="round"/>
+<line x1="829.4" y1="450.8" x2="846.1" y2="529.1" stroke="#7F7F7F" stroke-width="20" stroke-linecap="round"/>
+<line x1="846.1" y1="529.1" x2="876.1" y2="540" stroke="#7F7F7F" stroke-width="12" stroke-linecap="round"/>
+<line x1="734.9" y1="446.3" x2="791.1" y2="472.5" stroke="#7F7F7F" stroke-width="19" stroke-linecap="round"/>
+<line x1="791.1" y1="472.5" x2="848.2" y2="482.6" stroke="#7F7F7F" stroke-width="15" stroke-linecap="round"/>
+<circle cx="862" cy="485" r="7" fill="#7F7F7F"/>
+<line x1="310" y1="525" x2="206" y2="526.8" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="233.1" cy="526.3" r="22" fill="#BDBDBD"/>
+<circle cx="310" cy="525" r="20.5" fill="#BDBDBD"/>
+<line x1="206" y1="526.8" x2="188.9" y2="523.1" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="171.8" cy="519.5" r="21" fill="#BDBDBD"/>
+<line x1="310" y1="525" x2="349.4" y2="450.8" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="349.4" y1="450.8" x2="366.1" y2="529.1" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="366.1" y1="529.1" x2="396.1" y2="540" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="214" y1="526.6" x2="253.9" y2="479.2" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="253.9" y1="479.2" x2="301.4" y2="512.4" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="312.8" cy="520.4" r="7.5" fill="#BDBDBD"/>
+<line x1="291.1" y1="515.3" x2="247.4" y2="516.1" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<line x1="790" y1="525" x2="730.3" y2="439.8" stroke="#BDBDBD" stroke-width="40" stroke-linecap="round"/>
+<circle cx="745.9" cy="461.9" r="22" fill="#BDBDBD"/>
+<circle cx="790" cy="525" r="20.5" fill="#BDBDBD"/>
+<line x1="730.3" y1="439.8" x2="725.8" y2="422.9" stroke="#BDBDBD" stroke-width="13" stroke-linecap="round"/>
+<circle cx="721.3" cy="406" r="21" fill="#BDBDBD"/>
+<line x1="790" y1="525" x2="829.4" y2="450.8" stroke="#BDBDBD" stroke-width="27" stroke-linecap="round"/>
+<line x1="829.4" y1="450.8" x2="846.1" y2="529.1" stroke="#BDBDBD" stroke-width="20" stroke-linecap="round"/>
+<line x1="846.1" y1="529.1" x2="876.1" y2="540" stroke="#BDBDBD" stroke-width="12" stroke-linecap="round"/>
+<line x1="734.9" y1="446.3" x2="791.1" y2="472.5" stroke="#BDBDBD" stroke-width="19" stroke-linecap="round"/>
+<line x1="791.1" y1="472.5" x2="848.2" y2="482.6" stroke="#BDBDBD" stroke-width="15" stroke-linecap="round"/>
+<circle cx="862" cy="485" r="7.5" fill="#BDBDBD"/>
+<line x1="787.5" y1="503.9" x2="762.4" y2="468.1" stroke="#5E2BFF" stroke-width="13" stroke-linecap="round"/>
+<path d="M 521.8 294 L 542.6 320 L 521.8 346" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 546.5 294 L 567.3 320 L 546.5 346" stroke="#5628E7" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 620 470 Q 626.7 387.8 685.5 357.5" stroke="#ECECEC" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M 700 350 L 688.7 370 L 677.2 347.6 Z" fill="#ECECEC"/>
+</svg>

@@ -1,7 +1,24 @@
 # Exercise media assets
 
-Drop your custom movement GIFs here. The app reads them via `imageTutorialUrl` using
-`assets/exercises/movements/{exercise_id}/tutorial.gif` (see `ExerciseAssets.movementPath`).
+The app reads movement media via `imageTutorialUrl` using
+`assets/exercises/movements/{exercise_id}/tutorial.*` (see `ExerciseAssets.movementPath`).
+
+## Current tutorial images: generated vector illustrations
+
+Every `tutorial.png` (1080 × 608) is **generated** from a pose script in
+`tools/exercise_illustrations/` — a gray silhouette in the muscle-atlas style with the
+worked muscle zones highlighted in brand purple (`#5E2BFF`), no embedded text.
+
+To tweak or regenerate an image:
+
+```bash
+cd tools/exercise_illustrations
+# edit poses/<exercise_id>.py (see POSE_GUIDE.md for the API)
+python3 poses/<exercise_id>.py           # renders out/<exercise_id>.png (needs rsvg-convert)
+cp out/<id>.png ../../assets/exercises/movements/<id>/tutorial.png
+```
+
+`python3 build_all.py` re-renders all 141 images.
 
 ## Display dimensions (UI)
 
