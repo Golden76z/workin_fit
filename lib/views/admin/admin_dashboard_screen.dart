@@ -4,7 +4,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/admin/admin_daily_challenge_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_exercise_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_program_editor_screen.dart';
-import 'package:workin_fit/views/admin/admin_warmup_editor_screen.dart';
+import 'package:workin_fit/views/admin/admin_warmup_list_screen.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
 
 /// Entry point for the in-app admin content tools. Guarded by [AdminGuard] so
@@ -52,7 +52,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 label: 'Warmups',
                 subtitle: 'Warmup routines',
                 onTap: () => Navigator.of(context)
-                    .push(AdminWarmupEditorScreen.route()),
+                    .push(AdminWarmupListScreen.route()),
               ),
               _AdminCard(
                 icon: Icons.emoji_events_rounded,

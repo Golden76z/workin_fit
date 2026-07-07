@@ -5,7 +5,9 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/user_profile.dart';
+import 'package:workin_fit/models/warmup_routine.dart';
 import 'package:workin_fit/providers/challenge_providers.dart';
+import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/admin_content_service.dart';
 import 'package:workin_fit/services/storage_service.dart';
@@ -101,5 +103,15 @@ class AdminActions {
   Future<void> deleteDailyChallenge(String challengeId) async {
     await _content.deleteDailyChallenge(challengeId);
     ref.invalidate(allDailyChallengesProvider);
+  }
+
+  Future<void> saveWarmup(WarmupRoutine routine) async {
+    await _content.upsertWarmup(routine, updatedBy: _uid);
+    ref.invalidate(firestoreWarmupsProvider);
+  }
+
+  Future<void> deleteWarmup(String docKey) async {
+    await _content.deleteWarmup(docKey);
+    ref.invalidate(firestoreWarmupsProvider);
   }
 }

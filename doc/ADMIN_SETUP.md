@@ -79,10 +79,15 @@ Profile → **Admin** opens the dashboard:
   `ContentModeration` (banned-words filter) before saving. Saved exercises
   appear immediately for all users via the live `exercisesStream`.
 - **Programs** — minimal create form writing to the preset `programs` collection.
-- **Warmups / Daily Challenges** — placeholders. Their in-app read paths are
-  currently static/local; the admin write path exists
-  (`AdminContentService.upsertContentDocument`) but the catalog/read side must
-  move to Firestore before these editors are wired up.
+- **Daily Challenges** — full list + editor writing to the `daily_challenges`
+  collection. Authored challenges take over the home-screen daily rotation for
+  everyone; when none exist the app falls back to the built-in catalog
+  (`todaysChallengesProvider` prefers Firestore, falls back to
+  `DailyChallengesCatalog`).
+- **Warmups** — list + editor for authoring routines keyed by
+  (category, duration). Saving overrides the built-in `WarmupData` routine for
+  that key for everyone; deleting restores the built-in one
+  (`warmupRoutineProvider` prefers Firestore, falls back to `WarmupData`).
 
 ## Notes / follow-ups
 

@@ -4,6 +4,7 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/user_profile.dart';
+import 'package:workin_fit/models/warmup_routine.dart';
 
 /// Write access to the app's shared content collections.
 ///
@@ -100,7 +101,27 @@ class AdminContentService {
         .delete();
   }
 
-  // ===== WARMUPS & DAILY CHALLENGES (map-based content) =====
+  // ===== WARMUPS =====
+
+  Future<void> upsertWarmup(WarmupRoutine routine, {String? updatedBy}) async {
+    final Map<String, dynamic> data = routine.toFirestore()
+      ..['updatedAt'] = FieldValue.serverTimestamp();
+    if (updatedBy != null) data['updatedBy'] = updatedBy;
+
+    await _firestore
+        .collection(FirebaseConstants.warmupsCollection)
+        .doc(routine.docKey)
+        .set(data, SetOptions(merge: true));
+  }
+
+  Future<void> deleteWarmup(String docKey) async {
+    await _firestore
+        .collection(FirebaseConstants.warmupsCollection)
+        .doc(docKey)
+        .delete();
+  }
+
+  // ===== GENERIC MAP-BASED CONTENT =====
 
   /// Generic upsert for content collections whose in-app model is currently
   /// static/local (warmups, daily challenges). The stub editors write raw maps

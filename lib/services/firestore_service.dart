@@ -7,6 +7,7 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/warmup_routine.dart';
 
 /// Custom exception for Firestore operations
 class FirestoreException implements Exception {
@@ -1192,6 +1193,29 @@ class FirestoreService {
         }
       }
       return challenges;
+    });
+  }
+
+  // ===== WARMUP ROUTINES (admin-authored) =====
+
+  /// Stream admin-authored warmup routines from the `warmups` collection.
+  /// Malformed docs are skipped; an empty result lets callers fall back to the
+  /// static [WarmupData] routines.
+  Stream<List<WarmupRoutine>> warmupsStream() {
+    return _firestore
+        .collection(FirebaseConstants.warmupsCollection)
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
+      final List<WarmupRoutine> routines = <WarmupRoutine>[];
+      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+          in snapshot.docs) {
+        try {
+          routines.add(WarmupRoutine.fromFirestore(doc.data()));
+        } on Object {
+          // Skip malformed warmup documents.
+        }
+      }
+      return routines;
     });
   }
 
