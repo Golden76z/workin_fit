@@ -16,6 +16,8 @@ import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/models/friend.dart';
 import 'package:workin_fit/models/friend_request.dart';
 import 'package:workin_fit/providers/friend_providers.dart';
+import 'package:workin_fit/providers/admin_providers.dart';
+import 'package:workin_fit/views/admin/admin_dashboard_screen.dart';
 import 'package:workin_fit/views/achievements/achievements_page.dart';
 import 'package:workin_fit/views/profile/stats_graph_screen.dart';
 import 'package:workin_fit/views/social/friend_search_screen.dart';
@@ -193,6 +195,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     );
   }
 
+  void _openAdmin() {
+    Navigator.of(context).push(AdminDashboardScreen.route());
+  }
+
   void _openStatsGraph() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -259,6 +265,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
     super.build(context);
     final user = ref.watch(currentUserProvider);
     final profileAsync = ref.watch(_userProfileProvider);
+    final bool isAdmin = ref.watch(isAdminProvider);
     final bool isFrench = Localizations.localeOf(context)
         .languageCode
         .toLowerCase()
@@ -370,6 +377,15 @@ class _ProfileTabState extends ConsumerState<ProfileTab>
                                         ),
                                         _MenuList(
                                           items: <_MenuItem>[
+                                            if (isAdmin)
+                                              _MenuItem(
+                                                icon: Icons
+                                                    .admin_panel_settings_rounded,
+                                                label: isFrench
+                                                    ? 'Administration'
+                                                    : 'Admin',
+                                                onTap: _openAdmin,
+                                              ),
                                             _MenuItem(
                                               icon: Icons.insights_rounded,
                                               label: isFrench
