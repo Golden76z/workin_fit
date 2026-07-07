@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
-import 'package:workin_fit/views/admin/admin_daily_challenge_editor_screen.dart';
+import 'package:workin_fit/views/admin/admin_daily_challenge_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_exercise_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_program_editor_screen.dart';
 import 'package:workin_fit/views/admin/admin_warmup_editor_screen.dart';
@@ -59,7 +59,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 label: 'Daily Challenges',
                 subtitle: 'Manage challenges',
                 onTap: () => Navigator.of(context)
-                    .push(AdminDailyChallengeEditorScreen.route()),
+                    .push(AdminDailyChallengeListScreen.route()),
               ),
             ],
           ),

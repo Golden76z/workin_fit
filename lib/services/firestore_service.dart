@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/models/active_program_state.dart';
+import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
@@ -1169,6 +1170,29 @@ class FirestoreService {
           },
           SetOptions(merge: true),
         );
+  }
+
+  // ===== DAILY CHALLENGE DEFINITIONS (admin-authored) =====
+
+  /// Stream all admin-authored daily challenge definitions from the
+  /// `daily_challenges` collection. Malformed docs are skipped. An empty result
+  /// (collection unused) lets callers fall back to the static catalog.
+  Stream<List<DailyChallenge>> dailyChallengesStream() {
+    return _firestore
+        .collection(FirebaseConstants.dailyChallengesCollection)
+        .snapshots()
+        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
+      final List<DailyChallenge> challenges = <DailyChallenge>[];
+      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc
+          in snapshot.docs) {
+        try {
+          challenges.add(DailyChallenge.fromFirestore(doc.data(), id: doc.id));
+        } on Object {
+          // Skip malformed challenge documents.
+        }
+      }
+      return challenges;
+    });
   }
 
   List<Map<String, dynamic>> _toMapList(dynamic rawValue) {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:workin_fit/core/constants/app_constants.dart';
+import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/user_profile.dart';
@@ -73,6 +74,29 @@ class AdminContentService {
     await _firestore
         .collection(FirebaseConstants.programsCollection)
         .doc(programId)
+        .delete();
+  }
+
+  // ===== DAILY CHALLENGES =====
+
+  Future<void> upsertDailyChallenge(
+    DailyChallenge challenge, {
+    String? updatedBy,
+  }) async {
+    final Map<String, dynamic> data = challenge.toFirestore()
+      ..['updatedAt'] = FieldValue.serverTimestamp();
+    if (updatedBy != null) data['updatedBy'] = updatedBy;
+
+    await _firestore
+        .collection(FirebaseConstants.dailyChallengesCollection)
+        .doc(challenge.id)
+        .set(data, SetOptions(merge: true));
+  }
+
+  Future<void> deleteDailyChallenge(String challengeId) async {
+    await _firestore
+        .collection(FirebaseConstants.dailyChallengesCollection)
+        .doc(challengeId)
         .delete();
   }
 

@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/models/user_profile.dart';
+import 'package:workin_fit/providers/challenge_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/admin_content_service.dart';
 import 'package:workin_fit/services/storage_service.dart';
@@ -89,5 +91,15 @@ class AdminActions {
     await _content.upsertPresetProgram(program, updatedBy: _uid);
     ref.invalidate(programsProvider);
     ref.invalidate(homePresetProgramsProvider);
+  }
+
+  Future<void> saveDailyChallenge(DailyChallenge challenge) async {
+    await _content.upsertDailyChallenge(challenge, updatedBy: _uid);
+    ref.invalidate(allDailyChallengesProvider);
+  }
+
+  Future<void> deleteDailyChallenge(String challengeId) async {
+    await _content.deleteDailyChallenge(challengeId);
+    ref.invalidate(allDailyChallengesProvider);
   }
 }
