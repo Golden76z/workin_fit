@@ -12,6 +12,7 @@ import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
+import 'package:workin_fit/views/admin/widgets/admin_text_field.dart';
 
 /// Create or edit a single exercise. On save it uploads any newly picked images
 /// to Firebase Storage and writes the exercise to the shared `exercises`
@@ -193,7 +194,7 @@ class _AdminExerciseEditorScreenState
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: <Widget>[
-                _field(
+                AdminTextField(
                   controller: _nameController,
                   label: 'Name',
                   validator: (String? v) {
@@ -204,7 +205,7 @@ class _AdminExerciseEditorScreenState
                   },
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _descriptionController,
                   label: 'Description',
                   maxLines: 3,
@@ -216,14 +217,14 @@ class _AdminExerciseEditorScreenState
                   },
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _tipsController,
                   label: 'Beginner tips (optional)',
                   maxLines: 2,
                   validator: ContentModeration.validate,
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _equipmentController,
                   label: 'Equipment (comma-separated, empty = bodyweight)',
                 ),
@@ -328,29 +329,6 @@ class _AdminExerciseEditorScreenState
             ),
       );
 
-  Widget _field({
-    required TextEditingController controller,
-    required String label,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      validator: validator,
-      style: const TextStyle(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
 }
 
 class _DifficultySelector extends StatelessWidget {

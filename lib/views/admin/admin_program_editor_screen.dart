@@ -9,6 +9,7 @@ import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
+import 'package:workin_fit/views/admin/widgets/admin_text_field.dart';
 
 /// Minimal admin editor for preset programs. Writes to the top-level `programs`
 /// collection. Session selection is entered as a comma-separated list of
@@ -127,7 +128,7 @@ class _AdminProgramEditorScreenState
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: <Widget>[
-                _field(
+                AdminTextField(
                   controller: _name,
                   label: 'Name',
                   validator: (String? v) =>
@@ -136,7 +137,7 @@ class _AdminProgramEditorScreenState
                           : ContentModeration.validate(v),
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _description,
                   label: 'Description',
                   maxLines: 3,
@@ -149,7 +150,7 @@ class _AdminProgramEditorScreenState
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: _field(
+                      child: AdminTextField(
                         controller: _durationWeeks,
                         label: 'Weeks',
                         keyboardType: TextInputType.number,
@@ -160,7 +161,7 @@ class _AdminProgramEditorScreenState
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
-                      child: _field(
+                      child: AdminTextField(
                         controller: _daysPerWeek,
                         label: 'Days / week',
                         keyboardType: TextInputType.number,
@@ -172,12 +173,12 @@ class _AdminProgramEditorScreenState
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _goals,
                   label: 'Goals (comma-separated)',
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _sessionIds,
                   label: 'Session IDs (comma-separated, optional)',
                 ),
@@ -239,31 +240,4 @@ class _AdminProgramEditorScreenState
     );
   }
 
-  Widget _field({
-    required TextEditingController controller,
-    required String label,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    List<TextInputFormatter>? inputFormatters,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator: validator,
-      style: const TextStyle(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
 }
