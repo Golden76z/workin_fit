@@ -4,9 +4,29 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/services/firestore_service.dart';
 
-/// Today's 3 challenges derived from the catalog — no network call required.
+/// All admin-authored challenge definitions from Firestore (real-time).
+/// Sorted by id so day-based selection is deterministic across snapshots.
+final allDailyChallengesProvider =
+    StreamProvider<List<DailyChallenge>>((ref) {
+  final FirestoreService firestore = ref.watch(firestoreServiceProvider);
+  return firestore.dailyChallengesStream().map(
+    (List<DailyChallenge> list) {
+      final List<DailyChallenge> sorted = <DailyChallenge>[...list]
+        ..sort((DailyChallenge a, DailyChallenge b) => a.id.compareTo(b.id));
+      return sorted;
+    },
+  );
+});
+
+/// Today's 3 challenges. Prefers admin-authored challenges from Firestore and
+/// falls back to the static catalog while they load or when none exist — so
+/// this provider stays synchronous and the home screen never blocks on network.
 final todaysChallengesProvider = Provider<List<DailyChallenge>>((ref) {
-  return DailyChallengesCatalog.forDate(DateTime.now());
+  final List<DailyChallenge>? pool =
+      ref.watch(allDailyChallengesProvider).valueOrNull;
+  final List<DailyChallenge> source =
+      (pool != null && pool.isNotEmpty) ? pool : DailyChallengesCatalog.all;
+  return DailyChallengesCatalog.pickForDate(source, DateTime.now());
 });
 
 /// Completion state for a specific challenge ID for the current user today.

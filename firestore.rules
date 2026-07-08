@@ -1,0 +1,121 @@
+rules_version = '2';
+
+// Firestore security rules for Workin Fit.
+//
+// Access-control model:
+//   * Shared content (exercises, programs, warmups, daily_challenges) is
+//     READ-ONLY for signed-in users and WRITEABLE only by admins.
+//   * A user's admin status is stored as `role: 'admin'` on their own
+//     `users/{uid}` document. Users cannot change their own `role` (no
+//     self-promotion); only an existing admin — or the Firebase Console /
+//     Admin SDK, which bypass rules — can grant admin.
+//   * Other per-user data stays owner-scoped.
+//
+// NOTE: This file must be deployed for it to take effect. See doc/ADMIN_SETUP.md.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Helpers ----
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Reads the caller's own user doc to check their role.
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // True when a user-doc write does NOT change the `role` field.
+    function roleUnchanged() {
+      return !('role' in request.resource.data)
+        || request.resource.data.role == resource.data.role;
+    }
+
+    // ---- User profiles ----
+    match /users/{userId} {
+      allow read: if isSignedIn();
+
+      // On create, a user may not self-assign the admin role.
+      allow create: if isOwner(userId)
+        && (!('role' in request.resource.data)
+            || request.resource.data.role == 'user');
+
+      // Owners may update their own profile but not their role; admins may
+      // update any profile (this is how admins promote/demote others).
+      allow update: if isAdmin()
+        || (isOwner(userId) && roleUnchanged());
+
+      allow delete: if isAdmin();
+
+      // Per-user subcollections (custom sessions, programs, completions, etc.)
+      match /{document=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // ---- Shared content: read for all signed-in users, write admin-only ----
+    match /exercises/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /programs/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /warmups/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /daily_challenges/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /sessions/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ---- Existing social / activity collections: signed-in access ----
+    //
+    // IMPORTANT: these are enumerated explicitly on purpose. A recursive
+    // `match /{path=**}` catch-all would be OR-ed with the admin-only content
+    // rules above and silently grant every signed-in user write access to
+    // exercises/programs/etc. Keep this list explicit; any NEW top-level
+    // collection is denied by default until it gets its own block, so tighten
+    // per feature as needed.
+    match /workout_history/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /exercise_monthly/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /friends/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /friend_requests/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /chats/{chatId} {
+      allow read, write: if isSignedIn();
+      match /messages/{messageId} {
+        allow read, write: if isSignedIn();
+      }
+    }
+    match /achievements/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /streaks/{docId} {
+      allow read, write: if isSignedIn();
+    }
+    match /challenge_completions/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

@@ -10,13 +10,24 @@ class DailyChallengesCatalog {
       List<DailyChallenge>.unmodifiable(_challenges);
 
   /// Returns 3 challenges for the given date, cycling through the catalog.
-  static List<DailyChallenge> forDate(DateTime date) {
+  static List<DailyChallenge> forDate(DateTime date) =>
+      pickForDate(_challenges, date);
+
+  /// Deterministically pick 3 challenges from an arbitrary [pool] for [date],
+  /// cycling by day-of-year. Shared by the static catalog and the
+  /// Firestore-backed pool so both rotate identically. Returns the whole pool
+  /// (or fewer) when it has 3 or fewer entries.
+  static List<DailyChallenge> pickForDate(
+    List<DailyChallenge> pool,
+    DateTime date,
+  ) {
+    if (pool.length <= 3) return List<DailyChallenge>.of(pool);
     final int dayOfYear = date.difference(DateTime(date.year)).inDays;
-    final int offset = (dayOfYear * 3) % _challenges.length;
+    final int offset = (dayOfYear * 3) % pool.length;
     return <DailyChallenge>[
-      _challenges[offset % _challenges.length],
-      _challenges[(offset + 1) % _challenges.length],
-      _challenges[(offset + 2) % _challenges.length],
+      pool[offset % pool.length],
+      pool[(offset + 1) % pool.length],
+      pool[(offset + 2) % pool.length],
     ];
   }
 
