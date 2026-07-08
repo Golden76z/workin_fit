@@ -63,12 +63,17 @@ class _CircuitEntry extends _BuilderEntry {
 // ---------------------------------------------------------------------------
 
 class SessionBuilderScreen extends ConsumerStatefulWidget {
-  const SessionBuilderScreen({this.asPreset = false, super.key});
+  const SessionBuilderScreen({this.asPreset = false, this.existing, super.key});
 
   /// When true the built session is saved as a shared preset (admin-authored,
   /// consumed by curated programs) instead of the current user's custom
   /// session. Admin-only; reached from the admin dashboard.
   final bool asPreset;
+
+  /// When non-null the builder edits this session in place (keeps its id)
+  /// instead of creating a new one. Currently used only by the admin preset
+  /// flow.
+  final Session? existing;
 
   static Route<void> route() {
     return MaterialPageRoute<void>(
@@ -77,11 +82,12 @@ class SessionBuilderScreen extends ConsumerStatefulWidget {
     );
   }
 
-  /// Route used by the admin tools to author a curated preset session.
-  static Route<void> presetRoute() {
+  /// Route used by the admin tools to author (or, with [existing], edit) a
+  /// curated preset session.
+  static Route<void> presetRoute({Session? existing}) {
     return MaterialPageRoute<void>(
       fullscreenDialog: true,
-      builder: (_) => const SessionBuilderScreen(asPreset: true),
+      builder: (_) => SessionBuilderScreen(asPreset: true, existing: existing),
     );
   }
 
@@ -99,6 +105,69 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
 
   final List<_BuilderEntry> _entries = [];
   bool _isSaving = false;
+
+  /// While editing, the workout list is populated asynchronously (needs the
+  /// exercise catalog to resolve ids); show a spinner until it's ready.
+  bool _hydrating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final Session? e = widget.existing;
+    if (e == null) return;
+    _nameController.text = e.name;
+    _descController.text = e.description ?? '';
+    _difficulty = e.difficulty;
+    _restBetweenExercises = e.restBetweenExercises;
+    _hydrating = true;
+    _hydrateEntries(e);
+  }
+
+  /// Rebuild the mutable builder entries from a saved session's workout
+  /// configs, resolving each exercise id against the catalog. Configs whose
+  /// exercise no longer exists are skipped.
+  Future<void> _hydrateEntries(Session session) async {
+    try {
+      final List<Exercise> catalog =
+          await ref.read(exercisesProvider.future);
+      final Map<String, Exercise> byId = <String, Exercise>{
+        for (final Exercise ex in catalog) ex.id: ex,
+      };
+
+      final List<_BuilderEntry> entries = <_BuilderEntry>[];
+      for (final WorkoutConfig w in session.workouts) {
+        if (w is CircuitConfig) {
+          final List<(Exercise, WorkoutConfig)> inner =
+              <(Exercise, WorkoutConfig)>[];
+          for (final WorkoutConfig c in w.exercises) {
+            final Exercise? ex = byId[c.exerciseId];
+            if (ex != null) inner.add((ex, c));
+          }
+          entries.add(_CircuitEntry(
+            name: w.name,
+            rounds: w.rounds,
+            restBetweenExercises: w.restBetweenExercises,
+            restBetweenRounds: w.restBetweenRounds,
+            exercises: inner,
+          ));
+        } else {
+          final Exercise? ex = byId[w.exerciseId];
+          if (ex != null) entries.add(_ExerciseEntry(exercise: ex, config: w));
+        }
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _entries
+          ..clear()
+          ..addAll(entries);
+        _hydrating = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _hydrating = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -258,7 +327,7 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
       }).toList();
 
       final session = Session(
-        id: const Uuid().v4(),
+        id: widget.existing?.id ?? const Uuid().v4(),
         name: name,
         description: _descController.text.trim().isEmpty
             ? null
@@ -319,9 +388,15 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: Text(
-                widget.asPreset
-                    ? (isFrench ? 'Nouvelle session préréglée' : 'New Preset Session')
-                    : (isFrench ? 'Nouvelle session' : 'New Session'),
+                widget.existing != null
+                    ? (isFrench
+                        ? 'Modifier la session'
+                        : 'Edit Preset Session')
+                    : widget.asPreset
+                        ? (isFrench
+                            ? 'Nouvelle session préréglée'
+                            : 'New Preset Session')
+                        : (isFrench ? 'Nouvelle session' : 'New Session'),
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'AppFontMedium',
@@ -330,7 +405,9 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                 ),
               ),
               actions: [
-                if (_isSaving)
+                // Show a spinner (not the Save button) while saving or while
+                // an edit is still reverse-populating from the saved session.
+                if (_isSaving || _hydrating)
                   const Padding(
                     padding: EdgeInsets.only(right: AppSpacing.md),
                     child: SizedBox(
