@@ -6,8 +6,7 @@ import 'package:workin_fit/models/warmup_routine.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/providers/warmup_providers.dart';
 import 'package:workin_fit/views/admin/admin_warmup_editor_screen.dart';
-import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
-import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/views/admin/widgets/admin_list_scaffold.dart';
 
 /// Admin list of authored warmup routines (overrides of the built-in ones).
 class AdminWarmupListScreen extends ConsumerWidget {
@@ -17,102 +16,37 @@ class AdminWarmupListScreen extends ConsumerWidget {
         builder: (_) => const AdminWarmupListScreen(),
       );
 
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    WarmupRoutine routine,
-  ) async {
-    final bool? confirmed = await AppDialog.showConfirm(
-      context: context,
-      title: 'Delete warmup override?',
-      message:
-          'The built-in “${routine.category.name} / ${routine.durationMinutes} min” '
-          'routine will be used again.',
-      confirmLabel: 'Delete',
-      cancelLabel: 'Cancel',
-      icon: Icons.delete_outline_rounded,
-      iconColor: AppColors.error,
-      destructive: true,
-    );
-    if (confirmed != true) return;
-    try {
-      await ref.read(adminActionsProvider).deleteWarmup(routine.docKey);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Warmup override removed')),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<Map<String, WarmupRoutine>> warmups =
-        ref.watch(firestoreWarmupsProvider);
-
-    return AdminGuard(
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          title: const Text('Warmups'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('New'),
-          onPressed: () =>
-              Navigator.of(context).push(AdminWarmupEditorScreen.route()),
-        ),
-        body: warmups.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object e, _) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Text(
-                'Failed to load warmups:\n$e',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary),
-              ),
-            ),
-          ),
-          data: (Map<String, WarmupRoutine> map) {
-            if (map.isEmpty) return const _EmptyHint();
-            final List<WarmupRoutine> routines = map.values.toList()
-              ..sort(
-                (WarmupRoutine a, WarmupRoutine b) =>
-                    a.docKey.compareTo(b.docKey),
-              );
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xs,
-                AppSpacing.xs,
-                AppSpacing.xs,
-                96,
-              ),
-              itemCount: routines.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.xxs),
-              itemBuilder: (BuildContext context, int index) {
-                final WarmupRoutine r = routines[index];
-                return _WarmupRow(
-                  routine: r,
-                  onEdit: () => Navigator.of(context).push(
-                    AdminWarmupEditorScreen.route(existing: r),
-                  ),
-                  onDelete: () => _confirmDelete(context, ref, r),
-                );
-              },
+    final AsyncValue<List<WarmupRoutine>> warmups =
+        ref.watch(firestoreWarmupsProvider).whenData(
+              (Map<String, WarmupRoutine> map) => map.values.toList()
+                ..sort(
+                  (WarmupRoutine a, WarmupRoutine b) =>
+                      a.docKey.compareTo(b.docKey),
+                ),
             );
-          },
-        ),
+
+    return AdminListScaffold<WarmupRoutine>(
+      title: 'Warmups',
+      errorNoun: 'warmups',
+      items: warmups,
+      emptyState: const _EmptyHint(),
+      onNew: () => Navigator.of(context).push(AdminWarmupEditorScreen.route()),
+      onEditItem: (BuildContext context, WarmupRoutine routine) =>
+          Navigator.of(context).push(
+        AdminWarmupEditorScreen.route(existing: routine),
       ),
+      rowBuilder: (WarmupRoutine routine, VoidCallback onEdit,
+              VoidCallback onDelete) =>
+          _WarmupRow(routine: routine, onEdit: onEdit, onDelete: onDelete),
+      deleteTitle: 'Delete warmup override?',
+      deleteMessage: (WarmupRoutine r) =>
+          'The built-in “${r.category.name} / ${r.durationMinutes} min” '
+          'routine will be used again.',
+      deletedMessage: (WarmupRoutine r) => 'Warmup override removed',
+      onDelete: (WidgetRef ref, WarmupRoutine r) =>
+          ref.read(adminActionsProvider).deleteWarmup(r.docKey),
     );
   }
 }

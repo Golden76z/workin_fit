@@ -5,8 +5,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/views/admin/admin_program_editor_screen.dart';
-import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
-import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/views/admin/widgets/admin_list_scaffold.dart';
 
 /// Admin list of all preset programs with create / edit / delete. Reads
 /// [adminProgramsProvider] so newly saved content shows up after a write.
@@ -17,108 +16,39 @@ class AdminProgramListScreen extends ConsumerWidget {
         builder: (_) => const AdminProgramListScreen(),
       );
 
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    Program program,
-  ) async {
-    final bool? confirmed = await AppDialog.showConfirm(
-      context: context,
-      title: 'Delete program?',
-      message: '“${program.name}” will be removed for all users.',
-      confirmLabel: 'Delete',
-      cancelLabel: 'Cancel',
-      icon: Icons.delete_outline_rounded,
-      iconColor: AppColors.error,
-      destructive: true,
-    );
-    if (confirmed != true) return;
-    try {
-      await ref.read(adminActionsProvider).deletePresetProgram(program.id);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Deleted “${program.name}”')),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<Program>> programs =
-        ref.watch(adminProgramsProvider);
-
-    return AdminGuard(
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          title: const Text('Programs'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('New'),
-          onPressed: () => Navigator.of(context).push(
-            AdminProgramEditorScreen.route(),
-          ),
-        ),
-        body: programs.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object e, _) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Text(
-                'Failed to load programs:\n$e',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary),
-              ),
-            ),
-          ),
-          data: (List<Program> list) {
-            if (list.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No programs yet. Tap “New” to add one.',
-                  style: TextStyle(color: AppColors.textSecondary),
+        ref.watch(adminProgramsProvider).whenData(
+              (List<Program> list) => <Program>[...list]..sort(
+                  (Program a, Program b) =>
+                      a.name.toLowerCase().compareTo(b.name.toLowerCase()),
                 ),
-              );
-            }
-            final List<Program> sorted = <Program>[...list]
-              ..sort(
-                (Program a, Program b) =>
-                    a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-              );
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xs,
-                AppSpacing.xs,
-                AppSpacing.xs,
-                96, // clear the FAB
-              ),
-              itemCount: sorted.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.xxs),
-              itemBuilder: (BuildContext context, int index) {
-                final Program program = sorted[index];
-                return _ProgramRow(
-                  program: program,
-                  onEdit: () => Navigator.of(context).push(
-                    AdminProgramEditorScreen.route(existing: program),
-                  ),
-                  onDelete: () => _confirmDelete(context, ref, program),
-                );
-              },
             );
-          },
+
+    return AdminListScaffold<Program>(
+      title: 'Programs',
+      errorNoun: 'programs',
+      items: programs,
+      emptyState: const Center(
+        child: Text(
+          'No programs yet. Tap “New” to add one.',
+          style: TextStyle(color: AppColors.textSecondary),
         ),
       ),
+      onNew: () => Navigator.of(context).push(AdminProgramEditorScreen.route()),
+      onEditItem: (BuildContext context, Program program) =>
+          Navigator.of(context).push(
+        AdminProgramEditorScreen.route(existing: program),
+      ),
+      rowBuilder:
+          (Program program, VoidCallback onEdit, VoidCallback onDelete) =>
+              _ProgramRow(program: program, onEdit: onEdit, onDelete: onDelete),
+      deleteTitle: 'Delete program?',
+      deleteMessage: (Program p) => '“${p.name}” will be removed for all users.',
+      deletedMessage: (Program p) => 'Deleted “${p.name}”',
+      onDelete: (WidgetRef ref, Program p) =>
+          ref.read(adminActionsProvider).deletePresetProgram(p.id),
     );
   }
 }
