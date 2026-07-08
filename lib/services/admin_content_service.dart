@@ -3,6 +3,7 @@ import 'package:workin_fit/core/constants/app_constants.dart';
 import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/user_profile.dart';
 import 'package:workin_fit/models/warmup_routine.dart';
 
@@ -75,6 +76,27 @@ class AdminContentService {
     await _firestore
         .collection(FirebaseConstants.programsCollection)
         .doc(programId)
+        .delete();
+  }
+
+  // ===== PRESET SESSIONS (curated, referenced by programs) =====
+
+  Future<void> upsertPresetSession(Session session, {String? updatedBy}) async {
+    final Map<String, dynamic> data = session.toFirestore()
+      ..remove('id')
+      ..['updatedAt'] = FieldValue.serverTimestamp();
+    if (updatedBy != null) data['updatedBy'] = updatedBy;
+
+    await _firestore
+        .collection(FirebaseConstants.presetSessionsCollection)
+        .doc(session.id)
+        .set(data, SetOptions(merge: true));
+  }
+
+  Future<void> deletePresetSession(String sessionId) async {
+    await _firestore
+        .collection(FirebaseConstants.presetSessionsCollection)
+        .doc(sessionId)
         .delete();
   }
 

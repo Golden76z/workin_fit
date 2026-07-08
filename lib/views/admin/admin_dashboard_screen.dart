@@ -4,6 +4,7 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/admin/admin_daily_challenge_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_exercise_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_program_list_screen.dart';
+import 'package:workin_fit/views/admin/admin_session_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_warmup_list_screen.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
 
@@ -46,6 +47,13 @@ class AdminDashboardScreen extends StatelessWidget {
                 subtitle: 'Preset programs',
                 onTap: () => Navigator.of(context)
                     .push(AdminProgramListScreen.route()),
+              ),
+              _AdminCard(
+                icon: Icons.playlist_add_check_rounded,
+                label: 'Sessions',
+                subtitle: 'Preset sessions',
+                onTap: () => Navigator.of(context)
+                    .push(AdminSessionListScreen.route()),
               ),
               _AdminCard(
                 icon: Icons.self_improvement_rounded,
