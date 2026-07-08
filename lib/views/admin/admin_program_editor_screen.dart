@@ -14,10 +14,13 @@ import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
 /// collection. Session selection is entered as a comma-separated list of
 /// session ids for now (a richer picker can build on this).
 class AdminProgramEditorScreen extends ConsumerStatefulWidget {
-  const AdminProgramEditorScreen({super.key});
+  const AdminProgramEditorScreen({this.existing, super.key});
 
-  static Route<void> route() => MaterialPageRoute<void>(
-        builder: (_) => const AdminProgramEditorScreen(),
+  /// When non-null the form edits this program; otherwise it creates a new one.
+  final Program? existing;
+
+  static Route<void> route({Program? existing}) => MaterialPageRoute<void>(
+        builder: (_) => AdminProgramEditorScreen(existing: existing),
       );
 
   @override
@@ -28,16 +31,32 @@ class AdminProgramEditorScreen extends ConsumerStatefulWidget {
 class _AdminProgramEditorScreenState
     extends ConsumerState<AdminProgramEditorScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _description = TextEditingController();
-  final TextEditingController _goals = TextEditingController();
-  final TextEditingController _sessionIds = TextEditingController();
-  final TextEditingController _durationWeeks =
-      TextEditingController(text: '4');
-  final TextEditingController _daysPerWeek = TextEditingController(text: '3');
+  late final TextEditingController _name;
+  late final TextEditingController _description;
+  late final TextEditingController _goals;
+  late final TextEditingController _sessionIds;
+  late final TextEditingController _durationWeeks;
+  late final TextEditingController _daysPerWeek;
 
-  DifficultyLevel _difficulty = DifficultyLevel.beginner;
+  late DifficultyLevel _difficulty;
   bool _saving = false;
+
+  bool get _isEditing => widget.existing != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final Program? p = widget.existing;
+    _name = TextEditingController(text: p?.name ?? '');
+    _description = TextEditingController(text: p?.description ?? '');
+    _goals = TextEditingController(text: (p?.goals ?? const <String>[]).join(', '));
+    _sessionIds =
+        TextEditingController(text: (p?.sessionIds ?? const <String>[]).join(', '));
+    _durationWeeks =
+        TextEditingController(text: '${p?.durationWeeks ?? 4}');
+    _daysPerWeek = TextEditingController(text: '${p?.daysPerWeek ?? 3}');
+    _difficulty = p?.difficulty ?? DifficultyLevel.beginner;
+  }
 
   @override
   void dispose() {
@@ -60,8 +79,10 @@ class _AdminProgramEditorScreenState
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     try {
+      final Program? existing = widget.existing;
       final Program program = Program(
-        id: 'custom_program_${const Uuid().v4().substring(0, 6)}',
+        id: existing?.id ??
+            'custom_program_${const Uuid().v4().substring(0, 6)}',
         name: _name.text.trim(),
         description: _description.text.trim(),
         sessionIds: _splitList(_sessionIds.text),
@@ -69,11 +90,17 @@ class _AdminProgramEditorScreenState
         difficulty: _difficulty,
         goals: _splitList(_goals.text),
         daysPerWeek: int.tryParse(_daysPerWeek.text.trim()) ?? 3,
+        imageUrl: existing?.imageUrl,
+        isCustom: existing?.isCustom ?? false,
+        userId: existing?.userId,
+        createdAt: existing?.createdAt,
       );
       await ref.read(adminActionsProvider).savePresetProgram(program);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Program created')),
+        SnackBar(
+          content: Text(_isEditing ? 'Program updated' : 'Program created'),
+        ),
       );
       Navigator.of(context).pop();
     } catch (e) {
@@ -92,7 +119,7 @@ class _AdminProgramEditorScreenState
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
-          title: const Text('New program'),
+          title: Text(_isEditing ? 'Edit program' : 'New program'),
         ),
         body: SafeArea(
           child: Form(
@@ -201,7 +228,7 @@ class _AdminProgramEditorScreenState
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Create program'),
+                        : Text(_isEditing ? 'Save changes' : 'Create program'),
                   ),
                 ),
               ],

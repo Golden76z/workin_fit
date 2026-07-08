@@ -3,7 +3,7 @@ import 'package:workin_fit/core/theme/app_dimensions.dart';
 import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/views/admin/admin_daily_challenge_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_exercise_list_screen.dart';
-import 'package:workin_fit/views/admin/admin_program_editor_screen.dart';
+import 'package:workin_fit/views/admin/admin_program_list_screen.dart';
 import 'package:workin_fit/views/admin/admin_warmup_list_screen.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
 
@@ -45,7 +45,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 label: 'Programs',
                 subtitle: 'Preset programs',
                 onTap: () => Navigator.of(context)
-                    .push(AdminProgramEditorScreen.route()),
+                    .push(AdminProgramListScreen.route()),
               ),
               _AdminCard(
                 icon: Icons.self_improvement_rounded,

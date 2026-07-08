@@ -46,6 +46,15 @@ final isAdminProvider = Provider<bool>((ref) {
   );
 });
 
+// ===== ADMIN PROGRAM LIST =====
+
+/// All preset programs from the top-level `programs` collection, for admin
+/// management. Reads Firestore directly (no catalog fallback, no per-user
+/// programs) so the list reflects exactly what has been authored.
+final adminProgramsProvider = FutureProvider<List<Program>>((ref) async {
+  return ref.watch(firestoreServiceProvider).getPrograms();
+});
+
 // ===== ADMIN CONTENT ACTIONS =====
 
 final adminActionsProvider = Provider<AdminActions>((ref) => AdminActions(ref));
@@ -89,10 +98,20 @@ class AdminActions {
     _refreshExercises();
   }
 
-  Future<void> savePresetProgram(Program program) async {
-    await _content.upsertPresetProgram(program, updatedBy: _uid);
+  void _refreshPrograms() {
     ref.invalidate(programsProvider);
     ref.invalidate(homePresetProgramsProvider);
+    ref.invalidate(adminProgramsProvider);
+  }
+
+  Future<void> savePresetProgram(Program program) async {
+    await _content.upsertPresetProgram(program, updatedBy: _uid);
+    _refreshPrograms();
+  }
+
+  Future<void> deletePresetProgram(String programId) async {
+    await _content.deletePresetProgram(programId);
+    _refreshPrograms();
   }
 
   Future<void> saveDailyChallenge(DailyChallenge challenge) async {
