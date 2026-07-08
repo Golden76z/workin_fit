@@ -13,6 +13,7 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/exercise_localization.dart';
 import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/workout_config.dart';
+import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/providers/workout_providers.dart';
 import 'package:workin_fit/core/theme/app_opacity.dart';
 
@@ -62,12 +63,25 @@ class _CircuitEntry extends _BuilderEntry {
 // ---------------------------------------------------------------------------
 
 class SessionBuilderScreen extends ConsumerStatefulWidget {
-  const SessionBuilderScreen({super.key});
+  const SessionBuilderScreen({this.asPreset = false, super.key});
+
+  /// When true the built session is saved as a shared preset (admin-authored,
+  /// consumed by curated programs) instead of the current user's custom
+  /// session. Admin-only; reached from the admin dashboard.
+  final bool asPreset;
 
   static Route<void> route() {
     return MaterialPageRoute<void>(
       fullscreenDialog: true,
       builder: (_) => const SessionBuilderScreen(),
+    );
+  }
+
+  /// Route used by the admin tools to author a curated preset session.
+  static Route<void> presetRoute() {
+    return MaterialPageRoute<void>(
+      fullscreenDialog: true,
+      builder: (_) => const SessionBuilderScreen(asPreset: true),
     );
   }
 
@@ -218,17 +232,21 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
       return;
     }
 
-    final existingSessions = await ref.read(userSessionsProvider.future);
-    if (!mounted) return;
-    if (existingSessions.length >= kMaxCustomSessions) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'You have reached the limit of $kMaxCustomSessions custom sessions.',
+    // The custom-session cap is a per-user free-tier limit; it doesn't apply to
+    // admin-authored preset sessions.
+    if (!widget.asPreset) {
+      final existingSessions = await ref.read(userSessionsProvider.future);
+      if (!mounted) return;
+      if (existingSessions.length >= kMaxCustomSessions) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'You have reached the limit of $kMaxCustomSessions custom sessions.',
+            ),
           ),
-        ),
-      );
-      return;
+        );
+        return;
+      }
     }
 
     setState(() => _isSaving = true);
@@ -248,11 +266,15 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
         workouts: workouts,
         difficulty: _difficulty,
         restBetweenExercises: _restBetweenExercises,
-        isCustom: true,
-        userId: userId,
+        isCustom: !widget.asPreset,
+        userId: widget.asPreset ? null : userId,
       );
 
-      await ref.read(sessionActionsProvider).createSession(session);
+      if (widget.asPreset) {
+        await ref.read(adminActionsProvider).savePresetSession(session);
+      } else {
+        await ref.read(sessionActionsProvider).createSession(session);
+      }
       if (!mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
@@ -297,7 +319,9 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               title: Text(
-                isFrench ? 'Nouvelle session' : 'New Session',
+                widget.asPreset
+                    ? (isFrench ? 'Nouvelle session préréglée' : 'New Preset Session')
+                    : (isFrench ? 'Nouvelle session' : 'New Session'),
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'AppFontMedium',

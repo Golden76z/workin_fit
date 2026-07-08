@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
+import 'package:workin_fit/models/session.dart';
 import 'package:workin_fit/models/user_profile.dart';
 import 'package:workin_fit/models/warmup_routine.dart';
 import 'package:workin_fit/providers/challenge_providers.dart';
@@ -53,6 +54,13 @@ final isAdminProvider = Provider<bool>((ref) {
 /// programs) so the list reflects exactly what has been authored.
 final adminProgramsProvider = FutureProvider<List<Program>>((ref) async {
   return ref.watch(firestoreServiceProvider).getPrograms();
+});
+
+/// All preset sessions from the top-level `preset_sessions` collection, for
+/// admin management. Reads Firestore directly (unlike [presetSessionsProvider],
+/// which swallows errors) so the list surfaces load failures.
+final adminSessionsProvider = FutureProvider<List<Session>>((ref) async {
+  return ref.watch(firestoreServiceProvider).getPresetSessions();
 });
 
 // ===== ADMIN CONTENT ACTIONS =====
@@ -112,6 +120,22 @@ class AdminActions {
   Future<void> deletePresetProgram(String programId) async {
     await _content.deletePresetProgram(programId);
     _refreshPrograms();
+  }
+
+  void _refreshSessions() {
+    ref.invalidate(adminSessionsProvider);
+    ref.invalidate(presetSessionsProvider);
+    ref.invalidate(programSessionsProvider);
+  }
+
+  Future<void> savePresetSession(Session session) async {
+    await _content.upsertPresetSession(session, updatedBy: _uid);
+    _refreshSessions();
+  }
+
+  Future<void> deletePresetSession(String sessionId) async {
+    await _content.deletePresetSession(sessionId);
+    _refreshSessions();
   }
 
   Future<void> saveDailyChallenge(DailyChallenge challenge) async {

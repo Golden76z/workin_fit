@@ -36,6 +36,7 @@ class FirebaseConstants {
   static const String usersCollection = 'users';
   static const String exercisesCollection = 'exercises';
   static const String sessionsCollection = 'sessions';
+  static const String presetSessionsCollection = 'preset_sessions';
   static const String programsCollection = 'programs';
   static const String warmupsCollection = 'warmups';
   static const String workoutHistoryCollection = 'workout_history';

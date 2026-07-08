@@ -444,7 +444,7 @@ class FirestoreService {
   Future<List<Session>> getPresetSessions() async {
     try {
       final snapshot = await _firestore
-          .collection('preset_sessions')
+          .collection(FirebaseConstants.presetSessionsCollection)
           .orderBy('difficulty')
           .get();
 

@@ -81,6 +81,13 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if isAdmin();
     }
+    // Preset sessions authored by admins and consumed by curated programs.
+    // The app reads these (FirestoreService.getPresetSessions); without this
+    // block the collection is denied by default.
+    match /preset_sessions/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
 
     // ---- Existing social / activity collections: signed-in access ----
     //
