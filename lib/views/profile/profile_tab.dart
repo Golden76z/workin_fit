@@ -11,7 +11,6 @@ import 'package:workin_fit/core/theme/colors.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 import 'package:workin_fit/providers/workout_providers.dart'
     hide firestoreServiceProvider;
-import 'package:workin_fit/services/firestore_service.dart';
 import 'package:workin_fit/views/auth/authentication_view.dart';
 import 'package:workin_fit/models/friend.dart';
 import 'package:workin_fit/models/friend_request.dart';
@@ -40,7 +39,7 @@ final _userProfileProvider =
     FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
-  return FirestoreService().getUserProfile(user.uid);
+  return ref.read(firestoreServiceProvider).getUserProfile(user.uid);
 });
 
 final _profileStatsProvider =
@@ -48,7 +47,7 @@ final _profileStatsProvider =
         (ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return (sessions: 0, programs: 0, totalHours: 0);
-  final svc = FirestoreService();
+  final svc = ref.read(firestoreServiceProvider);
   final results = await Future.wait([
     svc.getWorkoutHistory(userId: user.uid),
     svc.getProgramsCompleted(user.uid),
@@ -2143,7 +2142,7 @@ class _EditProfileSheetState extends ConsumerState<_EditProfileSheet> {
     }
     setState(() => _saving = true);
     try {
-      await FirestoreService().createOrUpdateUserProfile(
+      await ref.read(firestoreServiceProvider).createOrUpdateUserProfile(
         userId: widget.userId,
         username: newName,
         email: widget.email ?? '',
