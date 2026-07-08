@@ -8,12 +8,15 @@ import 'package:workin_fit/models/exercise.dart';
 import 'package:workin_fit/models/program.dart';
 import 'package:workin_fit/features/auth/domain/auth_provider.dart';
 
+// `firestoreServiceProvider` is canonically defined in auth_provider.dart
+// (imported above). Re-export it so the many providers/screens that import
+// this file keep resolving to the same single provider instance.
+export 'package:workin_fit/features/auth/domain/auth_provider.dart'
+    show firestoreServiceProvider;
+
 // ===== SERVICE PROVIDERS =====
 
 final syncServiceProvider = Provider<SyncService>((ref) => SyncService());
-
-final firestoreServiceProvider =
-    Provider<FirestoreService>((ref) => FirestoreService());
 
 final localStorageServiceProvider =
     Provider<LocalStorageService>((ref) => LocalStorageService());

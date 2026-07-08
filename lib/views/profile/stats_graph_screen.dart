@@ -20,7 +20,8 @@ class StatsGraphScreen extends ConsumerStatefulWidget {
 }
 
 class _StatsGraphScreenState extends ConsumerState<StatsGraphScreen> {
-  final FirestoreService _firestoreService = FirestoreService();
+  late final FirestoreService _firestoreService =
+      ref.read(firestoreServiceProvider);
 
   DateTime _selectedMonth = DateTime(
     DateTime.now().year,

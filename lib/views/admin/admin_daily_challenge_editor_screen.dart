@@ -9,6 +9,7 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/models/enums.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
+import 'package:workin_fit/views/admin/widgets/admin_text_field.dart';
 
 /// Create or edit a single daily challenge, written to the `daily_challenges`
 /// collection. Authored challenges take over from the static catalog on the
@@ -132,7 +133,7 @@ class _AdminDailyChallengeEditorScreenState
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: <Widget>[
-                _field(
+                AdminTextField(
                   controller: _title,
                   label: 'Title',
                   validator: (String? v) => (v == null || v.trim().isEmpty)
@@ -140,7 +141,7 @@ class _AdminDailyChallengeEditorScreenState
                       : ContentModeration.validate(v),
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _description,
                   label: 'Description',
                   maxLines: 2,
@@ -171,7 +172,7 @@ class _AdminDailyChallengeEditorScreenState
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: _field(
+                      child: AdminTextField(
                         controller: _target,
                         label: 'Target',
                         keyboardType: TextInputType.number,
@@ -186,7 +187,7 @@ class _AdminDailyChallengeEditorScreenState
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
-                      child: _field(
+                      child: AdminTextField(
                         controller: _reward,
                         label: 'Reward pts',
                         keyboardType: TextInputType.number,
@@ -207,7 +208,7 @@ class _AdminDailyChallengeEditorScreenState
                   onSelected: (String u) => setState(() => _unit = u),
                 ),
                 const SizedBox(height: AppSpacing.md),
-                _field(
+                AdminTextField(
                   controller: _linkedId,
                   label: linksSession
                       ? 'Session ID (optional)'
@@ -277,31 +278,4 @@ class _AdminDailyChallengeEditorScreenState
     );
   }
 
-  Widget _field({
-    required TextEditingController controller,
-    required String label,
-    int maxLines = 1,
-    TextInputType? keyboardType,
-    List<TextInputFormatter>? inputFormatters,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      validator: validator,
-      style: const TextStyle(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        filled: true,
-        fillColor: AppColors.surface,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadii.md),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
 }

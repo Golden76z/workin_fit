@@ -70,7 +70,7 @@ class ExerciseDetailScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         extendBody: true,
-        bottomNavigationBar: const _NavBarFill(),
+        bottomNavigationBar: const AppBottomInsetSurface(),
         body: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -612,11 +612,3 @@ class _ExerciseMedia extends StatelessWidget {
 
 // Physically paints the same 70 % primary-blue tone as the SliverAppBar into
 // the system nav-bar inset area, so top and bottom chrome match exactly.
-class _NavBarFill extends StatelessWidget {
-  const _NavBarFill();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppBottomInsetSurface();
-  }
-}

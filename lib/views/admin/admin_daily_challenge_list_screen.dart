@@ -6,8 +6,7 @@ import 'package:workin_fit/models/daily_challenge.dart';
 import 'package:workin_fit/providers/admin_providers.dart';
 import 'package:workin_fit/providers/challenge_providers.dart';
 import 'package:workin_fit/views/admin/admin_daily_challenge_editor_screen.dart';
-import 'package:workin_fit/views/admin/widgets/admin_guard.dart';
-import 'package:workin_fit/widgets/app_dialog.dart';
+import 'package:workin_fit/views/admin/widgets/admin_list_scaffold.dart';
 
 /// Admin list of authored daily challenges. When empty, the app falls back to
 /// the built-in catalog — surfaced as a hint here.
@@ -18,98 +17,34 @@ class AdminDailyChallengeListScreen extends ConsumerWidget {
         builder: (_) => const AdminDailyChallengeListScreen(),
       );
 
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    DailyChallenge challenge,
-  ) async {
-    final bool? confirmed = await AppDialog.showConfirm(
-      context: context,
-      title: 'Delete challenge?',
-      message: '“${challenge.title}” will be removed.',
-      confirmLabel: 'Delete',
-      cancelLabel: 'Cancel',
-      icon: Icons.delete_outline_rounded,
-      iconColor: AppColors.error,
-      destructive: true,
-    );
-    if (confirmed != true) return;
-    try {
-      await ref.read(adminActionsProvider).deleteDailyChallenge(challenge.id);
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Deleted “${challenge.title}”')),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete: $e')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<DailyChallenge>> challenges =
         ref.watch(allDailyChallengesProvider);
 
-    return AdminGuard(
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-          backgroundColor: AppColors.background,
-          title: const Text('Daily Challenges'),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: AppColors.primary,
-          icon: const Icon(Icons.add_rounded),
-          label: const Text('New'),
-          onPressed: () => Navigator.of(context).push(
-            AdminDailyChallengeEditorScreen.route(),
-          ),
-        ),
-        body: challenges.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object e, _) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: Text(
-                'Failed to load challenges:\n$e',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textSecondary),
-              ),
-            ),
-          ),
-          data: (List<DailyChallenge> list) {
-            if (list.isEmpty) {
-              return const _EmptyHint();
-            }
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xs,
-                AppSpacing.xs,
-                AppSpacing.xs,
-                96,
-              ),
-              itemCount: list.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.xxs),
-              itemBuilder: (BuildContext context, int index) {
-                final DailyChallenge c = list[index];
-                return _ChallengeRow(
-                  challenge: c,
-                  onEdit: () => Navigator.of(context).push(
-                    AdminDailyChallengeEditorScreen.route(existing: c),
-                  ),
-                  onDelete: () => _confirmDelete(context, ref, c),
-                );
-              },
-            );
-          },
-        ),
+    return AdminListScaffold<DailyChallenge>(
+      title: 'Daily Challenges',
+      errorNoun: 'challenges',
+      items: challenges,
+      emptyState: const _EmptyHint(),
+      onNew: () =>
+          Navigator.of(context).push(AdminDailyChallengeEditorScreen.route()),
+      onEditItem: (BuildContext context, DailyChallenge challenge) =>
+          Navigator.of(context).push(
+        AdminDailyChallengeEditorScreen.route(existing: challenge),
       ),
+      rowBuilder: (DailyChallenge challenge, VoidCallback onEdit,
+              VoidCallback onDelete) =>
+          _ChallengeRow(
+        challenge: challenge,
+        onEdit: onEdit,
+        onDelete: onDelete,
+      ),
+      deleteTitle: 'Delete challenge?',
+      deleteMessage: (DailyChallenge c) => '“${c.title}” will be removed.',
+      deletedMessage: (DailyChallenge c) => 'Deleted “${c.title}”',
+      onDelete: (WidgetRef ref, DailyChallenge c) =>
+          ref.read(adminActionsProvider).deleteDailyChallenge(c.id),
     );
   }
 }

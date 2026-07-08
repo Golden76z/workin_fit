@@ -64,7 +64,7 @@ class SessionDetailScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         extendBody: true,
-        bottomNavigationBar: const _NavBarFill(),
+        bottomNavigationBar: const AppBottomInsetSurface(),
         body: exercisesAsync.when(
           data: (allExercises) {
             final exerciseMap = {for (final e in allExercises) e.id: e};
@@ -586,12 +586,3 @@ class _MetaChip extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Nav bar fill
 // ---------------------------------------------------------------------------
-
-class _NavBarFill extends StatelessWidget {
-  const _NavBarFill();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppBottomInsetSurface();
-  }
-}

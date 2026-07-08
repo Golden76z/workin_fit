@@ -301,7 +301,7 @@ class _ProgramBuilderScreenState extends ConsumerState<ProgramBuilderScreen> {
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         extendBody: true,
-        bottomNavigationBar: const _NavBarFill(),
+        bottomNavigationBar: const AppBottomInsetSurface(),
         body: CustomScrollView(
           slivers: [
             // ── App bar ──────────────────────────────────────────────────────
@@ -1940,12 +1940,3 @@ class _InputFieldState extends State<_InputField> {
 // ---------------------------------------------------------------------------
 // Nav bar fill
 // ---------------------------------------------------------------------------
-
-class _NavBarFill extends StatelessWidget {
-  const _NavBarFill();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppBottomInsetSurface();
-  }
-}
