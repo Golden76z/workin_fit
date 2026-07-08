@@ -281,7 +281,7 @@ class _SessionBuilderScreenState extends ConsumerState<SessionBuilderScreen> {
       child: Scaffold(
         backgroundColor: AppColors.surfaceVariant,
         extendBody: true,
-        bottomNavigationBar: const _NavBarFill(),
+        bottomNavigationBar: const AppBottomInsetSurface(),
         body: CustomScrollView(
           slivers: [
             // App bar
@@ -1722,12 +1722,3 @@ class _SectionCard extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // Nav bar fill
 // ---------------------------------------------------------------------------
-
-class _NavBarFill extends StatelessWidget {
-  const _NavBarFill();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppBottomInsetSurface();
-  }
-}

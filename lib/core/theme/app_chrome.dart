@@ -54,7 +54,8 @@ class AppChrome {
 
   // Shared overlay used on pages with a top bar surface and no in-app
   // bottom navigation. Nav bar is transparent so a Flutter-drawn surface
-  // (e.g. _NavBarFill) controls the visible tone, matching the top chrome.
+  // (e.g. AppBottomInsetSurface) controls the visible tone, matching the top
+  // chrome.
   static const SystemUiOverlayStyle topAndBottomOverlay = SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
