@@ -47,7 +47,8 @@ void main() {
     test('returns exercises from sync service', () async {
       final mockSync = MockSyncService();
       final exercises = [_makeExercise('e1'), _makeExercise('e2')];
-      when(mockSync.getExercises()).thenAnswer((_) async => exercises);
+      when(mockSync.getExercises(onCacheUpdated: anyNamed('onCacheUpdated')))
+          .thenAnswer((_) async => exercises);
 
       final container = ProviderContainer(overrides: [
         syncServiceProvider.overrideWithValue(mockSync),
